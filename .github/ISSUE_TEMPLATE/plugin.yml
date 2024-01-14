@@ -15,7 +15,9 @@ body:
           required: true
   - type: checkboxes
     attributes:
-      label: I want to suggest an idea and checked that ...
+      label: |-
+          I want to suggest an idea and checked that ...
+          这是中文描述
       description: Make sure that your request fulfills all of the following requirements. If one requirement cannot be satisfied, explain in detail why.
       options:
         - label: ... to my best knowledge, my idea wouldn't break something for other users
