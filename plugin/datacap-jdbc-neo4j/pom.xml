@@ -14,7 +14,7 @@
     <description>DataCap - Neo4j</description>
 
     <properties>
-        <neo4j.version>4.0.6</neo4j.version>
+        <neo4j.version>4.0.10</neo4j.version>
         <plugin.name>jdbc-neo4j</plugin.name>
     </properties>
 
