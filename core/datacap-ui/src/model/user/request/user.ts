@@ -1,7 +1,7 @@
 export interface UserRequest
 {
-    username: string | null
-    password: string | null
+    username: string | null | undefined
+    password: string | null | undefined
     confirmPassword?: string
     captcha?: string
     timestamp?: number
