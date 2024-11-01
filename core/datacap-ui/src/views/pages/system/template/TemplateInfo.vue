@@ -70,7 +70,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { TemplateModel, TemplateRequest } from '@/model/template'
-import { Loader2 } from 'lucide-vue-next'
+
 import { Textarea } from '@/components/ui/textarea'
 import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { ToastUtils } from '@/utils/toast'
@@ -82,7 +82,6 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cloneDeep } from 'lodash'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 
 export default defineComponent({
@@ -95,9 +94,7 @@ export default defineComponent({
     Label,
     SheetClose, SheetFooter, SheetTitle, SheetHeader, Sheet, SheetContent,
     Textarea,
-    Loader2,
     DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
   },
   computed: {
     visible: {

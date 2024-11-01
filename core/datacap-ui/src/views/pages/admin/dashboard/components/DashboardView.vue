@@ -27,7 +27,6 @@ import { GridItem, GridLayout } from 'vue3-grid-layout-next'
 import { DataCapCard } from '@/views/ui/card'
 import VisualView from '@/views/components/visual/VisualView.vue'
 import Tooltip from '@/views/ui/tooltip'
-import { Info } from 'lucide-vue-next'
 
 export default defineComponent({
   name: 'DashboardView',

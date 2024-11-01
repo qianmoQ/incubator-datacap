@@ -47,7 +47,7 @@ import { DatasetModel } from '@/model/dataset'
 import { ToastUtils } from '@/utils/toast'
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog'
 import { Alert, AlertTitle } from '@/components/ui/alert'
-import { Loader2 } from 'lucide-vue-next'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -56,7 +56,6 @@ export default defineComponent({
   components: {
     CardContent, CardTitle, CardHeader, Card,
     Button,
-    Loader2,
     AlertDialogFooter, AlertDialogHeader, AlertTitle, Alert, AlertDialog, AlertDialogContent
   },
   props: {

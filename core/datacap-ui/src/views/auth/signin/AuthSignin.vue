@@ -84,11 +84,7 @@ import UserService from '@/services/user'
 import CaptchaService from '@/services/captcha'
 import { UserRequest } from '@/model/user/request/user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Loader2 } from 'lucide-vue-next'
-import * as z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
 import { ToastUtils } from '@/utils/toast'
 import CommonUtils from '@/utils/common'
 import { HttpUtils } from '@/utils/http'
@@ -100,11 +96,9 @@ export default defineComponent({
   name: 'AuthSignin',
   components: {
     CircularLoading,
-    FormField, FormControl, FormMessage, FormLabel, FormItem,
     AvatarImage, AvatarFallback, Avatar,
     Checkbox, Label, Input, Button,
     CardFooter, CardContent, CardDescription, CardTitle, CardHeader, Card,
-    Loader2
   },
   setup()
   {
@@ -115,6 +109,8 @@ export default defineComponent({
     let submitting = ref(false)
     const captchaLoading = ref(false)
     const formState = ref<UserRequest>({ username: null, password: null })
+
+    const z: any = {}
 
     const validationSchema = z
         .object({

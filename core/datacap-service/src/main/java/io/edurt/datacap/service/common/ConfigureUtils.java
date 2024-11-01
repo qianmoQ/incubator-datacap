@@ -273,7 +273,7 @@ public class ConfigureUtils
 
         Properties originProperties = fieldBody.getConfigures();
         if (pipelineType.equals(IConfigurePipelineType.INPUT)) {
-            if (!originProperties.containsKey("context")) {
+            if (!originProperties.containsKey("context") && query != null) {
                 originProperties.setProperty("context", query);
             }
         }

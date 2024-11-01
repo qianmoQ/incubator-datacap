@@ -52,7 +52,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChartFieldGroup, Configuration, IChart } from '@/views/components/visual/Configuration.ts'
 import { cloneDeep, keys } from 'lodash'
@@ -74,7 +73,6 @@ export default defineComponent({
     Slider,
     Switch,
     SelectGroup, SelectTrigger, SelectContent, SelectItem, Select, SelectLabel, SelectValue,
-    FormDescription, FormControl, FormLabel, FormField, FormItem,
     Tooltip
   },
   computed: {

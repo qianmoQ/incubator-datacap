@@ -183,7 +183,6 @@ import DatasetColumnConfigure from '@/views/pages/admin/dataset/components/adhoc
 import { defineComponent } from 'vue'
 import { Badge } from '@/components/ui/badge'
 import { DataCapCard } from '@/views/ui/card'
-import { AreaChart, BarChart4, BarChartHorizontal, Baseline, CirclePlay, Cog, Eye, LineChart, Loader2, PieChart, Table, Trash } from 'lucide-vue-next'
 import Tooltip from '@/views/ui/tooltip'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
@@ -192,7 +191,6 @@ import { Alert, AlertTitle } from '@/components/ui/alert'
 import { ToastUtils } from '@/utils/toast'
 import SqlInfo from '@/views/components/sql/SqlInfo.vue'
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog'
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Select } from '@/components/ui/select'
 import Switch from '@/views/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
@@ -214,9 +212,7 @@ export default defineComponent({
     DataCapCard,
     Textarea,
     Switch,
-    FormField,
-    FormControl,
-    FormLabel, Select, FormItem,
+    Select,
     AlertDialogFooter, AlertDialogHeader, AlertDialog, AlertDialogContent,
     SqlInfo,
     AlertTitle, Alert,
@@ -230,7 +226,6 @@ export default defineComponent({
     CircularLoading,
     Draggable,
     VisualEditor,
-    Loader2, Trash, Cog, CirclePlay, Eye, Table, LineChart, BarChart4, AreaChart, PieChart, BarChartHorizontal, Baseline
   },
   setup()
   {

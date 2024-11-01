@@ -34,7 +34,7 @@ public class SeatunnelExecutorTest
 
         ExecutorConfigure input = new ExecutorConfigure("ClickHouse", properties, supportOptions);
         ExecutorConfigure output = new ExecutorConfigure("Console");
-        request = new ExecutorRequest(System.getProperty("user.dir"), input, output);
+        request = new ExecutorRequest(System.getProperty("user.dir"), input, input);
     }
 
     @Test

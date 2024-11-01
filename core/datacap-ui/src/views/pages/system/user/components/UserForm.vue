@@ -38,11 +38,10 @@
 
 <script lang="ts">
 import { defineComponent, inject, ref } from 'vue'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { UserModel } from '@/model/user'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { Loader2 } from 'lucide-vue-next'
+
 import { Button } from '@/components/ui/button'
 import * as z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -54,10 +53,8 @@ export default defineComponent({
   name: 'UserForm',
   components: {
     Button,
-    Loader2,
     CircularLoading,
     Input,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
   },
   setup(props, { emit })
   {

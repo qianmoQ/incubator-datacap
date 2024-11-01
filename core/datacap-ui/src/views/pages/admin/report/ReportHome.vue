@@ -67,7 +67,6 @@ import Tooltip from '@/views/ui/tooltip'
 import Avatar from '@/views/ui/avatar'
 import Tag from '@/views/ui/tag'
 import Button from '@/views/ui/button'
-import { Cog, Delete, Eye, Pencil } from 'lucide-vue-next'
 import { ReportModel } from '@/model/report'
 import ReportView from '@/views/pages/admin/report/ReportView.vue'
 import {

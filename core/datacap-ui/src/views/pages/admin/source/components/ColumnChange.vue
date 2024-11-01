@@ -97,9 +97,8 @@ import { SqlType, TableModel, TableRequest } from '@/model/table'
 import Button from '@/views/ui/button'
 import { ColumnModel } from '@/model/column'
 import { Textarea } from '@/components/ui/textarea'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Minus, Plus } from 'lucide-vue-next'
+
 import { Input } from '@/components/ui/input'
 import Switch from '@/views/ui/switch'
 import { ToastUtils } from '@/utils/toast'
@@ -113,8 +112,6 @@ export default defineComponent({
     CircularLoading,
     Switch,
     Input,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
-    Minus, Plus,
     Textarea,
     Collapsible, CollapsibleContent, CollapsibleTrigger,
     Button,

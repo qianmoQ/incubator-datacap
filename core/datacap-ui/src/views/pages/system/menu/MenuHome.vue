@@ -32,7 +32,6 @@
 import { defineComponent } from 'vue'
 import { DataCapCard } from '@/views/ui/card'
 import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Pencil, Plus } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'

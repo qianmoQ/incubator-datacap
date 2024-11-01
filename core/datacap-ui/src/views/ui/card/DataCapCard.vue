@@ -33,7 +33,7 @@ import { ref, watchEffect } from 'vue'
 import { cn } from '@/lib/utils'
 import { Shadow } from '@/enums/shadow.ts'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2 } from 'lucide-vue-next'
+
 
 const props = defineProps<{
   title?: string

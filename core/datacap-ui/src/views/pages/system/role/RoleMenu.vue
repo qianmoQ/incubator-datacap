@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Loader2 } from 'lucide-vue-next'
+
 import { CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { RoleModel } from '@/model/role'
@@ -41,7 +41,6 @@ export default defineComponent({
     Button,
     DialogFooter, DialogDescription, DialogTitle, DialogHeader, DialogContent, DialogTrigger, Dialog,
     CardContent,
-    Loader2,
     Tree
   },
   props: {

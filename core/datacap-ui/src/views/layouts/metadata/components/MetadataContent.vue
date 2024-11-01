@@ -49,7 +49,6 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Info, LayoutPanelTop, SatelliteDish, Table, Wind } from 'lucide-vue-next'
 import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
@@ -57,7 +56,6 @@ export default defineComponent({
   components: {
     DataCapCard,
     Tabs, TabsContent, TabsList, TabsTrigger,
-    Info, LayoutPanelTop, Table, SatelliteDish, Wind
   },
   data()
   {

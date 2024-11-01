@@ -67,7 +67,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Cog, Quote, SquareChevronRight, Table, TriangleAlert } from 'lucide-vue-next'
 import TableCommon from '@/views/components/table/TableCommon.vue'
 import { FilterModel } from '@/model/filter.ts'
 import { useI18n } from 'vue-i18n'

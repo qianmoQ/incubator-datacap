@@ -95,7 +95,7 @@ public class PipelineServiceImpl
         // Input source
         SourceEntity fromSource = fromSourceOptional.get();
         Properties fromOriginProperties = configure.getFrom().getConfigures();
-        if (!fromOriginProperties.containsKey("context")) {
+        if (!fromOriginProperties.containsKey("context") && configure.getContent() != null) {
             fromOriginProperties.setProperty("context", configure.getContent());
         }
         else {

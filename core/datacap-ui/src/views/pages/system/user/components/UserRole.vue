@@ -39,7 +39,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Loader2 } from 'lucide-vue-next'
+
 import { CardContent } from '@/components/ui/card'
 import { StringUtils } from '@/utils/string'
 import { UserModel, UserRoleModel } from '@/model/user'
@@ -47,7 +47,6 @@ import { Button } from '@/components/ui/button'
 import { FilterModel } from '@/model/filter'
 import RoleService from '@/services/role'
 import { Checkbox } from '@/components/ui/checkbox'
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { useForm } from 'vee-validate'
 import { RoleModel } from '@/model/role'
 import { ToastUtils } from '@/utils/toast'
@@ -59,8 +58,6 @@ export default defineComponent({
     Checkbox, Button,
     CardContent,
     DialogDescription, DialogTitle, Dialog, DialogFooter, DialogContent, DialogHeader,
-    Loader2,
-    FormField, FormItem, FormLabel, FormControl
   },
   props: {
     isVisible: {

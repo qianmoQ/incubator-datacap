@@ -11,13 +11,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-vue-next'
 
 export default defineComponent({
   name: 'DcButton',
   components: {
     Button,
-    Loader2
   },
   props: {
     size: {

@@ -26,13 +26,12 @@ import { defineComponent } from 'vue'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { SourceModel } from '@/model/source'
 import Tooltip from '@/views/ui/tooltip'
-import { Loader2 } from 'lucide-vue-next'
+
 import { FilterModel } from '@/model/filter.ts'
 
 export default defineComponent({
   name: 'SourceSelect',
   components: {
-    Loader2,
     Tooltip,
     Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue
   },

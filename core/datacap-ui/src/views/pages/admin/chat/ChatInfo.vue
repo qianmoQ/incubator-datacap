@@ -41,7 +41,6 @@ import { defineComponent } from 'vue'
 import Dialog from '@/views/ui/dialog'
 import Button from '@/views/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { ToastUtils } from '@/utils/toast'
 import ChatService from '@/services/chat.ts'
@@ -53,7 +52,6 @@ export default defineComponent({
   components: {
     CircularLoading,
     Input,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     Textarea,
     Button,
     Dialog

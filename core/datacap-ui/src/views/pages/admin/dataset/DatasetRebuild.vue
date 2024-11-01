@@ -28,12 +28,13 @@ import { ToastUtils } from '@/utils/toast'
 import { DatasetModel } from '@/model/dataset'
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { Alert, AlertTitle } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-vue-next';
+import { Alert, AlertTitle } from '@/components/ui/alert'
+
+
 
 export default defineComponent({
   name: 'DatasetRebuild',
-  components: {Loader2, AlertTitle, Alert, AlertDialogContent, AlertDialogFooter, Button, AlertDialogHeader, AlertDialog},
+  components: { AlertTitle, Alert, AlertDialogContent, AlertDialogFooter, Button, AlertDialogHeader, AlertDialog },
   props: {
     isVisible: {
       type: Boolean,
@@ -55,15 +56,15 @@ export default defineComponent({
       if (this.data) {
         this.loading = true
         DatasetService.rebuild(this.data.id)
-            .then((response) => {
-              if (response.status) {
-                ToastUtils.success(`${this.$t('dataset.common.rebuild')} [ ${this.data?.name} ] ${this.$t('common.successfully')}`)
-                this.handlerCancel()
-              }
-            })
-            .finally(() => {
-              this.loading = false
-            })
+                      .then((response) => {
+                        if (response.status) {
+                          ToastUtils.success(`${ this.$t('dataset.common.rebuild') } [ ${ this.data?.name } ] ${ this.$t('common.successfully') }`)
+                          this.handlerCancel()
+                        }
+                      })
+                      .finally(() => {
+                        this.loading = false
+                      })
       }
     },
     handlerCancel()
@@ -83,5 +84,5 @@ export default defineComponent({
       }
     }
   }
-});
+})
 </script>

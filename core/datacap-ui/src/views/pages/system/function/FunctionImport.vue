@@ -86,7 +86,7 @@ import FunctionService from '@/services/function'
 import SourceService from '@/services/source'
 import { ToastUtils } from '@/utils/toast'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-vue-next'
+
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -101,7 +101,6 @@ export default defineComponent({
     SelectItem, SelectLabel, SelectValue, SelectTrigger, SelectGroup, SelectContent, Select,
     Input,
     Label,
-    Loader2,
     Button,
     Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,
     Tabs, TabsContent, TabsList, TabsTrigger,

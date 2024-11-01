@@ -62,7 +62,6 @@ import { ToastUtils } from '@/utils/toast'
 import Avatar from '@/views/ui/avatar'
 import Tooltip from '@/views/ui/tooltip'
 import Button from '@/views/ui/button'
-import { Cog, Delete, Pencil, Quote, SquareChevronRight } from 'lucide-vue-next'
 import { SnippetModel } from '@/model/snippet'
 import SnippetInfo from '@/views/pages/admin/snippet/SnippetInfo.vue'
 import {

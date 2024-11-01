@@ -149,7 +149,6 @@ import Drawer from '@/views/ui/drawer'
 import { cloneDeep } from 'lodash'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 import MenuService from '@/services/menu'
@@ -157,7 +156,7 @@ import { FilterModel } from '@/model/filter'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-vue-next'
+
 import { ToastUtils } from '@/utils/toast'
 
 export default defineComponent({
@@ -170,9 +169,7 @@ export default defineComponent({
     Input,
     Label,
     Drawer,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue,
-    Loader2
   },
   props: {
     isVisible: {

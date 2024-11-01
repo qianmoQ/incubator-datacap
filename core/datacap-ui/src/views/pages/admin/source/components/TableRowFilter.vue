@@ -95,21 +95,16 @@ import { cloneDeep } from 'lodash'
 import Dialog from '@/views/ui/dialog'
 import Button from '@/views/ui/button'
 import Divider from '@/views/ui/divider'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { Minus } from 'lucide-vue-next'
 
 export default defineComponent({
   name: 'TableRowFilter',
   components: {
-    Minus,
     Input,
-    FormMessage,
     Dialog,
     Button,
     Divider,
-    FormControl, FormField, FormItem, FormLabel,
     Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue
   },
   computed: {

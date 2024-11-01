@@ -113,10 +113,8 @@ import { FilterModel } from '@/model/filter.ts'
 import ChatService from '@/services/chat.ts'
 import { ToastUtils } from '@/utils/toast.ts'
 import { DataCapCard } from '@/views/ui/card'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import Button from '@/views/ui/button'
-import { Plus, Send } from 'lucide-vue-next'
 import ChatInfo from '@/views/pages/admin/chat/ChatInfo.vue'
 import Avatar from '@/views/ui/avatar'
 import { ChatModel } from '@/model/chat.ts'
@@ -138,9 +136,7 @@ export default defineComponent({
     ChatInfo,
     Button,
     CircularLoading,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     RadioGroup, RadioGroupItem,
-    Plus, Send,
     DataCapCard
   },
   setup()

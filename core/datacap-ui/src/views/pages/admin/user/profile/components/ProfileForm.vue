@@ -66,7 +66,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import UserService from '@/services/user'
 import { UserModel } from '@/model/user'
@@ -75,20 +74,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
 import Tooltip from '@/views/ui/tooltip'
 import Button from '@/views/ui/button'
-import { Image, Trash, Upload } from 'lucide-vue-next'
 import Common from '@/utils/common'
 
 export default defineComponent({
   name: 'ProfileForm',
   components: {
-    Image, Upload, Trash,
+    Image,
     Tooltip,
     Button,
     Label,
     Avatar, AvatarImage, AvatarFallback,
     CircularLoading,
     Input,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
   },
   data()
   {

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Loader2 } from 'lucide-vue-next'
+
 import DashboardService from '@/services/dashboard'
 import { useRouter } from 'vue-router'
 import DashboardView from '@/views/pages/admin/dashboard/components/DashboardView.vue'

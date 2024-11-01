@@ -4,11 +4,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Loader2 } from 'lucide-vue-next'
+
 
 export default defineComponent({
   name: 'CircularLoading',
-  components: {Loader2},
   props: {
     show: {
       type: Boolean,

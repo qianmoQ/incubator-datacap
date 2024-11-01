@@ -31,14 +31,13 @@ import { DatasetModel } from '@/model/dataset'
 import { ToastUtils } from '@/utils/toast'
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-vue-next'
+
 import { Alert, AlertTitle } from '@/components/ui/alert'
 
 export default defineComponent({
   name: 'DatasetSync',
   components: {
     AlertTitle, Alert,
-    Loader2,
     Button,
     AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogFooter, AlertDialogHeader
   },

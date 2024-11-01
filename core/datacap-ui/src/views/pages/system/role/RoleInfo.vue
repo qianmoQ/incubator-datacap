@@ -48,9 +48,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { RoleModel, RoleRequest } from '@/model/role'
 import { StringUtils } from '@/utils/string'
 import { CardContent } from '@/components/ui/card'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Loader2 } from 'lucide-vue-next'
+
 import * as z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -62,9 +61,7 @@ import RoleService from '@/services/role'
 export default defineComponent({
   name: 'RoleInfo',
   components: {
-    FormField, FormControl, FormMessage, FormLabel, FormItem,
     DialogFooter, DialogDescription, DialogTitle, DialogHeader, DialogContent, DialogTrigger, Dialog,
-    Loader2,
     CardContent,
     Button, Textarea, Input
   },

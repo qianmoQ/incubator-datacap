@@ -41,12 +41,11 @@ import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, 
 import { Alert } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-vue-next'
+
 
 export default defineComponent({
   name: 'DashboardDelete',
   components: {
-    Loader2,
     Button,
     Input,
     Alert,

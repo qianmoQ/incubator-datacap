@@ -121,7 +121,6 @@ import AuditService from '@/services/audit'
 import { ExecuteModel } from '@/model/execute'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
-import { Ban, Bot, CircleX, Clock, Loader2, Pencil, PlayCircle, Plus, RemoveFormatting } from 'lucide-vue-next'
 import langTools from 'ace-builds/src-noconflict/ext-language_tools'
 import { HttpUtils } from '@/utils/http'
 import FunctionService from '@/services/function'
@@ -166,7 +165,6 @@ export default defineComponent({
     Tabs, TabsContent, TabsList, TabsTrigger,
     CardTitle, CardContent, CardHeader, Card,
     SourceSelect,
-    Loader2, Plus, CircleX, PlayCircle, Ban, Clock, RemoveFormatting, Pencil, Bot,
     VAceEditor
   },
   data()

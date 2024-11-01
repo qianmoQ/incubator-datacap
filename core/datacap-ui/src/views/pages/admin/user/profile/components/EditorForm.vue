@@ -43,7 +43,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import UserService from '@/services/user'
 import { UserEditor } from '@/model/user'
@@ -54,16 +53,14 @@ import themes from './AceEditor'
 import { Button } from '@/components/ui/button'
 import Common from '@/utils/common'
 import { ToastUtils } from '@/utils/toast'
-import { Loader2 } from 'lucide-vue-next'
+
 
 export default defineComponent({
   name: 'EditorForm',
   components: {
-    Loader2,
     Button,
     CircularLoading,
     Input,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     RadioGroup, RadioGroupItem,
     VAceEditor
   },

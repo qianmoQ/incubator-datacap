@@ -93,7 +93,6 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { ArrowUpDown, ChevronDown, Loader2 } from 'lucide-vue-next'
 import { Pagination, PaginationEllipsis, PaginationFirst, PaginationLast, PaginationList, PaginationListItem, PaginationNext, PaginationPrev } from '@/components/ui/pagination'
 import { PaginationModel } from '@/model/pagination'
 import { cloneDeep, toNumber } from 'lodash'
@@ -106,13 +105,11 @@ export default defineComponent({
   name: 'TableCommon',
   components: {
     BreadcrumbEllipsis,
-    Loader2,
     SelectItem, SelectContent, SelectValue, SelectTrigger, Select,
     PaginationLast, PaginationNext, PaginationEllipsis, PaginationPrev, PaginationListItem, PaginationList, Pagination, PaginationFirst,
     DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenu,
     TableCell, TableRow, TableBody, TableHeader, TableHead, Table, TableCaption,
     Button, Input,
-    ArrowUpDown, ChevronDown,
     Tooltip
   },
   props: {

@@ -54,7 +54,6 @@ import TableCommon from '@/views/components/table/TableCommon.vue'
 import { Badge } from '@/components/ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import Common from '@/utils/common'
-import { Eye } from 'lucide-vue-next'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 

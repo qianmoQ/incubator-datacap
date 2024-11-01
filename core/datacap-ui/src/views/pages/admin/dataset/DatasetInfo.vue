@@ -295,7 +295,6 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Pencil, Plus, Trash } from 'lucide-vue-next'
 import { DataCapCard } from '@/views/ui/card'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Separator } from '@/components/ui/separator'
@@ -310,14 +309,12 @@ import { SourceModel } from '@/model/source.ts'
 import SourceService from '@/services/source'
 import ExecuteService from '@/services/execute'
 import { ExecuteModel } from '@/model/execute.ts'
-import { FormControl, FormField, FormItem } from '@/components/ui/form'
 import { ArrayUtils } from '@/utils/array.ts'
 import { join } from 'lodash'
 
 export default defineComponent({
   name: 'DatasetInfo',
   components: {
-    FormItem, FormField, FormControl,
     AceEditor,
     Separator,
     Textarea,
@@ -331,7 +328,6 @@ export default defineComponent({
     SheetClose, Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger,
     Tabs, TabsContent, TabsList, TabsTrigger,
     Popover, PopoverContent, PopoverTrigger,
-    Pencil, Trash, Plus,
     DataCapCard,
     HoverCard, HoverCardContent, HoverCardTrigger,
     AgGridVue

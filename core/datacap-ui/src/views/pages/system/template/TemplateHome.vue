@@ -45,7 +45,6 @@
 import { defineComponent } from 'vue'
 import { DataCapCard } from '@/views/ui/card'
 import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Cog, Import, Pencil, Plus } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { FilterModel } from '@/model/filter'
 import { createHeaders } from '@/views/pages/system/template/TemplateUtils'

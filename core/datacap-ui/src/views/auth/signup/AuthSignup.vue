@@ -86,7 +86,6 @@
 
 <script lang="ts">
 import { defineComponent, inject, ref } from 'vue'
-import { Loader2 } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Button from '@/views/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -94,9 +93,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { UserRequest } from '@/model/user/request/user'
 import { toTypedSchema } from '@vee-validate/zod'
-import * as z from 'zod'
-import { useForm } from 'vee-validate'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import CaptchaService from '@/services/captcha'
 import UserService from '@/services/user'
 import router from '@/router'

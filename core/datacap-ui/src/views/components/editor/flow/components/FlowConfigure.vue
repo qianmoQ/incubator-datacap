@@ -68,8 +68,6 @@ import { Configuration } from '@/views/components/editor/flow/Configuration.ts'
 import Drawer from '@/views/ui/drawer'
 import Button from '@/views/ui/button'
 import Tooltip from '@/views/ui/tooltip'
-import { HelpCircle, Save } from 'lucide-vue-next'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
@@ -87,8 +85,6 @@ export default defineComponent({
     Drawer,
     Button,
     Tooltip,
-    Save, HelpCircle,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
   },
   props: {
     isVisible: {

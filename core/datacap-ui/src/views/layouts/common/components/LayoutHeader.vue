@@ -136,7 +136,6 @@ import {
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu'
 import NavigationMenuListItem from '@/views/layouts/common/components/components/NavigationMenuListItem.vue'
-import { CircleHelp, LogOut, Settings } from 'lucide-vue-next'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import LanguageSwitcher from '@/views/layouts/common/components/components/LanguageSwitcher.vue'
 import Carousel from '@/views/ui/carousel'
@@ -201,7 +200,6 @@ export default defineComponent({
     AvatarFallback, AvatarImage, Avatar,
     NavigationMenuListItem,
     Button,
-    CircleHelp, LogOut, Settings
   },
   methods: {
     navigationMenuTriggerStyle,

@@ -72,7 +72,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Cog, Info, Loader2, Pencil, Trash } from 'lucide-vue-next'
 import DashboardService from '@/services/dashboard'
 import { FilterModel } from '@/model/filter'
 import { PaginationModel, PaginationRequest } from '@/model/pagination'
@@ -94,7 +93,6 @@ export default defineComponent({
     Button, Tooltip, TableCaption, Pagination,
     DashboardDelete,
     DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuContent, DropdownMenuTrigger, DropdownMenu,
-    Loader2, Cog, Trash, Pencil, Info
   },
   setup()
   {

@@ -132,10 +132,9 @@ import { TableModel, TableRequest } from '@/model/table'
 import TableService from '@/services/table'
 import { toNumber } from 'lodash'
 import { ToastUtils } from '@/utils/toast'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Minus, Plus } from 'lucide-vue-next'
+
 import { ColumnRequest } from '@/model/column'
 import { Textarea } from '@/components/ui/textarea'
 import Switch from '@/views/ui/switch'
@@ -148,9 +147,7 @@ export default defineComponent({
     Dialog,
     Button,
     Divider,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     Collapsible, CollapsibleContent, CollapsibleTrigger,
-    Plus, Minus,
     Switch
   },
   computed: {

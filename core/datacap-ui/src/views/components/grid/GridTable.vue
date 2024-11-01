@@ -54,7 +54,6 @@ import { GridColumn } from '@/views/components/grid/GridColumn'
 import { ObjectUtils } from '@/utils/object'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { BarChart, CircleHelp, Plus } from 'lucide-vue-next'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Switch } from '@/components/ui/switch'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
@@ -66,7 +65,6 @@ export default defineComponent({
     GridVisual,
     HoverCardContent, HoverCardTrigger, HoverCard,
     CardContent, TooltipTrigger, Tooltip, TooltipProvider, TooltipContent,
-    BarChart, Plus, CircleHelp,
     Button, Switch,
     CardHeader, Card, CardTitle,
     AgGridVue

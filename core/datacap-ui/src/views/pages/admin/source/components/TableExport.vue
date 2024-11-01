@@ -56,7 +56,6 @@ import TableService from '@/services/table'
 import { ToastUtils } from '@/utils/toast'
 import { TableExportModel, TableExportRequest } from '@/model/table'
 import Button from '@/views/ui/button'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { toNumber } from 'lodash'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
@@ -69,7 +68,6 @@ export default defineComponent({
     Label,
     Dialog,
     Button,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     RadioGroup, RadioGroupItem
   },
   computed: {

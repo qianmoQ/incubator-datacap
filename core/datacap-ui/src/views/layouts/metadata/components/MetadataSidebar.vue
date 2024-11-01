@@ -94,7 +94,6 @@
 
 <script lang="ts">
 import { defineComponent, resolveComponent } from 'vue'
-import { ArrowUpFromLine, Columns, Delete, Pencil, Table, Trash } from 'lucide-vue-next'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 import DatabaseService from '@/services/database.ts'
 import { StructureEnum, StructureModel } from '@/model/structure.ts'
@@ -135,7 +134,6 @@ export default defineComponent({
     Tree,
     CircularLoading,
     Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue,
-    Columns, Pencil, ArrowUpFromLine, Delete, Trash, Table,
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,

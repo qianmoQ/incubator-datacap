@@ -43,7 +43,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Drawer from '@/views/ui/drawer'
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { SnippetModel, SnippetRequest } from '@/model/snippet'
 import { cloneDeep } from 'lodash'
 import Button from '@/views/ui/button'
@@ -59,7 +58,6 @@ export default defineComponent({
     AceEditor,
     Textarea,
     Input,
-    FormLabel, FormField, FormControl, FormItem,
     Drawer,
     Button
   },

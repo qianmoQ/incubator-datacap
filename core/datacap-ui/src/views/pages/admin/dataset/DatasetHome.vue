@@ -94,7 +94,6 @@ import Avatar from '@/views/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vue'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { BarChart2, CirclePlay, CircleStop, Cog, History, Info, RefreshCcw, SquareX, TriangleAlert } from 'lucide-vue-next'
 import {
   DropdownMenu,
   DropdownMenuContent,

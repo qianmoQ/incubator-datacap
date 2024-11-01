@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2 } from 'lucide-vue-next'
+
 import { HttpUtils } from '@/utils/http'
 import UserService from '@/services/user'
 import { DataCapCard } from '@/views/ui/card'
@@ -37,7 +37,6 @@ export default defineComponent({
   name: 'DashboardHome',
   components: {
     DataCapCard,
-    Loader2,
     CardContent, CardTitle, CardHeader, Card
   },
   data()

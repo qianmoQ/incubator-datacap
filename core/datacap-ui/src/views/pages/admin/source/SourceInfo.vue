@@ -97,7 +97,6 @@ import { ToastUtils } from '@/utils/toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 import { cn } from '@/lib/utils'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Separator } from '@/components/ui/separator'
 import Avatar from '@/views/ui/avatar'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -107,7 +106,7 @@ import { Upload } from 'view-ui-plus'
 import { TokenUtils } from '@/utils/token'
 import '@/views/pages/admin/source/style.css'
 import { ResponseModel } from '@/model/response'
-import { Minus, Plus } from 'lucide-vue-next'
+
 import Alert from '@/views/ui/alert'
 
 interface TestInfo
@@ -130,9 +129,7 @@ export default defineComponent({
     Button,
     Dialog,
     Tabs, TabsContent, TabsList, TabsTrigger,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     RadioGroup, RadioGroupItem,
-    Plus, Minus,
     Alert
   },
   setup()

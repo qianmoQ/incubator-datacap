@@ -81,13 +81,11 @@ import { ReportModel } from '@/model/report.ts'
 import VisualView from '@/views/components/visual/VisualView.vue'
 import { DashboardModel, DashboardRequest } from '@/model/dashboard.ts'
 import { DataCapCard } from '@/views/ui/card'
-import { Trash } from 'lucide-vue-next'
 import ChartContainer from '@/views/pages/admin/dashboard/components/ChartContainer.vue'
 import { ToastUtils } from '@/utils/toast.ts'
 import Dialog from '@/views/ui/dialog'
 import Button from '@/views/ui/button'
 import { Input } from '@/components/ui/input'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { cloneDeep } from 'lodash'
 import { Textarea } from '@/components/ui/textarea'
 import CropperHome from '@/views/components/cropper/CropperHome.vue'
@@ -104,9 +102,7 @@ export default defineComponent({
     GridItem, GridLayout,
     DataCapCard,
     Button,
-    Trash,
     Dialog,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
   },
   props: {
     info: {

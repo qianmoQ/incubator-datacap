@@ -78,7 +78,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Button from '@/views/ui/button'
-import { CirclePlay, CircleX, Cog, History, Info, Pencil, Plus, RefreshCcwDot, Trash } from 'lucide-vue-next'
 import TableCommon from '@/views/components/table/TableCommon.vue'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
@@ -110,7 +109,6 @@ export default defineComponent({
   name: 'SourceHome',
   components: {
     DataCapCard,
-    Info,
     SourceHistory,
     SourceMetadata,
     SourceDelete,

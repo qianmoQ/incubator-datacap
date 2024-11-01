@@ -46,7 +46,6 @@ import ReportService from '@/services/report.ts'
 import { FilterModel } from '@/model/filter.ts'
 import { ReportModel } from '@/model/report.ts'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import VisualView from '@/views/components/visual/VisualView.vue'
 import Button from '@/views/ui/button'
@@ -61,7 +60,6 @@ export default defineComponent({
     VisualView,
     CircularLoading,
     Dialog,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
     RadioGroup, RadioGroupItem,
     Button
   },

@@ -41,7 +41,6 @@ import UserService from '@/services/user'
 import TableCommon from '@/views/components/table/TableCommon.vue'
 import { useI18n } from 'vue-i18n'
 import { createHeaders } from './UserUtils'
-import { ArrowUpFromLine, Loader2, Plus } from 'lucide-vue-next'
 import { DataCapCard } from '@/views/ui/card'
 import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import { Button } from '@/components/ui/button'
@@ -63,7 +62,6 @@ export default defineComponent({
     TooltipContent, TooltipTrigger, Tooltip, TooltipProvider,
     Button,
     TableCommon,
-    Loader2, ArrowUpFromLine, Plus
   },
   setup()
   {

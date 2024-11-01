@@ -116,7 +116,6 @@
 import { defineComponent, watch } from 'vue'
 import TableService from '@/services/table'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { ArrowUp10, ArrowUpDown, CalendarHeart, Clock, Cog, Database, RemoveFormatting, Search, Table, TableCellsMerge } from 'lucide-vue-next'
 import Tooltip from '@/views/ui/tooltip'
 import { SqlType, TableFilter, TableModel } from '@/model/table'
 import { Separator } from '@/components/ui/separator'
@@ -139,7 +138,6 @@ export default defineComponent({
     Separator,
     Tooltip,
     CircularLoading,
-    Database, Table, Clock, CalendarHeart, ArrowUpDown, TableCellsMerge, RemoveFormatting, ArrowUp10, Search, Cog,
     Popover, PopoverContent, PopoverTrigger
   },
   created()

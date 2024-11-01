@@ -46,13 +46,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Dialog from '@/views/ui/dialog'
-import { BarChart } from 'lucide-vue-next'
 import Button from '@/views/ui/button'
 import VisualEditor from '@/views/components/visual/VisualEditor.vue'
 import { Configuration } from '@/views/components/visual/Configuration.ts'
 import { GridConfigure } from '@/views/components/grid/GridConfigure.ts'
 import { Textarea } from '@/components/ui/textarea'
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { ToastUtils } from '@/utils/toast.ts'
 import router from '@/router'
@@ -64,11 +62,9 @@ export default defineComponent({
   components: {
     Alert,
     Input,
-    FormControl, FormField, FormLabel, FormItem,
     Textarea,
     VisualEditor,
     Button,
-    BarChart,
     Dialog
   },
   computed: {

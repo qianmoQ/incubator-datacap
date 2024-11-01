@@ -31,7 +31,6 @@
 import { defineComponent } from 'vue'
 import Drawer from '@/views/ui/drawer'
 import Button from '@/views/ui/button'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useForm } from 'vee-validate'
 
@@ -41,7 +40,6 @@ export default defineComponent({
     Button,
     Drawer,
     Checkbox,
-    FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
   },
   props: {
     isVisible: {

@@ -46,6 +46,13 @@ export default defineComponent({
   {
     const version = PackageUtils.get('version')
     return { version }
+  },
+  created()
+  {
+    this.$Message.info({
+      content: 'This is an info message',
+      duration: 2
+    })
   }
 })
 </script>
