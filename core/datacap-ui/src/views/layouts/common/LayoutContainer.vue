@@ -5,7 +5,7 @@
     </ShadcnLayout>
 
     <div class="container my-2 h-screen">
-      <LayoutBreadcrumb/>
+      <LayoutBreadcrumb class="mb-2"/>
       <RouterView/>
     </div>
 

@@ -1,6 +1,6 @@
 <template>
   <div id="datacap">
-    <RouterView></RouterView>
+    <RouterView/>
   </div>
 </template>
 
