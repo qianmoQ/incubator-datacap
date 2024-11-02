@@ -1,5 +1,9 @@
 <template>
-  <Carousel :items="carouselItems" :delay="3000"/>
+  <ShadcnAlert banner show-icon closable>
+    <ShadcnLink link="/admin/chat" target="_blank">
+      Support ChatGPT
+    </ShadcnLink>
+  </ShadcnAlert>
 
   <div class="border-b">
     <div class="container">
@@ -101,7 +105,6 @@ import { createDefaultRouter } from '@/router/default'
 import { AuthResponse } from '@/model/user/response/auth'
 
 import LanguageSwitcher from '@/views/layouts/common/components/components/LanguageSwitcher.vue'
-import Carousel from '@/views/ui/carousel'
 
 interface NavigationItem
 {
@@ -137,25 +140,14 @@ export default defineComponent({
       router.push('/auth/signin')
     }
 
-    const carouselItems = [
-      {
-        title: 'Support ChatGPT',
-        link: '/admin/chat',
-        external: false,
-        isAlert: true
-      }
-    ]
-
     return {
       userInfo,
       isLoggedIn,
       activeMenus,
-      logout,
-      carouselItems
+      logout
     }
   },
   components: {
-    Carousel,
     LanguageSwitcher
   },
   methods: {

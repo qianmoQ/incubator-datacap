@@ -3,12 +3,12 @@
     <ShadcnLayout>
       <LayoutHeader/>
     </ShadcnLayout>
-    <!--    <div class="hidden flex-col md:flex">-->
-    <!--      -->
-    <!--      <LayoutBreadcrumb/>-->
-    <div class="flex-1 space-y-4 pl-8 pr-8 h-screen">
+
+    <div class="container my-2 h-screen">
+      <LayoutBreadcrumb/>
       <RouterView/>
     </div>
+
     <LayoutFooter/>
   </div>
 </template>
@@ -25,10 +25,12 @@ import UserService from '@/services/user'
 
 import LayoutHeader from '@/views/layouts/common/components/LayoutHeader.vue'
 import LayoutFooter from '@/views/layouts/common/components/LayoutFooter.vue'
+import LayoutBreadcrumb from '@/views/layouts/common/components/LayoutBreadcrumb.vue'
 
 export default defineComponent({
   name: 'LayoutContainer',
   components: {
+    LayoutBreadcrumb,
     LayoutHeader,
     LayoutFooter
   },
