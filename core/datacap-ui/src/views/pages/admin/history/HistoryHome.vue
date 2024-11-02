@@ -1,7 +1,7 @@
 <template>
   <ShadcnCard>
     <template #title>
-      <div class="ml-2">{{ $t('source.common.list') }}</div>
+      <div class="ml-2 font-normal text-sm">{{ $t('source.common.list') }}</div>
     </template>
 
     <div class="relative">
@@ -92,8 +92,11 @@
     </div>
   </ShadcnCard>
 
+  <SqlInfo v-if="contentVisible && content"
+           :is-visible="contentVisible"
+           :content="content"
+           @close="handlerShowContent(false, null)"/>
 
-  <SqlInfo v-if="contentVisible && content" :is-visible="contentVisible" :content="content" @close="handlerShowContent(false, null)"/>
   <HistoryData v-if="dataVisible && dataInfo" :is-visible="dataVisible" :info="dataInfo" @close="handlerShowData(false, null)"/>
 </template>
 
