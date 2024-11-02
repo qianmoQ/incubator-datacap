@@ -1,86 +1,89 @@
 <template>
   <Carousel :items="carouselItems" :delay="3000"/>
 
-  <div class="container">
-    <div class="flex items-center">
-      <!-- Logo -->
-      <div class="mr-3">
-        <ShadcnLink link="/" class="pr-6 mt-1">
-          <ShadcnAvatar src="/static/images/logo.png" alt="DataCap Logo"/>
-        </ShadcnLink>
-      </div>
-
-      <ShadcnLayoutHeader>
-        <!-- Menu -->
-        <ShadcnMenu direction="horizontal">
-          <div v-for="item in activeMenus" :key="item.id">
-            <ShadcnMenuSub v-if="item.children" :name="item.id">
-              <template #title>{{ $t(item.i18nKey) }}</template>
-              <ShadcnMenuItem v-for="children in item.children"
-                              :name="children.id"
-                              :to="children.url">
-                {{ $t(children.i18nKey) }}
-              </ShadcnMenuItem>
-            </ShadcnMenuSub>
-            <ShadcnMenuItem v-else
-                            :name="item.id"
-                            :to="item.url">
-              {{ $t(item.i18nKey) }}
-            </ShadcnMenuItem>
-          </div>
-        </ShadcnMenu>
-      </ShadcnLayoutHeader>
-
-      <!-- Language Switcher -->
-      <div class="mr-3 mt-2 items-center">
-        <ShadcnTooltip :content="$t('common.feedback')" width="55">
-          <ShadcnLink link="https://github.com/devlive-community/datacap" target="_blank">
-            <ShadcnIcon icon="CircleHelp" :size="20"/>
+  <div class="border-b">
+    <div class="container">
+      <div class="flex items-center">
+        <!-- Logo -->
+        <div class="mr-3">
+          <ShadcnLink link="/" class="pr-6 mt-1">
+            <ShadcnAvatar src="/static/images/logo.png" alt="DataCap Logo"/>
           </ShadcnLink>
-        </ShadcnTooltip>
-      </div>
-      <div class="ml-3 mr-5 mt-0.5">
-        <LanguageSwitcher @changeLanguage="onChangeLanguage($event)"/>
-      </div>
+        </div>
 
-      <!-- User Info -->
-      <ShadcnSpace v-if="isLoggedIn" class="ml-2">
-        <ShadcnButton to="/auth/signin">
-          {{ $t('user.common.signin') }}
-        </ShadcnButton>
-        <ShadcnButton to="/auth/signup" type="default">
-          {{ $t('user.common.signup') }}
-        </ShadcnButton>
-      </ShadcnSpace>
-      <div v-else class="mt-1">
-        <ShadcnDropdown>
-          <template #trigger>
-            <ShadcnAvatar :src="userInfo.avatar" :alt="userInfo.username"/>
-          </template>
-
-          <ShadcnDropdownItem>
-            <div class="flex flex-col space-y-1">
-              <p class="text-sm font-medium leading-none text-center">{{ userInfo.username }}</p>
-              <p class="text-xs leading-none text-muted-foreground"></p>
+        <ShadcnLayoutHeader>
+          <!-- Menu -->
+          <ShadcnMenu direction="horizontal">
+            <div v-for="item in activeMenus" :key="item.id">
+              <ShadcnMenuSub v-if="item.children" :name="item.id">
+                <template #title>{{ $t(item.i18nKey) }}</template>
+                <ShadcnMenuItem v-for="children in item.children"
+                                :name="children.id"
+                                :to="children.url">
+                  {{ $t(children.i18nKey) }}
+                </ShadcnMenuItem>
+              </ShadcnMenuSub>
+              <ShadcnMenuItem v-else
+                              :name="item.id"
+                              :to="item.url">
+                {{ $t(item.i18nKey) }}
+              </ShadcnMenuItem>
             </div>
-          </ShadcnDropdownItem>
+          </ShadcnMenu>
+        </ShadcnLayoutHeader>
 
-          <ShadcnDropdownItem divided>
-            <ShadcnLink link="/admin/user">
-              <ShadcnSpace>
-                <ShadcnIcon icon="Settings"/>
-                {{ $t('user.common.setting') }}
-              </ShadcnSpace>
-            </ShadcnLink>
-          </ShadcnDropdownItem>
+        <ShadcnSpace>
+          <!-- Language Switcher -->
+          <div class="mr-3 mt-2.5 items-center">
+            <ShadcnTooltip :content="$t('common.feedback')" width="55">
+              <ShadcnLink link="https://github.com/devlive-community/datacap" target="_blank">
+                <ShadcnIcon icon="CircleHelp" :size="20"/>
+              </ShadcnLink>
+            </ShadcnTooltip>
+          </div>
+          <div class="ml-3 mr-5 mt-1">
+            <LanguageSwitcher @changeLanguage="onChangeLanguage($event)"/>
+          </div>
+          <!-- User Info -->
+          <ShadcnSpace v-if="isLoggedIn">
+            <ShadcnButton to="/auth/signin">
+              {{ $t('user.common.signin') }}
+            </ShadcnButton>
+            <ShadcnButton to="/auth/signup" type="default">
+              {{ $t('user.common.signup') }}
+            </ShadcnButton>
+          </ShadcnSpace>
+          <div v-else>
+            <ShadcnDropdown position="right">
+              <template #trigger>
+                <ShadcnAvatar :src="userInfo.avatar" :alt="userInfo.username"/>
+              </template>
 
-          <ShadcnDropdownItem @on-click="logout">
-            <ShadcnSpace>
-              <ShadcnIcon icon="LogOut"/>
-              {{ $t('user.common.signout') }}
-            </ShadcnSpace>
-          </ShadcnDropdownItem>
-        </ShadcnDropdown>
+              <ShadcnDropdownItem>
+                <div class="flex flex-col space-y-1">
+                  <p class="text-sm font-medium leading-none text-center">{{ userInfo.username }}</p>
+                  <p class="text-xs leading-none text-muted-foreground"></p>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem divided>
+                <ShadcnLink link="/admin/user">
+                  <ShadcnSpace>
+                    <ShadcnIcon icon="Settings"/>
+                    {{ $t('user.common.setting') }}
+                  </ShadcnSpace>
+                </ShadcnLink>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem @on-click="logout">
+                <ShadcnSpace>
+                  <ShadcnIcon icon="LogOut"/>
+                  {{ $t('user.common.signout') }}
+                </ShadcnSpace>
+              </ShadcnDropdownItem>
+            </ShadcnDropdown>
+          </div>
+        </ShadcnSpace>
       </div>
     </div>
   </div>
