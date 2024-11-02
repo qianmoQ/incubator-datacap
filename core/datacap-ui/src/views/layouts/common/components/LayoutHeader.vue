@@ -1,142 +1,102 @@
 <template>
   <Carousel :items="carouselItems" :delay="3000"/>
-  <header class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b border-border">
-    <div class="container flex h-14 max-w-screen-2xl items-center">
-      <div class="container flex h-14 items-center justify-between">
-        <!-- Logo -->
-        <RouterLink to="/">
-          <Avatar>
-            <AvatarImage src="/static/images/logo.png"></AvatarImage>
-            <AvatarFallback>DataCap</AvatarFallback>
-          </Avatar>
-        </RouterLink>
+
+  <div class="container">
+    <div class="flex items-center">
+      <!-- Logo -->
+      <div class="mr-3">
+        <ShadcnLink link="/" class="pr-6 mt-1">
+          <ShadcnAvatar src="/static/images/logo.png" alt="DataCap Logo"/>
+        </ShadcnLink>
+      </div>
+
+      <ShadcnLayoutHeader>
         <!-- Menu -->
-        <div class="container flex h-14 max-w-screen-2xl items-center">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <div v-for="item in activeMenus" :key="item.id">
-                <NavigationMenuItem v-if="item.children">
-                  <NavigationMenuTrigger :class="`${item.children.map(i => i.url).includes($route.path) ? 'bg-muted hover:bg-muted' : ''}`">
-                    {{ $t(item.i18nKey) }}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul class="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[minmax(0,.75fr)_minmax(0,1fr)]">
-                      <NavigationMenuListItem v-for="children in item.children" :title="$t(children.i18nKey)" :href="children.url">
-                        {{ children.description }}
-                      </NavigationMenuListItem>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem v-else>
-                  <NavigationMenuLink :class="cn(navigationMenuTriggerStyle(), $route.path === `${item.url}` && 'bg-muted hover:bg-muted')">
-                    <RouterLink :to="item.url">
-                      {{ $t(item.i18nKey) }}
-                    </RouterLink>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </div>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-        <!-- Controller -->
-        <div class="flex items-center">
-          <div class="mr-3 mt-1.5">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <a target="_blank" href="https://github.com/devlive-community/datacap/issues/new/choose">
-                    <CircleHelp :size="20"/>
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent>{{ $t('common.feedback') }}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+        <ShadcnMenu direction="horizontal">
+          <div v-for="item in activeMenus" :key="item.id">
+            <ShadcnMenuSub v-if="item.children" :name="item.id">
+              <template #title>{{ $t(item.i18nKey) }}</template>
+              <ShadcnMenuItem v-for="children in item.children"
+                              :name="children.id"
+                              :to="children.url">
+                {{ $t(children.i18nKey) }}
+              </ShadcnMenuItem>
+            </ShadcnMenuSub>
+            <ShadcnMenuItem v-else
+                            :name="item.id"
+                            :to="item.url">
+              {{ $t(item.i18nKey) }}
+            </ShadcnMenuItem>
           </div>
-          <div class="ml-3 mr-5 mt-0.5">
-            <LanguageSwitcher @changeLanguage="handlerChangeLanguage($event)"/>
-          </div>
-          <div v-if="isLoggedIn" class="flex gap-x-2">
-            <RouterLink to="/auth/signin">
-              <Button size="sm" variant="outline">{{ $t('user.common.signin') }}</Button>
-            </RouterLink>
-            <RouterLink to="/auth/signup" as-child>
-              <Button size="sm" variant="link">{{ $t('user.common.signup') }}</Button>
-            </RouterLink>
-          </div>
-          <div v-else>
-            <DropdownMenu>
-              <DropdownMenuTrigger as-child>
-                <Button variant="ghost" class="relative h-8 w-8 rounded-full mt-2">
-                  <Avatar class="h-8 w-8">
-                    <AvatarImage :src="userInfo.avatar" :alt="userInfo.username"></AvatarImage>
-                    <AvatarFallback>{{ userInfo.username }}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent class="w-32" align="end">
-                <DropdownMenuLabel class="font-normal flex">
-                  <div class="flex flex-col space-y-1">
-                    <p class="text-sm font-medium leading-none text-center">{{ userInfo.username }}</p>
-                    <p class="text-xs leading-none text-muted-foreground"></p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator/>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem style="cursor: pointer;">
-                    <RouterLink to="/admin/user">
-                      <div class="flex items-center">
-                        <Settings absoluteStrokeWidth :size="18" class="mr-2"/>
-                        {{ $t('user.common.setting') }}
-                      </div>
-                    </RouterLink>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator/>
-                <DropdownMenuItem style="cursor: pointer;" @click="logout">
-                  <LogOut absoluteStrokeWidth :size="15" class="mr-2"></LogOut>
-                  {{ $t('user.common.signout') }}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
+        </ShadcnMenu>
+      </ShadcnLayoutHeader>
+
+      <!-- Language Switcher -->
+      <div class="mr-3 mt-2 items-center">
+        <ShadcnTooltip :content="$t('common.feedback')" width="55">
+          <ShadcnLink link="https://github.com/devlive-community/datacap" target="_blank">
+            <ShadcnIcon icon="CircleHelp" :size="20"/>
+          </ShadcnLink>
+        </ShadcnTooltip>
+      </div>
+      <div class="ml-3 mr-5 mt-0.5">
+        <LanguageSwitcher @changeLanguage="onChangeLanguage($event)"/>
+      </div>
+
+      <!-- User Info -->
+      <ShadcnSpace v-if="isLoggedIn" class="ml-2">
+        <ShadcnButton to="/auth/signin">
+          {{ $t('user.common.signin') }}
+        </ShadcnButton>
+        <ShadcnButton to="/auth/signup" type="default">
+          {{ $t('user.common.signup') }}
+        </ShadcnButton>
+      </ShadcnSpace>
+      <div v-else class="mt-1">
+        <ShadcnDropdown>
+          <template #trigger>
+            <ShadcnAvatar :src="userInfo.avatar" :alt="userInfo.username"/>
+          </template>
+
+          <ShadcnDropdownItem>
+            <div class="flex flex-col space-y-1">
+              <p class="text-sm font-medium leading-none text-center">{{ userInfo.username }}</p>
+              <p class="text-xs leading-none text-muted-foreground"></p>
+            </div>
+          </ShadcnDropdownItem>
+
+          <ShadcnDropdownItem divided>
+            <ShadcnLink link="/admin/user">
+              <ShadcnSpace>
+                <ShadcnIcon icon="Settings"/>
+                {{ $t('user.common.setting') }}
+              </ShadcnSpace>
+            </ShadcnLink>
+          </ShadcnDropdownItem>
+
+          <ShadcnDropdownItem @on-click="logout">
+            <ShadcnSpace>
+              <ShadcnIcon icon="LogOut"/>
+              {{ $t('user.common.signout') }}
+            </ShadcnSpace>
+          </ShadcnDropdownItem>
+        </ShadcnDropdown>
       </div>
     </div>
-  </header>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
+
 import { TokenUtils } from '@/utils/token'
 import { ObjectUtils } from '@/utils/object'
 import CommonUtils from '@/utils/common'
+
 import router from '@/router'
 import { createDefaultRouter } from '@/router/default'
 import { AuthResponse } from '@/model/user/response/auth'
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle
-} from '@/components/ui/navigation-menu'
-import NavigationMenuListItem from '@/views/layouts/common/components/components/NavigationMenuListItem.vue'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+
 import LanguageSwitcher from '@/views/layouts/common/components/components/LanguageSwitcher.vue'
 import Carousel from '@/views/ui/carousel'
 
@@ -193,22 +153,13 @@ export default defineComponent({
   },
   components: {
     Carousel,
-    LanguageSwitcher,
-    TooltipContent, Tooltip, TooltipTrigger, TooltipProvider,
-    NavigationMenuLink, NavigationMenuContent, NavigationMenuTrigger, NavigationMenuItem, NavigationMenuList, NavigationMenu,
-    DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuContent, DropdownMenuTrigger, DropdownMenu,
-    AvatarFallback, AvatarImage, Avatar,
-    NavigationMenuListItem,
-    Button,
+    LanguageSwitcher
   },
   methods: {
-    navigationMenuTriggerStyle,
-    cn,
-    handlerChangeLanguage(language: string)
+    onChangeLanguage(language: string)
     {
       this.$emit('changeLanguage', language)
     }
   }
 })
 </script>
-

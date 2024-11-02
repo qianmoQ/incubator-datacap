@@ -1,34 +1,39 @@
 <template>
-  <Select v-model="language" @update:modelValue="setLangCondition">
-    <SelectTrigger class="w-[150px]">
-      <SelectValue :placeholder="$t('region.common.selectLanguage')"/>
-    </SelectTrigger>
-    <SelectContent>
-      <SelectGroup>
-        <SelectLabel>{{ $t('region.common.asia.default') }}</SelectLabel>
-        <SelectItem class="pl-6" value="language_zh_cn">{{ $t('region.common.asia.chineseSimple') }}</SelectItem>
-        <SelectLabel>{{ $t('region.common.northAmerica.default') }}</SelectLabel>
-        <SelectItem class="pl-6" value="language_en">{{ $t('region.common.northAmerica.english') }}</SelectItem>
-      </SelectGroup>
-    </SelectContent>
-  </Select>
+  <ShadcnSelect v-model="language"
+                :placeholder="$t('region.common.selectLanguage')"
+                style="width: 120px;"
+                @on-change="changeLanguage">
+    <template #options>
+      <ShadcnSelectGroup :label="$t('region.common.asia.default')">
+        <ShadcnSelectOption value="language_zh_cn"
+                            :label="$t('region.common.asia.chineseSimple')"
+                            :selected="language === 'language_zh_cn'"/>
+      </ShadcnSelectGroup>
+
+      <ShadcnSelectGroup :label="$t('region.common.northAmerica.default')">
+        <ShadcnSelectOption value="language_en"
+                            :label="$t('region.common.northAmerica.english')"
+                            :selected="language === 'language_en'"/>
+      </ShadcnSelectGroup>
+    </template>
+  </ShadcnSelect>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'LanguageSwitcher',
-  components: {
-    Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue
-  },
   setup()
   {
-    const {locale} = useI18n()
-    const setLangCondition = (language: string) => {
+    const { locale } = useI18n()
+
+    const changeLanguage = (language: string) => {
       const prefix = 'language_'
+
+      language = language.value
+
       if (language.startsWith(prefix)) {
         locale.value = language.substring(prefix.length)
       }
@@ -36,8 +41,9 @@ export default defineComponent({
         locale.value = language
       }
     }
+
     return {
-      setLangCondition
+      changeLanguage
     }
   },
   data()

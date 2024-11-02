@@ -1,13 +1,16 @@
 <template>
   <div>
-    <div class="hidden flex-col md:flex">
+    <ShadcnLayout>
       <LayoutHeader/>
-      <LayoutBreadcrumb/>
-      <div class="flex-1 space-y-4 pl-8 pr-8 min-h-[700px]">
-        <RouterView/>
-      </div>
-      <LayoutFooter :data="footers"/>
-    </div>
+    </ShadcnLayout>
+    <!--    <div class="hidden flex-col md:flex">-->
+    <!--      -->
+    <!--      <LayoutBreadcrumb/>-->
+    <!--      <div class="flex-1 space-y-4 pl-8 pr-8 min-h-[700px]">-->
+    <!--        <RouterView/>-->
+    <!--      </div>-->
+    <!--      <LayoutFooter :data="footers"/>-->
+    <!--    </div>-->
   </div>
 </template>
 

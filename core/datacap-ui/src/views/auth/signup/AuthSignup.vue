@@ -92,7 +92,7 @@
                              orientation="center"
                              :text="$t('user.auth.hasUserTip')"/>
 
-              <ShadcnButton class="w-full" type="default" to="/auth/signin">
+              <ShadcnButton class="w-full text-center" type="default" to="/auth/signin">
                 {{ $t('user.common.signin') }}
               </ShadcnButton>
             </ShadcnSpace>
