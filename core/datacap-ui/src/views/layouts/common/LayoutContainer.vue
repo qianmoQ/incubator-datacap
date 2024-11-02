@@ -4,7 +4,7 @@
       <LayoutHeader/>
     </ShadcnLayout>
 
-    <div class="container my-2 h-screen">
+    <div class="container my-2 min-h-screen">
       <LayoutBreadcrumb class="mb-2"/>
       <RouterView/>
     </div>

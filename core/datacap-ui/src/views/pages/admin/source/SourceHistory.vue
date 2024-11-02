@@ -65,7 +65,6 @@ export default defineComponent({
     Dialog,
     TableCommon,
     HoverCard, HoverCardContent, HoverCardTrigger,
-    Eye,
     MdPreview
   },
   computed: {
