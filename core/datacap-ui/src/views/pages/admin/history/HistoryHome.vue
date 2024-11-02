@@ -97,7 +97,10 @@
            :content="content"
            @close="handlerShowContent(false, null)"/>
 
-  <HistoryData v-if="dataVisible && dataInfo" :is-visible="dataVisible" :info="dataInfo" @close="handlerShowData(false, null)"/>
+  <HistoryData v-if="dataVisible && dataInfo"
+               :is-visible="dataVisible"
+               :info="dataInfo"
+               @close="handlerShowData(false, null)"/>
 </template>
 
 <script lang="ts">

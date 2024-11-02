@@ -18,18 +18,12 @@ public class PageRequestAdapter
 
     public static PageRequest of(int start, int end)
     {
-        if (start > 0) {
-            start = start - 1;
-        }
-        return PageRequest.of(start, end);
+        return PageRequest.of(start - 1, end);
     }
 
     public static PageRequest of(int start, int end, Sort sort)
     {
-        if (start > 0) {
-            start = start - 1;
-        }
-        return PageRequest.of(start, end, sort);
+        return PageRequest.of(start - 1, end, sort);
     }
 
     public static PageRequest of(FilterBody filter)
@@ -38,7 +32,9 @@ public class PageRequestAdapter
         if (ObjectUtils.isNotEmpty(filter.getOrders())) {
             // Remove duplicate data passed
             List<OrderBody> remoted = new ArrayList<>();
-            filter.getOrders().stream().filter(CollectorUtils.distinctByKey(p -> p.getColumn()))  //filter保留true的值
+            filter.getOrders()
+                    .stream()
+                    .filter(CollectorUtils.distinctByKey(OrderBody::getColumn))  //filter保留true的值
                     .forEach(remoted::add);
 
             List<Sort.Order> orders = new ArrayList<>();

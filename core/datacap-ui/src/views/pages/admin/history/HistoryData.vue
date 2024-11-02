@@ -1,35 +1,30 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'40%'">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else>
-      <VisualTable :configuration="configuration" :submitted="false"/>
-    </div>
-    <template #footer>
-      <Button variant="outline" size="sm" @click="handlerCancel">
-        {{ $t('common.cancel') }}
-      </Button>
+  <ShadcnModal v-model="visible" :title="title">
+    <template #content>
+      <div class="relative h-24">
+        <ShadcnSpin v-if="loading" fixed/>
+        <VisualTable :configuration="configuration" :submitted="false"/>
+      </div>
     </template>
-  </Dialog>
+
+    <template #footer>
+      <ShadcnButton type="error" size="small" @click="handlerCancel">
+        {{ $t('common.cancel') }}
+      </ShadcnButton>
+    </template>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
 import { HistoryModel } from '@/model/history'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 import AuditService from '@/services/audit'
 import { Configuration, ConfigurationRequest } from '@/views/components/visual/Configuration'
 import VisualTable from '@/views/components/visual/components/VisualTable.vue'
 
 export default defineComponent({
   name: 'HistoryData',
-  components: {
-    VisualTable,
-    CircularLoading,
-    Dialog,
-    Button
-  },
+  components: { VisualTable },
   computed: {
     visible: {
       get(): boolean
