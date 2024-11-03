@@ -1,24 +1,19 @@
 <template>
-  <div class="w-full">
-    <div>
-      <h3 class="text-lg font-medium">{{ $t('user.common.profile') }}</h3>
-      <p class="text-sm text-muted-foreground">{{ $t('user.tip.profile') }}</p>
+  <ShadcnCard :border="false"
+              :title="$t('user.common.profile')"
+              :description="$t('user.tip.profile')">
+    <div class="p-3">
+      <ProfileForm/>
     </div>
-    <Separator class="my-4"/>
-    <ProfileForm/>
-  </div>
+  </ShadcnCard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Separator } from '@/components/ui/separator'
 import ProfileForm from '@/views/pages/admin/user/profile/components/ProfileForm.vue'
 
 export default defineComponent({
   name: 'ProfileHome',
-  components: {
-    ProfileForm,
-    Separator
-  }
-});
+  components: { ProfileForm }
+})
 </script>

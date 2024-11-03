@@ -1,92 +1,62 @@
 <template>
-  <div>
-    <CircularLoading v-if="loading" :show="loading"/>
-    <form class="space-y-8" v-else-if="formState">
-      <FormField name="avatar">
-        <FormItem>
-          <FormLabel>{{ $t('user.common.avatar') }}</FormLabel>
-          <FormControl>
-            <div class="flex flex-row items-center justify-between">
-              <div>
-                <Avatar>
-                  <AvatarImage :src="formState.avatarConfigure?.path as string" :alt="formState.username"/>
-                  <AvatarFallback>{{ formState.username }}</AvatarFallback>
-                </Avatar>
-              </div>
-              <div class="w-32 space-y-2 items-center">
-                <Avatar :class="inputFile ? 'ml-2' : '-ml-1'">
-                  <AvatarImage :src="inputFileBase64 as string"/>
-                </Avatar>
-                <div class="space-x-1">
-                  <input type="file" id="fileInput" class="hidden" @change="handleFileChange"/>
-                  <label v-if="!inputFile" for="fileInput" class="cursor-pointer">
-                    <Tooltip :content="$t('common.file')">
-                      <span
-                          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-6 w-6 p-1">
-                        <Image/>
-                      </span>
-                    </Tooltip>
-                  </label>
-                  <div v-else class="space-x-1">
-                    <Button :loading="uploading" :disabled="uploading" size="icon" class="w-6 h-6" @click="handlerUpload">
-                      <Upload v-if="!uploading" :size="15"/>
-                    </Button>
-                    <Button :disabled="uploading" size="icon" variant="destructive" class="w-6 h-6" @click="inputFile = null">
-                      <Trash :size="15"/>
-                    </Button>
-                  </div>
-                </div>
+  <div class="relative">
+    <ShadcnSpin v-model="loading" fixed/>
+    <ShadcnForm v-model="formState" v-if="formState">
+      <ShadcnFormItem name="avatar"
+                      class="w-[40%]"
+                      :label="$t('user.common.avatar')"
+                      :description="$t('user.tip.avatar')">
+        <div class="flex flex-row items-center justify-between">
+          <div>
+            <ShadcnAvatar :src="formState.avatarConfigure?.path as string" :alt="formState.username"/>
+          </div>
+          <div class="w-32 space-y-2 items-center">
+            <ShadcnAvatar v-if="inputFileBase64" :src="inputFileBase64 as string"/>
+            <div class="space-x-1">
+              <input type="file" id="fileInput" class="hidden" @change="handleFileChange"/>
+              <label v-if="!inputFile" for="fileInput" class="cursor-pointer">
+                <ShadcnTooltip :content="$t('common.file')">
+                  <ShadcnAvatar size="small"/>
+                </ShadcnTooltip>
+              </label>
+              <div v-else class="space-x-1">
+                <ShadcnButton :loading="uploading" :disabled="uploading" size="icon" class="w-6 h-6" @click="handlerUpload">
+                  <ShadcnIcon icon="Upload" v-if="!uploading" size="15"/>
+                </ShadcnButton>
+                <ShadcnButton :disabled="uploading" size="icon" variant="destructive" class="w-6 h-6" @click="inputFile = null">
+                  <ShadcnIcon icon="Trash" size="15"/>
+                </ShadcnButton>
               </div>
             </div>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.avatar') }}</FormDescription>
-        </FormItem>
-      </FormField>
-      <FormField name="username">
-        <FormItem>
-          <FormLabel>{{ $t('user.common.username') }}</FormLabel>
-          <FormControl>
-            <Input :disabled="true" v-model="formState.username"/>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.username') }}</FormDescription>
-        </FormItem>
-      </FormField>
-      <FormField name="createTime">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('user.common.createTime') }}</FormLabel>
-          <FormControl>
-            <Input :disabled="true" v-model="formState.createTime"/>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.createTime') }}</FormDescription>
-        </FormItem>
-      </FormField>
-    </form>
+          </div>
+        </div>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="username"
+                      class="w-[40%]"
+                      :label="$t('user.common.username')"
+                      :description="$t('user.tip.username')">
+        <ShadcnInput v-model="formState.username" disabled/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="createTime"
+                      class="w-[40%]"
+                      :label="$t('user.common.createTime')"
+                      :description="$t('user.tip.createTime')">
+        <ShadcnInput v-model="formState.createTime" disabled/>
+      </ShadcnFormItem>
+    </ShadcnForm>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Input } from '@/components/ui/input'
 import UserService from '@/services/user'
 import { UserModel } from '@/model/user'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Label } from '@/components/ui/label'
-import Tooltip from '@/views/ui/tooltip'
-import Button from '@/views/ui/button'
 import Common from '@/utils/common'
 
 export default defineComponent({
   name: 'ProfileForm',
-  components: {
-    Image,
-    Tooltip,
-    Button,
-    Label,
-    Avatar, AvatarImage, AvatarFallback,
-    CircularLoading,
-    Input,
-  },
   data()
   {
     return {

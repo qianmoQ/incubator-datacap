@@ -2,6 +2,10 @@
     height: 100vh;
 }
 
+.min-h-screen {
+    min-height: calc(100vh - 64px - 300px);
+}
+
 .w-screen {
     width: 100vw;
 }
