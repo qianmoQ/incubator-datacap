@@ -1,62 +1,60 @@
 <template>
-  <div>
-    <CircularLoading v-if="loading.default" :show="loading.default"/>
-    <form class="space-y-8" v-else-if="formState">
-      <FormField name="oldUsername">
-        <FormItem>
-          <FormLabel>{{ $t('user.common.oldUsername') }}</FormLabel>
-          <FormControl>
-            <Input :disabled="true" v-model="formState.oldUsername"/>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.oldUsername') }}</FormDescription>
-        </FormItem>
-      </FormField>
-      <FormField name="newUsername">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('user.common.newUsername') }}</FormLabel>
-          <FormControl>
-            <Input v-model="formState.newUsername"/>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.newUsername') }}</FormDescription>
-        </FormItem>
-      </FormField>
-      <FormField name="password">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('user.common.password') }}</FormLabel>
-          <FormControl>
-            <Input v-model="formState.password"/>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.password') }}</FormDescription>
-        </FormItem>
-      </FormField>
-      <div class="flex justify-start">
-        <Button @click="handlerSubmit()">
-          <Loader2 v-if="loading.submitting" class="w-full justify-center animate-spin mr-3"/>
-          {{ $t('common.save') }}
-        </Button>
-      </div>
-    </form>
+  <div class="relative">
+    <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="oldUsername"
+                      class="w-[40%]"
+                      :description="$t('user.tip.oldUsername')"
+                      :label="$t('user.common.oldUsername')">
+        <ShadcnInput v-model="formState.oldUsername"
+                     name="oldUsername"
+                     disabled
+                     :placeholder="$t('user.auth.oldUsername')"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="newUsername"
+                      class="w-[40%]"
+                      :description="$t('user.tip.newUsername')"
+                      :label="$t('user.common.newUsername')"
+                      :rules="[
+                          { required: true, message: $t('user.auth.usernameTip') },
+                          { min: 3, message: $t('user.auth.usernameSizeTip') },
+                          { max: 20, message: $t('user.auth.usernameSizeTip') }
+                      ]">
+        <ShadcnInput v-model="formState.newUsername"
+                     name="newUsername"
+                     :placeholder="$t('user.auth.usernameTip')"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="password"
+                      class="w-[40%]"
+                      :label="$t('user.common.password')"
+                      :description="$t('user.tip.password')"
+                      :rules="[
+                          { required: true, message: $t('user.auth.passwordTip') },
+                          { min: 6, message: $t('user.auth.passwordSizeTip') },
+                          { max: 20, message: $t('user.auth.passwordSizeTip') }
+                      ]">
+        <ShadcnInput v-model="formState.password"
+                     type="password"
+                     name="password"
+                     :placeholder="$t('user.auth.passwordTip')"/>
+      </ShadcnFormItem>
+
+      <ShadcnButton submit :loading="loading.submitting" :disabled="loading.submitting">
+        {{ $t('common.save') }}
+      </ShadcnButton>
+    </ShadcnForm>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Input } from '@/components/ui/input'
 import UserService from '@/services/user'
 import { UsernameModel } from '@/model/user'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { ToastUtils } from '@/utils/toast'
 import Common from '@/utils/common'
-
-import { Button } from '@/components/ui/button'
 
 export default defineComponent({
   name: 'UsernameForm',
-  components: {
-    Button,
-    CircularLoading,
-    Input,
-  },
   data()
   {
     return {
@@ -76,32 +74,38 @@ export default defineComponent({
     {
       this.loading.default = true
       UserService.getInfo()
-          .then(response => {
-            if (response.status) {
-              if (response.data) {
-                this.formState = {oldUsername: response.data.username, newUsername: undefined, password: undefined}
-              }
-            }
-          })
-          .finally(() => this.loading.default = false)
+                 .then(response => {
+                   if (response.status) {
+                     if (response.data) {
+                       this.formState = { oldUsername: response.data.username, newUsername: undefined, password: undefined }
+                     }
+                   }
+                 })
+                 .finally(() => this.loading.default = false)
     },
-    handlerSubmit()
+    onSubmit()
     {
       this.loading.submitting = true
       UserService.changeUsername(this.formState as UsernameModel)
-          .then((response) => {
-            if (response.status) {
-              ToastUtils.success(this.$t('user.tip.changeUsernameSuccessfully') as string)
-              localStorage.removeItem(Common.token)
-              localStorage.removeItem(Common.menu)
-              this.$router.push('/auth/signin')
-            }
-            else {
-              ToastUtils.error(response.message)
-            }
-          })
-          .finally(() => this.loading.submitting = false)
+                 .then((response) => {
+                   if (response.status) {
+                     this.$Message.success({
+                       content: this.$t('user.tip.changeUsernameSuccessfully') as string,
+                       showIcon: true
+                     })
+                     localStorage.removeItem(Common.token)
+                     localStorage.removeItem(Common.menu)
+                     this.$router.push('/auth/signin')
+                   }
+                   else {
+                     this.$Message.error({
+                       content: response.message,
+                       showIcon: true
+                     })
+                   }
+                 })
+                 .finally(() => this.loading.submitting = false)
     }
   }
-});
+})
 </script>
