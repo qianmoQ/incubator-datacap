@@ -1,28 +1,35 @@
 <template>
-  <div class="w-full">
-    <div>
-      <h3 class="text-lg font-medium">{{ $t('user.common.log') }}</h3>
-      <p class="text-sm text-muted-foreground">{{ $t('user.tip.log') }}</p>
+  <ShadcnCard :title="$t('user.common.log')" :description="$t('user.tip.log') ">
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #state="{row}">
+          <ShadcnBadge :text="row.state" :type="row.state === 'SUCCESS' ? 'success' : 'error'"/>
+        </template>
+      </ShadcnTable>
+
+      <ShadcnPagination v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
     </div>
-    <Separator class="my-4"/>
-    <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-      <template #state="{row}">
-        <Badge :style="{backgroundColor: Common.getColor(row?.state)}">{{ row?.state }}</Badge>
-      </template>
-    </TableCommon>
-  </div>
+  </ShadcnCard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Separator } from '@/components/ui/separator'
-import TableCommon from '@/views/components/table/TableCommon.vue'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
 import { createHeaders } from './ProfileUtils'
 import UserService from '@/services/user'
-import { Badge } from '@/components/ui/badge'
 import Common from '@/utils/common'
 
 export default defineComponent({
@@ -32,11 +39,6 @@ export default defineComponent({
     {
       return Common
     }
-  },
-  components: {
-    Badge,
-    TableCommon,
-    Separator
   },
   setup()
   {
@@ -56,8 +58,10 @@ export default defineComponent({
   {
     return {
       loading: false,
-      data: [],
-      pagination: {} as PaginationModel
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
+      data: []
     }
   },
   methods: {
@@ -65,20 +69,39 @@ export default defineComponent({
     {
       this.loading = true
       UserService.getLogs(this.filter)
-          .then((response) => {
-            if (response.status) {
-              this.data = response.data.content
-              this.pagination = PaginationRequest.of(response.data)
-            }
-          })
-          .finally(() => this.loading = false)
+                 .then((response) => {
+                   if (response.status) {
+                     this.data = response.data.content
+                     this.dataCount = response.data.total
+                     this.pageSize = response.data.size
+                     this.pageIndex = response.data.page
+                   }
+                 })
+                 .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
+      this.filter.page = value
+      this.filter.size = this.pageSize
       this.handlerInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
     }
   }
-});
+})
 </script>
