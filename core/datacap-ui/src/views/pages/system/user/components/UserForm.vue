@@ -43,9 +43,6 @@ import { UserModel } from '@/model/user'
 import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 
 import { Button } from '@/components/ui/button'
-import * as z from 'zod'
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
 import UserService from '@/services/user'
 import { ToastUtils } from '@/utils/toast.ts'
 
@@ -66,6 +63,7 @@ export default defineComponent({
       password: undefined,
       confirmPassword: undefined
     })
+    const a = any
     const validator = z
         .object({
           username: z.string({ required_error: $t('user.validate.username') })

@@ -35,7 +35,7 @@
 
         <template #action="{row}">
           <ShadcnSpace>
-            <ShadcnTooltip width="55" :content="$t('common.error')">
+            <ShadcnTooltip :content="$t('common.error')">
               <ShadcnButton color="#ed4014"
                             circle
                             size="small"
