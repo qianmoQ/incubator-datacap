@@ -1,69 +1,53 @@
 <template>
-  <div>
-    <CircularLoading v-if="loading.default" :show="loading.default"/>
-    <form class="space-y-8" v-else-if="formState">
-      <FormField name="fontSize">
-        <FormItem>
-          <FormLabel>{{ $t('user.common.fontSize') }}</FormLabel>
-          <FormControl>
-            <Input v-model="formState.fontSize" type="number"/>
-          </FormControl>
-          <FormDescription>{{ $t('user.tip.fontSize') }}</FormDescription>
-        </FormItem>
-      </FormField>
-      <FormField type="radio" name="theme">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('user.common.theme') }}</FormLabel>
-          <FormDescription>{{ $t('user.tip.theme') }}</FormDescription>
-          <FormMessage/>
-          <RadioGroup v-model="formState.theme" :default-value="formState.theme" class="grid w-full grid-cols-3 gap-8 pt-2">
-            <FormItem v-for="theme of themes" :key="theme">
-              <FormLabel class="[&:has([data-state=checked])>div]:border-primary">
-                <FormControl>
-                  <RadioGroupItem :value="theme" class="sr-only"/>
-                </FormControl>
-                <div class="items-center rounded-md border-4 border-muted p-1 hover:border-accent">
-                  <VAceEditor lang="mysql" :theme="theme" :style="{height: '85px'}" :value="value" :options="{readOnly: true}"/>
-                </div>
-                <span class="block w-full p-2 text-center font-normal">{{ theme }}</span>
-              </FormLabel>
-            </FormItem>
-          </RadioGroup>
-        </FormItem>
-      </FormField>
-      <div class="flex justify-start">
-        <Button @click="handlerSubmit()">
-          <Loader2 v-if="loading.submitting" class="w-full justify-center animate-spin mr-3"/>
-          {{ $t('common.save') }}
-        </Button>
-      </div>
-    </form>
+  <div class="relative">
+    <ShadcnSpin v-model="loading.default" fixed/>
+    <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="fontSize"
+                      class="w-[40%]"
+                      :label="$t('user.common.fontSize')"
+                      :description="$t('user.tip.fontSize')"
+                      :rules="[
+                          { pattern: /^[0-9]*$/, message: 'Please enter number!' }
+                      ]">
+        <ShadcnInput v-model="formState.fontSize" name="fontSize"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="theme"
+                      :label="$t('user.common.theme')"
+                      :description="$t('user.tip.theme')">
+        <ShadcnRadioGroup v-model="formState.theme">
+          <ShadcnRow>
+            <ShadcnCol v-for="theme of themes" span="3" class="mb-2">
+              <ShadcnRadio :value="theme">
+                <VAceEditor lang="mysql"
+                            :theme="theme"
+                            :style="{height: '85px', width: '25vh'}"
+                            :value="value"
+                            :options="{readOnly: true}"/>
+              </ShadcnRadio>
+            </ShadcnCol>
+          </ShadcnRow>
+        </ShadcnRadioGroup>
+      </ShadcnFormItem>
+
+      <ShadcnButton submit :loading="loading.submitting" :disabled="loading.submitting">
+        {{ $t('common.save') }}
+      </ShadcnButton>
+    </ShadcnForm>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Input } from '@/components/ui/input'
 import UserService from '@/services/user'
 import { UserEditor } from '@/model/user'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { VAceEditor } from 'vue3-ace-editor'
 import themes from './AceEditor'
-import { Button } from '@/components/ui/button'
 import Common from '@/utils/common'
-import { ToastUtils } from '@/utils/toast'
-
 
 export default defineComponent({
   name: 'EditorForm',
-  components: {
-    Button,
-    CircularLoading,
-    Input,
-    RadioGroup, RadioGroupItem,
-    VAceEditor
-  },
+  components: { VAceEditor },
   data()
   {
     return {
@@ -85,31 +69,37 @@ export default defineComponent({
     {
       this.loading.default = true
       UserService.getInfo()
-          .then(response => {
-            if (response.status) {
-              const configure = response.data.editorConfigure
-              if (response.data && configure) {
-                this.formState = configure as UserEditor
-              }
-            }
-          })
-          .finally(() => this.loading.default = false)
+                 .then(response => {
+                   if (response.status) {
+                     const configure = response.data.editorConfigure
+                     if (response.data && configure) {
+                       this.formState = configure as UserEditor
+                     }
+                   }
+                 })
+                 .finally(() => this.loading.default = false)
     },
-    handlerSubmit()
+    onSubmit()
     {
       this.loading.submitting = true
       UserService.changeEditor(this.formState as UserEditor)
-          .then((response) => {
-            if (response.status) {
-              ToastUtils.success(this.$t('common.successfully') as string)
-              localStorage.setItem(Common.userEditorConfigure, JSON.stringify(this.formState))
-            }
-            else {
-              ToastUtils.error(response.message)
-            }
-          })
-          .finally(() => this.loading.submitting = false)
+                 .then((response) => {
+                   if (response.status) {
+                     this.$Message.success({
+                       content: this.$t('common.successfully') as string,
+                       showIcon: true
+                     })
+                     localStorage.setItem(Common.userEditorConfigure, JSON.stringify(this.formState))
+                   }
+                   else {
+                     this.$Message.error({
+                       content: response.message,
+                       showIcon: true
+                     })
+                   }
+                 })
+                 .finally(() => this.loading.submitting = false)
     }
   }
-});
+})
 </script>

@@ -1,24 +1,20 @@
 <template>
-  <div class="w-full">
-    <div>
-      <h3 class="text-lg font-medium">{{ $t('user.common.editor') }}</h3>
-      <p class="text-sm text-muted-foreground">{{ $t('user.tip.editor') }}</p>
+  <ShadcnCard :border="false"
+              :title="$t('user.common.editor')"
+              :description="$t('user.tip.editor')">
+    <ShadcnDivider class="my-2"/>
+    <div class="p-3">
+      <EditorForm/>
     </div>
-    <Separator class="my-4"/>
-    <EditorForm/>
-  </div>
+  </ShadcnCard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Separator } from '@/components/ui/separator'
 import EditorForm from '@/views/pages/admin/user/profile/components/EditorForm.vue'
 
 export default defineComponent({
   name: 'EditorHome',
-  components: {
-    EditorForm,
-    Separator
-  }
-});
+  components: { EditorForm }
+})
 </script>
