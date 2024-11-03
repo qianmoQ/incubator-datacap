@@ -1,21 +1,19 @@
 <template>
-  <div class="w-full">
-    <div>
-      <h3 class="text-lg font-medium">{{ $t('user.common.info') }}</h3>
-      <p class="text-sm text-muted-foreground">{{ $t('user.tip.info') }}</p>
-    </div>
-    <Separator class="my-4"/>
-    <Card>
-      <CardHeader class="p-0">
-        <CardTitle class="pt-3 pl-3 pb-2">{{ $t('user.common.contribution') }}</CardTitle>
-        <Separator/>
-        <CardDescription class="pt-3 pl-3 pb-2 pr-2 min-w-full">{{ $t('user.tip.contribution') }}</CardDescription>
-      </CardHeader>
-      <CardContent class="pt-2">
-        <CircularLoading v-if="loading" :show="loading"/>
-        <CalendarHeatmap v-else :tooltip-unit="$t('heatmap.common.query')" :end-date="heatmap.endDate"
-                         :round="50" :values="heatmap.data"
-                         :locale="{
+  <ShadcnCard :border="false"
+              :title="$t('user.common.info')"
+              :description="$t('user.tip.info')">
+    <ShadcnRow :gutter="16">
+      <ShadcnCol :span="12">
+        <ShadcnCard only-content-loading
+                    :title="$t('user.common.contribution')"
+                    :description="$t('user.tip.contribution')"
+                    :loading="loading">
+          <div class="p-2">
+            <CalendarHeatmap :tooltip-unit="$t('heatmap.common.query')"
+                             :end-date="heatmap.endDate"
+                             :round="10"
+                             :values="heatmap.data"
+                             :locale="{
                                   months: [
                                             $t('heatmap.common.jan'),
                                             $t('heatmap.common.feb'),
@@ -43,33 +41,29 @@
                                   less  : $t('heatmap.common.less'),
                                   more  : $t('heatmap.common.more')
                              }"/>
-      </CardContent>
-    </Card>
-    <div class="flex mt-2 space-x-4">
-      <Card class="w-1/2">
-        <CardHeader class="p-0">
-          <CardTitle class="pt-3 pl-3 pb-2">{{ $t('user.common.radar7Days') }}</CardTitle>
-          <Separator/>
-          <CardDescription class="pt-3 pl-3 pb-2 pr-2 min-w-full">{{ $t('user.tip.radar7Days') }}</CardDescription>
-        </CardHeader>
-        <CardContent class="pt-2">
-          <CircularLoading v-if="loading" :show="loading"/>
-          <VisualPie v-else-if="radar.configuration" :configuration="radar.configuration" :height="'200px'" :submitted="false"/>
-        </CardContent>
-      </Card>
-    </div>
-  </div>
+          </div>
+        </ShadcnCard>
+      </ShadcnCol>
+      <ShadcnCol :span="12">
+        <ShadcnCard only-content-loading
+                    :title="$t('user.common.radar7Days')"
+                    :description="$t('user.tip.radar7Days')"
+                    :loading="loading">
+          <div class="p-2">
+            <VisualPie v-if="radar.configuration" :configuration="radar.configuration" :height="'200px'" :submitted="false"/>
+          </div>
+        </ShadcnCard>
+      </ShadcnCol>
+    </ShadcnRow>
+  </ShadcnCard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Separator } from '@/components/ui/separator'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CalendarHeatmap } from 'vue3-calendar-heatmap'
 import './vue3-calendar-heatmap.css'
 import { HttpUtils } from '@/utils/http'
 import UserService from '@/services/user'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 import { Configuration } from '@/views/components/visual/Configuration'
 import VisualPie from '@/views/components/visual/components/VisualPie.vue'
 import { DateUtils } from '@/utils/date'
@@ -78,9 +72,6 @@ export default defineComponent({
   name: 'InfoHome',
   components: {
     VisualPie,
-    CircularLoading,
-    CardContent, CardDescription, CardHeader, Card, CardTitle,
-    Separator,
     CalendarHeatmap
   },
   data()
@@ -106,29 +97,29 @@ export default defineComponent({
       this.loading = true
       const axios = new HttpUtils().getAxios()
       axios.all([UserService.getUserContribution(), UserService.getUserContributionRadar()])
-          .then(axios.spread((fetchContribution, fetchRadar) => {
-            if (fetchContribution.status) {
-              this.heatmap.data = fetchContribution.data
-              if (fetchContribution.data.length > 0) {
-                if (this.heatmap.data.length > 0) {
-                  const item = this.heatmap.data[this.heatmap.data.length - 1] as any
-                  this.heatmap.endDate = item.date
-                }
-              }
-              else {
-                const now = new Date()
-                this.heatmap.endDate = DateUtils.formatTime(now, 'YYYY-MM-DD')
-              }
-            }
-            if (fetchRadar.status) {
-              const configuration = new Configuration()
-              configuration.columns = fetchRadar.data
-              configuration.chartConfigure = {yAxis: 'count', xAxis: 'label', outerRadius: [1.2]}
-              this.radar.configuration = configuration
-            }
-          }))
-          .finally(() => this.loading = false)
+           .then(axios.spread((fetchContribution, fetchRadar) => {
+             if (fetchContribution.status) {
+               this.heatmap.data = fetchContribution.data
+               if (fetchContribution.data.length > 0) {
+                 if (this.heatmap.data.length > 0) {
+                   const item = this.heatmap.data[this.heatmap.data.length - 1] as any
+                   this.heatmap.endDate = item.date
+                 }
+               }
+               else {
+                 const now = new Date()
+                 this.heatmap.endDate = DateUtils.formatTime(now, 'YYYY-MM-DD')
+               }
+             }
+             if (fetchRadar.status) {
+               const configuration = new Configuration()
+               configuration.columns = fetchRadar.data
+               configuration.chartConfigure = { yAxis: 'count', xAxis: 'label', outerRadius: [1.2] }
+               this.radar.configuration = configuration
+             }
+           }))
+           .finally(() => this.loading = false)
     }
   }
-});
+})
 </script>
