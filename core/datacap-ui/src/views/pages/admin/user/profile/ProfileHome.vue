@@ -2,6 +2,7 @@
   <ShadcnCard :border="false"
               :title="$t('user.common.profile')"
               :description="$t('user.tip.profile')">
+    <ShadcnDivider class="my-2"/>
     <div class="p-3">
       <ProfileForm/>
     </div>

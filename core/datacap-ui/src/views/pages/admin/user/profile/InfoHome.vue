@@ -2,6 +2,7 @@
   <ShadcnCard :border="false"
               :title="$t('user.common.info')"
               :description="$t('user.tip.info')">
+    <ShadcnDivider class="my-2"/>
     <ShadcnRow :gutter="16">
       <ShadcnCol :span="12">
         <ShadcnCard only-content-loading

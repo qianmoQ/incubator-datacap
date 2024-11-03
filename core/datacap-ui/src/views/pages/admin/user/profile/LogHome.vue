@@ -1,5 +1,8 @@
 <template>
-  <ShadcnCard :title="$t('user.common.log')" :description="$t('user.tip.log') ">
+  <ShadcnCard :title="$t('user.common.log')"
+              :description="$t('user.tip.log')"
+              :border="false">
+    <ShadcnDivider class="my-2"/>
     <div class="relative">
       <ShadcnSpin v-if="loading" fixed/>
 
