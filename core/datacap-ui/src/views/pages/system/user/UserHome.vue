@@ -21,11 +21,19 @@
         </template>
 
         <template #action="{row}">
-          <ShadcnTooltip :content="$t('user.common.assignRole')">
-            <ShadcnButton size="small" circle @click="handlerChangeRole(true, row)">
-              <ShadcnIcon icon="SquareArrowUp" size="15"/>
-            </ShadcnButton>
-          </ShadcnTooltip>
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('user.common.assignRole')">
+              <ShadcnButton size="small" circle @click="handlerChangeRole(true, row)">
+                <ShadcnIcon icon="SquareArrowUp" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+
+            <ShadcnTooltip :content="$t('common.editData')">
+              <ShadcnButton size="small" circle @click="handlerChangeInfo(true, row)">
+                <ShadcnIcon icon="Pencil" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+          </ShadcnSpace>
         </template>
       </ShadcnTable>
 
@@ -62,10 +70,11 @@ import { useI18n } from 'vue-i18n'
 import { createHeaders } from './UserUtils'
 import { UserModel } from '@/model/user'
 import UserInfo from '@/views/pages/system/user/UserInfo.vue'
+import UserRole from '@/views/pages/system/user/components/UserRole.vue'
 
 export default defineComponent({
   name: 'UserHome',
-  components: { UserInfo },
+  components: { UserRole, UserInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()

@@ -1,64 +1,40 @@
 <template>
-  <Dialog :open="isVisible" @update:open="handlerCancel">
-    <DialogContent>
-      <form @submit="onSubmit">
-        <DialogHeader class="border-b">
-          <DialogTitle class="pb-3.5">{{ title }}</DialogTitle>
-          <DialogDescription></DialogDescription>
-        </DialogHeader>
-        <CardContent class="grid gap-4 mt-5 justify-center">
-          <Loader2 v-if="loading" class="w-4 h-4 mr-2 animate-spin"/>
-          <div v-else>
-            <FormField name="items">
-              <FormItem>
-                <FormField v-for="item in data" v-slot="{ value, handleChange }" :key="item.id" type="checkbox" :value="item.id" :unchecked-value="false" name="items">
-                  <FormItem class="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox :checked="value.includes(item.id)" @update:checked="handleChange"/>
-                    </FormControl>
-                    <FormLabel class="font-normal">
-                      {{ item.name }}
-                    </FormLabel>
-                  </FormItem>
-                </FormField>
-              </FormItem>
-            </FormField>
+  <ShadcnModal v-model="visible" :title="title" @on-close="onClose">
+    <template #content>
+      <div class="relative">
+        <ShadcnSpin v-model="loading" fixed/>
+        <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit" @on-error="onError">
+          <ShadcnFormItem name="roles"
+                          :rules="[
+                              { required: true, message: 'Please check the role' },
+                          ]">
+            <ShadcnCheckboxGroup v-model="formState.roles" name="roles">
+              <ShadcnCheckbox v-for="item in data" :value="item.id">{{ item.name }}</ShadcnCheckbox>
+            </ShadcnCheckboxGroup>
+          </ShadcnFormItem>
+
+          <div class="flex justify-end">
+            <ShadcnButton submit :loading="submitted" :disabled="submitted">
+              {{ title }}
+            </ShadcnButton>
           </div>
-        </CardContent>
-        <DialogFooter class="border-t pt-3.5">
-          <Button type="submit" :disabled="submitted">
-            <Loader2 v-if="submitted" class="w-4 h-4 mr-2 animate-spin"/>
-            {{ title }}
-          </Button>
-        </DialogFooter>
-      </form>
-    </DialogContent>
-  </Dialog>
+        </ShadcnForm>
+      </div>
+    </template>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-
-import { CardContent } from '@/components/ui/card'
 import { StringUtils } from '@/utils/string'
 import { UserModel, UserRoleModel } from '@/model/user'
-import { Button } from '@/components/ui/button'
 import { FilterModel } from '@/model/filter'
 import RoleService from '@/services/role'
-import { Checkbox } from '@/components/ui/checkbox'
-import { useForm } from 'vee-validate'
-import { RoleModel } from '@/model/role'
-import { ToastUtils } from '@/utils/toast'
 import UserService from '@/services/user'
+import { RoleModel } from '@/model/role'
 
 export default defineComponent({
   name: 'UserRole',
-  components: {
-    Checkbox, Button,
-    CardContent,
-    DialogDescription, DialogTitle, Dialog, DialogFooter, DialogContent, DialogHeader,
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -81,26 +57,14 @@ export default defineComponent({
       }
     }
   },
-  setup(props)
-  {
-    const { validate, values } = useForm({
-      initialValues: {
-        items: props.info?.roles?.map(role => role.id)
-      }
-    })
-
-    return {
-      validate,
-      values
-    }
-  },
   data()
   {
     return {
       loading: false,
       submitted: false,
       title: null as string | null,
-      data: [] as RoleModel[]
+      data: [] as RoleModel[],
+      formState: null as UserRoleModel | null
     }
   },
   created()
@@ -112,48 +76,61 @@ export default defineComponent({
     {
       if (this.info) {
         this.title = `${ StringUtils.replace(this.$t('role.common.assignRole'), '$NAME', this.info.username as string) }`
+        this.formState = {
+          roles: this.info.roles?.map(v => v.id) as number[],
+          userId: this.info.id as number
+        }
+        this.loading = true
+        const filter: FilterModel = new FilterModel()
+        filter.size = 1000
+        RoleService.getAll(filter)
+                   .then((response) => {
+                     if (response.status) {
+                       this.data = response.data.content
+                     }
+                   })
+                   .finally(() => this.loading = false)
       }
-      this.loading = true
-      const filter: FilterModel = new FilterModel()
-      filter.size = 1000
-      RoleService.getAll(filter)
-                 .then((response) => {
-                   if (response.status) {
-                     this.data = response.data.content
-                   }
-                 })
-                 .finally(() => this.loading = false)
     },
-    handlerCancel()
+    onClose()
     {
       this.visible = false
     },
-    async onSubmit()
+    onSubmit()
     {
-      const valid = await this.validate()
-      if (valid.valid) {
-        if (this.info) {
-          this.submitted = true
-          const configure: UserRoleModel = {
-            roles: this.values.items as number[],
-            userId: this.info.id as number
-          }
-          UserService.assignRole(configure)
-                     .then((response) => {
-                       if (response.status) {
-                         ToastUtils.success(this.$t('user.tip.assignRoleSuccess'))
-                         this.handlerCancel()
-                       }
-                       else {
-                         ToastUtils.error(response.message)
-                       }
-                     })
-                     .finally(() => this.submitted = false)
-        }
-        else {
-          ToastUtils.error(this.$t('common.invalidParam'))
-        }
+      if (this.info) {
+        this.submitted = true
+        UserService.assignRole(this.formState as UserRoleModel)
+                   .then((response) => {
+                     if (response.status) {
+                       this.$Message.success({
+                         content: this.$t('user.tip.assignRoleSuccess'),
+                         showIcon: true
+                       })
+                       this.onClose()
+                     }
+                     else {
+                       this.$Message.error({
+                         content: response.message,
+                         showIcon: true
+                       })
+                     }
+                   })
+                   .finally(() => this.submitted = false)
       }
+      else {
+        this.$Message.error({
+          content: this.$t('common.invalidParam'),
+          showIcon: true
+        })
+      }
+    },
+    onError(errors: any)
+    {
+      this.$Message.error({
+        content: `Validation error field: [ ${ Object.keys(errors).join(', ') } ]`,
+        showIcon: true
+      })
     }
   }
 })

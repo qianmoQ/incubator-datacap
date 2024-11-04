@@ -1,21 +1,17 @@
 <template>
-  <DcDrawer :is-visible="visible" :title="title as string" width="35%">
-    <UserForm class="mt-3" @close="handlerCancel"/>
-  </DcDrawer>
+  <ShadcnDrawer v-model="visible" :title="title">
+    <UserForm class="mt-3" :info="info" @close="handlerCancel"/>
+  </ShadcnDrawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { UserModel } from '@/model/user.ts'
-import DcDrawer from '@/views/ui/drawer/drawer.vue'
 import UserForm from '@/views/pages/system/user/components/UserForm.vue'
 
 export default defineComponent({
   name: 'UserInfo',
-  components: {
-    UserForm,
-    DcDrawer
-  },
+  components: { UserForm },
   computed: {
     visible: {
       get(): boolean

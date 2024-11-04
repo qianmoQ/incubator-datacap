@@ -1,109 +1,110 @@
 <template>
-  <form class="space-y-4" @submit="onSubmit" v-if="formState">
-    <FormField v-slot="{ componentField }" name="username">
-      <FormItem>
-        <FormLabel>{{ $t('user.common.username') }}</FormLabel>
-        <FormControl>
-          <Input type="text" v-model="formState.username" v-bind="componentField"/>
-        </FormControl>
-        <FormMessage/>
-      </FormItem>
-    </FormField>
-    <FormField v-slot="{ componentField }" name="password">
-      <FormItem class="space-y-1">
-        <FormLabel>{{ $t('user.common.password') }}</FormLabel>
-        <FormControl>
-          <Input type="password" v-model="formState.password" v-bind="componentField"/>
-        </FormControl>
-        <FormMessage/>
-      </FormItem>
-    </FormField>
-    <FormField v-slot="{ componentField }" name="confirmPassword">
-      <FormItem class="space-y-1">
-        <FormLabel>{{ $t('user.common.confirmPassword') }}</FormLabel>
-        <FormControl>
-          <Input v-model="formState.confirmPassword" v-bind="componentField"/>
-        </FormControl>
-        <FormMessage/>
-      </FormItem>
-    </FormField>
+  <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit" @on-error="onError">
+    <ShadcnFormItem name="username"
+                    :label="$t('user.common.username')"
+                    :rules="[
+                          { required: true, message: $t('user.auth.usernameTip') },
+                          { min: 3, message: $t('user.auth.usernameSizeTip') },
+                          { max: 20, message: $t('user.auth.usernameSizeTip') }
+                    ]">
+      <ShadcnInput v-model="formState.username" name="username"/>
+    </ShadcnFormItem>
+
+    <ShadcnFormItem name="password"
+                    :label="$t('user.common.password')"
+                    :rules="[
+                                { required: true, message: $t('user.auth.passwordTip') },
+                                { min: 6, message: $t('user.auth.passwordSizeTip') },
+                                { max: 20, message: $t('user.auth.passwordSizeTip') }
+                            ]">
+      <ShadcnInput v-model="formState.password"
+                   type="password"
+                   name="password"
+                   :placeholder="$t('user.auth.passwordTip')"/>
+    </ShadcnFormItem>
+
+    <ShadcnFormItem name="confirmPassword"
+                    :label="$t('user.common.confirmPassword')"
+                    :rules="[
+                                { required: true, message: $t('user.auth.passwordTip') },
+                                { validator: validatePassword }
+                            ]">
+      <ShadcnInput v-model="formState.confirmPassword"
+                   type="password"
+                   name="confirmPassword"
+                   :placeholder="$t('user.auth.confirmPasswordTip')"/>
+    </ShadcnFormItem>
+
     <div class="flex justify-end">
-      <Button type="submit" :disabled="loading">
-        <Loader2 v-if="loading" :size="20" class="w-full justify-center animate-spin mr-3"/>
+      <ShadcnButton submit :loading="loading" :disabled="loading">
         {{ $t('common.save') }}
-      </Button>
+      </ShadcnButton>
     </div>
-  </form>
+  </ShadcnForm>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from 'vue'
-import { Input } from '@/components/ui/input'
+import { defineComponent, ref } from 'vue'
 import { UserModel } from '@/model/user'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-
-import { Button } from '@/components/ui/button'
 import UserService from '@/services/user'
-import { ToastUtils } from '@/utils/toast.ts'
 
 export default defineComponent({
   name: 'UserForm',
-  components: {
-    Button,
-    CircularLoading,
-    Input,
+  props: {
+    info: {
+      type: Object as () => UserModel
+    }
   },
-  setup(props, { emit })
+  data()
   {
-    console.debug(props)
-    let loading = ref(false)
-    const $t: any = inject('$t')
-    const formState = ref<UserModel>({
-      username: undefined,
-      password: undefined,
-      confirmPassword: undefined
-    })
-    const a = any
-    const validator = z
-        .object({
-          username: z.string({ required_error: $t('user.validate.username') })
-                     .min(3, $t('user.validate.usernameSize'))
-                     .max(20, $t('user.validate.usernameSize')),
-          password: z.string({ required_error: $t('user.validate.newPassword') })
-                     .min(6, $t('user.validate.passwordSize'))
-                     .max(20, $t('user.validate.passwordSize')),
-          confirmPassword: z.string({ required_error: $t('user.validate.confirmPassword') })
-                            .min(6, $t('user.validate.passwordSize'))
-                            .max(20, $t('user.validate.passwordSize'))
-        })
-        .refine((data) => data.password === data.confirmPassword, {
-          message: $t('user.validate.passwordNotMatch'),
-          path: ['confirmPassword']
-        })
-    const formSchema = toTypedSchema(validator)
-
-    const { handleSubmit } = useForm({
-      validationSchema: formSchema
-    })
-
-    const onSubmit = handleSubmit(() => {
-      loading.value = true
-      UserService.saveOrUpdate(formState.value)
+    return {
+      loading: false,
+      formState: ref<UserModel>({
+        id: undefined,
+        username: undefined,
+        password: undefined,
+        confirmPassword: undefined
+      })
+    }
+  },
+  created()
+  {
+    if (this.info) {
+      this.formState.id = this.info.id
+      this.formState.username = this.info.username
+    }
+  },
+  methods: {
+    validatePassword(value: string)
+    {
+      if (value !== this.formState.password) {
+        return Promise.reject(new Error(this.$t('user.auth.passwordNotMatchTip')))
+      }
+      return Promise.resolve(true)
+    },
+    onError(errors: any)
+    {
+      this.$Message.error({
+        content: `Validation error field: [ ${ Object.keys(errors).join(', ') } ]`,
+        showIcon: true
+      })
+    },
+    onSubmit()
+    {
+      this.loading = true
+      UserService.saveOrUpdate(this.formState)
                  .then((response) => {
                    if (response.status) {
-                     emit('close', true)
+                     this.$emit('close', true)
                    }
                    else {
-                     ToastUtils.error(response.message)
+                     this.$Message.error({
+                       content: response.message,
+                       showIcon: true
+                     })
                    }
                  })
-                 .finally(() => loading.value = false)
-    })
-
-    return {
-      loading,
-      formState,
-      onSubmit
+                 .finally(() => this.loading = false)
     }
   }
 })
