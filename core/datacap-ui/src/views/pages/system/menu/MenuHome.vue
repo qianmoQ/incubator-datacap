@@ -1,59 +1,67 @@
 <template>
-  <div class="w-full">
-    <DataCapCard>
-      <template #title>{{ $t('menu.common.list') }}</template>
-      <template #extra>
-        <Tooltip :content="$t('menu.common.create')">
-          <Button size="icon" class="ml-auto gap-1 h-6 w-6" @click="handlerChangeInfo(true, null)">
-            <Plus :size="20"/>
-          </Button>
-        </Tooltip>
-      </template>
-      <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-        <template #active="{row}">
-          <Switch disabled :default-checked="row?.active"/>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2 font-normal text-sm">{{ $t('menu.common.list') }}</div>
+    </template>
+
+    <template #extra>
+      <ShadcnTooltip :content="$t('menu.common.create')">
+        <ShadcnButton size="small" circle @click="handlerChangeInfo(true, null)">
+          <template #icon>
+            <ShadcnIcon icon="Plus"/>
+          </template>
+        </ShadcnButton>
+      </ShadcnTooltip>
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #active="{ row }">
+          <ShadcnSwitch v-model="row.active" :disabled="row.active"/>
         </template>
-        <template #action="{row}">
-          <div class="space-x-2">
-            <Tooltip :content="$t('common.editData')">
-              <Button variant="outline" size="icon" class="p-2 w-8 h-8 rounded-full" @click="handlerChangeInfo(true, row)">
-                <Pencil :size="15"/>
-              </Button>
-            </Tooltip>
-          </div>
+
+        <template #action="{ row }">
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('common.editData')">
+              <ShadcnButton size="small" circle @click="handlerChangeInfo(true, row)">
+                <ShadcnIcon icon="Pencil" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+          </ShadcnSpace>
         </template>
-      </TableCommon>
-    </DataCapCard>
-    <MenuInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerChangeInfo(false, null)"/>
-  </div>
+      </ShadcnTable>
+
+      <ShadcnPagination v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnCard>
+
+  <MenuInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerChangeInfo(false, null)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { DataCapCard } from '@/views/ui/card'
-import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Button } from '@/components/ui/button'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
 import { createHeaders } from '@/views/pages/system/menu/MenuUtils'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import { MenuModel } from '@/model/menu'
 import MenuService from '@/services/menu'
-import { Switch } from '@/components/ui/switch'
-import Tooltip from '@/views/ui/tooltip'
 import MenuInfo from '@/views/pages/system/menu/MenuInfo.vue'
 
 export default defineComponent({
   name: 'MenuHome',
-  components: {
-    MenuInfo,
-    Tooltip,
-    Switch,
-    Button,
-    Pencil, Plus,
-    TableCommon,
-    DataCapCard
-  },
+  components: { MenuInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -68,8 +76,9 @@ export default defineComponent({
     return {
       loading: false,
       dataInfoVisible: false,
-      data: [],
-      pagination: {} as PaginationModel,
+      data: [], pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as MenuModel | null
     }
   },
@@ -85,16 +94,35 @@ export default defineComponent({
                  .then((response) => {
                    if (response.status) {
                      this.data = response.data.content
-                     this.pagination = PaginationRequest.of(response.data)
+                     this.dataCount = response.data.total
+                     this.pageSize = response.data.size
+                     this.pageIndex = response.data.page
                    }
                  })
                  .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
+      this.filter.page = value
+      this.filter.size = this.pageSize
       this.handlerInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
     },
     handlerChangeInfo(isOpen: boolean, dataInfo: any)
     {
