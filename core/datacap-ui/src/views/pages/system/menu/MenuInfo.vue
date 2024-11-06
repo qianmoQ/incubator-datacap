@@ -44,7 +44,7 @@
 
       <ShadcnRow class="space-x-2">
         <ShadcnCol span="6">
-          <ShadcnFormItem name="url"
+          <ShadcnFormItem name="sorted"
                           :label="$t('common.sorted')"
                           :rules="[
                               { required: true, message: $t('common.sorted') }
@@ -59,7 +59,10 @@
                           :rules="[
                               { required: true, message: $t('common.type') }
                           ]">
-            <ShadcnSelect v-model="formState.type" name="type" :label="$t('common.type')">
+            <ShadcnSelect v-model="formState.type"
+                          name="type"
+                          :label="$t('common.type')"
+                          :placeholder="$t('menu.tip.selectType')">
               <template #options>
                 <ShadcnSelectOption label="VIEW" value="VIEW"/>
               </template>

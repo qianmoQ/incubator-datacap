@@ -1,75 +1,71 @@
 <template>
-  <div class="w-full">
-    <DataCapCard>
-      <template #title>{{ $t('role.common.list') }}</template>
-      <template #extra>
-        <Button size="icon" class="ml-auto gap-1 h-6 w-6" @click="handlerChangeInfo(true, null)">
-          <Plus :size="20"/>
-        </Button>
-      </template>
-      <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-        <template #action="{row}">
-          <div class="space-x-2">
-            <TooltipProvider :delay-duration="0">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button variant="outline" size="icon" class="p-2 w-8 h-8 rounded-full" @click="handlerChangeInfo(true, row)">
-                    <Pencil :size="15"/>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{{ $t('common.editData') }}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider :delay-duration="0">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button variant="outline" size="icon" class="p-2 w-8 h-8 rounded-full" @click="handlerAssignMenu(true, row)">
-                    <Menu :size="15"/>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{{ $t('role.common.assignMenu').replace('$NAME', row?.name) }}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2 font-normal text-sm">{{ $t('role.common.list') }}</div>
+    </template>
+
+    <template #extra>
+      <ShadcnTooltip :content="$t('role.common.create')">
+        <ShadcnButton size="small" circle @click="handlerChangeInfo(true, null)">
+          <template #icon>
+            <ShadcnIcon icon="Plus"/>
+          </template>
+        </ShadcnButton>
+      </ShadcnTooltip>
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #action="{ row }">
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('common.editData')">
+              <ShadcnButton size="small" circle @click="handlerChangeInfo(true, row)">
+                <ShadcnIcon icon="Pencil" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+
+            <ShadcnTooltip :content="$t('role.common.assignMenu').replace('$NAME', row?.name)">
+              <ShadcnButton size="small" circle @click="handlerAssignMenu(true, row)">
+                <ShadcnIcon icon="Menu" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+          </ShadcnSpace>
         </template>
-      </TableCommon>
-    </DataCapCard>
-    <RoleInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerChangeInfo(false, null)"/>
-    <RoleMenu v-if="dataAllocationVisible" :is-visible="dataAllocationVisible" :info="dataInfo" @close="handlerAssignMenu(false, null)"/>
-  </div>
+      </ShadcnTable>
+
+      <ShadcnPagination v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnCard>
+
+  <RoleInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerChangeInfo(false, null)"/>
+  <RoleMenu v-if="dataAllocationVisible" :is-visible="dataAllocationVisible" :info="dataInfo" @close="handlerAssignMenu(false, null)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { FilterModel } from '@/model/filter'
 import { createHeaders } from '@/views/pages/system/role/RoleUtils'
 import { useI18n } from 'vue-i18n'
-import { PaginationModel } from '@/model/pagination'
 import RoleService from '@/services/role'
-import RoleInfo from '@/views/pages/system/role/RoleInfo.vue'
 import { RoleModel } from '@/model/role'
+import RoleInfo from '@/views/pages/system/role/RoleInfo.vue'
 import RoleMenu from '@/views/pages/system/role/RoleMenu.vue'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'RoleHome',
-  components: {
-    DataCapCard,
-    Plus,
-    RoleMenu,
-    RoleInfo,
-    TooltipContent, TooltipTrigger, TooltipProvider, Tooltip,
-    TableCommon,
-    Pencil, Menu,
-    Button
-  },
+  components: { RoleMenu, RoleInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -87,7 +83,9 @@ export default defineComponent({
       dataInfoVisible: false,
       dataAllocationVisible: false,
       data: [],
-      pagination: {} as PaginationModel,
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as RoleModel | null
     }
   },
@@ -103,20 +101,12 @@ export default defineComponent({
                  .then((response) => {
                    if (response.status) {
                      this.data = response.data.content
-                     this.pagination = {
-                       pageSize: response.data.size,
-                       total: response.data.total,
-                       currentPage: response.data.page
-                     }
+                     this.dataCount = response.data.total
+                     this.pageSize = response.data.size
+                     this.pageIndex = response.data.page
                    }
                  })
                  .finally(() => this.loading = false)
-    },
-    handlerChangePage(value: PaginationModel)
-    {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
-      this.handlerInitialize()
     },
     handlerChangeInfo(isOpen: boolean, dataInfo: any)
     {
@@ -130,6 +120,29 @@ export default defineComponent({
     {
       this.dataAllocationVisible = opened
       this.dataInfo = dataInfo
+    },
+    fetchData(value: number)
+    {
+      this.filter.page = value
+      this.filter.size = this.pageSize
+      this.handlerInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
     }
   }
 })

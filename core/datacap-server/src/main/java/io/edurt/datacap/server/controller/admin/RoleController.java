@@ -1,6 +1,5 @@
 package io.edurt.datacap.server.controller.admin;
 
-import com.google.common.collect.Sets;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.entity.MenuEntity;
@@ -57,7 +56,7 @@ public class RoleController
 
     @RequestMapping(value = "{id}/menus", method = {RequestMethod.GET, RequestMethod.PUT})
     public CommonResponse<? extends Object> getMenusByRoleId(@PathVariable(value = "id") Long id,
-            @RequestBody(required = false) List<TreeRecord> nodes)
+            @RequestBody(required = false) Set<Long> nodes)
     {
         if (ObjectUtils.isEmpty(nodes)) {
             return roleService.getMenusByRoleId(id);
@@ -65,12 +64,8 @@ public class RoleController
         else {
             return this.roleRepository.findById(id)
                     .map(item -> {
-                        Set<MenuEntity> menus = extractIds(nodes, Sets.newHashSet()).stream()
-                                .map(value -> {
-                                    MenuEntity entity = new MenuEntity();
-                                    entity.setId(value);
-                                    return entity;
-                                })
+                        Set<MenuEntity> menus = (Set<MenuEntity>) nodes.stream()
+                                .map(v -> MenuEntity.builder().id(v).build())
                                 .collect(Collectors.toSet());
                         item.setMenus(menus);
                         return roleService.saveOrUpdate(roleRepository, item);

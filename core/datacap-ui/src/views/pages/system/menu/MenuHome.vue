@@ -76,7 +76,8 @@ export default defineComponent({
     return {
       loading: false,
       dataInfoVisible: false,
-      data: [], pageIndex: 1,
+      data: [],
+      pageIndex: 1,
       pageSize: 10,
       dataCount: 0,
       dataInfo: null as MenuModel | null
