@@ -1,15 +1,24 @@
 <template>
-  <Dialog :open="isVisible" persistent @update:open="handlerCancel">
-    <DialogContent class="min-w-[60%]">
-      <DialogHeader class="border-b">
-        <DialogTitle class="pb-3.5">{{ $t('schedule.common.history') }}</DialogTitle>
-        <DialogDescription></DialogDescription>
-      </DialogHeader>
-      <CardContent class="grid gap-4">
-        <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage"></TableCommon>
-      </CardContent>
-    </DialogContent>
-  </Dialog>
+  <ShadcnModal v-model="visible" :title="$t('schedule.common.history')" width="60" @on-close="onCancel">
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data" />
+
+      <ShadcnPagination v-if="data?.length > 0"
+                        v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
@@ -27,11 +36,6 @@ import { cn } from '@/lib/utils'
 
 export default defineComponent({
   name: 'ScheduleHistory',
-  components: {
-    TableCommon,
-    CardContent,
-    DialogDescription, DialogTitle, DialogHeader, DialogContent, Dialog
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -69,7 +73,9 @@ export default defineComponent({
     return {
       loading: false,
       data: [],
-      pagination: {} as PaginationModel
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0
     }
   },
   created()
@@ -77,7 +83,6 @@ export default defineComponent({
     this.handlerInitialize()
   },
   methods: {
-    cn,
     handlerInitialize()
     {
       this.loading = true
@@ -85,20 +90,37 @@ export default defineComponent({
           .then((response) => {
             if (response.status) {
               this.data = response.data.content
-              this.pagination = PaginationRequest.of(response.data)
+              this.dataCount = response.data.total
+              this.pageSize = response.data.size
+              this.pageIndex = response.data.page
             }
           })
-          .finally(() => {
-            this.loading = false
-          })
+          .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
+      this.filter.page = value
+      this.filter.size = this.pageSize
       this.handlerInitialize()
     },
-    handlerCancel()
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
+    },
+    onCancel()
     {
       this.visible = false
     }

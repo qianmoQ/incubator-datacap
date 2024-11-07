@@ -23,12 +23,14 @@
                 <template #title>{{ $t(item.i18nKey) }}</template>
                 <ShadcnMenuItem v-for="children in item.children"
                                 :name="children.id"
+                                :active="$route.path === children.url"
                                 :to="children.url">
                   {{ $t(children.i18nKey) }}
                 </ShadcnMenuItem>
               </ShadcnMenuSub>
               <ShadcnMenuItem v-else
                               :name="item.id"
+                              :active="$route.path === item.url"
                               :to="item.url">
                 {{ $t(item.i18nKey) }}
               </ShadcnMenuItem>

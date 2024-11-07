@@ -1,59 +1,64 @@
 <template>
-  <div class="w-full">
-    <DataCapCard>
-      <template #title>{{ $t('schedule.common.list') }}</template>
-      <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-        <template #active="{row}">
-          <Switch disabled :default-checked="row.active"/>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2 font-normal text-sm">{{ $t('schedule.common.list') }}</div>
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #active="{ row }">
+          <ShadcnSwitch v-model="row.active" size="small" :disabled="row.active"/>
         </template>
-        <template #system="{row}">
-          <Switch disabled :default-checked="row.system"/>
+
+        <template #system="{ row }">
+          <ShadcnSwitch v-model="row.system" size="small" :disabled="row.system"/>
         </template>
-        <template #action="{row}">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <Button variant="outline" size="sm" class="p-2" @click="handlerChangeInfo(true, row)">
-                  <History :size="15"></History>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{{ $t('schedule.common.history') }}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
+        <template #action="{ row }">
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('schedule.common.history')">
+              <ShadcnButton size="small" circle @click="handlerChangeInfo(true, row)">
+                <ShadcnIcon icon="History" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+          </ShadcnSpace>
         </template>
-      </TableCommon>
-    </DataCapCard>
-    <ScheduleHistory v-if="dataHistoryVisible" :is-visible="dataHistoryVisible" :info="dataInfo" @close="handlerChangeInfo(false, null)"></ScheduleHistory>
-  </div>
+      </ShadcnTable>
+
+      <ShadcnPagination v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnCard>
+
+  <ScheduleHistory v-if="dataHistoryVisible"
+                   :is-visible="dataHistoryVisible"
+                   :info="dataInfo"
+                   @close="handlerChangeInfo(false, null)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { DataCapCard } from '@/views/ui/card'
-import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { FilterModel } from '@/model/filter'
 import { createHeaders } from './ScheduleUtils'
 import { useI18n } from 'vue-i18n'
-import { PaginationModel } from '@/model/pagination'
 import ScheduleService from '@/services/schedule'
-import { Switch } from '@/components/ui/switch'
 import ScheduleHistory from '@/views/pages/system/schedule/ScheduleHistory.vue'
 import { ScheduleModel } from '@/model/schedule'
 
 export default defineComponent({
   name: 'ScheduleHome',
-  components: {
-    DataCapCard,
-    ScheduleHistory,
-    ArrowBigUp, History, Pencil,
-    Button, Switch,
-    Tooltip, TooltipProvider, TooltipContent, TooltipTrigger,
-    TableCommon
-  },
+  components: { ScheduleHistory },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -70,7 +75,9 @@ export default defineComponent({
       loading: false,
       dataHistoryVisible: false,
       data: [],
-      pagination: {} as PaginationModel,
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as ScheduleModel | null
     }
   },
@@ -86,20 +93,35 @@ export default defineComponent({
                      .then((response) => {
                        if (response.status) {
                          this.data = response.data.content
-                         this.pagination = {
-                           pageSize: response.data.size,
-                           total: response.data.total,
-                           currentPage: response.data.page
-                         }
+                         this.dataCount = response.data.total
+                         this.pageSize = response.data.size
+                         this.pageIndex = response.data.page
                        }
                      })
                      .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
+      this.filter.page = value
+      this.filter.size = this.pageSize
       this.handlerInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
     },
     handlerChangeInfo(isOpen: boolean, dataInfo: any)
     {
