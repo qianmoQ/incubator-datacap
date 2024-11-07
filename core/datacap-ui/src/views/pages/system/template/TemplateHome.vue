@@ -1,74 +1,72 @@
 <template>
-  <div class="w-full">
-    <DataCapCard>
-      <template #title>{{ $t('template.common.list') }}</template>
-      <template #extra>
-        <Button size="icon" class="ml-auto gap-1 h-6 w-6" @click="handlerInfo(true, null)">
-          <Plus :size="20"/>
-        </Button>
-      </template>
-      <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-        <template #plugin="{row}">
-          <div class="flex items-center p-4 sm:justify-between">
-            <div class="flex -space-x-2 overflow-hidden">
-              <Avatar v-for="item in row?.plugin.split(',')" size="sm" class="border-2 border-background w-8 h-8">
-                <AvatarImage :src="'/static/images/plugin/' + item + '.png'"/>
-                <AvatarFallback>{{ item }}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2 font-normal text-sm">{{ $t('template.common.list') }}</div>
+    </template>
+
+    <template #extra>
+      <ShadcnButton size="small" circle @click="handlerInfo(true, null)">
+        <template #icon>
+          <ShadcnIcon icon="Plus"/>
         </template>
+      </ShadcnButton>
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #plugin="{ row }">
+          <ShadcnAvatar v-for="item in row?.plugin.split(',')"
+                        size="small"
+                        :src="'/static/images/plugin/' + item + '.png'"
+                        :alt="item"/>
+        </template>
+
         <template #system="{ row }">
-          <Switch disabled :default-checked="row?.system"/>
+          <ShadcnSwitch v-model="row.system" size="small" :disabled="row.system"/>
         </template>
-        <template #action="{row}">
-          <TooltipProvider :delay-duration="0">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <Button variant="outline" size="icon" class="rounded-full w-8 h-8" @click="handlerInfo(true, row)">
-                  <Pencil :size="15"></Pencil>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{{ $t('common.editData') }}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
+        <template #action="{ row }">
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('common.editData')">
+              <ShadcnButton size="small" circle @click="handlerInfo(true, row)">
+                <ShadcnIcon icon="Pencil" size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+          </ShadcnSpace>
         </template>
-      </TableCommon>
-    </DataCapCard>
-  </div>
+      </ShadcnTable>
+
+      <ShadcnPagination v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnCard>
+
   <TemplateInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerInfo(false, null)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { DataCapCard } from '@/views/ui/card'
-import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Button } from '@/components/ui/button'
 import { FilterModel } from '@/model/filter'
 import { createHeaders } from '@/views/pages/system/template/TemplateUtils'
 import { useI18n } from 'vue-i18n'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import TemplateService from '@/services/template'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { TemplateModel } from '@/model/template'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Switch } from '@/components/ui/switch'
 import TemplateInfo from '@/views/pages/system/template/TemplateInfo.vue'
 
 export default defineComponent({
   name: 'TemplateHome',
-  components: {
-    DataCapCard,
-    TemplateInfo,
-    Switch,
-    Button,
-    Pencil, Plus, Import, Cog,
-    TableCommon,
-    Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-    Avatar, AvatarFallback, AvatarImage
-  },
+  components: { TemplateInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -85,7 +83,9 @@ export default defineComponent({
       loading: false,
       dataInfoVisible: false,
       data: [] as TemplateModel[],
-      pagination: {} as PaginationModel,
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as TemplateModel | null
     }
   },
@@ -101,16 +101,35 @@ export default defineComponent({
                      .then((response) => {
                        if (response.status) {
                          this.data = response.data.content
-                         this.pagination = PaginationRequest.of(response.data)
+                         this.dataCount = response.data.total
+                         this.pageSize = response.data.size
+                         this.pageIndex = response.data.page
                        }
                      })
                      .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
+      this.filter.page = value
+      this.filter.size = this.pageSize
       this.handlerInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
     },
     handlerInfo(opened: boolean, value: null | TemplateModel)
     {
