@@ -1,102 +1,83 @@
 <template>
-  <div class="w-full">
-    <DataCapCard>
-      <template #title>{{ $t('function.common.list') }}</template>
-      <template #extra>
-        <Button size="icon" class="ml-auto gap-1 h-6 w-6" @click="handlerInfo(true, null)">
-          <Plus :size="20"/>
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button variant="secondary" size="icon" class="gap-1 h-6 w-6 ml-2">
-              <Cog class="w-full justify-center" :size="20"/>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuGroup>
-              <DropdownMenuItem class="cursor-pointer" @click="handlerImport(true)">
-                <Import class="mr-2 h-4 w-4"/>
-                <span>{{ $t('function.common.import') }}</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </template>
-      <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-        <template #plugin="{row}">
-          <div class="flex items-center p-4 sm:justify-between">
-            <div class="flex -space-x-2 overflow-hidden">
-              <Avatar v-for="item in row?.plugin" size="sm" class="border-2 border-background w-8 h-8 cursor-pointer">
-                <AvatarImage :src="'/static/images/plugin/' + item + '.png'"/>
-                <AvatarFallback>{{ item }}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        </template>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2 font-normal text-sm">{{ $t('function.common.list') }}</div>
+    </template>
+
+    <template #extra>
+      <ShadcnSpace>
+        <ShadcnButton size="small" circle @click="handlerInfo(true, null)">
+          <template #icon>
+            <ShadcnIcon icon="Plus"/>
+          </template>
+        </ShadcnButton>
+        <ShadcnTooltip :content="$t('function.common.import')">
+          <ShadcnButton size="small" circle @click="handlerImport(true)">
+            <template #icon>
+              <ShadcnIcon icon="Import" size="16"/>
+            </template>
+          </ShadcnButton>
+        </ShadcnTooltip>
+      </ShadcnSpace>
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
         <template #type="{ row }">
-          <Badge>{{ $t('function.common.' + row.type.toLowerCase()) }}</Badge>
+          <ShadcnBadge :text="$t('function.common.' + row.type.toLowerCase())"/>
         </template>
+
+        <template #plugin="{ row }">
+          <ShadcnAvatarGroup :items="extractItem(row?.plugin)" size="small" max="3"/>
+        </template>
+
         <template #action="{row}">
-          <TooltipProvider :delay-duration="0">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <Button variant="outline" size="icon" class="rounded-full" @click="handlerInfo(true, row)">
-                  <Pencil :size="15"></Pencil>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{{ $t('common.editData') }}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <ShadcnTooltip :content="$t('common.editData')">
+            <ShadcnButton size="small" circle @click="handlerInfo(true, row)">
+              <ShadcnIcon icon="Pencil" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
         </template>
-      </TableCommon>
-    </DataCapCard>
-    <FunctionInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerInfo(false, null)"/>
-    <FunctionImport v-if="dataImportVisible" :is-visible="dataImportVisible" @close="handlerImport(false)"/>
-  </div>
+      </ShadcnTable>
+
+      <ShadcnPagination v-if="data?.length > 0"
+                        v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnCard>
+
+  <FunctionInfo v-if="dataInfoVisible"
+                :is-visible="dataInfoVisible"
+                :info="dataInfo"
+                @close="handlerInfo(false, null)"/>
+
+  <FunctionImport v-if="dataImportVisible" :is-visible="dataImportVisible" @close="handlerImport(false)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { DataCapCard } from '@/views/ui/card'
-import TableCommon from '@/views/components/table/TableCommon.vue'
 import { FilterModel } from '@/model/filter'
 import { createHeaders } from '@/views/pages/system/function/FunctionUtils'
 import { useI18n } from 'vue-i18n'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import FunctionService from '@/services/function'
 import FunctionInfo from '@/views/pages/system/function/FunctionInfo.vue'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import FunctionImport from '@/views/pages/system/function/FunctionImport.vue'
 import { FunctionModel } from '@/model/function'
 
 export default defineComponent({
   name: 'FunctionHome',
-  components: {
-    FunctionImport,
-    DataCapCard,
-    Import, Pencil, Cog, Plus,
-    Badge,
-    Button,
-    FunctionInfo,
-    TableCommon,
-    Avatar, AvatarFallback, AvatarImage,
-    Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-    DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger
-  },
+  components: { FunctionImport, FunctionInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -114,7 +95,9 @@ export default defineComponent({
       dataInfoVisible: false,
       dataImportVisible: false,
       data: [],
-      pagination: {} as PaginationModel,
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as FunctionModel | null
     }
   },
@@ -130,16 +113,44 @@ export default defineComponent({
                      .then((response) => {
                        if (response.status) {
                          this.data = response.data.content
-                         this.pagination = PaginationRequest.of(response.data)
+                         this.dataCount = response.data.total
+                         this.pageSize = response.data.size
+                         this.pageIndex = response.data.page
                        }
                      })
                      .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
+      this.filter.page = value
+      this.filter.size = this.pageSize
       this.handlerInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
+    },
+    extractItem(plugins: string[])
+    {
+      return plugins.map((item: string) => {
+        return {
+          name: item,
+          src: `/static/images/plugin/${ item }.png`
+        }
+      })
     },
     handlerInfo(opened: boolean, value: FunctionModel | null)
     {

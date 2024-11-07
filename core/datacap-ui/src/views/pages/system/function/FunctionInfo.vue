@@ -1,87 +1,71 @@
 <template>
-  <Sheet :open="visible" class="w-full" @update:open="handlerCancel">
-    <SheetContent class="min-w-[25%]">
-      <SheetHeader class="border-b pb-3">
-        <SheetTitle class="-mt-3">{{ title }}</SheetTitle>
-      </SheetHeader>
-      <CircularLoading v-if="loading" :show="loading"/>
-      <div v-else class="grid gap-4 py-4">
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="name" class="text-right">{{ $t('common.name') }}</Label>
-          <Input v-model="formState.name" class="col-span-3"/>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="plugin" class="text-right">{{ $t('common.plugin') }}</Label>
-          <MultipleSelect :plugins="plugins" @changeValue="handlerPluginChange"/>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="content" class="text-right">{{ $t('common.content') }}</Label>
-          <Textarea v-model="formState.content" class="col-span-3"/>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="description" class="text-right">{{ $t('common.description') }}</Label>
-          <Textarea v-model="formState.description" class="col-span-3"/>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="description" class="text-right">{{ $t('common.type') }}</Label>
-          <Select v-model="formState.type">
-            <SelectTrigger class="col-span-3">
-              <SelectValue :placeholder="$t('function.tip.selectTypeHolder')"/>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem v-for="item in types" :value="item.value" class="cursor-pointer">{{ item.label }}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="example" class="text-right">{{ $t('function.common.example') }}</Label>
-          <Textarea v-model="formState.example" class="col-span-3"/>
-        </div>
+  <ShadcnDrawer v-model="visible" :title="title" width="40%">
+    <ShadcnSpin v-if="loading" fixed/>
+
+    <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="name"
+                      :label="$t('common.name')"
+                      :rules="[
+                          { required: true, message: $t('common.name') }
+                      ]">
+        <ShadcnInput v-model="formState.name" name="name"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="plugin"
+                      :label="$t('common.plugin')"
+                      :rules="[
+                          { required: true, message: $t('common.plugin') }
+                      ]">
+        <ShadcnSelect v-model="formState.plugin" :options="plugins" multiple name="plugin"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="content"
+                      :label="$t('common.content')"
+                      :rules="[
+                          { required: true, message: $t('common.content') }
+                      ]">
+        <ShadcnInput v-model="formState.content" type="textarea" name="content"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="description"
+                      :label="$t('common.description')"
+                      :rules="[
+                          { required: true, message: $t('common.description') }
+                      ]">
+        <ShadcnInput v-model="formState.description" type="textarea" name="description"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="type"
+                      :label="$t('common.type')"
+                      :rules="[
+                          { required: true, message: $t('common.type') }
+                      ]">
+        <ShadcnSelect v-model="formState.type"
+                      name="type"
+                      :placeholder="$t('function.tip.selectTypeHolder')"
+                      :options="types"/>
+      </ShadcnFormItem>
+
+      <div class="flex justify-end">
+        <ShadcnButton submit :loading="saving" :disabled="saving">
+          {{ $t('common.save') }}
+        </ShadcnButton>
       </div>
-      <SheetFooter class="absolute bottom-0 left-0 right-0 mb-3 mr-3 pt-3 border-t">
-        <SheetClose as-child>
-          <Button :disabled="saving" variant="destructive" @click="handlerCancel()">{{ $t('common.cancel') }}</Button>
-          <Button :disabled="saving" @click="handlerSave()">
-            <Loader2 v-if="saving" class="w-full justify-center animate-spin"/>
-            {{ $t('common.submit') }}
-          </Button>
-        </SheetClose>
-      </SheetFooter>
-    </SheetContent>
-  </Sheet>
+    </ShadcnForm>
+  </ShadcnDrawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useI18n } from 'vue-i18n'
 import { createDefaultType } from '@/views/pages/system/function/FunctionUtils'
 import { FunctionModel } from '@/model/function'
 import FunctionService from '@/services/function'
 import SourceService from '@/services/source'
-import { ToastUtils } from '@/utils/toast'
-import { Button } from '@/components/ui/button'
-
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
-import MultipleSelect from '@/views/components/select/MultipleSelect.vue'
 import { cloneDeep, omit } from 'lodash'
 
 export default defineComponent({
   name: 'FunctionInfo',
-  components: {
-    MultipleSelect,
-    CircularLoading,
-    Textarea,
-    SelectItem, SelectLabel, SelectValue, SelectTrigger, SelectGroup, SelectContent, Select,
-    Input,
-    Label,
-    Button,
-    Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -147,43 +131,41 @@ export default defineComponent({
       SourceService.getPlugins()
                    .then(response => {
                      if (response.status) {
-                       this.plugins = Object.values(response.data).reduce((acc, curr) => (acc as any).concat(curr), []) as any[]
-                       if (this.formState.plugin) {
-                         (this.formState.plugin as string[]).forEach(formPlugin => {
-                           const foundPlugin = this.plugins.find(plugin => plugin.name === formPlugin)
-                           if (foundPlugin) {
-                             foundPlugin.checked = true
-                           }
-                         })
-                       }
+                       const result = Array.from(
+                           new Set(
+                               (Object.values(response.data)
+                                      .reduce((acc, curr) => acc.concat(curr), []) as any[])
+                                   .map((value: { name: string }) => ({ label: value.name, value: value.name }))
+                           )
+                       )
+
+                       this.plugins = result
                      }
                    })
                    .finally(() => this.loading = false)
     },
-    handlerSave()
+    onSubmit()
     {
       this.saving = true
-      const plugins = []
-      plugins.push(this.formState.plugin as string)
-      this.formState.plugin = plugins
       FunctionService.saveOrUpdate(this.formState)
                      .then((response) => {
                        if (response.status) {
-                         ToastUtils.success('Create successful')
                          this.visible = false
+                         this.$Message.success({
+                           content: 'Save successfully',
+                           showIcon: true
+                         })
                        }
                        else {
-                         ToastUtils.error(response.message)
+                         this.$Message.error({
+                           content: response.message,
+                           showIcon: true
+                         })
                        }
                      })
                      .finally(() => this.saving = false)
     },
-    handlerPluginChange(value: string)
-    {
-      this.formState.plugin = value.split(',')
-                                   .join(',')
-    },
-    handlerCancel()
+    onCancel()
     {
       this.$emit('close', false)
     }

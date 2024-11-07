@@ -42,7 +42,7 @@
           <!-- Language Switcher -->
           <div class="mr-3 mt-2.5 items-center">
             <ShadcnTooltip :content="$t('common.feedback')">
-              <ShadcnLink link="https://github.com/devlive-community/datacap" target="_blank">
+              <ShadcnLink link="https://github.com/devlive-community/datacap" external target="_blank">
                 <ShadcnIcon icon="CircleHelp" :size="20"/>
               </ShadcnLink>
             </ShadcnTooltip>
