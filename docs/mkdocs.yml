@@ -123,6 +123,7 @@ plugins:
             NavConnectors: 连接器
             NavFileSystem: 文件系统
             NavDeveloper: 开发
+            NavDeveloperSpecification: 开发规范
             NavDeveloperPlugin: 插件
             NavDeveloperPluginKotlin: 插件 (Kotlin)
             NavReleaseNote: 更新日志
@@ -141,6 +142,7 @@ plugins:
             NavConnectors: Connectors
             NavFileSystem: File System
             NavDeveloper: Developer
+            NavDeveloperSpecification: Specification
             NavDeveloperPlugin: Plugin
             NavDeveloperPluginKotlin: Plugin (Kotlin)
             NavReleaseNote: Release Note
@@ -257,6 +259,7 @@ nav:
       - 1.1.0.20221115: release/1.1.0.20221115.md
       - 1.0.0.20221015: release/1.0.0.20221015.md
   - NavDeveloper:
+      - developer/specification/home.md
       - developer/server/home.md
       - developer/web/home.md
       - developer/doc/home.md

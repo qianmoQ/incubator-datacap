@@ -11,7 +11,7 @@
           <ShadcnIcon class="text-xs font-semibold text-gray-500"
                       size="16"
                       :icon="node.level === 2 ? 'Table' : 'Database'"/>
-          <span class="text-xs font-semibold text-gray-500">{{ node.title }}</span>
+          <span class="text-xs font-normal text-gray-500">{{ node.title }}</span>
         </div>
       </template>
     </ShadcnTree>
@@ -25,7 +25,6 @@ import DatabaseService from '@/services/database'
 import TableService from '@/services/table'
 import ColumnService from '@/services/column'
 
-import './style.css'
 import { ObjectUtils } from '@/utils/object'
 
 export default defineComponent({

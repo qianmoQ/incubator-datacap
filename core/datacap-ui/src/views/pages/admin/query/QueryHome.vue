@@ -1,128 +1,150 @@
 <template>
-  {{ selectSource }}
   <ShadcnLayout>
     <ShadcnLayoutWrapper>
-      <ShadcnLayoutSider>
+      <ShadcnLayoutSider style="top: -8px;">
         <ShadcnCard>
-          <SourceSelect v-model="selectSource.full as string" class="border-b-0" @on-change="onChange($event)"/>
+          <SourceSelect v-model="selectSource.full as string" @on-change="onChange($event)"/>
 
           <MetadataTree v-if="selectSource.code" :code="selectSource.code as string"/>
         </ShadcnCard>
       </ShadcnLayoutSider>
 
       <ShadcnLayoutMain class="min-h-screen">
-        <ShadcnLayoutHeader class="bg-blue-100 h-12">Header</ShadcnLayoutHeader>
-        <ShadcnLayoutContent class="bg-blue-500 h-32">Content</ShadcnLayoutContent>
-        <ShadcnLayoutFooter class="bg-blue-400 h-20">Footer</ShadcnLayoutFooter>
+        <ShadcnLayoutHeader>
+          <ShadcnCard ref="editorContainer">
+            <template #title>
+              <ShadcnSpace>
+                <ShadcnButton size="small"
+                              :loading="loading.running"
+                              :disabled="(!selectSource.id && !loading.running) || loading.running"
+                              @click="onRun()">
+                  <template #icon>
+                    <ShadcnIcon icon="Play" :size="15"/>
+                  </template>
+
+                  {{ selectEditor.isSelection ? $t('query.common.executeSelection') : $t('query.common.execute') }}
+                </ShadcnButton>
+
+                <ShadcnButton size="small"
+                              :loading="loading.formatting"
+                              :disabled="(!selectSource.id && !loading.formatting) || loading.formatting"
+                              @click="onFormat()">
+                  <template #icon>
+                    <ShadcnIcon icon="RemoveFormatting" :size="15"/>
+                  </template>
+
+                  {{ $t('query.common.format') }}
+                </ShadcnButton>
+
+                <ShadcnButton size="small"
+                              type="error"
+                              :loading="loading.formatting"
+                              :disabled="!selectSource.id || !loading.running"
+                              @click="onCancel()">
+                  <template #icon>
+                    <ShadcnIcon icon="Ban" :size="15"/>
+                  </template>
+
+                  {{ $t('common.cancel') }}
+                </ShadcnButton>
+
+                <ShadcnButton v-if="responseConfigure.response"
+                              size="small"
+                              type="primary"
+                              @click="visibleSnippet(true)">
+                  <template #icon>
+                    <ShadcnIcon icon="Plus" :size="15"/>
+                  </template>
+
+                  {{ $t('common.snippet') }}
+                </ShadcnButton>
+
+                <div v-if="responseConfigure.response">
+                  <ShadcnTooltip>
+                    <template #content>
+                      <ShadcnSpace wrap>
+                        <ShadcnText color="white" type="small">
+                          {{ $t('query.common.connectionTime') }}
+                          {{ responseConfigure.response.data.connection.elapsed }} ms
+                        </ShadcnText>
+
+                        <ShadcnText color="white" type="small">
+                          {{ $t('query.common.executionTime') }}
+                          {{ responseConfigure.response.data.processor.elapsed }} ms
+                        </ShadcnText>
+                      </ShadcnSpace>
+                    </template>
+
+                    <ShadcnButton size="small">
+                      <ShadcnIcon icon="Clock" :size="15"/>
+
+                      {{ responseConfigure.response.data.processor.elapsed }} ms
+                    </ShadcnButton>
+                  </ShadcnTooltip>
+                </div>
+
+                <ShadcnButton v-if="selectSource.id && (responseConfigure.response?.data || !responseConfigure.response?.status)"
+                              size="small"
+                              type="primary"
+                              @click="visibleQueryHelp(true)">
+                  <template #icon>
+                    <ShadcnIcon icon="Bot" :size="15"/>
+                  </template>
+
+                  {{ $t('query.common.help') }}
+                </ShadcnButton>
+
+                <ShadcnButton size="small" type="default" @click="onPlusEditor">
+                  <template #icon>
+                    <ShadcnIcon icon="Pencil" :size="15"/>
+                  </template>
+
+                  {{ $t('common.createEditor') }}
+                </ShadcnButton>
+              </ShadcnSpace>
+            </template>
+
+            <ShadcnTab v-model="selectEditor.activeKey as string"
+                       closable
+                       @tab-remove="onMinusEditor"
+                       @on-change="onChangeEditor">
+              <ShadcnTabItem v-for="item in selectEditor.editorMaps.values()" :label="item.title" :value="item.key">
+                <VAceEditor lang="mysql"
+                            :value="selectEditor.editorInstance?.instance?.getValue() as string"
+                            :theme="selectEditor.editorInstance?.configure?.theme"
+                            :style="{ height: '300px', fontSize: selectEditor.editorInstance?.configure?.fontSize + 'px' }"
+                            :key="selectEditor.editorInstance?.key"
+                            :options="{ enableSnippets: true, enableLiveAutocompletion: true, readOnly: loading.froming }"
+                            @init="handlerEditorDidMount($event, 'mysql', selectEditor.editorInstance?.key)"/>
+              </ShadcnTabItem>
+            </ShadcnTab>
+          </ShadcnCard>
+        </ShadcnLayoutHeader>
+
+        <ShadcnLayoutContent class="mt-1">
+          <GridTable v-if="responseConfigure.gridConfigure" :configure="responseConfigure.gridConfigure"/>
+        </ShadcnLayoutContent>
       </ShadcnLayoutMain>
     </ShadcnLayoutWrapper>
   </ShadcnLayout>
 
+  <QueryHelp v-if="visibility.queryHelp"
+             :is-visible="visibility.queryHelp"
+             :content="selectEditor.editorInstance?.instance?.getValue() as string"
+             :help-type="queryConfigure.queryType"
+             :engine="selectSource.engine as string"
+             :message="responseConfigure.message as string"
+             @close="visibleQueryHelp(false)"/>
 
-  <!--  <div class="hidden space-y-6 pb-16 w-full md:block">-->
-  <!--    <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">-->
-  <!--      <div class="flex-1">-->
-  <!--        <div class="space-y-6">-->
-  <!--          <div class="flex items-center space-x-4 text-sm">-->
-  <!--            <Card class="w-full h-full" style="border-radius: 0">-->
-  <!--              <CardHeader class="p-2 pl-5">-->
-  <!--                <CardTitle>-->
-  <!--                  <div class="flex justify-between items-center h-5 pt-3 pb-3">-->
-  <!--                    <div class="flex items-center">-->
-  <!--                      <Button :disabled="(!selectSource.id && !loading.running) || loading.running" size="sm" @click="handlerRun()">-->
-  <!--                        <Loader2 v-if="loading.running" class="w-full justify-center animate-spin mr-1" :size="18"/>-->
-  <!--                        <PlayCircle v-else class="mr-1" :size="18"/>-->
-  <!--                        {{ selectEditor.isSelection ? $t('query.common.executeSelection') : $t('query.common.execute') }}-->
-  <!--                      </Button>-->
-  <!--                      <Button :disabled="(!selectSource.id && !loading.formatting) || loading.formatting" size="sm" class="ml-2" variant="secondary" @click="handlerFormat()">-->
-  <!--                        <Loader2 v-if="loading.formatting" class="w-full justify-center animate-spin mr-1" :size="18"/>-->
-  <!--                        <RemoveFormatting v-else class="mr-1" :size="18"/>-->
-  <!--                        {{ $t('query.common.format') }}-->
-  <!--                      </Button>-->
-  <!--                      <Button size="sm" style="background-color: #FF4D4F;" class="ml-2" :disabled="!selectSource.id || !loading.running" @click="handlerCancel()">-->
-  <!--                        <Ban class="mr-1" :size="18"/>-->
-  <!--                        {{ $t('common.cancel') }}-->
-  <!--                      </Button>-->
-  <!--                      <Button v-if="responseConfigure.response" size="sm" class="ml-2" @click="handlerSnippet(true)">-->
-  <!--                        <Plus class="mr-1" :size="18"/>-->
-  <!--                        {{ $t('common.snippet') }}-->
-  <!--                      </Button>-->
-  <!--                      <HoverCard v-if="responseConfigure.response">-->
-  <!--                        <HoverCardTrigger as-child>-->
-  <!--                          <Button size="sm" class="ml-2" variant="outline">-->
-  <!--                            <Clock class="mr-1" :size="18"/>-->
-  <!--                            {{ responseConfigure.response.data.processor.elapsed }} ms-->
-  <!--                          </Button>-->
-  <!--                        </HoverCardTrigger>-->
-  <!--                        <HoverCardContent class="w-80">-->
-  <!--                          <div class="flex">-->
-  <!--                            <Card class="left text-center w-1/2">-->
-  <!--                              <CardHeader class="border-b p-4">-->
-  <!--                                <CardTitle>{{ $t('query.common.connectionTime') }}</CardTitle>-->
-  <!--                              </CardHeader>-->
-  <!--                              <CardContent class="mt-3">-->
-  <!--                                <p>{{ responseConfigure.response.data.connection.elapsed }} ms</p>-->
-  <!--                              </CardContent>-->
-  <!--                            </Card>-->
-  <!--                            <Card class="ml-3 right text-center w-1/2">-->
-  <!--                              <CardHeader class="border-b p-4">-->
-  <!--                                <CardTitle>{{ $t('query.common.executionTime') }}</CardTitle>-->
-  <!--                              </CardHeader>-->
-  <!--                              <CardContent class="mt-3">-->
-  <!--                                <p>{{ responseConfigure.response.data.processor.elapsed }} ms</p>-->
-  <!--                              </CardContent>-->
-  <!--                            </Card>-->
-  <!--                          </div>-->
-  <!--                        </HoverCardContent>-->
-  <!--                      </HoverCard>-->
-  <!--                      <Button v-if="selectSource.id && (responseConfigure.response?.data || !responseConfigure.response?.status)" size="sm" class="ml-2"-->
-  <!--                              variant="ghost" @click="handlerQueryHelp(true)">-->
-  <!--                        <Bot class="mr-1" :size="18"/>-->
-  <!--                        {{ $t('query.common.help') }}-->
-  <!--                      </Button>-->
-  <!--                    </div>-->
-  <!--                    <div class="flex items-center space-x-4 text-sm">-->
-  <!--                      <Button size="sm" variant="outline" @click="handlerPlusEditor">-->
-  <!--                        <Pencil class="mr-1" :size="15"/>-->
-  <!--                        {{ $t('common.createEditor') }}-->
-  <!--                      </Button>-->
-  <!--                    </div>-->
-  <!--                  </div>-->
-  <!--                </CardTitle>-->
-  <!--              </CardHeader>-->
-  <!--              <CardContent ref="editorContainer" class="p-0">-->
-  <!--                <Tabs v-model="selectEditor.activeKey as string" @update:modelValue="handlerChangeEditor">-->
-  <!--                  <TabsList class="w-full border-r-0 border-0" style="border-radius: 0">-->
-  <!--                    <TabsTrigger v-for="(item, index) in selectEditor.editorMaps.values()" :value="item.key">-->
-  <!--                      {{ item.title }}-->
-  <!--                      <CircleX v-if="index > 0" class="ml-1" :size="18" @click="handlerMinusEditor(item.key, index)"/>-->
-  <!--                    </TabsTrigger>-->
-  <!--                  </TabsList>-->
-  <!--                  <VAceEditor lang="mysql" :value="selectEditor.editorInstance?.instance?.getValue() as string" :theme="selectEditor.editorInstance?.configure?.theme"-->
-  <!--                              :style="{ height: '300px', fontSize: selectEditor.editorInstance?.configure?.fontSize + 'px' }"-->
-  <!--                              :key="selectEditor.editorInstance?.key" :options="{ enableSnippets: true, enableLiveAutocompletion: true, readOnly: loading.froming }"-->
-  <!--                              @init="handlerEditorDidMount($event, 'mysql', selectEditor.editorInstance?.key)"/>-->
-  <!--                </Tabs>-->
-  <!--              </CardContent>-->
-  <!--              <CardContent class="p-0">-->
-  <!--                <GridTable v-if="responseConfigure.gridConfigure" :configure="responseConfigure.gridConfigure"/>-->
-  <!--              </CardContent>-->
-  <!--            </Card>-->
-  <!--          </div>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--    &lt;!&ndash; Ai Help &ndash;&gt;-->
-  <!--    <QueryHelp v-if="visibility.queryHelp" :is-visible="visibility.queryHelp" :content="selectEditor.editorInstance?.instance?.getValue() as string"-->
-  <!--               :help-type="queryConfigure.queryType" :engine="selectSource.engine as string" :message="responseConfigure.message as string" @close="handlerQueryHelp(false)"/>-->
-  <!--    <SnippetInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerSnippet(false)"/>-->
-  <!--  </div>-->
+  <SnippetInfo v-if="dataInfoVisible"
+               :is-visible="dataInfoVisible"
+               :info="dataInfo"
+               @close="visibleSnippet(false)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SourceSelect from '@/views/components/source/SourceSelect.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { VAceEditor } from 'vue3-ace-editor'
 import { Ace } from 'ace-builds'
 import '@/ace-editor-theme'
@@ -131,8 +153,6 @@ import Common from '@/utils/common'
 import SnippetService from '@/services/snippet'
 import AuditService from '@/services/audit'
 import { ExecuteModel } from '@/model/execute'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
 import langTools from 'ace-builds/src-noconflict/ext-language_tools'
 import { HttpUtils } from '@/utils/http'
 import FunctionService from '@/services/function'
@@ -141,11 +161,9 @@ import DatabaseService from '@/services/database'
 import TableService from '@/services/table'
 import ColumnService from '@/services/column'
 import axios from 'axios'
-import { ToastUtils } from '@/utils/toast'
 import GridTable from '@/views/components/grid/GridTable.vue'
 import { GridConfigure } from '@/views/components/grid/GridConfigure'
 import { ResponseModel } from '@/model/response'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import FormatService from '@/services/format'
 import { HelpType } from '@/views/pages/admin/query/HelpType'
 import QueryHelp from '@/views/pages/admin/query/QueryHelp.vue'
@@ -166,7 +184,8 @@ interface EditorInstance
 
 export default defineComponent({
   name: 'QueryHome',
-  components: { MetadataTree,
+  components: {
+    MetadataTree,
     SnippetInfo,
     QueryHelp,
     GridTable,
@@ -270,48 +289,6 @@ export default defineComponent({
       }
       // Initializes the completer
       this.handlerInitializeCompleter(editor, _language)
-    },
-    onChange(value: string)
-    {
-      const idAndType = value.split(':')
-      this.selectSource.id = idAndType[0]
-      this.selectSource.type = idAndType[1]
-      this.selectSource.engine = idAndType[1]
-      this.selectSource.code = idAndType[2]
-      const instance = this.selectEditor.editorMaps.get(this.selectEditor.activeKey as string)
-      if (instance) {
-        this.handlerEditorDidMount(instance.instance as any, idAndType[1])
-      }
-    },
-    handlerPlusEditor()
-    {
-      this.responseConfigure.message = null
-      this.createEditor()
-    },
-    handlerMinusEditor(targetKey: string, index: number)
-    {
-      const keys = Array.from(this.selectEditor.editorMaps.keys())
-      if (index > 0 && index < keys.length) {
-        const previousKey = keys[index - 1]
-        const instance = this.selectEditor.editorMaps.get(previousKey)
-        if (instance) {
-          this.selectEditor.editorInstance = instance
-          this.selectEditor.activeKey = previousKey
-          this.selectEditor.isSelection = false
-        }
-      }
-      this.selectEditor.editorMaps.delete(targetKey)
-    },
-    handlerChangeEditor(value: any)
-    {
-      this.responseConfigure.message = null
-      this.queryConfigure.queryType = [HelpType.ANALYSIS, HelpType.OPTIMIZE]
-      const instance = this.selectEditor.editorMaps.get(value)
-      if (instance) {
-        this.selectEditor.editorInstance = instance
-        this.selectEditor.activeKey = value
-        this.selectEditor.isSelection = false
-      }
     },
     handlerInitializeCompleter(editor: Editor, language: string)
     {
@@ -440,7 +417,50 @@ export default defineComponent({
         console.error(e)
       }
     },
-    handlerRun()
+    onChange(value: string)
+    {
+      const idAndType = value.split(':')
+      this.selectSource.id = idAndType[0]
+      this.selectSource.type = idAndType[1]
+      this.selectSource.engine = idAndType[1]
+      this.selectSource.code = idAndType[2]
+      const instance = this.selectEditor.editorMaps.get(this.selectEditor.activeKey as string)
+      if (instance) {
+        this.handlerEditorDidMount(instance.instance as any, idAndType[1])
+      }
+    },
+    onPlusEditor()
+    {
+      this.responseConfigure.message = null
+      this.createEditor()
+    },
+    onMinusEditor(targetKey: string)
+    {
+      const keys = Array.from(this.selectEditor.editorMaps.keys())
+      const index = keys.indexOf(targetKey)
+      if (index > 0 && index < keys.length) {
+        const previousKey = keys[index - 1]
+        const instance = this.selectEditor.editorMaps.get(previousKey)
+        if (instance) {
+          this.selectEditor.editorInstance = instance
+          this.selectEditor.activeKey = previousKey
+          this.selectEditor.isSelection = false
+        }
+      }
+      this.selectEditor.editorMaps.delete(targetKey)
+    },
+    onChangeEditor(value: any)
+    {
+      this.responseConfigure.message = null
+      this.queryConfigure.queryType = [HelpType.ANALYSIS, HelpType.OPTIMIZE]
+      const instance = this.selectEditor.editorMaps.get(value)
+      if (instance) {
+        this.selectEditor.editorInstance = instance
+        this.selectEditor.activeKey = value
+        this.selectEditor.isSelection = false
+      }
+    },
+    onRun()
     {
       this.responseConfigure.gridConfigure = null
       this.responseConfigure.response = null
@@ -479,7 +499,10 @@ export default defineComponent({
                         }
                       }
                       else {
-                        ToastUtils.error(response.message)
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                         this.responseConfigure.message = response.message
                         this.queryConfigure.queryType.push(HelpType.FIXEDBUGS)
                         this.responseConfigure.gridConfigure = null
@@ -487,11 +510,11 @@ export default defineComponent({
                     })
                     .finally(() => this.loading.running = false)
     },
-    handlerCancel()
+    onCancel()
     {
       this.queryConfigure.cancelToken.cancel('Cancel query')
     },
-    handlerFormat()
+    onFormat()
     {
       const editorInstance = this.selectEditor.editorInstance
       if (editorInstance) {
@@ -504,17 +527,20 @@ export default defineComponent({
                          this.selectEditor.isSelection = false
                        }
                        else {
-                         ToastUtils.error(response.message)
+                         this.$Message.error({
+                           content: response.message,
+                           showIcon: true
+                         })
                        }
                      })
                      .finally(() => this.loading.formatting = false)
       }
     },
-    handlerQueryHelp(value: boolean)
+    visibleQueryHelp(value: boolean)
     {
       this.visibility.queryHelp = value
     },
-    handlerSnippet(opened: boolean)
+    visibleSnippet(opened: boolean)
     {
       const editorInstance = this.selectEditor.editorInstance
       this.dataInfoVisible = opened

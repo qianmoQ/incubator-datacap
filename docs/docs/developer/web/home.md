@@ -40,19 +40,19 @@ git clone https://github.com/devlive-community/datacap.git
 - 进入源码目录
 
 ```sql
-cd core/datacap-web
+cd core/datacap-ui
 ```
 
-- 安装依赖
+- 安装依赖 (推荐使用 yarn 或 pnpm)
 
 ```bash
-yarn install
+pnpm install
 ```
 
 - 启动服务
 
 ```bash
-yarn dev
+pnpm run dev
 ```
 
 返回类似如下信息

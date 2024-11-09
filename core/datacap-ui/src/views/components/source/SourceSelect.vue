@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ShadcnSelect v-model="applySource" @on-change="onChange">
+    <ShadcnSelect v-model="applySource" :placeholder="$t('source.tip.selectSource')" @on-change="onChange">
       <template #options>
         <ShadcnSelectOption v-for="item in items"
                             :label="item.name"
