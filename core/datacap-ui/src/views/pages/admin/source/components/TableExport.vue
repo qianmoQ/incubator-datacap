@@ -50,26 +50,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import { StructureModel } from '@/model/structure.ts'
 import TableService from '@/services/table'
-import { ToastUtils } from '@/utils/toast'
 import { TableExportModel, TableExportRequest } from '@/model/table'
-import Button from '@/views/ui/button'
 import { toNumber } from 'lodash'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 
 export default defineComponent({
   name: 'TableExport',
-  components: {
-    Input,
-    Label,
-    Dialog,
-    Button,
-    RadioGroup, RadioGroupItem
-  },
   computed: {
     visible: {
       get(): boolean

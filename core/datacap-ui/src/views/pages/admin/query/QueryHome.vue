@@ -14,10 +14,7 @@
           <ShadcnCard ref="editorContainer">
             <template #title>
               <ShadcnSpace>
-                <ShadcnButton size="small"
-                              :loading="loading.running"
-                              :disabled="(!selectSource.id && !loading.running) || loading.running"
-                              @click="onRun()">
+                <ShadcnButton :loading="loading.running" :disabled="(!selectSource.id && !loading.running) || loading.running" @click="onRun()">
                   <template #icon>
                     <ShadcnIcon icon="Play" :size="15"/>
                   </template>
@@ -25,7 +22,7 @@
                   {{ selectEditor.isSelection ? $t('query.common.executeSelection') : $t('query.common.execute') }}
                 </ShadcnButton>
 
-                <ShadcnButton size="small"
+                <ShadcnButton type="default"
                               :loading="loading.formatting"
                               :disabled="(!selectSource.id && !loading.formatting) || loading.formatting"
                               @click="onFormat()">
@@ -36,8 +33,7 @@
                   {{ $t('query.common.format') }}
                 </ShadcnButton>
 
-                <ShadcnButton size="small"
-                              type="error"
+                <ShadcnButton type="error"
                               :loading="loading.formatting"
                               :disabled="!selectSource.id || !loading.running"
                               @click="onCancel()">
@@ -48,10 +44,7 @@
                   {{ $t('common.cancel') }}
                 </ShadcnButton>
 
-                <ShadcnButton v-if="responseConfigure.response"
-                              size="small"
-                              type="primary"
-                              @click="visibleSnippet(true)">
+                <ShadcnButton v-if="responseConfigure.response" type="primary" @click="visibleSnippet(true)">
                   <template #icon>
                     <ShadcnIcon icon="Plus" :size="15"/>
                   </template>
@@ -75,7 +68,7 @@
                       </ShadcnSpace>
                     </template>
 
-                    <ShadcnButton size="small">
+                    <ShadcnButton>
                       <ShadcnIcon icon="Clock" :size="15"/>
 
                       {{ responseConfigure.response.data.processor.elapsed }} ms
@@ -84,9 +77,7 @@
                 </div>
 
                 <ShadcnButton v-if="selectSource.id && (responseConfigure.response?.data || !responseConfigure.response?.status)"
-                              size="small"
-                              type="primary"
-                              @click="visibleQueryHelp(true)">
+                              type="primary" @click="visibleQueryHelp(true)">
                   <template #icon>
                     <ShadcnIcon icon="Bot" :size="15"/>
                   </template>
@@ -94,7 +85,7 @@
                   {{ $t('query.common.help') }}
                 </ShadcnButton>
 
-                <ShadcnButton size="small" type="default" @click="onPlusEditor">
+                <ShadcnButton type="default" @click="onPlusEditor">
                   <template #icon>
                     <ShadcnIcon icon="Pencil" :size="15"/>
                   </template>

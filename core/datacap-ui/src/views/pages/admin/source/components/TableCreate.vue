@@ -124,32 +124,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-import Divider from '@/views/ui/divider'
 import { StructureModel } from '@/model/structure'
 import { TableModel, TableRequest } from '@/model/table'
 import TableService from '@/services/table'
 import { toNumber } from 'lodash'
-import { ToastUtils } from '@/utils/toast'
-import { Input } from '@/components/ui/input'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
 import { ColumnRequest } from '@/model/column'
-import { Textarea } from '@/components/ui/textarea'
-import Switch from '@/views/ui/switch'
 
 export default defineComponent({
   name: 'TableCreate',
-  components: {
-    Textarea,
-    Input,
-    Dialog,
-    Button,
-    Divider,
-    Collapsible, CollapsibleContent, CollapsibleTrigger,
-    Switch
-  },
   computed: {
     visible: {
       get(): boolean

@@ -3,10 +3,8 @@ import router from '@/router'
 import { ResponseModel } from '@/model/response'
 import { TokenUtils } from '@/utils/token'
 import { AuthResponse } from '@/model/user/response/auth'
-import { useToast } from '@/components/ui/toast/use-toast'
 
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
-const { toast } = useToast()
 
 export class HttpUtils
 {
@@ -151,10 +149,6 @@ export class HttpUtils
 
     private handlerMessage(message: string)
     {
-        toast({
-            description: message,
-            variant: 'destructive'
-        })
     }
 
     getAxios()

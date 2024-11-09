@@ -2,7 +2,9 @@
   <ShadcnModal v-model="visible" :title="title" @on-close="onCancel">
     <div class="relative">
       <ShadcnSpin v-if="loading" fixed/>
+
       <ShadcnTree v-model="menus" cascade checkable :data="data"/>
+
       <div class="flex justify-end">
         <ShadcnButton :loading="saving" :disabled="saving" @click="onSubmit()">
           {{ title }}
@@ -15,7 +17,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { RoleModel } from '@/model/role'
-import '@/views/components/tree/style.css'
 import UserService from '@/services/user'
 import RoleService from '@/services/role'
 import CommonUtils from '@/utils/common'

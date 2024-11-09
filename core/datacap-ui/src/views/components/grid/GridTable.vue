@@ -1,4 +1,12 @@
 <template>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2 font-normal text-sm">{{ $t('role.common.list') }}</div>
+    </template>
+
+  </ShadcnCard>
+
+
   <div>
     <Card class="p-0" style="border-radius: 0;">
       <CardHeader class="p-0">
@@ -52,23 +60,11 @@ import { GridConfigure } from '@/views/components/grid/GridConfigure'
 import GridOptions from '@/views/components/grid/GridOptions'
 import { GridColumn } from '@/views/components/grid/GridColumn'
 import { ObjectUtils } from '@/utils/object'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Switch } from '@/components/ui/switch'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import GridVisual from '@/views/components/grid/GridVisual.vue'
 
 export default defineComponent({
   name: 'GridTable',
-  components: {
-    GridVisual,
-    HoverCardContent, HoverCardTrigger, HoverCard,
-    CardContent, TooltipTrigger, Tooltip, TooltipProvider, TooltipContent,
-    Button, Switch,
-    CardHeader, Card, CardTitle,
-    AgGridVue
-  },
+  components: { GridVisual, AgGridVue },
   props: {
     configure: {
       type: Object as () => GridConfigure,

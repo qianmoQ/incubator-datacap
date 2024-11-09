@@ -48,15 +48,9 @@
 
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'MetadataContent',
-  components: {
-    DataCapCard,
-    Tabs, TabsContent, TabsList, TabsTrigger,
-  },
   data()
   {
     return {

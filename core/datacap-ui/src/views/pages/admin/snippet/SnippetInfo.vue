@@ -1,66 +1,48 @@
 <template>
-  <Drawer :is-visible="visible" :width="'10%'" @close="handlerCancel">
-    <template #title>{{ title }}</template>
-    <div class="mt-3 space-y-2">
-      <FormField name="name">
-        <FormItem>
-          <FormLabel class="font-normal">{{ $t('common.name') }}</FormLabel>
-          <FormControl>
-            <Input v-model="formState.name"/>
-          </FormControl>
-        </FormItem>
-      </FormField>
-      <FormField name="description">
-        <FormItem>
-          <FormLabel class="font-normal">{{ $t('common.description') }}</FormLabel>
-          <FormControl>
-            <Textarea v-model="formState.description"/>
-          </FormControl>
-        </FormItem>
-      </FormField>
-      <FormField v-slot="{ componentField }" name="content">
-        <FormItem>
-          <FormLabel>{{ $t('common.content') }}</FormLabel>
-          <FormControl>
-            <AceEditor :value="formState.context" v-bind="componentField" @update:value="formState.context = $event"/>
-          </FormControl>
-        </FormItem>
-      </FormField>
-    </div>
-    <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" :loading="loading" :disabled="loading" @click="handlerSubmit()">
-          {{ $t('common.save') }}
-        </Button>
+  <ShadcnDrawer v-model="visible" :title="title" width="40%">
+    <ShadcnSpin v-if="loading" fixed/>
+
+    <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="name"
+                      :label="$t('common.name')"
+                      :rules="[
+                          { required: true, message: $t('common.name') }
+                      ]">
+        <ShadcnInput v-model="formState.name" name="name"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="description" :label="$t('common.description')">
+        <ShadcnInput v-model="formState.description" name="description" type="textarea"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="content" :label="$t('common.content')">
+        <AceEditor :value="formState.context" name="content" @update:value="formState.context = $event"/>
+      </ShadcnFormItem>
+
+      <div class="flex justify-end">
+        <ShadcnSpace>
+          <ShadcnButton type="error" @click="onCancel()">
+            {{ $t('common.cancel') }}
+          </ShadcnButton>
+          <ShadcnButton submit :loading="loading" :disabled="loading">
+            {{ $t('common.save') }}
+          </ShadcnButton>
+        </ShadcnSpace>
       </div>
-    </template>
-  </Drawer>
+    </ShadcnForm>
+  </ShadcnDrawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Drawer from '@/views/ui/drawer'
 import { SnippetModel, SnippetRequest } from '@/model/snippet'
 import { cloneDeep } from 'lodash'
-import Button from '@/views/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 import SnippetService from '@/services/snippet'
-import { ToastUtils } from '@/utils/toast'
 
 export default defineComponent({
   name: 'SnippetInfo',
-  components: {
-    AceEditor,
-    Textarea,
-    Input,
-    Drawer,
-    Button
-  },
+  components: { AceEditor },
   props: {
     isVisible: {
       type: Boolean
@@ -91,10 +73,10 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.title = this.$t('snippet.common.create')
       if (this.info) {
@@ -107,19 +89,22 @@ export default defineComponent({
         this.formState = SnippetRequest.of()
       }
     },
-    handlerSubmit()
+    onSubmit()
     {
       this.loading = true
       SnippetService.saveOrUpdate(this.formState)
                     .then((response) => {
                       if (response.status) {
-                        ToastUtils.success(this.$t('snippet.tip.createSuccess').replace('$VALUE', this.formState.name as string))
-                        this.handlerCancel()
+                        this.$Message.success({
+                          content: this.$t('snippet.tip.createSuccess').replace('$VALUE', this.formState.name as string),
+                          showIcon: true
+                        })
+                        this.onCancel()
                       }
                     })
                     .finally(() => this.loading = false)
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }

@@ -35,6 +35,6 @@ public class SnippetEntity
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIncludeProperties(value = {"id", "username"})
+    @JsonIncludeProperties(value = {"id", "username", "avatarConfigure"})
     private UserEntity user;
 }

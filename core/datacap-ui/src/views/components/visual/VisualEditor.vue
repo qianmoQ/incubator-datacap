@@ -210,17 +210,11 @@ import VisualLine from '@/views/components/visual/components/VisualLine.vue'
 import VisualTable from '@/views/components/visual/components/VisualTable.vue'
 import { defineComponent, PropType } from 'vue'
 
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { DataCapCard } from '@/views/ui/card'
-import Tooltip from '@/views/ui/tooltip'
-import Alert from '@/views/ui/alert'
 import VisualScatter from '@/views/components/visual/components/VisualScatter.vue'
 import VisualConfigure from '@/views/components/visual/components/VisualConfigure.vue'
 import VisualRadar from '@/views/components/visual/components/VisualRadar.vue'
 import VisualFunnel from '@/views/components/visual/components/VisualFunnel.vue'
 import VisualGauge from '@/views/components/visual/components/VisualGauge.vue'
-import Button from '@/views/ui/button'
 import { createdConfigure } from '@/views/components/visual/Utils.ts'
 import { useI18n } from 'vue-i18n'
 import VisualRose from '@/views/components/visual/components/VisualRose.vue'
@@ -228,15 +222,8 @@ import VisualRose from '@/views/components/visual/components/VisualRose.vue'
 export default defineComponent({
   name: 'VisualEditor',
   components: {
-    DataCapCard,
     VisualRose,
     VisualGauge, VisualFunnel, VisualRadar, VisualConfigure, VisualScatter,
-    Tooltip,
-    RadioGroup, RadioGroupItem,
-    ToggleGroup, ToggleGroupItem,
-
-    Alert,
-    Button,
     VisualWordCloud, VisualHistogram, VisualPie, VisualArea, VisualBar, VisualLine, VisualTable
   },
   computed: {

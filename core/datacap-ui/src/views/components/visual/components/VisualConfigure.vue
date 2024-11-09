@@ -52,29 +52,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChartFieldGroup, Configuration, IChart } from '@/views/components/visual/Configuration.ts'
 import { cloneDeep, keys } from 'lodash'
-import { Switch } from '@/components/ui/switch'
-import { Slider } from '@/components/ui/slider'
-import Tooltip from '@/views/ui/tooltip'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
 
 export default defineComponent({
   name: 'VisualConfigure',
-  components: {
-    Input,
-    Tabs, TabsTrigger, TabsList, TabsContent,
-    Button,
-    Dialog,
-    Slider,
-    Switch,
-    SelectGroup, SelectTrigger, SelectContent, SelectItem, Select, SelectLabel, SelectValue,
-    Tooltip
-  },
   computed: {
     visible: {
       get(): boolean

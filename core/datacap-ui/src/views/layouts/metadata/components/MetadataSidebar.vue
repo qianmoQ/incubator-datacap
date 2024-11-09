@@ -98,23 +98,8 @@ import { defineComponent, resolveComponent } from 'vue'
 import DatabaseService from '@/services/database.ts'
 import { StructureEnum, StructureModel } from '@/model/structure.ts'
 import { Tree } from 'view-ui-plus'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import TableService from '@/services/table.ts'
 import ColumnService from '@/services/column.ts'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import ColumnCreate from '@/views/pages/admin/source/components/ColumnCreate.vue'
 import ColumnDrop from '@/views/pages/admin/source/components/ColumnDrop.vue'
 import TableExport from '@/views/pages/admin/source/components/TableExport.vue'
@@ -122,30 +107,13 @@ import ColumnChange from '@/views/pages/admin/source/components/ColumnChange.vue
 import TableTruncate from '@/views/pages/admin/source/components/TableTruncate.vue'
 import TableDrop from '@/views/pages/admin/source/components/TableDrop.vue'
 import TableCreate from '@/views/pages/admin/source/components/TableCreate.vue'
-import { ToastUtils } from '@/utils/toast.ts'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'MetadataSidebar',
   components: {
-    DataCapCard,
     TableCreate, TableDrop, TableTruncate, ColumnChange, TableExport, ColumnDrop, ColumnCreate,
     Tree,
 
-    Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue,
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger
   },
   computed: {
     StructureEnum()

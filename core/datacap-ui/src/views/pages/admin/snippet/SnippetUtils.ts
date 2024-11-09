@@ -1,12 +1,12 @@
 const createHeaders = (i18n: any) => {
     return [
-        { key: 'id', hidden: true, header: i18n.t('common.id'), class: 'text-center' },
-        { key: 'name', hidden: true, header: i18n.t('common.name'), class: 'text-center' },
-        { key: 'description', hidden: true, header: i18n.t('common.description'), class: 'text-center' },
-        { key: 'username', hidden: true, header: i18n.t('common.username'), slot: 'username', class: 'text-center' },
-        { key: 'createTime', hidden: true, header: i18n.t('common.createTime'), class: 'text-center' },
-        { key: 'updateTime', hidden: true, header: i18n.t('common.updateTime'), class: 'text-center' },
-        { key: 'action', hidden: true, header: i18n.t('common.action'), slot: 'action', class: 'text-center' }
+        { key: 'id', label: i18n.t('common.id') },
+        { key: 'name', label: i18n.t('common.name') },
+        { key: 'description', label: i18n.t('common.description') },
+        { key: 'username', label: i18n.t('common.username'), slot: 'username' },
+        { key: 'createTime', label: i18n.t('common.createTime') },
+        { key: 'updateTime', label: i18n.t('common.updateTime') },
+        { key: 'action', label: i18n.t('common.action'), slot: 'action' }
     ]
 }
 

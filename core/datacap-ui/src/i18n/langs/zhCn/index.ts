@@ -514,6 +514,15 @@ export default {
             deleteAlert2: '删除代码片段后，与之相关的数据将被永久删除。',
             deleteAlert3: '删除代码片段后，它将无法恢复。',
             deleteAlert4: '要确认，请在下面的框中键入 [ $VALUE ]'
+        },
+        placeholder: {
+            name: '请输入片段名称',
+        },
+        validator: {
+            name: {
+                required: '片段名称不能为空',
+                match: '输入的片段名称不正确，请输入 [$VALUE]'
+            }
         }
     },
     report: {

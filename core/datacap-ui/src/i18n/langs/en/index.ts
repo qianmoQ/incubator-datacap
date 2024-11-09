@@ -514,6 +514,15 @@ export default {
             deleteAlert2: 'After deleting the code fragment, the data related to it will be permanently deleted. ',
             deleteAlert3: 'After a code fragment is deleted, it cannot be restored. ',
             deleteAlert4: 'To confirm, type [ $VALUE ] in the box below'
+        },
+        placeholder: {
+            name: 'Please enter the snippet name',
+        },
+        validator: {
+            name: {
+                required: 'The snippet name cannot be empty',
+                match: 'The entered fragment name is incorrect, please enter [$VALUE]'
+            }
         }
     },
     report: {

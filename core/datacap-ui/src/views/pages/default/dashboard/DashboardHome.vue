@@ -40,18 +40,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 import { HttpUtils } from '@/utils/http'
 import UserService from '@/services/user'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'DashboardHome',
-  components: {
-    DataCapCard,
-    CardContent, CardTitle, CardHeader, Card
-  },
   data()
   {
     return {

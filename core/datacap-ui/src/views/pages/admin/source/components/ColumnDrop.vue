@@ -27,28 +27,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import { StructureModel } from '@/model/structure.ts'
 import TableService from '@/services/table'
-import { ToastUtils } from '@/utils/toast'
 import { SqlType, TableFilter, TableFilterRequest } from '@/model/table'
-import Button from '@/views/ui/button'
-import Alert from '@/views/ui/alert'
-import Divider from '@/views/ui/divider'
 import { toNumber } from 'lodash'
 
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 
 export default defineComponent({
   name: 'ColumnDrop',
-  components: {
-    AceEditor,
-
-    Dialog,
-    Button,
-    Alert,
-    Divider
-  },
+  components: { AceEditor },
   computed: {
     visible: {
       get(): boolean

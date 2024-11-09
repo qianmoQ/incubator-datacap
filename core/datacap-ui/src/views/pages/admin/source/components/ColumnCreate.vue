@@ -98,29 +98,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import { StructureModel } from '@/model/structure'
 import { SqlType, TableModel, TableRequest } from '@/model/table'
-import Button from '@/views/ui/button'
 import { ColumnRequest } from '@/model/column'
-import { Textarea } from '@/components/ui/textarea'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
-import { Input } from '@/components/ui/input'
-import Switch from '@/views/ui/switch'
-import { ToastUtils } from '@/utils/toast'
 import TableService from '@/services/table'
 
 export default defineComponent({
   name: 'ColumnCreate',
-  components: {
-    Switch,
-    Input,
-    Textarea,
-    Collapsible, CollapsibleContent, CollapsibleTrigger,
-    Button,
-    Dialog
-  },
   computed: {
     visible: {
       get(): boolean
