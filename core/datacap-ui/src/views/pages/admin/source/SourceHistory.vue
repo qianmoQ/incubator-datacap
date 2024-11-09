@@ -42,17 +42,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
-import Button from '@/views/ui/button'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
 import { createHistoryHeaders } from '@/views/pages/admin/source/SourceUtils'
 import { PaginationModel, PaginationRequest } from '@/model/pagination'
-import TableCommon from '@/views/components/table/TableCommon.vue'
-import { Badge } from '@/components/ui/badge'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import Common from '@/utils/common'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'

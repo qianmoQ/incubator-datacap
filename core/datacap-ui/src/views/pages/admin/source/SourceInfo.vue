@@ -90,24 +90,11 @@
 import { defineComponent } from 'vue'
 import { SourceModel, SourceRequest } from '@/model/source'
 import { cloneDeep, join } from 'lodash'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
 import SourceService from '@/services/source'
-import { ToastUtils } from '@/utils/toast'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { cn } from '@/lib/utils'
-import { Separator } from '@/components/ui/separator'
-import Avatar from '@/views/ui/avatar'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { Upload } from 'view-ui-plus'
 import { TokenUtils } from '@/utils/token'
-import '@/views/pages/admin/source/style.css'
 import { ResponseModel } from '@/model/response'
-
-import Alert from '@/views/ui/alert'
 
 interface TestInfo
 {
@@ -119,19 +106,6 @@ interface TestInfo
 
 export default defineComponent({
   name: 'SourceInfo',
-  components: {
-    Upload,
-    Switch,
-    Input,
-    Avatar,
-    Separator,
-
-    Button,
-    Dialog,
-    Tabs, TabsContent, TabsList, TabsTrigger,
-    RadioGroup, RadioGroupItem,
-    Alert
-  },
   setup()
   {
     const auth = TokenUtils.getAuthUser()

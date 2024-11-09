@@ -27,22 +27,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
-import { ToastUtils } from '@/utils/toast'
-import Button from '@/views/ui/button'
-import Alert from '@/views/ui/alert'
-import { Input } from '@/components/ui/input'
 
 export default defineComponent({
   name: 'SourceMetadata',
-  components: {
-    Input,
-    Alert,
-    Button,
-    Dialog
-  },
   computed: {
     visible: {
       get(): boolean

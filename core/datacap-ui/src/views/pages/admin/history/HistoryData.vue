@@ -8,7 +8,7 @@
     </template>
 
     <template #footer>
-      <ShadcnButton type="error" size="small" @click="handlerCancel">
+      <ShadcnButton type="error" @click="handlerCancel">
         {{ $t('common.cancel') }}
       </ShadcnButton>
     </template>

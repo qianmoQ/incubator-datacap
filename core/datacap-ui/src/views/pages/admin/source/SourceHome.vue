@@ -12,6 +12,7 @@
 
     <div class="relative">
       <ShadcnSpin v-if="loading" fixed/>
+
       <ShadcnTable size="small" :columns="headers" :data="data">
         <template #type="{row}">
           <ShadcnTooltip :content="row.type">
@@ -38,25 +39,78 @@
         </template>
 
         <template #action="{row}">
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('source.common.modify').replace('$NAME', row.name)">
+              <ShadcnButton circle
+                            size="small"
+                            :disabled="loginUserId !== row.user.id"
+                            @click="handlerInfo(true, row)">
+                <ShadcnIcon icon="Pencil" :size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+
+            <ShadcnDropdown trigger="click">
+              <template #trigger>
+                <ShadcnButton circle size="small">
+                  <ShadcnIcon icon="Cog" :size="15"/>
+                </ShadcnButton>
+              </template>
+
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available">
+                <ShadcnLink :link="`/admin/source/${row?.code}`" target="_blank">
+                  <div class="flex items-center space-x-2">
+                    <ShadcnIcon icon="Cog" size="15"/>
+                    <span>{{ $t('source.common.manager') }}</span>
+                  </div>
+                </ShadcnLink>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id)" class="cursor-pointer" @on-click="visibleHistory(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="History" size="15"/>
+                  <span>{{ $t('source.common.syncHistory') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" class="cursor-pointer" @click="visibleSyncMetadata(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="RefreshCcwDot" size="15"/>
+                  <span>{{ $t('source.common.syncMetadata') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="loginUserId !== row.user.id" @on-click="visibleDelete(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="Trash" size="15"/>
+                  <span>{{ $t('common.deleteData') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+            </ShadcnDropdown>
+          </ShadcnSpace>
         </template>
       </ShadcnTable>
 
-      <ShadcnPagination v-model="pageIndex"
+      <ShadcnPagination v-if="data.length > 0"
+                        v-model="pageIndex"
+                        show-total
+                        show-sizer
                         :page-size="pageSize"
-                        :total="total"
-                        class="py-2"
-                        @on-change="handlerChangePage"
-                        @on-prev="handlerChangePage"
-                        @on-next="handlerChangePage"/>
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
     </div>
   </ShadcnCard>
 
-  <div class="w-full">
-    <SourceInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerInfo(false, null)"/>
-    <SourceDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>
-    <SourceMetadata v-if="dataSyncMetadataVisible" :is-visible="dataSyncMetadataVisible" :info="dataInfo" @close="handlerSyncMetadata(false, null)"/>
-    <SourceHistory v-if="dataHistoryVisible" :is-visible="dataHistoryVisible" :info="dataInfo" @close="handlerHistory(false, null)"/>
-  </div>
+  <SourceInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="visibleInfo(false, null)"/>
+
+  <SourceDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="visibleDelete(false, null)"/>
+
+  <SourceMetadata v-if="dataSyncMetadataVisible" :is-visible="dataSyncMetadataVisible" :info="dataInfo" @close="visibleSyncMetadata(false, null)"/>
+
+  <SourceHistory v-if="dataHistoryVisible" :is-visible="dataHistoryVisible" :info="dataInfo" @close="visibleHistory(false, null)"/>
 </template>
 
 <script lang="ts">
@@ -68,18 +122,10 @@ import { FilterModel } from '@/model/filter'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
 import SourceInfo from '@/views/pages/admin/source/SourceInfo.vue'
-import SourceDelete from '@/views/pages/admin/source/SourceDelete.vue'
-import SourceMetadata from '@/views/pages/admin/source/SourceMetadata.vue'
-import SourceHistory from '@/views/pages/admin/source/SourceHistory.vue'
 
 export default defineComponent({
   name: 'SourceHome',
-  components: {
-    SourceHistory,
-    SourceMetadata,
-    SourceDelete,
-    SourceInfo
-  },
+  components: { SourceInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -97,9 +143,9 @@ export default defineComponent({
     return {
       loading: false,
       data: [],
-      pageIndex: 0,
+      pageIndex: 1,
       pageSize: 10,
-      total: 0,
+      dataCount: 0,
       dataInfoVisible: false,
       dataInfo: null as SourceModel | null,
       dataDeleteVisible: false,
@@ -119,20 +165,37 @@ export default defineComponent({
                    .then((response) => {
                      if (response.status) {
                        this.data = response.data.content
-                       this.pageIndex = response.data.page + 1
+                       this.dataCount = response.data.total
                        this.pageSize = response.data.size
-                       this.total = response.data.total
+                       this.pageIndex = response.data.page
                      }
                    })
                    .finally(() => this.loading = false)
     },
-    handlerChangePage(value: number)
+    fetchData(value: number)
     {
-      console.log(value)
+      this.filter.page = value
       this.filter.size = this.pageSize
       this.handlerInitialize()
     },
-    handlerInfo(opened: boolean, value: null | SourceModel)
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
+    },
+    visibleInfo(opened: boolean, value: null | SourceModel)
     {
       this.dataInfoVisible = opened
       this.dataInfo = value
@@ -140,7 +203,7 @@ export default defineComponent({
         this.handlerInitialize()
       }
     },
-    handlerDelete(opened: boolean, value: null | SourceModel)
+    visibleDelete(opened: boolean, value: null | SourceModel)
     {
       this.dataDeleteVisible = opened
       this.dataInfo = value
@@ -148,12 +211,12 @@ export default defineComponent({
         this.handlerInitialize()
       }
     },
-    handlerSyncMetadata(opened: boolean, value: null | SourceModel)
+    visibleSyncMetadata(opened: boolean, value: null | SourceModel)
     {
       this.dataSyncMetadataVisible = opened
       this.dataInfo = value
     },
-    handlerHistory(opened: boolean, value: null | SourceModel)
+    visibleHistory(opened: boolean, value: null | SourceModel)
     {
       this.dataHistoryVisible = opened
       this.dataInfo = value

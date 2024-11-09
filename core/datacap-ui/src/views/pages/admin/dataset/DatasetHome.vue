@@ -83,33 +83,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import TableCommon from '@/views/components/table/TableCommon.vue'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
 import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import { createHeaders } from './DatasetUtils'
 import DatasetService from '@/services/dataset'
-import Tooltip from '@/views/ui/tooltip'
-import Avatar from '@/views/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vue'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import { DatasetModel } from '@/model/dataset'
 import DatasetRebuild from '@/views/pages/admin/dataset/DatasetRebuild.vue'
 import DatasetHistory from '@/views/pages/admin/dataset/DatasetHistory.vue'
 import DatasetSync from '@/views/pages/admin/dataset/DatasetSync.vue'
 import DatasetClear from '@/views/pages/admin/dataset/DatasetClear.vue'
 import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'DatasetHome',
@@ -120,7 +105,6 @@ export default defineComponent({
     HoverCardContent, HoverCardTrigger, HoverCard,
     Badge, Avatar, Tooltip,
     MarkdownPreview, TableCommon,
-    Cog, BarChart2, CirclePlay, CircleStop, History, RefreshCcw, SquareX, TriangleAlert, Info
   },
   setup()
   {
