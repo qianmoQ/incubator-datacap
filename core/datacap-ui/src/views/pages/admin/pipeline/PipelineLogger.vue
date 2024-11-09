@@ -18,7 +18,7 @@
 import { defineComponent } from 'vue'
 import Dialog from '@/views/ui/dialog'
 import Button from '@/views/ui/button'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { PipelineModel } from '@/model/pipeline.ts'
 import PipelineService from '@/services/pipeline'
 import { toNumber } from 'lodash'
@@ -28,7 +28,7 @@ import { ToastUtils } from '@/utils/toast.ts'
 export default defineComponent({
   name: 'PipelineLogger',
   components: {
-    CircularLoading,
+
     Dialog,
     Button
   },

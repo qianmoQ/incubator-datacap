@@ -108,7 +108,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { FilterModel } from '@/model/filter.ts'
 import ChatService from '@/services/chat.ts'
 import { ToastUtils } from '@/utils/toast.ts'
@@ -135,7 +135,7 @@ export default defineComponent({
     Avatar,
     ChatInfo,
     Button,
-    CircularLoading,
+
     RadioGroup, RadioGroupItem,
     DataCapCard
   },

@@ -36,14 +36,14 @@ import Button from '@/views/ui/button'
 import Alert from '@/views/ui/alert'
 import Divider from '@/views/ui/divider'
 import { toNumber } from 'lodash'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 
 export default defineComponent({
   name: 'ColumnDrop',
   components: {
     AceEditor,
-    CircularLoading,
+
     Dialog,
     Button,
     Alert,

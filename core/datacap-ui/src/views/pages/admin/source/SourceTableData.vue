@@ -128,7 +128,7 @@
 
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { useI18n } from 'vue-i18n'
 import { AgGridVue } from 'ag-grid-vue3'
 import 'ag-grid-community/styles/ag-grid.css'
@@ -161,7 +161,7 @@ export default defineComponent({
     TableRowDelete,
     TableCellInfo,
     Input,
-    CircularLoading,
+
     AgGridVue,
     Button,
     Tooltip,

@@ -1,9 +1,12 @@
 <template>
-  <ShadcnModal v-model="visible" :title="$t('schedule.common.history')" width="60" @on-close="onCancel">
+  <ShadcnModal v-model="visible"
+               width="60%"
+               :title="$t('schedule.common.history')"
+               @on-close="onCancel">
     <div class="relative">
       <ShadcnSpin v-if="loading" fixed/>
 
-      <ShadcnTable size="small" :columns="headers" :data="data" />
+      <ShadcnTable size="small" :columns="headers" :data="data"/>
 
       <ShadcnPagination v-if="data?.length > 0"
                         v-model="pageIndex"
@@ -24,15 +27,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ScheduleModel } from '@/model/schedule'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { CardContent } from '@/components/ui/card'
-import TableCommon from '@/views/components/table/TableCommon.vue'
 import { FilterModel } from '@/model/filter'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import { useI18n } from 'vue-i18n'
 import { createHistoryHeaders } from '@/views/pages/system/schedule/ScheduleUtils'
 import ScheduleService from '@/services/schedule'
-import { cn } from '@/lib/utils'
 
 export default defineComponent({
   name: 'ScheduleHistory',
@@ -87,15 +85,15 @@ export default defineComponent({
     {
       this.loading = true
       ScheduleService.getScheduleHistory(this.filter, this.info?.id as number)
-          .then((response) => {
-            if (response.status) {
-              this.data = response.data.content
-              this.dataCount = response.data.total
-              this.pageSize = response.data.size
-              this.pageIndex = response.data.page
-            }
-          })
-          .finally(() => this.loading = false)
+                     .then((response) => {
+                       if (response.status) {
+                         this.data = response.data.content
+                         this.dataCount = response.data.total
+                         this.pageSize = response.data.size
+                         this.pageIndex = response.data.page
+                       }
+                     })
+                     .finally(() => this.loading = false)
     },
     fetchData(value: number)
     {

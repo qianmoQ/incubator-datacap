@@ -115,7 +115,7 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import TableService from '@/services/table'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import Tooltip from '@/views/ui/tooltip'
 import { SqlType, TableFilter, TableModel } from '@/model/table'
 import { Separator } from '@/components/ui/separator'
@@ -137,7 +137,7 @@ export default defineComponent({
     Divider,
     Separator,
     Tooltip,
-    CircularLoading,
+
     Popover, PopoverContent, PopoverTrigger
   },
   created()

@@ -104,12 +104,12 @@ import Switch from '@/views/ui/switch'
 import { ToastUtils } from '@/utils/toast'
 import TableService from '@/services/table'
 import ColumnService from '@/services/column'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 
 export default defineComponent({
   name: 'ColumnChange',
   components: {
-    CircularLoading,
+
     Switch,
     Input,
     Textarea,

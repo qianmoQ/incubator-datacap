@@ -95,7 +95,7 @@ import Button from '@/views/ui/button'
 import SourceService from '@/services/source'
 import { ToastUtils } from '@/utils/toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import Avatar from '@/views/ui/avatar'
@@ -125,7 +125,7 @@ export default defineComponent({
     Input,
     Avatar,
     Separator,
-    CircularLoading,
+
     Button,
     Dialog,
     Tabs, TabsContent, TabsList, TabsTrigger,

@@ -35,14 +35,14 @@ import { SqlType, TableFilter, TableFilterRequest } from '@/model/table'
 import Button from '@/views/ui/button'
 import Alert from '@/views/ui/alert'
 import Divider from '@/views/ui/divider'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 
 export default defineComponent({
   name: 'TableDrop',
   components: {
     AceEditor,
-    CircularLoading,
+
     Dialog,
     Button,
     Alert,

@@ -19,14 +19,14 @@ import { defineComponent } from 'vue'
 import { ReportModel } from '@/model/report'
 import Dialog from '@/views/ui/dialog'
 import Button from '@/views/ui/button'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import VisualView from '@/views/components/visual/VisualView.vue'
 
 export default defineComponent({
   name: 'ReportView',
   components: {
     VisualView,
-    CircularLoading,
+
     Dialog,
     Button
   },

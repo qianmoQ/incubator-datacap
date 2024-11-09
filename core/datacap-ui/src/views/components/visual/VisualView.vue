@@ -36,7 +36,7 @@ import VisualLine from '@/views/components/visual/components/VisualLine.vue'
 import VisualTable from '@/views/components/visual/components/VisualTable.vue'
 import { ToastUtils } from '@/utils/toast'
 import DatasetService from '@/services/dataset'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { defineComponent } from 'vue'
 import VisualRadar from '@/views/components/visual/components/VisualRadar.vue'
 import VisualScatter from '@/views/components/visual/components/VisualScatter.vue'
@@ -62,7 +62,7 @@ export default defineComponent({
     VisualFunnel,
     VisualScatter,
     VisualRadar,
-    CircularLoading,
+
     VisualWordCloud, VisualHistogram, VisualPie, VisualArea, VisualBar, VisualLine, VisualTable
   },
   props: {

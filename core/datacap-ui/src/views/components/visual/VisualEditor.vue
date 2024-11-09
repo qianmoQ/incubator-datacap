@@ -209,7 +209,7 @@ import VisualBar from '@/views/components/visual/components/VisualBar.vue'
 import VisualLine from '@/views/components/visual/components/VisualLine.vue'
 import VisualTable from '@/views/components/visual/components/VisualTable.vue'
 import { defineComponent, PropType } from 'vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DataCapCard } from '@/views/ui/card'
@@ -234,8 +234,7 @@ export default defineComponent({
     Tooltip,
     RadioGroup, RadioGroupItem,
     ToggleGroup, ToggleGroupItem,
-    Table,
-    CircularLoading,
+
     Alert,
     Button,
     VisualWordCloud, VisualHistogram, VisualPie, VisualArea, VisualBar, VisualLine, VisualTable

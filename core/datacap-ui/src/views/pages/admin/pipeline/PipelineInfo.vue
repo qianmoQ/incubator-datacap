@@ -14,7 +14,7 @@ import { DataCapCard } from '@/views/ui/card'
 import FlowEditor from '@/views/components/editor/flow/FlowEditor.vue'
 import SourceService from '@/services/source'
 import PipelineService from '@/services/pipeline'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { Configuration } from '@/views/components/editor/flow/Configuration.ts'
 import { ToastUtils } from '@/utils/toast.ts'
 import router from '@/router'
@@ -23,7 +23,7 @@ import { FilterModel } from '@/model/filter.ts'
 export default defineComponent({
   name: 'PipelineInfo',
   components: {
-    CircularLoading,
+
     FlowEditor,
     DataCapCard
   },

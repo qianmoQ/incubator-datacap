@@ -16,7 +16,8 @@
     </template>
     <template #content>
       <div class="h-[700px] overflow-x-auto overflow-y-auto">
-        <CircularLoading v-if="loading" :show="loading"/>
+<!--        <CircularLoading v-if="loading" :show="loading"/>-->
+        <div v-if="loading"/>
         <div v-else>
           <Tree :data="dataTreeArray" :empty-text="$t('source.tip.selectDatabase')" :load-data="handlerLoadChildData" @on-select-change="handlerSelectNode"
                 @on-contextmenu="handlerContextMenu">
@@ -94,7 +95,6 @@
 
 <script lang="ts">
 import { defineComponent, resolveComponent } from 'vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
 import DatabaseService from '@/services/database.ts'
 import { StructureEnum, StructureModel } from '@/model/structure.ts'
 import { Tree } from 'view-ui-plus'
@@ -132,7 +132,7 @@ export default defineComponent({
     DataCapCard,
     TableCreate, TableDrop, TableTruncate, ColumnChange, TableExport, ColumnDrop, ColumnCreate,
     Tree,
-    CircularLoading,
+
     Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue,
     DropdownMenu,
     DropdownMenuContent,
@@ -144,6 +144,7 @@ export default defineComponent({
     DropdownMenuShortcut,
     DropdownMenuSub,
     DropdownMenuSubContent,
+
     DropdownMenuSubTrigger,
     DropdownMenuTrigger
   },

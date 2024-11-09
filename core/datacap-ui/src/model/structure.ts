@@ -1,6 +1,7 @@
 export interface StructureModel
 {
     title?: null | string
+    value?: null | string
     catalog?: null
     database?: null | any
     databaseId?: string
@@ -21,6 +22,7 @@ export interface StructureModel
     selected?: boolean
     contextmenu?: true
     code?: string
+    isLeaf?: boolean
     children?: StructureModel[]
 }
 

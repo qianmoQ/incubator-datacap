@@ -44,13 +44,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { ToastUtils } from '@/utils/toast'
 import ChatService from '@/services/chat.ts'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { ChatModel, ChatRequest } from '@/model/chat.ts'
 
 export default defineComponent({
   name: 'ChatInfo',
   components: {
-    CircularLoading,
+
     Input,
     Textarea,
     Button,

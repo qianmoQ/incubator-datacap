@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import { SqlType, TableFilter, TableFilterRequest } from '@/model/table.ts'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 import TableService from '@/services/table.ts'
 

@@ -23,12 +23,12 @@ import { ToastUtils } from '@/utils/toast'
 import Dialog from '@/views/ui/dialog'
 import Button from '@/views/ui/button'
 import AceEditor from '@/views/components/editor/AceEditor.vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 
 export default defineComponent({
   name: 'TableCellInfo',
   components: {
-    CircularLoading,
+
     AceEditor,
     Button,
     Dialog

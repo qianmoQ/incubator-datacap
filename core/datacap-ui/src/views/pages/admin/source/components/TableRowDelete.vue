@@ -19,7 +19,7 @@
 import { defineComponent } from 'vue'
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 import Dialog from '@/views/ui/dialog'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import TableService from '@/services/table'
 import { SqlColumn, SqlType, TableFilter, TableFilterRequest } from '@/model/table'
 import { ToastUtils } from '@/utils/toast'
@@ -28,7 +28,7 @@ import Button from '@/views/ui/button'
 export default defineComponent({
   name: 'TableRowDelete',
   components: {
-    CircularLoading,
+
     Dialog,
     AceEditor,
     Button

@@ -176,7 +176,7 @@ import ReportService from '@/services/report'
 import { cloneDeep } from 'lodash'
 import router from '@/router'
 import { Configuration } from '@/views/components/visual/Configuration'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import VisualEditor from '@/views/components/visual/VisualEditor.vue'
 import DatasetColumnMetric from '@/views/pages/admin/dataset/components/adhoc/DatasetColumnMetric.vue'
 import DatasetColumnConfigure from '@/views/pages/admin/dataset/components/adhoc/DatasetColumnConfigure.vue'
@@ -223,7 +223,7 @@ export default defineComponent({
     Badge,
     DatasetColumnMetric,
     DatasetColumnConfigure,
-    CircularLoading,
+
     Draggable,
     VisualEditor,
   },

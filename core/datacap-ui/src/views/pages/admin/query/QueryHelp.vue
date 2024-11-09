@@ -32,14 +32,14 @@ import { isEmpty } from 'lodash'
 import { HelpType } from '@/views/pages/admin/query/HelpType'
 import MessageService from '@/services/message'
 import { ToastUtils } from '@/utils/toast'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 
 export default defineComponent({
   name: 'QueryHelp',
   components: {
-    CircularLoading,
+
     AlertDialogFooter, AlertDialog, AlertDialogHeader, AlertDialogContent,
     Tabs, TabsContent, TabsList, TabsTrigger,
     Button,

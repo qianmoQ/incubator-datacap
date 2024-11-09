@@ -45,7 +45,7 @@ import Dialog from '@/views/ui/dialog'
 import ReportService from '@/services/report.ts'
 import { FilterModel } from '@/model/filter.ts'
 import { ReportModel } from '@/model/report.ts'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import VisualView from '@/views/components/visual/VisualView.vue'
 import Button from '@/views/ui/button'
@@ -58,7 +58,7 @@ export default defineComponent({
   components: {
     Pagination,
     VisualView,
-    CircularLoading,
+
     Dialog,
     RadioGroup, RadioGroupItem,
     Button

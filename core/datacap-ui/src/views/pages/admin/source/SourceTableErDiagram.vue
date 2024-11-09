@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import ColumnService from '@/services/column.ts'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import ErDiagram from '@/views/components/diagram/ErDiagram.vue'
 import { ErDiagramOptions } from '@/views/components/diagram/ErDiagramOptions.ts'
 

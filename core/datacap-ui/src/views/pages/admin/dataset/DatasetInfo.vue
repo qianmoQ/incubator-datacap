@@ -288,7 +288,7 @@ import PluginService from '@/services/plugin'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert } from '@/components/ui/alert'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
@@ -322,7 +322,7 @@ export default defineComponent({
     Switch,
     SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectValue, Select,
     Input,
-    CircularLoading,
+
     Alert,
     Button,
     SheetClose, Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger,

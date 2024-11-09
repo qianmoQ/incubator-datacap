@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import DashboardService from '@/services/dashboard'
 import { ToastUtils } from '@/utils/toast'
 import { useRouter } from 'vue-router'

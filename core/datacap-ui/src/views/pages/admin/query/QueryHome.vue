@@ -1,110 +1,122 @@
 <template>
-  <div class="hidden space-y-6 pb-16 w-full md:block">
-    <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">
-      <aside class="-mx-4 w-[200px]">
-        <Card>
-          <CardHeader class="p-0">
-            <SourceSelect :value="selectSource.full as string" @changeValue="handlerChangeValue($event)"/>
-            <DataStructureLazyTree v-if="selectSource.code" :code="selectSource.code as string"/>
-          </CardHeader>
-        </Card>
-      </aside>
-      <div class="flex-1">
-        <div class="space-y-6">
-          <div class="flex items-center space-x-4 text-sm">
-            <Card class="w-full h-full" style="border-radius: 0">
-              <CardHeader class="p-2 pl-5">
-                <CardTitle>
-                  <div class="flex justify-between items-center h-5 pt-3 pb-3">
-                    <div class="flex items-center">
-                      <Button :disabled="(!selectSource.id && !loading.running) || loading.running" size="sm" @click="handlerRun()">
-                        <Loader2 v-if="loading.running" class="w-full justify-center animate-spin mr-1" :size="18"/>
-                        <PlayCircle v-else class="mr-1" :size="18"/>
-                        {{ selectEditor.isSelection ? $t('query.common.executeSelection') : $t('query.common.execute') }}
-                      </Button>
-                      <Button :disabled="(!selectSource.id && !loading.formatting) || loading.formatting" size="sm" class="ml-2" variant="secondary" @click="handlerFormat()">
-                        <Loader2 v-if="loading.formatting" class="w-full justify-center animate-spin mr-1" :size="18"/>
-                        <RemoveFormatting v-else class="mr-1" :size="18"/>
-                        {{ $t('query.common.format') }}
-                      </Button>
-                      <Button size="sm" style="background-color: #FF4D4F;" class="ml-2" :disabled="!selectSource.id || !loading.running" @click="handlerCancel()">
-                        <Ban class="mr-1" :size="18"/>
-                        {{ $t('common.cancel') }}
-                      </Button>
-                      <Button v-if="responseConfigure.response" size="sm" class="ml-2" @click="handlerSnippet(true)">
-                        <Plus class="mr-1" :size="18"/>
-                        {{ $t('common.snippet') }}
-                      </Button>
-                      <HoverCard v-if="responseConfigure.response">
-                        <HoverCardTrigger as-child>
-                          <Button size="sm" class="ml-2" variant="outline">
-                            <Clock class="mr-1" :size="18"/>
-                            {{ responseConfigure.response.data.processor.elapsed }} ms
-                          </Button>
-                        </HoverCardTrigger>
-                        <HoverCardContent class="w-80">
-                          <div class="flex">
-                            <Card class="left text-center w-1/2">
-                              <CardHeader class="border-b p-4">
-                                <CardTitle>{{ $t('query.common.connectionTime') }}</CardTitle>
-                              </CardHeader>
-                              <CardContent class="mt-3">
-                                <p>{{ responseConfigure.response.data.connection.elapsed }} ms</p>
-                              </CardContent>
-                            </Card>
-                            <Card class="ml-3 right text-center w-1/2">
-                              <CardHeader class="border-b p-4">
-                                <CardTitle>{{ $t('query.common.executionTime') }}</CardTitle>
-                              </CardHeader>
-                              <CardContent class="mt-3">
-                                <p>{{ responseConfigure.response.data.processor.elapsed }} ms</p>
-                              </CardContent>
-                            </Card>
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                      <Button v-if="selectSource.id && (responseConfigure.response?.data || !responseConfigure.response?.status)" size="sm" class="ml-2"
-                              variant="ghost" @click="handlerQueryHelp(true)">
-                        <Bot class="mr-1" :size="18"/>
-                        {{ $t('query.common.help') }}
-                      </Button>
-                    </div>
-                    <div class="flex items-center space-x-4 text-sm">
-                      <Button size="sm" variant="outline" @click="handlerPlusEditor">
-                        <Pencil class="mr-1" :size="15"/>
-                        {{ $t('common.createEditor') }}
-                      </Button>
-                    </div>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent ref="editorContainer" class="p-0">
-                <Tabs v-model="selectEditor.activeKey as string" @update:modelValue="handlerChangeEditor">
-                  <TabsList class="w-full border-r-0 border-0" style="border-radius: 0">
-                    <TabsTrigger v-for="(item, index) in selectEditor.editorMaps.values()" :value="item.key">
-                      {{ item.title }}
-                      <CircleX v-if="index > 0" class="ml-1" :size="18" @click="handlerMinusEditor(item.key, index)"/>
-                    </TabsTrigger>
-                  </TabsList>
-                  <VAceEditor lang="mysql" :value="selectEditor.editorInstance?.instance?.getValue() as string" :theme="selectEditor.editorInstance?.configure?.theme"
-                              :style="{ height: '300px', fontSize: selectEditor.editorInstance?.configure?.fontSize + 'px' }"
-                              :key="selectEditor.editorInstance?.key" :options="{ enableSnippets: true, enableLiveAutocompletion: true, readOnly: loading.froming }"
-                              @init="handlerEditorDidMount($event, 'mysql', selectEditor.editorInstance?.key)"/>
-                </Tabs>
-              </CardContent>
-              <CardContent class="p-0">
-                <GridTable v-if="responseConfigure.gridConfigure" :configure="responseConfigure.gridConfigure"/>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Ai Help -->
-    <QueryHelp v-if="visibility.queryHelp" :is-visible="visibility.queryHelp" :content="selectEditor.editorInstance?.instance?.getValue() as string"
-               :help-type="queryConfigure.queryType" :engine="selectSource.engine as string" :message="responseConfigure.message as string" @close="handlerQueryHelp(false)"/>
-    <SnippetInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerSnippet(false)"/>
-  </div>
+  {{ selectSource }}
+  <ShadcnLayout>
+    <ShadcnLayoutWrapper>
+      <ShadcnLayoutSider>
+        <ShadcnCard>
+          <SourceSelect v-model="selectSource.full as string" class="border-b-0" @on-change="onChange($event)"/>
+
+          <MetadataTree v-if="selectSource.code" :code="selectSource.code as string"/>
+        </ShadcnCard>
+      </ShadcnLayoutSider>
+
+      <ShadcnLayoutMain class="min-h-screen">
+        <ShadcnLayoutHeader class="bg-blue-100 h-12">Header</ShadcnLayoutHeader>
+        <ShadcnLayoutContent class="bg-blue-500 h-32">Content</ShadcnLayoutContent>
+        <ShadcnLayoutFooter class="bg-blue-400 h-20">Footer</ShadcnLayoutFooter>
+      </ShadcnLayoutMain>
+    </ShadcnLayoutWrapper>
+  </ShadcnLayout>
+
+
+  <!--  <div class="hidden space-y-6 pb-16 w-full md:block">-->
+  <!--    <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">-->
+  <!--      <div class="flex-1">-->
+  <!--        <div class="space-y-6">-->
+  <!--          <div class="flex items-center space-x-4 text-sm">-->
+  <!--            <Card class="w-full h-full" style="border-radius: 0">-->
+  <!--              <CardHeader class="p-2 pl-5">-->
+  <!--                <CardTitle>-->
+  <!--                  <div class="flex justify-between items-center h-5 pt-3 pb-3">-->
+  <!--                    <div class="flex items-center">-->
+  <!--                      <Button :disabled="(!selectSource.id && !loading.running) || loading.running" size="sm" @click="handlerRun()">-->
+  <!--                        <Loader2 v-if="loading.running" class="w-full justify-center animate-spin mr-1" :size="18"/>-->
+  <!--                        <PlayCircle v-else class="mr-1" :size="18"/>-->
+  <!--                        {{ selectEditor.isSelection ? $t('query.common.executeSelection') : $t('query.common.execute') }}-->
+  <!--                      </Button>-->
+  <!--                      <Button :disabled="(!selectSource.id && !loading.formatting) || loading.formatting" size="sm" class="ml-2" variant="secondary" @click="handlerFormat()">-->
+  <!--                        <Loader2 v-if="loading.formatting" class="w-full justify-center animate-spin mr-1" :size="18"/>-->
+  <!--                        <RemoveFormatting v-else class="mr-1" :size="18"/>-->
+  <!--                        {{ $t('query.common.format') }}-->
+  <!--                      </Button>-->
+  <!--                      <Button size="sm" style="background-color: #FF4D4F;" class="ml-2" :disabled="!selectSource.id || !loading.running" @click="handlerCancel()">-->
+  <!--                        <Ban class="mr-1" :size="18"/>-->
+  <!--                        {{ $t('common.cancel') }}-->
+  <!--                      </Button>-->
+  <!--                      <Button v-if="responseConfigure.response" size="sm" class="ml-2" @click="handlerSnippet(true)">-->
+  <!--                        <Plus class="mr-1" :size="18"/>-->
+  <!--                        {{ $t('common.snippet') }}-->
+  <!--                      </Button>-->
+  <!--                      <HoverCard v-if="responseConfigure.response">-->
+  <!--                        <HoverCardTrigger as-child>-->
+  <!--                          <Button size="sm" class="ml-2" variant="outline">-->
+  <!--                            <Clock class="mr-1" :size="18"/>-->
+  <!--                            {{ responseConfigure.response.data.processor.elapsed }} ms-->
+  <!--                          </Button>-->
+  <!--                        </HoverCardTrigger>-->
+  <!--                        <HoverCardContent class="w-80">-->
+  <!--                          <div class="flex">-->
+  <!--                            <Card class="left text-center w-1/2">-->
+  <!--                              <CardHeader class="border-b p-4">-->
+  <!--                                <CardTitle>{{ $t('query.common.connectionTime') }}</CardTitle>-->
+  <!--                              </CardHeader>-->
+  <!--                              <CardContent class="mt-3">-->
+  <!--                                <p>{{ responseConfigure.response.data.connection.elapsed }} ms</p>-->
+  <!--                              </CardContent>-->
+  <!--                            </Card>-->
+  <!--                            <Card class="ml-3 right text-center w-1/2">-->
+  <!--                              <CardHeader class="border-b p-4">-->
+  <!--                                <CardTitle>{{ $t('query.common.executionTime') }}</CardTitle>-->
+  <!--                              </CardHeader>-->
+  <!--                              <CardContent class="mt-3">-->
+  <!--                                <p>{{ responseConfigure.response.data.processor.elapsed }} ms</p>-->
+  <!--                              </CardContent>-->
+  <!--                            </Card>-->
+  <!--                          </div>-->
+  <!--                        </HoverCardContent>-->
+  <!--                      </HoverCard>-->
+  <!--                      <Button v-if="selectSource.id && (responseConfigure.response?.data || !responseConfigure.response?.status)" size="sm" class="ml-2"-->
+  <!--                              variant="ghost" @click="handlerQueryHelp(true)">-->
+  <!--                        <Bot class="mr-1" :size="18"/>-->
+  <!--                        {{ $t('query.common.help') }}-->
+  <!--                      </Button>-->
+  <!--                    </div>-->
+  <!--                    <div class="flex items-center space-x-4 text-sm">-->
+  <!--                      <Button size="sm" variant="outline" @click="handlerPlusEditor">-->
+  <!--                        <Pencil class="mr-1" :size="15"/>-->
+  <!--                        {{ $t('common.createEditor') }}-->
+  <!--                      </Button>-->
+  <!--                    </div>-->
+  <!--                  </div>-->
+  <!--                </CardTitle>-->
+  <!--              </CardHeader>-->
+  <!--              <CardContent ref="editorContainer" class="p-0">-->
+  <!--                <Tabs v-model="selectEditor.activeKey as string" @update:modelValue="handlerChangeEditor">-->
+  <!--                  <TabsList class="w-full border-r-0 border-0" style="border-radius: 0">-->
+  <!--                    <TabsTrigger v-for="(item, index) in selectEditor.editorMaps.values()" :value="item.key">-->
+  <!--                      {{ item.title }}-->
+  <!--                      <CircleX v-if="index > 0" class="ml-1" :size="18" @click="handlerMinusEditor(item.key, index)"/>-->
+  <!--                    </TabsTrigger>-->
+  <!--                  </TabsList>-->
+  <!--                  <VAceEditor lang="mysql" :value="selectEditor.editorInstance?.instance?.getValue() as string" :theme="selectEditor.editorInstance?.configure?.theme"-->
+  <!--                              :style="{ height: '300px', fontSize: selectEditor.editorInstance?.configure?.fontSize + 'px' }"-->
+  <!--                              :key="selectEditor.editorInstance?.key" :options="{ enableSnippets: true, enableLiveAutocompletion: true, readOnly: loading.froming }"-->
+  <!--                              @init="handlerEditorDidMount($event, 'mysql', selectEditor.editorInstance?.key)"/>-->
+  <!--                </Tabs>-->
+  <!--              </CardContent>-->
+  <!--              <CardContent class="p-0">-->
+  <!--                <GridTable v-if="responseConfigure.gridConfigure" :configure="responseConfigure.gridConfigure"/>-->
+  <!--              </CardContent>-->
+  <!--            </Card>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--    &lt;!&ndash; Ai Help &ndash;&gt;-->
+  <!--    <QueryHelp v-if="visibility.queryHelp" :is-visible="visibility.queryHelp" :content="selectEditor.editorInstance?.instance?.getValue() as string"-->
+  <!--               :help-type="queryConfigure.queryType" :engine="selectSource.engine as string" :message="responseConfigure.message as string" @close="handlerQueryHelp(false)"/>-->
+  <!--    <SnippetInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerSnippet(false)"/>-->
+  <!--  </div>-->
 </template>
 
 <script lang="ts">
@@ -137,10 +149,10 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import FormatService from '@/services/format'
 import { HelpType } from '@/views/pages/admin/query/HelpType'
 import QueryHelp from '@/views/pages/admin/query/QueryHelp.vue'
-import DataStructureLazyTree from '@/views/components/tree/DataStructureLazyTree.vue'
+import MetadataTree from '@/views/components/tree/MetadataTree.vue'
 import { SnippetModel, SnippetRequest } from '@/model/snippet'
 import SnippetInfo from '@/views/pages/admin/snippet/SnippetInfo.vue'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import { FilterModel } from '@/model/filter.ts'
 import Editor = Ace.Editor
 
@@ -154,16 +166,10 @@ interface EditorInstance
 
 export default defineComponent({
   name: 'QueryHome',
-  components: {
-    CircularLoading,
+  components: { MetadataTree,
     SnippetInfo,
-    DataStructureLazyTree,
     QueryHelp,
-    HoverCardContent, HoverCardTrigger, HoverCard,
     GridTable,
-    Button,
-    Tabs, TabsContent, TabsList, TabsTrigger,
-    CardTitle, CardContent, CardHeader, Card,
     SourceSelect,
     VAceEditor
   },
@@ -245,7 +251,7 @@ export default defineComponent({
                               instance.instance?.setValue(response.data.content)
                               const full = `${ response.data.source.id }:${ response.data.source.type }:${ response.data.source.code }`
                               this.selectSource.full = full
-                              this.handlerChangeValue(full)
+                              this.onChange(full)
                             }
                           }
                         })
@@ -265,7 +271,7 @@ export default defineComponent({
       // Initializes the completer
       this.handlerInitializeCompleter(editor, _language)
     },
-    handlerChangeValue(value: string)
+    onChange(value: string)
     {
       const idAndType = value.split(':')
       this.selectSource.id = idAndType[0]

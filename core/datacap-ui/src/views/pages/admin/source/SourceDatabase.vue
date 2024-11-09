@@ -29,14 +29,14 @@ import { defineComponent, watch } from 'vue'
 import DatabaseService from '@/services/database.ts'
 import { ToastUtils } from '@/utils/toast.ts'
 import { DatabaseModel } from '@/model/database.ts'
-import CircularLoading from '@/views/components/loading/CircularLoading.vue'
+
 import Tooltip from '@/views/ui/tooltip'
 
 export default defineComponent({
   name: 'SourceDatabase',
   components: {
     Database, Clock,
-    CircularLoading,
+
     Tooltip
   },
   created()
