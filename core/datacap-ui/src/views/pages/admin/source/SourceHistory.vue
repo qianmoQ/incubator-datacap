@@ -1,43 +1,59 @@
 <template>
-  <Dialog :is-visible="visible" :title="$t('source.common.syncHistory')" :width="'60%'">
-    <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-      <template #elapsed="{row}">
-        {{ (getTime(row.updateTime) - getTime(row.createTime)) / 1000 }}
-      </template>
-      <template #state="{row}">
-        <Badge :style="{backgroundColor: Common.getColor(row?.state)}">
-          <HoverCard v-if="row?.state === 'FAILURE'">
-            <HoverCardTrigger as-child>
-              <Button variant="link">
-                {{ getStateText(row?.state) }}
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent class="w-full">
-              {{ row?.message }}
-            </HoverCardContent>
-          </HoverCard>
-          <span v-else>{{ getStateText(row?.state) }}</span>
-        </Badge>
-      </template>
-      <template #result="{row}">
-        <HoverCard>
-          <HoverCardTrigger as-child>
-            <Eye class="cursor-pointer"/>
-          </HoverCardTrigger>
-          <HoverCardContent class="w-full">
-            <MdPreview :modelValue="toMarkdown(row.info)" style="padding: 0"/>
-          </HoverCardContent>
-        </HoverCard>
-      </template>
-    </TableCommon>
+  <ShadcnModal v-model="visible"
+               width="60%"
+               :title="$t('source.common.syncHistory')"
+               @on-close="onCancel">
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #elapsed="{ row }">
+          {{ (getTime(row.updateTime) - getTime(row.createTime)) / 1000 }}
+        </template>
+
+        <template #state="{ row }">
+          <ShadcnTooltip v-if="row?.state === 'FAILURE'" :content="row.message">
+            <ShadcnBadge :color="Common.getColor(row?.state)" :text="getStateText(row.state)"/>
+          </ShadcnTooltip>
+          <ShadcnBadge v-else :color="Common.getColor(row?.state)" :text="getStateText(row.state)"/>
+        </template>
+
+        <template #result="{ row }">
+          <ShadcnTooltip>
+            <template #content>
+              <MdPreview :modelValue="toMarkdown(row.info)" style="padding: 0"/>
+            </template>
+
+            <ShadcnButton circle size="small">
+              <template #icon>
+                <ShadcnIcon icon="Eye" :size="20"/>
+              </template>
+            </ShadcnButton>
+          </ShadcnTooltip>
+        </template>
+      </ShadcnTable>
+
+      <ShadcnPagination v-if="data?.length > 0"
+                        v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+
     <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-      </div>
+      <ShadcnButton type="error" @click="onCancel">
+        {{ $t('common.cancel') }}
+      </ShadcnButton>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
@@ -47,7 +63,6 @@ import SourceService from '@/services/source'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
 import { createHistoryHeaders } from '@/views/pages/admin/source/SourceUtils'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import Common from '@/utils/common'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
@@ -55,11 +70,6 @@ import 'md-editor-v3/lib/style.css'
 export default defineComponent({
   name: 'SourceHistory',
   components: {
-    Badge,
-    Button,
-    Dialog,
-    TableCommon,
-    HoverCard, HoverCardContent, HoverCardTrigger,
     MdPreview
   },
   computed: {
@@ -103,33 +113,54 @@ export default defineComponent({
     return {
       loading: false,
       data: [],
-      pagination: {} as PaginationModel
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0
     }
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       SourceService.getHistory(this.info?.id as number, this.filter)
                    .then((response) => {
                      if (response.status) {
                        this.data = response.data.content
-                       this.pagination = PaginationRequest.of(response.data)
+                       this.dataCount = response.data.total
+                       this.pageSize = response.data.size
+                       this.pageIndex = response.data.page
                      }
                    })
                    .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
-      this.handlerInitialize()
+      this.filter.page = value
+      this.filter.size = this.pageSize
+      this.handleInitialize()
     },
-    handlerCancel()
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
+    },
+    onCancel()
     {
       this.visible = false
     },

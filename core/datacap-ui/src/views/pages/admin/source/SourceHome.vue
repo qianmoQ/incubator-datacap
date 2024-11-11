@@ -104,13 +104,19 @@
     </div>
   </ShadcnCard>
 
-  <SourceInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="visibleInfo(false, null)"/>
+  <SourceInfo v-if="dataInfoVisible"
+              :is-visible="dataInfoVisible"
+              :info="dataInfo"
+              @close="visibleInfo(false, null)"/>
 
   <SourceDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="visibleDelete(false, null)"/>
 
   <SourceMetadata v-if="dataSyncMetadataVisible" :is-visible="dataSyncMetadataVisible" :info="dataInfo" @close="visibleSyncMetadata(false, null)"/>
 
-  <SourceHistory v-if="dataHistoryVisible" :is-visible="dataHistoryVisible" :info="dataInfo" @close="visibleHistory(false, null)"/>
+  <SourceHistory v-if="dataHistoryVisible"
+                 :is-visible="dataHistoryVisible"
+                 :info="dataInfo"
+                 @close="visibleHistory(false, null)"/>
 </template>
 
 <script lang="ts">
@@ -122,10 +128,11 @@ import { FilterModel } from '@/model/filter'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
 import SourceInfo from '@/views/pages/admin/source/SourceInfo.vue'
+import SourceHistory from '@/views/pages/admin/source/SourceHistory.vue'
 
 export default defineComponent({
   name: 'SourceHome',
-  components: { SourceInfo },
+  components: { SourceHistory, SourceInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
