@@ -5,7 +5,7 @@
     </template>
 
     <template #extra>
-      <ShadcnButton circle size="small" @click="handlerInfo(true, null)">
+      <ShadcnButton circle size="small" @click="visibleInfo(true, null)">
         <ShadcnIcon icon="Plus" :size="20"/>
       </ShadcnButton>
     </template>
@@ -44,7 +44,7 @@
               <ShadcnButton circle
                             size="small"
                             :disabled="loginUserId !== row.user.id"
-                            @click="handlerInfo(true, row)">
+                            @click="visibleInfo(true, row)">
                 <ShadcnIcon icon="Pencil" :size="15"/>
               </ShadcnButton>
             </ShadcnTooltip>

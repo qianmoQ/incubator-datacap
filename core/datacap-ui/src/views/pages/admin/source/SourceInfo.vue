@@ -1,89 +1,115 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'60%'">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else class="pl-3 pr-3">
-      <Alert v-if="testInfo.message" type="error" :title="testInfo.message" class="mb-3"/>
-      <Tabs v-model="activeTab" :default-value="activeTab" class="w-full" @update:modelValue="handlerChangeConfigure($event)">
-        <TabsList>
-          <TabsTrigger v-for="tab in configureTabs" :value="tab">{{ $t(`source.common.${ tab }`) }}</TabsTrigger>
-        </TabsList>
-        <TabsContent v-if="activeTab === 'source'" value="source" class="max-h-96 overflow-y-auto">
-          <FormField v-for="key in Object.keys(plugins)" :key="key" type="radio" name="plugin">
-            <FormItem class="space-y-1">
-              <FormLabel>{{ key }}</FormLabel>
-              <FormDescription>
-                <Separator/>
-              </FormDescription>
-              <FormMessage/>
-              <RadioGroup v-model="formState.type" :default-value="formState.type" class="grid w-full grid-cols-6 gap-8 pt-2" @update:modelValue="handlerChangePlugin">
-                <FormItem v-for="plugin in plugins[key as any]" :key="plugin.name" class="flex flex-col items-center">
-                  <FormLabel class="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
-                    <FormControl>
-                      <RadioGroupItem :value="plugin.name + '_' + plugin.type" class="sr-only"/>
-                    </FormControl>
-                    <div class="items-center rounded-full border-4 border-muted p-1 hover:border-accent w-28 h-28 flex justify-center">
-                      <Avatar :src="'/static/images/plugin/' + plugin.name + '.png'" :alt="plugin.name" class="w-full h-full"/>
-                    </div>
-                    <span class="block w-full p-2 text-center font-normal">{{ plugin.name }}</span>
-                  </FormLabel>
-                </FormItem>
-              </RadioGroup>
-            </FormItem>
-          </FormField>
-        </TabsContent>
-        <TabsContent v-else :value="activeTab" class="min-h-96 max-h-96 overflow-y-auto pl-4 pr-4">
-          <div class="grid w-full grid-cols-2 gap-8 pt-2">
-            <FormField v-for="configure in pluginTabConfigure" :name="configure.field">
-              <FormItem class="space-y-2">
-                <FormLabel>
-                  <span v-if="configure.field !== 'configures'">{{ $t('source.common.' + configure.field) }}</span>
-                </FormLabel>
-                <FormDescription>{{ configure.description }}</FormDescription>
-                <FormMessage/>
-                <Input v-if="configure.type === 'String'" type="text" :default-value="configure.value" :disabled="configure.disabled" v-model="configure.value"/>
-                <Input v-else-if="configure.type === 'Number'" type="number" :disabled="configure.disabled" :max="configure.max" :min="configure.min" v-model="configure.value"/>
-                <Switch v-else-if="configure.type === 'Boolean'" :disabled="configure.disabled" v-model="configure.value"/>
-                <Upload v-else-if="configure.type === 'File'" multiple :format="['xml']" :on-success="handlerUploadSuccess" :on-remove="handlerUploadRemove"
-                        action="/api/v1/source/uploadFile"
-                        :headers="{'Authorization': auth?.type + ' ' + auth?.token, 'PluginType': (formState.type as string).split(' ')[0]}">
-                  <Button icon="ios-cloud-upload-outline">{{ $t('common.upload') }}</Button>
-                </Upload>
-                <div v-else>
-                  <Button size="icon" class="rounded-full w-5 h-5" @click="handlerPlusConfigure(configure.value)">
-                    <Plus :size="15"/>
-                  </Button>
-                  <FormItem v-for="(element, index) in configure.value" :key="index" class="space-x-2 flex items-center">
-                    <FormLabel class="min-w-8 pt-1">{{ $t('common.field') }}</FormLabel>
-                    <Input v-model="element.field"/>
-                    <FormLabel>{{ $t('common.value') }}</FormLabel>
-                    <Input v-model="element.value"/>
-                    <div>
-                      <Button size="icon" color="#EF4444" class="rounded-full w-5 h-5" @click="handlerMinusConfigure(element, configure.value)">
-                        <Minus :size="15"/>
-                      </Button>
-                    </div>
-                  </FormItem>
-                </div>
-              </FormItem>
-            </FormField>
-          </div>
-        </TabsContent>
-      </Tabs>
+  <ShadcnDrawer v-model="visible" :title="title" width="40%">
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
+
+        <ShadcnAlert v-if="testInfo.message" type="error" :title="testInfo.message" class="mb-3"/>
+
+        <ShadcnTab v-model="activeTab" :key="'tab-' + configureTabs.length" @on-change="onChangeTab">
+          <ShadcnTabItem value="source" :label="$t('source.common.source')" :key="'source-tab'">
+            <ShadcnFormItem name="type" :label="$t('source.common.type')" :rules="[{ required: true, message: $t('function.tip.selectPluginHolder') }]">
+              <div v-for="key in Object.keys(plugins)" :key="key">
+                <ShadcnRadioGroup v-model="formState.type" name="plugin" @on-change="onChangePlugin">
+                  <ShadcnDivider orientation="left" class="my-2">
+                    <span class="text-gray-300">{{ key }}</span>
+                  </ShadcnDivider>
+                  <ShadcnRadio v-for="plugin in plugins[key as any]" :key="plugin.name + '_' + plugin.type" :value="plugin.name + '_' + plugin.type">
+                    <ShadcnTooltip :content="plugin.description">
+                      <ShadcnAvatar square :src="'/static/images/plugin/' + plugin.name + '.png'" :alt="plugin.name"/>
+                    </ShadcnTooltip>
+                  </ShadcnRadio>
+                </ShadcnRadioGroup>
+              </div>
+            </ShadcnFormItem>
+          </ShadcnTabItem>
+
+          <ShadcnTabItem v-for="tab in configureTabs"
+                         class="space-y-4"
+                         :key="tab"
+                         :value="tab"
+                         :label="$t(`source.common.${ tab }`)">
+            <ShadcnFormItem v-for="configure in pluginTabConfigure"
+                            :name="configure.field"
+                            :label="$t('source.common.' + configure.field)"
+                            :description="configure.description">
+              <ShadcnInput v-if="configure.type === 'String'" v-model="configure.value" :disabled="configure.disabled"/>
+
+              <ShadcnNumber v-else-if="configure.type === 'Number'"
+                            v-model="configure.value"
+                            :disabled="configure.disabled"
+                            :max="configure.max"
+                            :min="configure.min"/>
+
+              <ShadcnSwitch v-else-if="configure.type === 'Boolean'" v-model="configure.value" :disabled="configure.disabled"/>
+
+              <Upload v-else-if="configure.type === 'File'" multiple :format="['xml']" :on-success="handlerUploadSuccess" :on-remove="handlerUploadRemove"
+                      action="/api/v1/source/uploadFile"
+                      :headers="{'Authorization': auth?.type + ' ' + auth?.token, 'PluginType': (formState.type as string).split(' ')[0]}">
+                <Button icon="ios-cloud-upload-outline">{{ $t('common.upload') }}</Button>
+              </Upload>
+
+              <div v-else>
+                <ShadcnSpace wrap>
+                  <ShadcnButton circle size="small" @click="onPlusConfigure(configure.value)">
+                    <template #icon>
+                      <ShadcnIcon icon="Plus"/>
+                    </template>
+                  </ShadcnButton>
+
+                  <ShadcnRow v-for="(element, index) in configure.value" :gutter="10" :key="index">
+                    <ShadcnCol span="5">
+                      <ShadcnFormItem :label="$t('common.field')">
+                        <ShadcnInput v-model="element.field"/>
+                      </ShadcnFormItem>
+                    </ShadcnCol>
+
+                    <ShadcnCol span="6">
+                      <ShadcnFormItem :label="$t('common.value')">
+                        <ShadcnInput v-model="element.value"/>
+                      </ShadcnFormItem>
+                    </ShadcnCol>
+
+                    <ShadcnCol span="1">
+                      <ShadcnFormItem>
+                        <ShadcnButton circle
+                                      type="error"
+                                      size="small"
+                                      style="margin-top: 18px;"
+                                      @click="onMinusConfigure(element, configure.value)">
+                          <template #icon>
+                            <ShadcnIcon icon="Minus"/>
+                          </template>
+                        </ShadcnButton>
+                      </ShadcnFormItem>
+                    </ShadcnCol>
+                  </ShadcnRow>
+                </ShadcnSpace>
+              </div>
+            </ShadcnFormItem>
+          </ShadcnTabItem>
+        </ShadcnTab>
+
+        <div class="flex justify-end">
+          <ShadcnSpace>
+            <ShadcnButton type="error" @click="onCancel">
+              {{ $t('common.cancel') }}
+            </ShadcnButton>
+            <ShadcnButton ghost
+                          :loading="testing"
+                          :disabled="testing"
+                          @click="onTest()">
+              {{ $t('common.test') }}
+            </ShadcnButton>
+            <ShadcnButton submit :loading="saving" :disabled="!testInfo.connected || saving">
+              {{ $t('common.save') }}
+            </ShadcnButton>
+          </ShadcnSpace>
+        </div>
+      </ShadcnForm>
     </div>
-    <template #footer>
-      <div class="space-x-5">
-        <Button variant="destructive" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" :loading="testing" :disabled="testing" @click="handlerTest()">
-          {{ $t('common.test') }}
-        </Button>
-        <Button size="sm" :loading="saving" :disabled="!testInfo.connected || saving" @click="handlerSave()">
-          {{ $t('common.save') }}
-        </Button>
-      </div>
-    </template>
-  </Dialog>
+  </ShadcnDrawer>
 </template>
 
 <script lang="ts">
@@ -91,8 +117,6 @@ import { defineComponent } from 'vue'
 import { SourceModel, SourceRequest } from '@/model/source'
 import { cloneDeep, join } from 'lodash'
 import SourceService from '@/services/source'
-
-import { cn } from '@/lib/utils'
 import { TokenUtils } from '@/utils/token'
 import { ResponseModel } from '@/model/response'
 
@@ -111,7 +135,6 @@ export default defineComponent({
     const auth = TokenUtils.getAuthUser()
 
     return {
-      cn,
       auth
     }
   },
@@ -144,7 +167,7 @@ export default defineComponent({
       title: null as string | null,
       testing: false,
       testInfo: null as unknown as TestInfo,
-      configureTabs: ['source'],
+      configureTabs: [] as any[],
       activeTab: 'source',
       plugins: [] as any[],
       pluginConfigure: null as unknown as any,
@@ -154,16 +177,16 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
+      this.loading = true
       this.testInfo = { connected: false, percent: 0, successful: false }
       this.title = `${ this.$t('source.common.create') }`
       if (this.info) {
         this.title = `${ this.$t('source.common.modify').replace('$NAME', this.info.name as string) }`
-        this.loading = true
         SourceService.getById(this.info.id as number)
                      .then(response => {
                        if (response.status) {
@@ -176,7 +199,6 @@ export default defineComponent({
                          }
                        }
                      })
-                     .finally(() => this.loading = false)
       }
       else {
         this.formState = SourceRequest.of()
@@ -188,8 +210,9 @@ export default defineComponent({
                        this.plugins = response.data
                      }
                    })
+                   .finally(() => this.loading = false)
     },
-    handlerSave()
+    onSubmit()
     {
       this.saving = true
       const temp = (cloneDeep(this.formState.type) as string).split('_')
@@ -209,13 +232,20 @@ export default defineComponent({
       SourceService.saveOrUpdate(configure)
                    .then((response) => {
                      if (response.status) {
-                       ToastUtils.success('Create successful')
-                       this.handlerCancel()
+                       this.$Message.success({
+                         content: 'Create successful',
+                         showIcon: true
+                       })
+                       this.onCancel()
                      }
                    })
                    .finally(() => this.saving = false)
     },
-    handlerTest()
+    onCancel()
+    {
+      this.visible = false
+    },
+    onTest()
     {
       this.testing = true
       const temp = (cloneDeep(this.formState.type) as string).split('_')
@@ -226,7 +256,10 @@ export default defineComponent({
                    .then((response) => {
                      this.testInfo.percent = 100
                      if (response.status) {
-                       ToastUtils.success('Test successful')
+                       this.$Message.success({
+                         content: 'Test successful',
+                         showIcon: true
+                       })
                        this.testInfo.connected = true
                        this.testInfo.successful = true
                        this.testInfo.message = null
@@ -240,16 +273,41 @@ export default defineComponent({
                    })
                    .finally(() => this.testing = false)
     },
-    handlerChangePlugin(value: string)
+    onChangePlugin(value: string)
     {
+      if (!value) {
+        return
+      }
+
+      const currentValue = this.formState.type
+
       const pluginAndType = value.split('_')
-      const applyPlugins: [] = this.plugins[pluginAndType[1] as any]
-      const applyPlugin = applyPlugins.filter(plugin => plugin['name'] === pluginAndType[0])[0] as any
-      this.applyConfigure = applyPlugin?.configure
-      this.pluginConfigure = applyPlugin?.configure?.configures
-      this.resetConfigureTab()
+      if (!pluginAndType || pluginAndType.length < 2) {
+        return
+      }
+
+      this.activeTab = 'source'
+
+      try {
+        const applyPlugins: [] = this.plugins[pluginAndType[1] as any]
+        const applyPlugin = applyPlugins.filter(plugin => plugin['name'] === pluginAndType[0])[0] as any
+        this.applyConfigure = cloneDeep(applyPlugin?.configure)
+        this.pluginConfigure = this.applyConfigure?.configures
+
+        this.$nextTick(() => {
+          this.resetConfigureTab()
+          this.formState.type = value
+          this.$nextTick(() => {
+            this.activeTab = 'source'
+          })
+        })
+      }
+      catch (error) {
+        console.error('Plugin change error:', error)
+        this.formState.type = currentValue
+      }
     },
-    handlerChangeConfigure(value: any)
+    onChangeTab(value: any)
     {
       if (value !== 'source') {
         this.pluginTabConfigure = this.pluginConfigure.filter((field: { group: string }) => field.group === value)
@@ -267,7 +325,7 @@ export default defineComponent({
       const configure = this.applyConfigure.configures.filter((configure: { field: string }) => configure.field === 'file')
       configure[0].value = configure[0].value.filter((value: string) => !value.endsWith(file.name))
     },
-    handlerPlusConfigure(array: Array<any>)
+    onPlusConfigure(array: Array<any>)
     {
       if (!array) {
         array = new Array<any>()
@@ -275,21 +333,25 @@ export default defineComponent({
       const configure = { field: '', value: '' }
       array.push(configure)
     },
-    handlerMinusConfigure(configure: any, array: Array<any>)
+    onMinusConfigure(configure: any, array: Array<any>)
     {
       const index = array.indexOf(configure)
       if (index !== -1) {
         array.splice(index, 1)
       }
     },
-    handlerCancel()
-    {
-      this.visible = false
-    },
     resetConfigureTab()
     {
-      this.configureTabs = ['source']
-      this.configureTabs = [...this.configureTabs, ...Array.from(new Set(this.pluginConfigure.map((v: { group: string }) => v.group)))] as string[]
+      if (!this.pluginConfigure || !Array.isArray(this.pluginConfigure)) {
+        this.configureTabs = []
+        return
+      }
+
+      const validGroups = this.pluginConfigure
+                              .map((v: { group: string }) => v.group)
+                              .filter(group => group && typeof group === 'string')
+
+      this.configureTabs = [...new Set(validGroups)]
     }
   }
 })

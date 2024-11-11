@@ -120,7 +120,9 @@ export default {
             filterCondition: 'Filter Condition',
             addFilter: 'Add Filter',
             statement: 'Statement',
-            erDiagram: 'ER Diagram'
+            erDiagram: 'ER Diagram',
+            type: 'Data source type',
+            configures: 'Data source configuration'
         },
         tip: {
             selectSource: 'Please select a source',

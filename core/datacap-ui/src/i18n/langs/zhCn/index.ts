@@ -120,7 +120,9 @@ export default {
             filterCondition: '筛选条件',
             addFilter: '添加筛选条件',
             statement: 'SQL 语句',
-            erDiagram: 'ER 图形'
+            erDiagram: 'ER 图形',
+            type: '数据源类型',
+            configures: '配置信息',
         },
         tip: {
             selectSource: '请选择数据源',
