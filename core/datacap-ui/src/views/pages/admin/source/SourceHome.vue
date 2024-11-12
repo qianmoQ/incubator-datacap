@@ -65,14 +65,14 @@
                 </ShadcnLink>
               </ShadcnDropdownItem>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id)" class="cursor-pointer" @on-click="visibleHistory(true, row)">
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id)" @on-click="visibleHistory(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="History" size="15"/>
                   <span>{{ $t('source.common.syncHistory') }}</span>
                 </div>
               </ShadcnDropdownItem>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" class="cursor-pointer" @click="visibleSyncMetadata(true, row)">
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" @on-click="visibleSyncMetadata(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="RefreshCcwDot" size="15"/>
                   <span>{{ $t('source.common.syncMetadata') }}</span>
@@ -92,6 +92,7 @@
 
       <ShadcnPagination v-if="data.length > 0"
                         v-model="pageIndex"
+                        class="py-2"
                         show-total
                         show-sizer
                         :page-size="pageSize"
@@ -109,9 +110,15 @@
               :info="dataInfo"
               @close="visibleInfo(false, null)"/>
 
-  <SourceDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="visibleDelete(false, null)"/>
+  <SourceDelete v-if="dataDeleteVisible"
+                :is-visible="dataDeleteVisible"
+                :info="dataInfo"
+                @close="visibleDelete(false, null)"/>
 
-  <SourceMetadata v-if="dataSyncMetadataVisible" :is-visible="dataSyncMetadataVisible" :info="dataInfo" @close="visibleSyncMetadata(false, null)"/>
+  <SourceMetadata v-if="dataSyncMetadataVisible"
+                  :is-visible="dataSyncMetadataVisible"
+                  :info="dataInfo"
+                  @close="visibleSyncMetadata(false, null)"/>
 
   <SourceHistory v-if="dataHistoryVisible"
                  :is-visible="dataHistoryVisible"
@@ -130,10 +137,11 @@ import SourceService from '@/services/source'
 import SourceInfo from '@/views/pages/admin/source/SourceInfo.vue'
 import SourceHistory from '@/views/pages/admin/source/SourceHistory.vue'
 import SourceDelete from '@/views/pages/admin/source/SourceDelete.vue'
+import SourceMetadata from '@/views/pages/admin/source/SourceMetadata.vue'
 
 export default defineComponent({
   name: 'SourceHome',
-  components: { SourceDelete, SourceHistory, SourceInfo },
+  components: { SourceMetadata, SourceDelete, SourceHistory, SourceInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
