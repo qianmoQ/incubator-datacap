@@ -160,6 +160,15 @@ export default {
             dropColumn5: 'If you have any questions or need assistance performing a drop column operation, please contact your database administrator or technical support team. ',
             updateSuccess: 'Update success',
             deleteSuccess: 'Delete success'
+        },
+        placeholder: {
+            name: 'Please enter the source name'
+        },
+        validator: {
+            name: {
+                required: 'Source name cannot be empty',
+                match: 'The source name entered is incorrect, please enter [$VALUE]'
+            }
         }
     },
     grid: {

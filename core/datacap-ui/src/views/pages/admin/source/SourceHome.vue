@@ -129,10 +129,11 @@ import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
 import SourceInfo from '@/views/pages/admin/source/SourceInfo.vue'
 import SourceHistory from '@/views/pages/admin/source/SourceHistory.vue'
+import SourceDelete from '@/views/pages/admin/source/SourceDelete.vue'
 
 export default defineComponent({
   name: 'SourceHome',
-  components: { SourceHistory, SourceInfo },
+  components: { SourceDelete, SourceHistory, SourceInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()

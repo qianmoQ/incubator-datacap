@@ -1,48 +1,42 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'40%'">
-    <div class="pl-3 pr-3 space-y-2">
-      <Alert type="error">
-        <template #description>{{ $t('source.tip.deleteAlert1') }}</template>
-      </Alert>
-      <Alert type="error">
-        <template #description>{{ $t('source.tip.deleteAlert2') }}</template>
-      </Alert>
-      <Alert type="info">
-        <template #description>{{ $t('source.tip.deleteAlert3').replace('$NAME', info?.name as string) }}</template>
-      </Alert>
-      <Input v-model="inputValue"/>
-    </div>
-    <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" variant="destructive" :loading="loading" :disabled="loading || inputValue !== info?.name" @click="handlerSubmit()">
-          {{ title }}
-        </Button>
+  <ShadcnModal v-model="visible" :title="title" @on-close="onCancel">
+    <ShadcnSpace wrap>
+      <ShadcnAlert type="error" :title="$t('source.tip.deleteAlert1')"/>
+      <ShadcnAlert type="error" :title="$t('source.tip.deleteAlert2')"/>
+      <ShadcnAlert :title="$t('source.tip.deleteAlert3').replace('$NAME', String(info?.name))"/>
+    </ShadcnSpace>
+
+    <ShadcnForm v-model="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="name"
+                      :rules="[
+                            { required: true, message: $t('source.validator.name.required') },
+                            { validator: validateMatch }
+                      ]">
+        <ShadcnInput v-model="formState.name" name="name" :placeholder="$t('source.placeholder.name')"/>
+      </ShadcnFormItem>
+
+      <div class="flex justify-end">
+        <ShadcnSpace>
+          <ShadcnButton type="default" @click="onCancel">
+            {{ $t('common.cancel') }}
+          </ShadcnButton>
+
+          <ShadcnButton submit type="error" :loading="loading">
+            {{ title }}
+          </ShadcnButton>
+        </ShadcnSpace>
       </div>
-    </template>
-  </Dialog>
+    </ShadcnForm>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
-import { ToastUtils } from '@/utils/toast'
-import Button from '@/views/ui/button'
-import Alert from '@/views/ui/alert'
-import { Input } from '@/components/ui/input'
 
 export default defineComponent({
   name: 'SourceDelete',
-  components: {
-    Input,
-    Alert,
-    Button,
-    Dialog
-  },
   computed: {
     visible: {
       get(): boolean
@@ -68,40 +62,55 @@ export default defineComponent({
     return {
       title: null as string | null,
       loading: false,
-      inputValue: ''
+      formState: {
+        name: ''
+      }
     }
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       if (this.info) {
-        this.title = `${ this.$t('source.common.delete').replace('$NAME', this.info.name as string) }`
+        this.title = `${ this.$t('source.common.delete').replace('$NAME', String(this.info.name)) }`
       }
     },
-    handlerSubmit()
+    onSubmit()
     {
       if (this.info) {
         this.loading = true
-        SourceService.deleteById(this.info.id as number)
+        SourceService.deleteById(Number(this.info.id))
                      .then((response) => {
                        if (response.status) {
-                         ToastUtils.success(this.$t('source.tip.deleteSourceSuccess').replace('$NAME', this.info?.name as string))
-                         this.handlerCancel()
+                         this.$Message.success({
+                           content: this.$t('source.tip.deleteSourceSuccess').replace('$NAME', String(this.info?.name)),
+                           showIcon: true
+                         })
+                         this.onCancel()
                        }
                        else {
-                         ToastUtils.error(response.message)
+                         this.$Message.error({
+                           content: response.message,
+                           showIcon: true
+                         })
                        }
                      })
                      .finally(() => this.loading = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
+    },
+    validateMatch(value: string)
+    {
+      if (value !== String(this.info?.name)) {
+        return Promise.reject(new Error(this.$t('source.validator.name.match').replace('$VALUE', String(this.info?.name))))
+      }
+      return Promise.resolve(true)
     }
   }
 })

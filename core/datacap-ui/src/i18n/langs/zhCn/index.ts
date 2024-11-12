@@ -160,6 +160,15 @@ export default {
             dropColumn5: '如果您对执行删除列操作有任何疑问或需要帮助，请联系您的数据库管理员或技术支持团队。',
             updateSuccess: '更新成功',
             deleteSuccess: '删除成功'
+        },
+        placeholder: {
+            name: '请输入数据源名称',
+        },
+        validator: {
+            name: {
+                required: '数据源名称不能为空',
+                match: '输入的数据源名称不正确，请输入 [$VALUE]'
+            }
         }
     },
     grid: {
