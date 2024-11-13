@@ -97,7 +97,7 @@ export default defineComponent({
     },
     onSubmit()
     {
-      this.submitting = false
+      this.submitting = true
       this.configure.preview = false
       TableService.putData(this.code as string, this.configure)
                   .then(response => {

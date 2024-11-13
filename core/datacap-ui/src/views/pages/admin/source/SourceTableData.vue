@@ -76,7 +76,7 @@
             <ShadcnButton circle
                           size="small"
                           :disabled="!dataCellChanged.changed && dataCellChanged.columns.length === 0"
-                          @click="handlerCellChangedPreview(true)">
+                          @click="visibleCellChanged(true)">
               <ShadcnIcon icon="RectangleEllipsis" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -156,8 +156,12 @@
         </AgGridVue>
       </div>
     </ShadcnCard>
-    <!--    <TableCellInfo v-if="dataCellChanged.pending" :isVisible="dataCellChanged.pending" :columns="dataCellChanged.columns" :type="dataCellChanged.type"-->
-    <!--                   @close="handlerCellChangedPreview(false)"/>-->
+
+    <TableCellInfo v-if="dataCellChanged.pending"
+                   :isVisible="dataCellChanged.pending"
+                   :columns="dataCellChanged.columns"
+                   :type="dataCellChanged.type"
+                   @close="visibleCellChanged(false)"/>
 
     <TableRowDelete v-if="dataSelectedChanged.pending"
                     :isVisible="dataSelectedChanged.pending"
@@ -184,10 +188,11 @@ import { OrderFilter, SqlColumn, SqlType, TableFilter } from '@/model/table.ts'
 import TableService from '@/services/table.ts'
 import { cloneDeep } from 'lodash'
 import TableRowDelete from '@/views/pages/admin/source/components/TableRowDelete.vue'
+import TableCellInfo from '@/views/pages/admin/source/components/TableCellInfo.vue'
 
 export default defineComponent({
   name: 'SourceTableData',
-  components: { TableRowDelete, AgGridVue },
+  components: { TableCellInfo, TableRowDelete, AgGridVue },
   created()
   {
     this.i18n = useI18n()
@@ -337,7 +342,7 @@ export default defineComponent({
         this.dataCellChanged.columns.push(column)
       }
     },
-    handlerCellChangedPreview(isOpen: boolean)
+    visibleCellChanged(isOpen: boolean)
     {
       this.dataCellChanged.pending = isOpen
       if (!isOpen) {
