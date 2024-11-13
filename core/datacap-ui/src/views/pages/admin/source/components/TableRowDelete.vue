@@ -1,38 +1,38 @@
 <template>
-  <Dialog :is-visible="visible" :title="$t('source.common.previewDML')" :width="'40%'">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <AceEditor v-else :value="contentDML as string" :read-only="true"/>
+  <ShadcnModal v-model="visible"
+               height="410"
+               width="40%"
+               :title="$t('source.common.previewDML')"
+               @on-close="onCancel">
+    <div class="relative h-full">
+      <ShadcnSpin v-model="loading" fixed/>
+
+      <AceEditor v-if="!loading && contentDML" :value="contentDML" :read-only="true"/>
+    </div>
+
     <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">
           {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" :disabled="submitting" :loading="submitting" @click="handlerSave()">
+        </ShadcnButton>
+
+        <ShadcnButton type="primary" :disabled="submitting" :loading="submitting" @click="onSubmit">
           {{ $t('common.submit') }}
-        </Button>
-      </div>
+        </ShadcnButton>
+      </ShadcnSpace>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import AceEditor from '@/views/components/editor/AceEditor.vue'
-import Dialog from '@/views/ui/dialog'
-
 import TableService from '@/services/table'
 import { SqlColumn, SqlType, TableFilter, TableFilterRequest } from '@/model/table'
-import { ToastUtils } from '@/utils/toast'
-import Button from '@/views/ui/button'
 
 export default defineComponent({
   name: 'TableRowDelete',
-  components: {
-
-    Dialog,
-    AceEditor,
-    Button
-  },
+  components: { AceEditor },
   props: {
     isVisible: {
       type: Boolean
@@ -65,14 +65,14 @@ export default defineComponent({
   },
   created()
   {
-    const code = this.$route?.params.table as string
+    const code = String(this.$route?.params.table)
     if (code) {
       this.code = code
     }
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.configure = TableFilterRequest.of()
       this.loading = true
@@ -81,34 +81,44 @@ export default defineComponent({
       this.configure.columns = originalColumns
       this.configure.type = SqlType.DELETE
       this.configure.preview = true
-      TableService.putData(this.code as string, this.configure)
+      TableService.putData(String(this.code), this.configure)
                   .then(response => {
                     if (response.status && response.data && response.data.isSuccessful) {
                       this.contentDML = response.data.content
                     }
                     else {
-                      ToastUtils.error(response.message)
+                      this.$Message.error({
+                        content: response.message,
+                        showIcon: true
+                      })
                     }
                   })
                   .finally(() => this.loading = false)
     },
-    handlerSave()
+    onSubmit()
     {
       this.submitting = false
       this.configure.preview = false
       TableService.putData(this.code as string, this.configure)
                   .then(response => {
                     if (response.status && response.data && response.data.isSuccessful) {
-                      ToastUtils.success(this.$t('source.tip.deleteSuccess'))
-                      this.handlerCancel()
+                      this.$Message.success({
+                        content: this.$t('source.tip.deleteSuccess'),
+                        showIcon: true
+                      })
+
+                      this.onCancel()
                     }
                     else {
-                      ToastUtils.error(response.data.message)
+                      this.$Message.error({
+                        content: response.data.message,
+                        showIcon: true
+                      })
                     }
                   })
                   .finally(() => this.submitting = false)
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }

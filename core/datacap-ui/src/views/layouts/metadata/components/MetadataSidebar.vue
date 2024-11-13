@@ -6,7 +6,7 @@
       </template>
     </ShadcnSelect>
 
-    <div class="relative min-h-screen overflow-x-auto overflow-y-auto">
+    <div class="relative h-screen overflow-x-auto overflow-y-auto">
       <ShadcnSpin v-if="loading" fixed/>
 
       <ShadcnTree v-model="databaseModel"

@@ -1,176 +1,197 @@
 <template>
-  <CircularLoading v-if="loading" :show="loading"/>
-  <div v-else>
-    <DataCapCard>
+  <div class="relative">
+    <ShadcnSpin v-model="loading" fixed/>
+
+    <ShadcnCard class="h-screen">
       <template #title>
-        <div class="flex space-x-5">
-          <div class="space-x-1">
-            <Tooltip :content="$t('source.common.firstPage')">
-              <Button size="icon" class="w-6 h-6" :disabled="!configure?.pagination?.hasPreviousPage" @click="handlerApplyPagination(configure.operator.FIRST)">
-                <ArrowLeftToLine :size="14"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('source.common.previousPage')">
-              <Button size="icon" class="w-6 h-6" :disabled="!configure?.pagination?.hasPreviousPage" @click="handlerApplyPagination(configure.operator.PREVIOUS)">
-                <ArrowLeft :size="14"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('source.common.nextPage')">
-              <Button size="icon" class="w-6 h-6" :disabled="!configure?.pagination?.hasNextPage" @click="handlerApplyPagination(configure.operator.NEXT)">
-                <ArrowRight :size="14"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('source.common.lastPage')">
-              <Button size="icon" class="w-6 h-6" :disabled="!configure.pagination.hasNextPage" @click="handlerApplyPagination(configure.operator.LAST)">
-                <ArrowRightToLine :size="14"/>
-              </Button>
-            </Tooltip>
-            <Popover>
-              <PopoverTrigger as-child>
-                <Button size="icon" class="w-6 h-6">
-                  <Cog :size="14"/>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <div class="grid gap-4">
-                  <div class="space-y-2">
-                    <h4 class="font-medium leading-none">{{ $t('source.common.jumpPage') }}</h4>
-                    <p class="text-sm text-muted-foreground flex gap-2">
-                      <Input type="number" v-model="configure.pagination.currentPage" min="1" :max="configure.pagination.totalPages"/>
-                      <Button @click="handlerApplyPagination(configure.operator.JUMP)">
-                        {{ $t('common.apply') }}
-                      </Button>
-                    </p>
-                  </div>
-                  <div class="grid gap-2">
-                    <div class="text-sm text-muted-foreground flex gap-2">
-                      <div>{{ $t('source.common.showPageSize') }}</div>
-                      <Input type="number" v-model="configure.pagination.pageSize" min="1" :max="10000"/>
-                    </div>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+        <ShadcnSpace class="items-center">
+          <ShadcnTooltip :content="$t('source.common.firstPage')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="!configure?.pagination?.hasPreviousPage"
+                          @click="handlerApplyPagination(configure.operator.FIRST)">
+              <ShadcnIcon icon="ArrowLeftToLine" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.previousPage')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="!configure?.pagination?.hasPreviousPage"
+                          @click="handlerApplyPagination(configure.operator.PREVIOUS)">
+              <ShadcnIcon icon="ArrowLeft" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.nextPage')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="!configure?.pagination?.hasNextPage"
+                          @click="handlerApplyPagination(configure.operator.NEXT)">
+              <ShadcnIcon icon="ArrowRight" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.lastPage')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="!configure.pagination.hasNextPage"
+                          @click="handlerApplyPagination(configure.operator.LAST)">
+              <ShadcnIcon icon="ArrowRightToLine" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <div class="text-sm text-muted-foreground flex gap-2 ml-4 mr-4">
+            [ <span>{{ configure?.pagination?.startIndex as number + 1 }}</span> / <span>{{ configure?.pagination?.endIndex as number + 1 }}</span> ]
+            <span>of</span>
+            <span>{{ configure.pagination.totalRecords }}</span>
+            <span>{{ $t('source.common.records') }}</span>
           </div>
-          <div class="space-x-1 mt-0.5">
-            <div class="text-sm text-muted-foreground flex gap-2">
-              [ <span>{{ configure?.pagination?.startIndex as number + 1 }}</span> / <span>{{ configure?.pagination?.endIndex as number + 1 }}</span> ]
-              <span>of</span>
-              <span>{{ configure.pagination.totalRecords }}</span>
-              <span>{{ $t('source.common.records') }}</span>
-            </div>
-          </div>
-          <div class="space-x-1">
-            <Tooltip :content="$t('source.common.addRows')">
-              <Button size="icon" class="w-6 h-6" @click="handlerAddOrCloneRow(false)">
-                <Plus :size="15"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('source.common.copyRows')">
-              <Button size="icon" class="w-6 h-6" :disabled="dataSelectedChanged.columns.length === 0" @click="handlerAddOrCloneRow(true)">
-                <Copy :size="15"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('source.common.deleteRows')">
-              <Button size="icon" class="w-6 h-6" :disabled="!dataSelectedChanged.changed" @click="handlerSelectedChangedPreview(true)">
-                <Minus :size="15"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('source.common.previewPendingChanges')">
-              <Button size="icon" class="w-6 h-6" :disabled="!dataCellChanged.changed && dataCellChanged.columns.length === 0" @click="handlerCellChangedPreview(true)">
-                <RectangleEllipsis :size="15"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('common.preview')">
-              <Button size="icon" class="w-6 h-6" @click="handlerVisibleContent(true)">
-                <Eye :size="15"/>
-              </Button>
-            </Tooltip>
-            <Tooltip :content="$t('common.refresh')">
-              <Button size="icon" class="w-6 h-6" @click="handlerRefresh">
-                <RefreshCw :size="15"/>
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
+
+          <ShadcnTooltip :content="$t('source.common.addRows')">
+            <ShadcnButton circle size="small" @click="handlerAddOrCloneRow(false)">
+              <ShadcnIcon icon="Plus" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.copyRows')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="dataSelectedChanged.columns.length === 0"
+                          @click="handlerAddOrCloneRow(true)">
+              <ShadcnIcon icon="Copy" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.deleteRows')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="!dataSelectedChanged.changed"
+                          @click="visibleChanged(true)">
+              <ShadcnIcon icon="Minus" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.previewPendingChanges')">
+            <ShadcnButton circle
+                          size="small"
+                          :disabled="!dataCellChanged.changed && dataCellChanged.columns.length === 0"
+                          @click="handlerCellChangedPreview(true)">
+              <ShadcnIcon icon="RectangleEllipsis" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('common.preview')">
+            <ShadcnButton circle size="small" @click="handlerVisibleContent(true)">
+              <ShadcnIcon icon="Eye" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('common.refresh')">
+            <ShadcnButton circle size="small" @click="handlerRefresh">
+              <ShadcnIcon icon="RefreshCw" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+        </ShadcnSpace>
+        <!--            <Popover>-->
+        <!--              <PopoverTrigger as-child>-->
+        <!--                <Button size="icon" class="w-6 h-6">-->
+        <!--                  <Cog :size="14"/>-->
+        <!--                </Button>-->
+        <!--              </PopoverTrigger>-->
+        <!--              <PopoverContent>-->
+        <!--                <div class="grid gap-4">-->
+        <!--                  <div class="space-y-2">-->
+        <!--                    <h4 class="font-medium leading-none">{{ $t('source.common.jumpPage') }}</h4>-->
+        <!--                    <p class="text-sm text-muted-foreground flex gap-2">-->
+        <!--                      <Input type="number" v-model="configure.pagination.currentPage" min="1" :max="configure.pagination.totalPages"/>-->
+        <!--                      <Button @click="handlerApplyPagination(configure.operator.JUMP)">-->
+        <!--                        {{ $t('common.apply') }}-->
+        <!--                      </Button>-->
+        <!--                    </p>-->
+        <!--                  </div>-->
+        <!--                  <div class="grid gap-2">-->
+        <!--                    <div class="text-sm text-muted-foreground flex gap-2">-->
+        <!--                      <div>{{ $t('source.common.showPageSize') }}</div>-->
+        <!--                      <Input type="number" v-model="configure.pagination.pageSize" min="1" :max="10000"/>-->
+        <!--                    </div>-->
+        <!--                  </div>-->
+        <!--                </div>-->
+        <!--              </PopoverContent>-->
+        <!--            </Popover>-->
       </template>
+
       <template #extra>
-        <div class="space-x-2">
-          <Tooltip :content="$t('source.common.visibleColumn')">
-            <Button size="icon" class="w-6 h-6" @click="handlerVisibleColumn(null, true)">
-              <Columns :size="15"/>
-            </Button>
-          </Tooltip>
-          <Tooltip :content="$t('source.common.filterData')">
-            <Button size="icon" class="w-6 h-6" @click="handlerFilterConfigure(true)">
-              <Filter :size="15"/>
-            </Button>
-          </Tooltip>
-        </div>
+        <ShadcnSpace class="items-center">
+          <ShadcnTooltip :content="$t('source.common.visibleColumn')">
+            <ShadcnButton circle size="small" @click="handlerVisibleColumn(null, true)">
+              <ShadcnIcon icon="Columns" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip :content="$t('source.common.filterData')">
+            <ShadcnButton circle size="small" @click="handlerFilterConfigure(true)">
+              <ShadcnIcon icon="Filter" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+        </ShadcnSpace>
       </template>
-      <CircularLoading v-if="refererLoading" :show="refererLoading"/>
-      <AgGridVue class="ag-theme-datacap h-[650px]" :gridOptions="gridOptions" :columnDefs="configure.headers"
-                 :rowData="configure.datasets" :tooltipShowDelay="100" :sortingOrder="['desc', 'asc', null]" :rowSelection="'multiple'" @grid-ready="handlerGridReady"
-                 @sortChanged="handlerSortChanged" @cellValueChanged="handlerCellValueChanged" @selectionChanged="handlerSelectionChanged" @columnVisible="handlerColumnVisible"
-                 @columnMoved="handlerColumnMoved"/>
-    </DataCapCard>
-    <TableCellInfo v-if="dataCellChanged.pending" :isVisible="dataCellChanged.pending" :columns="dataCellChanged.columns" :type="dataCellChanged.type"
-                   @close="handlerCellChangedPreview(false)"/>
-    <TableRowDelete v-if="dataSelectedChanged.pending" :isVisible="dataSelectedChanged.pending" :columns="dataSelectedChanged.columns"
-                    @close="handlerSelectedChangedPreview(false)"/>
-    <TableColumn v-if="visibleColumn.show" :isVisible="visibleColumn.show" :columns="visibleColumn.columns" @close="handlerVisibleColumn($event, false)"
-                 @change="handlerVisibleColumn($event, false)"/>
-    <TableRowFilter v-if="filterConfigure.show" :isVisible="filterConfigure.show" :columns="filterConfigure.columns" :types="filterConfigure.types"
-                    :configure="filterConfigure.configure" @apply="handlerApplyFilter" @close="handlerFilterConfigure(false)"/>
-    <SqlInfo v-if="visibleContent.show" :isVisible="visibleContent.show" :content="visibleContent.content" @close="handlerVisibleContent(false)"/>
+
+      <div class="relative">
+        <ShadcnSpin v-model="refererLoading" fixed/>
+        <AgGridVue class="ag-theme-datacap"
+                   style="width: 100%; height: calc(100vh - 40px);"
+                   :gridOptions="gridOptions"
+                   :columnDefs="configure.headers"
+                   :rowData="configure.datasets"
+                   :tooltipShowDelay="100"
+                   :sortingOrder="['desc', 'asc', null]"
+                   :rowSelection="'multiple'"
+                   @grid-ready="handlerGridReady"
+                   @sortChanged="handlerSortChanged"
+                   @cellValueChanged="handlerCellValueChanged"
+                   @selectionChanged="handlerSelectionChanged"
+                   @columnVisible="handlerColumnVisible"
+                   @columnMoved="handlerColumnMoved">
+        </AgGridVue>
+      </div>
+    </ShadcnCard>
+    <!--    <TableCellInfo v-if="dataCellChanged.pending" :isVisible="dataCellChanged.pending" :columns="dataCellChanged.columns" :type="dataCellChanged.type"-->
+    <!--                   @close="handlerCellChangedPreview(false)"/>-->
+
+    <TableRowDelete v-if="dataSelectedChanged.pending"
+                    :isVisible="dataSelectedChanged.pending"
+                    :columns="dataSelectedChanged.columns"
+                    @close="visibleChanged(false)"/>
+    <!--    <TableColumn v-if="visibleColumn.show" :isVisible="visibleColumn.show" :columns="visibleColumn.columns" @close="handlerVisibleColumn($event, false)"-->
+    <!--                 @change="handlerVisibleColumn($event, false)"/>-->
+    <!--    <TableRowFilter v-if="filterConfigure.show" :isVisible="filterConfigure.show" :columns="filterConfigure.columns" :types="filterConfigure.types"-->
+    <!--                    :configure="filterConfigure.configure" @apply="handlerApplyFilter" @close="handlerFilterConfigure(false)"/>-->
+    <!--    <SqlInfo v-if="visibleContent.show" :isVisible="visibleContent.show" :content="visibleContent.content" @close="handlerVisibleContent(false)"/>-->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
-
 import { useI18n } from 'vue-i18n'
 import { AgGridVue } from 'ag-grid-vue3'
 import 'ag-grid-community/styles/ag-grid.css'
 import '@/views/components/grid/ag-theme-datacap.css'
 import { ColumnApi, ColumnState, GridApi } from 'ag-grid-community'
-import { DataCapCard } from '@/views/ui/card'
 import { PaginationEnum, PaginationModel } from '@/model/pagination.ts'
 import { createColumnDefs, createDataEditorOptions } from '@/views/pages/admin/source/components/TableUtils.ts'
 import { OrderFilter, SqlColumn, SqlType, TableFilter } from '@/model/table.ts'
 import TableService from '@/services/table.ts'
 import { cloneDeep } from 'lodash'
-import { ToastUtils } from '@/utils/toast.ts'
-import Button from '@/views/ui/button'
-import Tooltip from '@/views/ui/tooltip'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Input } from '@/components/ui/input'
-import TableCellInfo from '@/views/pages/admin/source/components/TableCellInfo.vue'
 import TableRowDelete from '@/views/pages/admin/source/components/TableRowDelete.vue'
-import SqlInfo from '@/views/components/sql/SqlInfo.vue'
-import TableColumn from '@/views/pages/admin/source/components/TableColumn.vue'
-import TableRowFilter from '@/views/pages/admin/source/components/TableRowFilter.vue'
 
 export default defineComponent({
   name: 'SourceTableData',
-  components: {
-    DataCapCard,
-    TableRowFilter,
-    TableColumn,
-    SqlInfo,
-    TableRowDelete,
-    TableCellInfo,
-    Input,
-
-    AgGridVue,
-    Button,
-    Tooltip,
-    Popover, PopoverContent, PopoverTrigger,
-  },
+  components: { TableRowDelete, AgGridVue },
   created()
   {
     this.i18n = useI18n()
-    this.handlerInitialize()
+    this.handleInitialize()
     this.watchChange()
   },
   data()
@@ -223,7 +244,7 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.clearData()
       this.gridOptions = createDataEditorOptions(this.i18n)
@@ -234,7 +255,7 @@ export default defineComponent({
         }
         this.configure.pagination = pagination
       }
-      const code = this.$route?.params.table as string
+      const code = String(this.$route?.params.table)
       if (code) {
         this.loading = true
         TableService.getData(code, this.configure)
@@ -250,7 +271,10 @@ export default defineComponent({
                         this.filterConfigure.types = cloneDeep(response.data.types)
                       }
                       else {
-                        ToastUtils.error(response.message)
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => this.loading = false)
@@ -283,7 +307,10 @@ export default defineComponent({
                         this.filterConfigure.types = cloneDeep(response.data.types)
                       }
                       else {
-                        this.$Message.error(response.message)
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => this.refererLoading = false)
@@ -324,12 +351,12 @@ export default defineComponent({
       this.dataSelectedChanged.changed = true
       this.dataSelectedChanged.columns = selectedRows
     },
-    handlerSelectedChangedPreview(isOpen: boolean)
+    visibleChanged(isOpen: boolean)
     {
       this.dataSelectedChanged.pending = isOpen
       this.dataSelectedChanged.changed = false
       if (!isOpen) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
     },
     handlerApplyPagination(operator: PaginationEnum)
@@ -466,7 +493,7 @@ export default defineComponent({
           () => this.$route?.params.table,
           () => {
             this.configure.pagination = null as unknown as PaginationModel
-            this.handlerInitialize()
+            this.handleInitialize()
           }
       )
     }

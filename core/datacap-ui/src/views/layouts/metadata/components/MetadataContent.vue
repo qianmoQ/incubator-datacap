@@ -21,6 +21,17 @@
 
       <RouterView/>
     </ShadcnTabItem>
+
+    <ShadcnTabItem value="data">
+      <template #label>
+        <div class="flex items-center space-x-2">
+          <ShadcnIcon icon="Table"/>
+          <span>{{ $t('source.common.tableData') }}</span>
+        </div>
+      </template>
+
+      <RouterView/>
+    </ShadcnTabItem>
   </ShadcnTab>
 </template>
 
