@@ -1,49 +1,59 @@
 <template>
-  <Tabs v-model="selectTab as string" :default-value="selectTab as string" class="w-full">
-    <DataCapCard>
-      <template #title>
-        <TabsList class="rounded-none">
-          <TabsTrigger value="info" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">
-            <div class="flex space-x-2">
-              <Info :size="18"/>
-              <span>{{ $t('source.common.info') }}</span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="structure" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">
-            <div class="flex space-x-2">
-              <LayoutPanelTop :size="18"/>
-              <span>{{ $t('source.common.structure') }}</span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="data" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">
-            <div class="flex space-x-2">
-              <Table :size="18"/>
-              <span>{{ $t('source.common.tableData') }}</span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="statement" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">
-            <div class="flex space-x-2">
-              <SatelliteDish :size="18"/>
-              <span>{{ $t('source.common.statement') }}</span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="erDiagram" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">
-            <div class="flex space-x-2">
-              <Wind :size="18"/>
-              <span>{{ $t('source.common.erDiagram') }}</span>
-            </div>
-          </TabsTrigger>
-        </TabsList>
+  <ShadcnTab v-model="selectTab">
+    <ShadcnTabItem value="info" :disabled="!originalTable" @on-click="onChange">
+      <template #label>
+        <div class="flex items-center space-x-1">
+          <ShadcnIcon icon="Info"/>
+          <span>{{ $t('source.common.info') }}</span>
+        </div>
       </template>
-      <template #content>
-        <TabsContent :value="selectTab as string">
-          <div class="h-[695px] overflow-x-auto overflow-y-auto">
-            <RouterView/>
-          </div>
-        </TabsContent>
+
+      <RouterView/>
+    </ShadcnTabItem>
+
+    <ShadcnTabItem value="structure" :disabled="!originalTable" @on-click="onChange">
+      <template #label>
+        <div class="flex space-x-2">
+          <ShadcnIcon icon="LayoutPanelTop"/>
+          <span>{{ $t('source.common.structure') }}</span>
+        </div>
       </template>
-    </DataCapCard>
-  </Tabs>
+    </ShadcnTabItem>
+  </ShadcnTab>
+
+  <!--  <Tabs v-model="selectTab as string" :default-value="selectTab as string" class="w-full">-->
+  <!--    <DataCapCard>-->
+  <!--      <template #title>-->
+  <!--        <TabsList class="rounded-none">-->
+  <!--          <TabsTrigger value="data" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">-->
+  <!--            <div class="flex space-x-2">-->
+  <!--              <Table :size="18"/>-->
+  <!--              <span>{{ $t('source.common.tableData') }}</span>-->
+  <!--            </div>-->
+  <!--          </TabsTrigger>-->
+  <!--          <TabsTrigger value="statement" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">-->
+  <!--            <div class="flex space-x-2">-->
+  <!--              <SatelliteDish :size="18"/>-->
+  <!--              <span>{{ $t('source.common.statement') }}</span>-->
+  <!--            </div>-->
+  <!--          </TabsTrigger>-->
+  <!--          <TabsTrigger value="erDiagram" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">-->
+  <!--            <div class="flex space-x-2">-->
+  <!--              <Wind :size="18"/>-->
+  <!--              <span>{{ $t('source.common.erDiagram') }}</span>-->
+  <!--            </div>-->
+  <!--          </TabsTrigger>-->
+  <!--        </TabsList>-->
+  <!--      </template>-->
+  <!--      <template #content>-->
+  <!--        <TabsContent :value="selectTab as string">-->
+  <!--          <div class="h-[695px] overflow-x-auto overflow-y-auto">-->
+  <!--            <RouterView/>-->
+  <!--          </div>-->
+  <!--        </TabsContent>-->
+  <!--      </template>-->
+  <!--    </DataCapCard>-->
+  <!--  </Tabs>-->
 </template>
 
 <script lang="ts">
@@ -62,22 +72,22 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
     this.watchChange()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
-      const source = this.$route.params?.source as string
-      const database = this.$route.params?.database as string
-      const table = this.$route.params?.table as string
-      const type = this.$route.meta.type as string
+      const source = String(this.$route.params?.source)
+      const database = String(this.$route.params?.database)
+      const table = String(this.$route.params?.table)
+      const type = String(this.$route.meta.type)
       this.originalSource = source
       this.originalDatabase = database
       this.originalTable = table
       this.selectTab = type
     },
-    handlerChange()
+    onChange()
     {
       this.$router.push(`/admin/source/${ this.originalSource }/d/${ this.originalDatabase }/t/${ this.selectTab }/${ this.originalTable }`)
     },
@@ -85,7 +95,7 @@ export default defineComponent({
     {
       watch(
           () => this.$route?.params.table,
-          () => this.handlerInitialize()
+          () => this.handleInitialize()
       )
     }
   }

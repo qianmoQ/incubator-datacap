@@ -1,148 +1,152 @@
 <template>
-  <div class="pl-3 pr-3">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else-if="dataInfo">
-      <div class="grid w-full grid-cols-3 gap-6 pt-2">
-        <div class="flex items-center">
-          <Database :size="18" class="mr-2"/>
-          {{ dataInfo.database?.name }}
-        </div>
-        <div class="flex items-center">
-          <Table :size="18" class="mr-2"/>
-          {{ dataInfo?.name }}
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('common.createTime')">
-            <Clock :size="18" class="mr-2"/>
-            {{ dataInfo?.inCreateTime === 'null' ? $t('source.common.notSpecified') : dataInfo.inCreateTime }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('common.updateTime')">
-            <Clock :size="18" class="mr-2"/>
-            {{ dataInfo?.inUpdateTime === 'null' ? $t('source.common.notUpdated') : dataInfo.inUpdateTime }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.engine')">
-            <CalendarHeart :size="18" class="mr-2"/>
-            {{ dataInfo.engine === 'null' ? $t('source.common.notSpecifiedEngine') : dataInfo.engine }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.collation')">
-            <ArrowUpDown :size="18" class="mr-2"/>
-            {{ dataInfo.collation === 'null' ? $t('source.common.notSpecifiedCollation') : dataInfo.collation }}
-          </Tooltip>
-        </div>
-      </div>
-      <Divider class="mt-4 mb-4"/>
-      <div class="grid w-full grid-cols-3 gap-6 pt-2">
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.totalRows')">
-            <TableCellsMerge :size="18" class="mr-2"/>
-            {{ dataInfo.rows }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.format')">
-            <RemoveFormatting :size="18" class="mr-2"/>
-            {{ dataInfo.format === 'null' ? $t('source.common.notSpecifiedFormat') : dataInfo.format }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.avgRowLength')">
-            <ArrowUp10 :size="18" class="mr-2"/>
-            {{ dataInfo.avgRowLength === 'null' ? 0 : dataInfo.avgRowLength }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.dataSize')">
-            <ArrowUpDown :size="18" class="mr-2"/>
-            {{ dataInfo.dataLength === 'null' ? 0 : dataInfo.dataLength }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :content="$t('source.common.indexSize')">
-            <Search :size="18" class="mr-2"/>
-            {{ dataInfo.indexLength === 'null' ? $t('source.common.notSpecifiedIndex') : dataInfo.indexLength }}
-          </Tooltip>
-        </div>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <Tooltip :content="$t('source.common.autoIncrement')">
-              <ArrowUpDown :size="18" class="mr-2"/>
-              {{ dataInfo.autoIncrement === 'null' ? $t('source.common.notSpecifiedPrimaryKey') : dataInfo.autoIncrement }}
-            </Tooltip>
+  <div class="relative min-h-screen">
+    <ShadcnSpin v-if="loading" fixed/>
+
+    <div v-if="dataInfo">
+      <ShadcnRow class="space-y-4">
+        <ShadcnCol span="4">
+          <div class="flex items-center space-x-2">
+            <ShadcnIcon icon="Database"/>
+            <span>{{ dataInfo.database?.name }}</span>
           </div>
-          <div>
-            <Popover>
-              <PopoverTrigger as-child>
-                <Button size="icon" class="rounded-full w-6 h-6" :disabled="dataInfo.autoIncrement === 'null'">
-                  <Tooltip :content="$t('source.common.resetAutoIncrement')">
-                    <Cog :size="14"/>
-                  </Tooltip>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent class="w-80">
-                <div class="grid gap-4">
-                  <div class="space-y-2">
-                    <h4 class="font-medium leading-none">{{ $t('source.common.resetAutoIncrement') }}</h4>
-                  </div>
-                  <div class="grid gap-2">
-                    <div class="grid grid-cols-3 items-center gap-4">
-                      <Label for="autoIncrement">{{ $t('source.common.resetTo') }}</Label>
-                      <Input v-model="dataInfo.autoIncrement" id="autoIncrement" type="number" :default-value="dataInfo.autoIncrement"/>
-                      <Button size="sm" :loading="submitting" :disabled="submitting" @click="handlerApply">
-                        {{ $t('common.apply') }}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <div class="flex items-center space-x-2">
+            <ShadcnIcon icon="Table"/>
+            <span>{{ dataInfo.name }}</span>
           </div>
-        </div>
-      </div>
-      <Divider class="mt-4 mb-4"/>
-      <div class="space-y-2">
-        <Label for="comment">{{ $t('source.common.comment') }}</Label>
-        <Textarea id="comment" v-model="dataInfo.comment"/>
-      </div>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('common.createTime')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="Clock"/>
+              <span>{{ dataInfo?.inCreateTime === 'null' ? $t('source.common.notSpecified') : dataInfo.inCreateTime }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('common.updateTime')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="Clock"/>
+              <span>{{ dataInfo?.inUpdateTime === 'null' ? $t('source.common.notUpdated') : dataInfo.inUpdateTime }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.engine')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="CalendarHeart"/>
+              <span>{{ dataInfo.engine === 'null' ? $t('source.common.notSpecifiedEngine') : dataInfo.engine }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.collation')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="ArrowUpDown"/>
+              <span>{{ dataInfo.collation === 'null' ? $t('source.common.notSpecifiedCollation') : dataInfo.collation }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.totalRows')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="TableCellsMerge"/>
+              <span>{{ dataInfo.rows }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.format')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="RemoveFormatting"/>
+              <span>{{ dataInfo.format === 'null' ? $t('source.common.notSpecifiedFormat') : dataInfo.format }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.avgRowLength')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="ArrowUp10"/>
+              <span>{{ dataInfo.avgRowLength === 'null' ? 0 : dataInfo.avgRowLength }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.dataSize')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="ArrowUpDown"/>
+              <span>{{ dataInfo.dataLength === 'null' ? 0 : dataInfo.dataLength }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('source.common.indexSize')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="Search"/>
+              <span>{{ dataInfo.indexLength === 'null' ? $t('source.common.notSpecifiedIndex') : dataInfo.indexLength }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <div class="flex items-center space-x-4 justify-between">
+            <ShadcnTooltip arrow :content="$t('source.common.autoIncrement')">
+              <div class="flex items-center space-x-2">
+                <ShadcnIcon icon="ArrowUpDown"/>
+                <span>{{ dataInfo.autoIncrement === 'null' ? $t('source.common.notSpecifiedPrimaryKey') : dataInfo.autoIncrement }}</span>
+              </div>
+            </ShadcnTooltip>
+            <div>
+              <ShadcnTooltip arrow :content="$t('source.common.resetAutoIncrement')">
+                <ShadcnButton circle size="small" :disabled="dataInfo.autoIncrement === 'null'" @click="autoIncrement = true">
+                  <template #icon>
+                    <ShadcnIcon icon="Cog" :size="16"/>
+                  </template>
+                </ShadcnButton>
+              </ShadcnTooltip>
+            </div>
+          </div>
+        </ShadcnCol>
+
+        <ShadcnCol span="12">
+          <ShadcnDivider class="mt-4 mb-4"/>
+
+          <ShadcnText class="mb-2">{{ $t('source.common.comment') }}</ShadcnText>
+
+          <ShadcnInput v-model="dataInfo.comment" type="textarea"/>
+        </ShadcnCol>
+      </ShadcnRow>
     </div>
   </div>
+
+  <TableAutoIncrement v-if="autoIncrement"
+                      :visible="autoIncrement"
+                      :info="dataInfo"
+                      @close="autoIncrement = false"/>
 </template>
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import TableService from '@/services/table'
-
-import Tooltip from '@/views/ui/tooltip'
-import { SqlType, TableFilter, TableModel } from '@/model/table'
-import { Separator } from '@/components/ui/separator'
-import Divider from '@/views/ui/divider'
-import Button from '@/views/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { ToastUtils } from '@/utils/toast'
-import { Textarea } from '@/components/ui/textarea'
+import { TableModel } from '@/model/table'
+import TableAutoIncrement from '@/views/pages/admin/source/components/TableAutoIncrement.vue'
 
 export default defineComponent({
   name: 'SourceTableInfo',
-  components: {
-    Textarea,
-    Input,
-    Label,
-    Button,
-    Divider,
-    Separator,
-    Tooltip,
-
-    Popover, PopoverContent, PopoverTrigger
-  },
+  components: { TableAutoIncrement },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
     this.watchChange()
   },
   data()
@@ -150,13 +154,14 @@ export default defineComponent({
     return {
       loading: false,
       submitting: false,
+      autoIncrement: false,
       dataInfo: null as TableModel | null
     }
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
-      const code = this.$route?.params.table as string
+      const code = String(this.$route?.params.table)
       if (code) {
         this.loading = true
         TableService.getByCode(code)
@@ -165,38 +170,20 @@ export default defineComponent({
                         this.dataInfo = response.data
                       }
                       else {
-                        ToastUtils.error(response.message)
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => this.loading = false)
-      }
-    },
-    handlerApply()
-    {
-      if (this.dataInfo) {
-        this.submitting = true
-        const configure: TableFilter = {
-          type: SqlType.ALTER,
-          value: this.dataInfo.autoIncrement
-        }
-        TableService.getData(this.dataInfo.code as string, configure)
-                    .then(response => {
-                      if (response.status) {
-                        ToastUtils.success(this.$t('source.tip.resetAutoIncrementSuccess').replace('$VALUE', this.dataInfo?.autoIncrement as string))
-                        this.handlerInitialize()
-                      }
-                      else {
-                        ToastUtils.error(response.message)
-                      }
-                    })
-                    .finally(() => this.submitting = false)
       }
     },
     watchChange()
     {
       watch(
           () => this.$route?.params.table,
-          () => this.handlerInitialize()
+          () => this.handleInitialize()
       )
     }
   }

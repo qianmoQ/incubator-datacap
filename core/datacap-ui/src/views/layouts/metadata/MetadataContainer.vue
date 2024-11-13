@@ -1,16 +1,20 @@
 <template>
-  <div class="w-full h-full">
-    <div class="hidden space-y-6 w-full md:block">
-      <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">
-        <aside class="-mx-4 w-[200px]">
+  <ShadcnLayout>
+    <LayoutHeader/>
+    <div class="container my-2 min-h-screen">
+      <ShadcnLayoutWrapper>
+        <ShadcnLayoutSider class="mr-4">
           <MetadataSidebar/>
-        </aside>
-        <div class="flex-1">
-          <MetadataContent/>
-        </div>
-      </div>
+        </ShadcnLayoutSider>
+        <ShadcnLayoutMain class="ml-2">
+          <ShadcnLayoutContent>
+            <MetadataContent/>
+          </ShadcnLayoutContent>
+        </ShadcnLayoutMain>
+      </ShadcnLayoutWrapper>
     </div>
-  </div>
+    <LayoutFooter/>
+  </ShadcnLayout>
 </template>
 
 <script lang="ts">
@@ -20,9 +24,6 @@ import MetadataContent from '@/views/layouts/metadata/components/MetadataContent
 
 export default defineComponent({
   name: 'MetadataContainer',
-  components: {
-    MetadataContent,
-    MetadataSidebar
-  }
+  components: { MetadataContent, MetadataSidebar }
 })
 </script>

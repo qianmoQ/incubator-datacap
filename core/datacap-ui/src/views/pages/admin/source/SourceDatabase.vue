@@ -27,21 +27,13 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import DatabaseService from '@/services/database.ts'
-import { ToastUtils } from '@/utils/toast.ts'
 import { DatabaseModel } from '@/model/database.ts'
-
-import Tooltip from '@/views/ui/tooltip'
 
 export default defineComponent({
   name: 'SourceDatabase',
-  components: {
-    Database, Clock,
-
-    Tooltip
-  },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
     this.watchChange()
   },
   data()
@@ -53,9 +45,10 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
-      const code = this.$route?.params.database as string
+      const code = String(this.$route?.params.database)
+      console.log(code)
       if (code) {
         this.loading = true
         DatabaseService.getByCode(code)
@@ -64,7 +57,10 @@ export default defineComponent({
                            this.dataInfo = response.data
                          }
                          else {
-                           ToastUtils.error(response.message)
+                           this.$Message.error({
+                             content: response.message,
+                             showIcon: true
+                           })
                          }
                        })
                        .finally(() => this.loading = false)
@@ -74,7 +70,7 @@ export default defineComponent({
     {
       watch(
           () => this.$route?.params.database,
-          () => this.handlerInitialize()
+          () => this.handleInitialize()
       )
     }
   }
