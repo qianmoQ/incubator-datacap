@@ -1,46 +1,22 @@
 <template>
-  <Drawer :is-visible="visible" :width="'10%'" @close="handlerCancel">
-    <template #title>{{ $t('source.common.visibleColumn') }}</template>
-    <div class="mt-3">
-      <FormField name="items">
-        <FormItem>
-          <FormField v-for="item in columns" v-slot="{ value, handleChange }" :key="item.field" type="checkbox" :value="item.field" :unchecked-value="false" name="items">
-            <FormItem class="flex flex-row items-start space-x-3 space-y-0">
-              <FormControl>
-                <Checkbox :checked="value.includes(item.field)" @update:checked="handleChange"/>
-              </FormControl>
-              <FormLabel class="font-normal">
-                {{ item.field }}
-              </FormLabel>
-            </FormItem>
-          </FormField>
-        </FormItem>
-      </FormField>
-    </div>
+  <ShadcnDrawer v-model="visible" width="20%" :title="$t('source.common.visibleColumn')">
+    <ShadcnCheckboxGroup v-model="value">
+      <ShadcnCheckbox v-for="item in columns" :value="item.field">{{ item.field }}</ShadcnCheckbox>
+    </ShadcnCheckboxGroup>
+
     <template #footer>
-      <div class="space-x-5">
-        <Button @click="handlerCancel">
-          {{ $t('common.apply') }}
-        </Button>
-      </div>
+      <ShadcnButton @click="onCancel">
+        {{ $t('common.apply') }}
+      </ShadcnButton>
     </template>
-  </Drawer>
+  </ShadcnDrawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Drawer from '@/views/ui/drawer'
-import Button from '@/views/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { useForm } from 'vee-validate'
 
 export default defineComponent({
   name: 'TableColumn',
-  components: {
-    Button,
-    Drawer,
-    Checkbox,
-  },
   props: {
     isVisible: {
       type: Boolean
@@ -62,22 +38,20 @@ export default defineComponent({
       }
     }
   },
-  setup(props)
+  data()
   {
-    const { values } = useForm({
-      initialValues: {
-        items: props.columns?.map(item => item.field)
-      }
-    })
-
     return {
-      values
+      value: [] as string[]
     }
   },
+  created()
+  {
+    this.value = this.columns.map(item => item.field)
+  },
   methods: {
-    handlerCancel()
+    onCancel()
     {
-      this.$emit('change', this.values.items)
+      this.$emit('change', this.value)
       this.visible = false
     }
   }

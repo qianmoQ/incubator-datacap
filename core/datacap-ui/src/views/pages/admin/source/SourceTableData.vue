@@ -124,7 +124,7 @@
       <template #extra>
         <ShadcnSpace class="items-center">
           <ShadcnTooltip :content="$t('source.common.visibleColumn')">
-            <ShadcnButton circle size="small" @click="handlerVisibleColumn(null, true)">
+            <ShadcnButton circle size="small" @click="visibleColumns(null, true)">
               <ShadcnIcon icon="Columns" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -167,8 +167,12 @@
                     :isVisible="dataSelectedChanged.pending"
                     :columns="dataSelectedChanged.columns"
                     @close="visibleChanged(false)"/>
-    <!--    <TableColumn v-if="visibleColumn.show" :isVisible="visibleColumn.show" :columns="visibleColumn.columns" @close="handlerVisibleColumn($event, false)"-->
-    <!--                 @change="handlerVisibleColumn($event, false)"/>-->
+
+    <TableColumn v-if="visibleColumn.show"
+                 :isVisible="visibleColumn.show"
+                 :columns="visibleColumn.columns"
+                 @close="visibleColumns($event, false)"
+                 @change="visibleColumns($event, false)"/>
     <!--    <TableRowFilter v-if="filterConfigure.show" :isVisible="filterConfigure.show" :columns="filterConfigure.columns" :types="filterConfigure.types"-->
     <!--                    :configure="filterConfigure.configure" @apply="handlerApplyFilter" @close="handlerFilterConfigure(false)"/>-->
     <!--    <SqlInfo v-if="visibleContent.show" :isVisible="visibleContent.show" :content="visibleContent.content" @close="handlerVisibleContent(false)"/>-->
@@ -189,10 +193,11 @@ import TableService from '@/services/table.ts'
 import { cloneDeep } from 'lodash'
 import TableRowDelete from '@/views/pages/admin/source/components/TableRowDelete.vue'
 import TableCellInfo from '@/views/pages/admin/source/components/TableCellInfo.vue'
+import TableColumn from '@/views/pages/admin/source/components/TableColumn.vue'
 
 export default defineComponent({
   name: 'SourceTableData',
-  components: { TableCellInfo, TableRowDelete, AgGridVue },
+  components: { TableColumn, TableCellInfo, TableRowDelete, AgGridVue },
   created()
   {
     this.i18n = useI18n()
@@ -398,7 +403,7 @@ export default defineComponent({
         })
       }
     },
-    handlerVisibleColumn(event: any, show: boolean)
+    visibleColumns(event: any, show: boolean)
     {
       this.visibleColumn.show = show
       if (event) {
