@@ -2,13 +2,13 @@ import GridOptions from '@/views/components/grid/GridOptions'
 
 const createHeaders = (i18n: any) => {
     return [
-        { key: 'name', hidden: true, header: i18n.t('common.name') },
-        { key: 'dataType', hidden: true, header: i18n.t('common.type'), class: 'text-center' },
-        { key: 'maximumLength', hidden: true, header: i18n.t('common.length') },
-        { key: 'isNullable', hidden: true, header: i18n.t('source.common.isNullable'), slot: 'isNullable', class: 'text-center' },
-        { key: 'defaultValue', hidden: true, header: i18n.t('source.common.defaultValue'), class: 'text-center' },
-        { key: 'comment', hidden: true, header: i18n.t('source.common.comment'), class: 'text-center' },
-        { key: 'extra', hidden: true, header: i18n.t('source.common.extra'), class: 'text-center' }
+        { key: 'name', label: i18n.t('common.name') },
+        { key: 'dataType', label: i18n.t('common.type') },
+        { key: 'maximumLength', label: i18n.t('common.length') },
+        { key: 'isNullable', label: i18n.t('source.common.isNullable'), slot: 'isNullable' },
+        { key: 'defaultValue', label: i18n.t('source.common.defaultValue') },
+        { key: 'comment', label: i18n.t('source.common.comment') },
+        { key: 'extra', label: i18n.t('source.common.extra') }
     ]
 }
 

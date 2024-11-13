@@ -1,72 +1,49 @@
 <template>
-  <div class="h-full">
-    <TableCommon :loading="loading" :columns="headers" :data="data">
-      <template #isNullable="{row}">
-        <Switch :value="row.isNullable" disabled="disabled"/>
+  <div class="relative min-h-screen">
+    <ShadcnSpin v-if="loading" fixed/>
+
+    <ShadcnTable size="small" :columns="headers" :data="data">
+      <template #isNullable="{ row }">
+        <ShadcnSwitch v-model="row.isNullable" size="small" disabled/>
       </template>
-    </TableCommon>
+    </ShadcnTable>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, watch } from 'vue'
+<script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { createHeaders } from '@/views/pages/admin/source/components/TableUtils.ts'
-import TableCommon from '@/views/components/table/TableCommon.vue'
 import ColumnService from '@/services/column.ts'
 import { ColumnModel } from '@/model/column.ts'
-import Switch from '@/views/ui/switch'
 
-export default defineComponent({
-  name: 'SourceTableStructure',
-  components: {
-    TableCommon,
-    Switch
-  },
-  setup()
-  {
-    const headers = createHeaders(useI18n())
+const { t } = useI18n()
+const route = useRoute()
 
-    return {
-      headers
-    }
-  },
-  data()
-  {
-    return {
-      loading: false,
-      data: Array<ColumnModel>
-    }
-  },
-  created()
-  {
-    this.handlerInitialize()
-    this.watchChange()
-  },
-  methods: {
-    handlerInitialize()
-    {
-      const code = this.$route?.params.table as string
-      if (code) {
-        this.loading = true
-        ColumnService.getAllByTable(code)
-                     .then(response => {
-                       if (response.status) {
-                         this.data = response.data
-                       }
-                     })
-                     .finally(() => this.loading = false)
-      }
-    },
-    watchChange()
-    {
-      watch(
-          () => this.$route?.params.table,
-          () => {
-            this.handlerInitialize()
-          }
-      )
-    }
+const headers = createHeaders({ t })
+
+const loading = ref(false)
+const data = ref<Array<ColumnModel>>([])
+
+const handleInitialize = () => {
+  const code = String(route.params.table)
+  if (code) {
+    loading.value = true
+    ColumnService.getAllByTable(code)
+                 .then(response => {
+                   if (response.status) {
+                     data.value = response.data
+                   }
+                 })
+                 .finally(() => loading.value = false)
   }
-})
+}
+
+watch(
+    () => route.params.table,
+    () => handleInitialize()
+)
+
+onMounted(() => handleInitialize())
 </script>

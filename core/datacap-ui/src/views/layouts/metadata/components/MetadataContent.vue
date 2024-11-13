@@ -1,6 +1,6 @@
 <template>
-  <ShadcnTab v-model="selectTab">
-    <ShadcnTabItem value="info" :disabled="!originalTable" @on-click="onChange">
+  <ShadcnTab v-model="selectTab" @on-change="onChange">
+    <ShadcnTabItem value="info">
       <template #label>
         <div class="flex items-center space-x-1">
           <ShadcnIcon icon="Info"/>
@@ -11,93 +11,44 @@
       <RouterView/>
     </ShadcnTabItem>
 
-    <ShadcnTabItem value="structure" :disabled="!originalTable" @on-click="onChange">
+    <ShadcnTabItem value="structure">
       <template #label>
-        <div class="flex space-x-2">
+        <div class="flex items-center space-x-2">
           <ShadcnIcon icon="LayoutPanelTop"/>
           <span>{{ $t('source.common.structure') }}</span>
         </div>
       </template>
+
+      <RouterView/>
     </ShadcnTabItem>
   </ShadcnTab>
-
-  <!--  <Tabs v-model="selectTab as string" :default-value="selectTab as string" class="w-full">-->
-  <!--    <DataCapCard>-->
-  <!--      <template #title>-->
-  <!--        <TabsList class="rounded-none">-->
-  <!--          <TabsTrigger value="data" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">-->
-  <!--            <div class="flex space-x-2">-->
-  <!--              <Table :size="18"/>-->
-  <!--              <span>{{ $t('source.common.tableData') }}</span>-->
-  <!--            </div>-->
-  <!--          </TabsTrigger>-->
-  <!--          <TabsTrigger value="statement" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">-->
-  <!--            <div class="flex space-x-2">-->
-  <!--              <SatelliteDish :size="18"/>-->
-  <!--              <span>{{ $t('source.common.statement') }}</span>-->
-  <!--            </div>-->
-  <!--          </TabsTrigger>-->
-  <!--          <TabsTrigger value="erDiagram" class="cursor-pointer" :disabled="!originalTable" @click="handlerChange">-->
-  <!--            <div class="flex space-x-2">-->
-  <!--              <Wind :size="18"/>-->
-  <!--              <span>{{ $t('source.common.erDiagram') }}</span>-->
-  <!--            </div>-->
-  <!--          </TabsTrigger>-->
-  <!--        </TabsList>-->
-  <!--      </template>-->
-  <!--      <template #content>-->
-  <!--        <TabsContent :value="selectTab as string">-->
-  <!--          <div class="h-[695px] overflow-x-auto overflow-y-auto">-->
-  <!--            <RouterView/>-->
-  <!--          </div>-->
-  <!--        </TabsContent>-->
-  <!--      </template>-->
-  <!--    </DataCapCard>-->
-  <!--  </Tabs>-->
 </template>
 
-<script lang="ts">
-import { defineComponent, watch } from 'vue'
+<script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-export default defineComponent({
-  name: 'MetadataContent',
-  data()
-  {
-    return {
-      selectTab: null as string | null,
-      originalSource: null as string | null,
-      originalDatabase: null as string | null,
-      originalTable: null as string | null
-    }
-  },
-  created()
-  {
-    this.handleInitialize()
-    this.watchChange()
-  },
-  methods: {
-    handleInitialize()
-    {
-      const source = String(this.$route.params?.source)
-      const database = String(this.$route.params?.database)
-      const table = String(this.$route.params?.table)
-      const type = String(this.$route.meta.type)
-      this.originalSource = source
-      this.originalDatabase = database
-      this.originalTable = table
-      this.selectTab = type
-    },
-    onChange()
-    {
-      this.$router.push(`/admin/source/${ this.originalSource }/d/${ this.originalDatabase }/t/${ this.selectTab }/${ this.originalTable }`)
-    },
-    watchChange()
-    {
-      watch(
-          () => this.$route?.params.table,
-          () => this.handleInitialize()
-      )
-    }
-  }
-})
+const route = useRoute()
+const router = useRouter()
+
+const selectTab = ref<string | null>(null)
+const originalSource = ref<string | null>(null)
+const originalDatabase = ref<string | null>(null)
+const originalTable = ref<string | undefined>(undefined)
+
+const handleInitialize = () => {
+  originalSource.value = String(route.params?.source || '')
+  originalDatabase.value = String(route.params?.database || '')
+  originalTable.value = route.params?.table ? String(route.params.table) : undefined
+  selectTab.value = String(route.meta.type || '')
+}
+
+const onChange = () => router.push(`/admin/source/${ originalSource.value }/d/${ originalDatabase.value }/t/${ selectTab.value }/${ originalTable.value }`)
+
+watch(
+    () => route.params.table,
+    () => handleInitialize()
+)
+
+onMounted(() => handleInitialize())
 </script>
