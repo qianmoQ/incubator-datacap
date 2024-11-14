@@ -27,7 +27,7 @@ export class ColumnRequest
     public static of(): ColumnModel
     {
         return {
-            name: 'column_name',
+            name: undefined,
             type: undefined,
             comment: undefined,
             defaultValue: undefined,

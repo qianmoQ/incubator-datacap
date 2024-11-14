@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="relative h-screen">
     <ShadcnSpin v-model="loading" fixed/>
+
     <ErDiagram v-if="!loading" :options="options"/>
   </div>
 </template>

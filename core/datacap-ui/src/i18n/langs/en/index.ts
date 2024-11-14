@@ -162,12 +162,38 @@ export default {
             deleteSuccess: 'Delete success'
         },
         placeholder: {
-            name: 'Please enter the source name'
+            name: 'Please enter the source name',
+            tableName: 'Please enter the table name',
+            tableEngine: 'Please select the table engine',
+            tableComment: 'Please enter the table comment',
+            columnName: 'Please enter the column name',
+            columnType: 'Please select the column type',
+            columnLength: 'Please enter the column length',
+            columnDefaultValue: 'Please enter the default value',
+            columnComment: 'Please enter the column comment',
         },
         validator: {
             name: {
                 required: 'Source name cannot be empty',
                 match: 'The source name entered is incorrect, please enter [$VALUE]'
+            },
+            tableName: {
+                required: 'Table name cannot be empty',
+                pattern: 'The table name entered is incorrect, must start with a letter, and contain only letters, digits, underscores, and dashes'
+            },
+            tableEngine: {
+                required: 'Table engine cannot be empty'
+            },
+            columnName: {
+                required: 'Column name cannot be empty',
+                pattern: 'The column name entered is incorrect, must start with a letter, and contain only letters, digits, underscores, and dashes'
+            },
+            columnType: {
+                required: 'Column type cannot be empty'
+            },
+            columnLength: {
+                required: 'Column length cannot be empty',
+                min: 'The column length cannot be less than 0',
             }
         }
     },

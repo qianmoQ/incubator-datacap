@@ -14,7 +14,7 @@
                   :loadData="onLoadData"
                   @on-node-click="onNodeClick">
         <template #label="{ node }">
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center space-x-1" @contextmenu.prevent="visibleContextMenu($event, node)">
             <ShadcnIcon class="text-xs font-semibold text-gray-500" size="16" :icon="node.level === 2 ? 'Table' : 'Columns'"/>
             <span class="text-xs font-normal text-gray-900">
               {{ node.title }}
@@ -25,28 +25,22 @@
           </div>
         </template>
       </ShadcnTree>
+
+      <ShadcnContextMenu v-if="contextmenu.visible" v-model="contextmenu.visible" :position="contextmenu.position">
+        <ShadcnContextMenuSub :label="$t('source.common.menuNew')">
+          <ShadcnContextMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" @click="visibleCreateTable(true)">
+            <div class="flex items-center space-x-1">
+              <ShadcnIcon icon="Table" size="15"/>
+              <span>{{ $t('source.common.menuNewTable') }}</span>
+            </div>
+          </ShadcnContextMenuItem>
+        </ShadcnContextMenuSub>
+      </ShadcnContextMenu>
     </div>
   </ShadcnCard>
 
-  <!--          <Tree :data="dataTreeArray" :empty-text="$t('source.tip.selectDatabase')" :load-data="handlerLoadChildData" @on-select-change="handlerSelectNode"-->
-  <!--                @on-contextmenu="handlerContextMenu">-->
-  <!--            <template #contextMenu>-->
-  <!--              <DropdownMenu>-->
-  <!--                <DropdownMenuTrigger as-child>-->
-  <!--                  <span id="contextMenu"></span>-->
-  <!--                </DropdownMenuTrigger>-->
-  <!--                <DropdownMenuContent class="-mt-3">-->
-  <!--                  <DropdownMenuLabel>{{ $t('common.action') }}</DropdownMenuLabel>-->
-  <!--                  <DropdownMenuSeparator/>-->
-  <!--                  <DropdownMenuGroup>-->
-  <!--                    <DropdownMenuSub>-->
-  <!--                      <DropdownMenuSubTrigger class="cursor-pointer">{{ $t('source.common.menuNew') }}</DropdownMenuSubTrigger>-->
   <!--                      <DropdownMenuPortal>-->
   <!--                        <DropdownMenuSubContent>-->
-  <!--                          <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" class="cursor-pointer" @click="handlerCreateTable(true)">-->
-  <!--                            <Table :size="18" class="mr-2"/>-->
-  <!--                            {{ $t('source.common.menuNewTable') }}-->
-  <!--                          </DropdownMenuItem>-->
   <!--                          <DropdownMenuItem class="cursor-pointer" @click="handlerCreateColumn(true)">-->
   <!--                            <Columns :size="18" class="mr-2"/>-->
   <!--                            {{ $t('source.common.newColumn') }}-->
@@ -87,9 +81,10 @@
   <!--                  </DropdownMenuItem>-->
   <!--                </DropdownMenuContent>-->
   <!--              </DropdownMenu>-->
-  <!--            </template>-->
-  <!--          </Tree>-->
-  <!--  <TableCreate v-if="tableCreateVisible" :isVisible="tableCreateVisible" :info="dataInfo" @close="handlerCreateTable(false)"/>-->
+  <TableCreate v-if="tableCreateVisible"
+               :isVisible="tableCreateVisible"
+               :info="dataInfo"
+               @close="visibleCreateTable(false)"/>
   <!--  <TableExport v-if="tableExportVisible" :isVisible="tableExportVisible" :info="dataInfo" @close="handlerExportData(false)"/>-->
   <!--  <TableTruncate v-if="tableTruncateVisible" :isVisible="tableTruncateVisible" :info="dataInfo" @close="handlerTruncateTable(false)"/>-->
   <!--  <TableDrop v-if="tableDropVisible" :isVisible="tableDropVisible" :info="dataInfo" @close="handlerDropTable(false)"/>-->
@@ -114,6 +109,12 @@ import TableCreate from '@/views/pages/admin/source/components/TableCreate.vue'
 
 export default defineComponent({
   name: 'MetadataSidebar',
+  computed: {
+    StructureEnum()
+    {
+      return StructureEnum
+    }
+  },
   components: { TableCreate, TableDrop, TableTruncate, ColumnChange, TableExport, ColumnDrop, ColumnCreate },
   data()
   {
@@ -134,7 +135,11 @@ export default defineComponent({
       tableDropVisible: false,
       columnCreateVisible: false,
       columnChangeVisible: false,
-      columnDropVisible: false
+      columnDropVisible: false,
+      contextmenu: {
+        visible: false,
+        position: { x: 0, y: 0 }
+      }
     }
   },
   created()
@@ -240,17 +245,7 @@ export default defineComponent({
                    })
                    .finally(() => callback(dataChildArray))
     },
-    handlerContextMenu(node: StructureModel)
-    {
-      console.log(node)
-      this.dataInfo = node
-      // Simulate right-click to trigger right-click menu
-      const element = document.getElementById('contextMenu') as HTMLElement
-      if (element) {
-        element.click()
-      }
-    },
-    handlerCreateTable(opened: boolean)
+    visibleCreateTable(opened: boolean)
     {
       this.tableCreateVisible = opened
     },
@@ -277,6 +272,15 @@ export default defineComponent({
     handlerDropColumn(opened: boolean)
     {
       this.columnDropVisible = opened
+    },
+    visibleContextMenu(event: any, node: any)
+    {
+      this.contextmenu.position = {
+        x: event.clientX,
+        y: event.clientY
+      }
+      this.dataInfo = node
+      this.contextmenu.visible = true
     },
     getColumnIcon(type: string)
     {

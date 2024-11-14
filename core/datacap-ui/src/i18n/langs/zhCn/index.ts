@@ -122,7 +122,7 @@ export default {
             statement: 'SQL 语句',
             erDiagram: 'ER 图形',
             type: '数据源类型',
-            configures: '配置信息',
+            configures: '配置信息'
         },
         tip: {
             selectSource: '请选择数据源',
@@ -163,11 +163,37 @@ export default {
         },
         placeholder: {
             name: '请输入数据源名称',
+            tableName: '请输入表名',
+            tableEngine: '请选择表引擎',
+            tableComment: '请输入表注释',
+            columnName: '请输入列名',
+            columnType: '请输入列类型',
+            columnLength: '请输入列长度',
+            columnDefaultValue: '请输入默认值',
+            columnComment: '请输入列注释'
         },
         validator: {
             name: {
                 required: '数据源名称不能为空',
                 match: '输入的数据源名称不正确，请输入 [$VALUE]'
+            },
+            tableName: {
+                required: '表名不能为空',
+                pattern: '输入的表名不正确，必须以字母开头，且只包含字母、数字、下划线和横线'
+            },
+            tableEngine: {
+                required: '表引擎不能为空'
+            },
+            columnName: {
+                required: '列名不能为空',
+                pattern: '输入的列名不正确，必须以字母开头，且只包含字母、数字、下划线和横线'
+            },
+            columnType: {
+                required: '列类型不能为空'
+            },
+            columnLength: {
+                required: '列长度不能为空',
+                min: '列长度不能小于 0'
             }
         }
     },
@@ -527,7 +553,7 @@ export default {
             deleteAlert4: '要确认，请在下面的框中键入 [ $VALUE ]'
         },
         placeholder: {
-            name: '请输入片段名称',
+            name: '请输入片段名称'
         },
         validator: {
             name: {
