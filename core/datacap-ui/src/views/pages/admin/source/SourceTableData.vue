@@ -41,6 +41,12 @@
             </ShadcnButton>
           </ShadcnTooltip>
 
+          <ShadcnTooltip :content="$t('user.common.setting')">
+            <ShadcnButton circle size="small" @click="visibleSettings(true)">
+              <ShadcnIcon icon="Cog" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+
           <div class="text-sm text-muted-foreground flex gap-2 ml-4 mr-4">
             [ <span>{{ configure?.pagination?.startIndex as number + 1 }}</span> / <span>{{ configure?.pagination?.endIndex as number + 1 }}</span> ]
             <span>of</span>
@@ -93,32 +99,6 @@
             </ShadcnButton>
           </ShadcnTooltip>
         </ShadcnSpace>
-        <!--            <Popover>-->
-        <!--              <PopoverTrigger as-child>-->
-        <!--                <Button size="icon" class="w-6 h-6">-->
-        <!--                  <Cog :size="14"/>-->
-        <!--                </Button>-->
-        <!--              </PopoverTrigger>-->
-        <!--              <PopoverContent>-->
-        <!--                <div class="grid gap-4">-->
-        <!--                  <div class="space-y-2">-->
-        <!--                    <h4 class="font-medium leading-none">{{ $t('source.common.jumpPage') }}</h4>-->
-        <!--                    <p class="text-sm text-muted-foreground flex gap-2">-->
-        <!--                      <Input type="number" v-model="configure.pagination.currentPage" min="1" :max="configure.pagination.totalPages"/>-->
-        <!--                      <Button @click="handlerApplyPagination(configure.operator.JUMP)">-->
-        <!--                        {{ $t('common.apply') }}-->
-        <!--                      </Button>-->
-        <!--                    </p>-->
-        <!--                  </div>-->
-        <!--                  <div class="grid gap-2">-->
-        <!--                    <div class="text-sm text-muted-foreground flex gap-2">-->
-        <!--                      <div>{{ $t('source.common.showPageSize') }}</div>-->
-        <!--                      <Input type="number" v-model="configure.pagination.pageSize" min="1" :max="10000"/>-->
-        <!--                    </div>-->
-        <!--                  </div>-->
-        <!--                </div>-->
-        <!--              </PopoverContent>-->
-        <!--            </Popover>-->
       </template>
 
       <template #extra>
@@ -183,6 +163,11 @@
                     @apply="onApplyFilter"
                     @close="onFilterConfigure(false)"/>
 
+    <TablePagination v-if="visibleSetting.show"
+                     :is-visible="visibleSetting.show"
+                     :configure="configure"
+                     @close="visibleSettings(false)"/>
+
     <SqlInfo v-if="visibleContent.show"
              :isVisible="visibleContent.show"
              :content="visibleContent.content"
@@ -207,10 +192,11 @@ import TableCellInfo from '@/views/pages/admin/source/components/TableCellInfo.v
 import TableColumn from '@/views/pages/admin/source/components/TableColumn.vue'
 import TableRowFilter from '@/views/pages/admin/source/components/TableRowFilter.vue'
 import SqlInfo from '@/views/components/sql/SqlInfo.vue'
+import TablePagination from '@/views/pages/admin/source/components/TablePagination.vue'
 
 export default defineComponent({
   name: 'SourceTableData',
-  components: { SqlInfo, TableRowFilter, TableColumn, TableCellInfo, TableRowDelete, AgGridVue },
+  components: { TablePagination, SqlInfo, TableRowFilter, TableColumn, TableCellInfo, TableRowDelete, AgGridVue },
   created()
   {
     this.i18n = useI18n()
@@ -254,6 +240,9 @@ export default defineComponent({
       visibleColumn: {
         show: false,
         columns: [] as any[]
+      },
+      visibleSetting: {
+        show: false
       },
       filterConfigure: {
         show: false,
@@ -478,6 +467,13 @@ export default defineComponent({
         this.handleRefererData(configure)
       }
       this.visibleColumn.columns = this.originalColumns
+    },
+    visibleSettings(show: boolean)
+    {
+      this.visibleSetting.show = show
+      if (!show) {
+        this.handleRefererData(this.getConfigure())
+      }
     },
     getSortConfigure(configure: TableFilter)
     {
