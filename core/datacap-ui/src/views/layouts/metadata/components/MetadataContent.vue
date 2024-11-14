@@ -43,6 +43,17 @@
 
       <RouterView/>
     </ShadcnTabItem>
+
+    <ShadcnTabItem value="erDiagram">
+      <template #label>
+        <div class="flex items-center space-x-2">
+          <ShadcdnIcon icon="Wind"/>
+          <span>{{ $t('source.common.erDiagram') }}</span>
+        </div>
+      </template>
+
+      <RouterView/>
+    </ShadcnTabItem>
   </ShadcnTab>
 </template>
 
