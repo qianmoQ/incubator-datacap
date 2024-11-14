@@ -1,21 +1,20 @@
 <template>
-  <CircularLoading v-if="loading" :show="loading"/>
-  <AceEditor v-else :value="statement as string" :read-only="true" :height="'400px'"/>
+  <div class="relative min-h-screen">
+    <ShadcnSpin v-model="loading" fixed/>
+
+    <AceEditor v-if="!loading" :value="statement as string" :read-only="true" :height="'100vh'"/>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import { SqlType, TableFilter, TableFilterRequest } from '@/model/table.ts'
-
 import AceEditor from '@/views/components/editor/AceEditor.vue'
 import TableService from '@/services/table.ts'
 
 export default defineComponent({
   name: 'SourceTableStatement',
-  components: {
-    AceEditor,
-    CircularLoading
-  },
+  components: { AceEditor },
   data()
   {
     return {
@@ -26,13 +25,13 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
     this.watchChange()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
-      const code = this.$route?.params.table as string
+      const code = String(this.$route?.params.table)
       if (code) {
         this.formState = TableFilterRequest.of()
         this.formState.type = SqlType.SHOW
@@ -56,7 +55,7 @@ export default defineComponent({
     {
       watch(
           () => this.$route?.params.table,
-          () => this.handlerInitialize()
+          () => this.handleInitialize()
       )
     }
   }
