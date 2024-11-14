@@ -9,7 +9,7 @@
             <ShadcnButton circle
                           size="small"
                           :disabled="!configure?.pagination?.hasPreviousPage"
-                          @click="handlerApplyPagination(configure.operator.FIRST)">
+                          @click="onApplyPagination(configure.operator.FIRST)">
               <ShadcnIcon icon="ArrowLeftToLine" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -18,7 +18,7 @@
             <ShadcnButton circle
                           size="small"
                           :disabled="!configure?.pagination?.hasPreviousPage"
-                          @click="handlerApplyPagination(configure.operator.PREVIOUS)">
+                          @click="onApplyPagination(configure.operator.PREVIOUS)">
               <ShadcnIcon icon="ArrowLeft" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -27,7 +27,7 @@
             <ShadcnButton circle
                           size="small"
                           :disabled="!configure?.pagination?.hasNextPage"
-                          @click="handlerApplyPagination(configure.operator.NEXT)">
+                          @click="onApplyPagination(configure.operator.NEXT)">
               <ShadcnIcon icon="ArrowRight" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -36,7 +36,7 @@
             <ShadcnButton circle
                           size="small"
                           :disabled="!configure.pagination.hasNextPage"
-                          @click="handlerApplyPagination(configure.operator.LAST)">
+                          @click="onApplyPagination(configure.operator.LAST)">
               <ShadcnIcon icon="ArrowRightToLine" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -49,7 +49,7 @@
           </div>
 
           <ShadcnTooltip :content="$t('source.common.addRows')">
-            <ShadcnButton circle size="small" @click="handlerAddOrCloneRow(false)">
+            <ShadcnButton circle size="small" @click="onAddOrCloneRow(false)">
               <ShadcnIcon icon="Plus" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -58,7 +58,7 @@
             <ShadcnButton circle
                           size="small"
                           :disabled="dataSelectedChanged.columns.length === 0"
-                          @click="handlerAddOrCloneRow(true)">
+                          @click="onAddOrCloneRow(true)">
               <ShadcnIcon icon="Copy" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -82,13 +82,13 @@
           </ShadcnTooltip>
 
           <ShadcnTooltip :content="$t('common.preview')">
-            <ShadcnButton circle size="small" @click="handlerVisibleContent(true)">
+            <ShadcnButton circle size="small" @click="visibleContents(true)">
               <ShadcnIcon icon="Eye" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
 
           <ShadcnTooltip :content="$t('common.refresh')">
-            <ShadcnButton circle size="small" @click="handlerRefresh">
+            <ShadcnButton circle size="small" @click="onRefresh">
               <ShadcnIcon icon="RefreshCw" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -130,7 +130,7 @@
           </ShadcnTooltip>
 
           <ShadcnTooltip :content="$t('source.common.filterData')">
-            <ShadcnButton circle size="small" @click="handlerFilterConfigure(true)">
+            <ShadcnButton circle size="small" @click="onFilterConfigure(true)">
               <ShadcnIcon icon="Filter" size="15"/>
             </ShadcnButton>
           </ShadcnTooltip>
@@ -139,6 +139,7 @@
 
       <div class="relative">
         <ShadcnSpin v-model="refererLoading" fixed/>
+
         <AgGridVue class="ag-theme-datacap"
                    style="width: 100%; height: calc(100vh - 40px);"
                    :gridOptions="gridOptions"
@@ -147,12 +148,12 @@
                    :tooltipShowDelay="100"
                    :sortingOrder="['desc', 'asc', null]"
                    :rowSelection="'multiple'"
-                   @grid-ready="handlerGridReady"
-                   @sortChanged="handlerSortChanged"
-                   @cellValueChanged="handlerCellValueChanged"
-                   @selectionChanged="handlerSelectionChanged"
-                   @columnVisible="handlerColumnVisible"
-                   @columnMoved="handlerColumnMoved">
+                   @grid-ready="onGridReady"
+                   @sortChanged="onSortChanged"
+                   @cellValueChanged="onCellValueChanged"
+                   @selectionChanged="onSelectionChanged"
+                   @columnVisible="onColumnVisible"
+                   @columnMoved="onColumnMoved">
         </AgGridVue>
       </div>
     </ShadcnCard>
@@ -173,9 +174,19 @@
                  :columns="visibleColumn.columns"
                  @close="visibleColumns($event, false)"
                  @change="visibleColumns($event, false)"/>
-    <!--    <TableRowFilter v-if="filterConfigure.show" :isVisible="filterConfigure.show" :columns="filterConfigure.columns" :types="filterConfigure.types"-->
-    <!--                    :configure="filterConfigure.configure" @apply="handlerApplyFilter" @close="handlerFilterConfigure(false)"/>-->
-    <!--    <SqlInfo v-if="visibleContent.show" :isVisible="visibleContent.show" :content="visibleContent.content" @close="handlerVisibleContent(false)"/>-->
+
+    <TableRowFilter v-if="filterConfigure.show"
+                    :isVisible="filterConfigure.show"
+                    :columns="filterConfigure.columns"
+                    :types="filterConfigure.types"
+                    :configure="filterConfigure.configure"
+                    @apply="onApplyFilter"
+                    @close="onFilterConfigure(false)"/>
+
+    <SqlInfo v-if="visibleContent.show"
+             :isVisible="visibleContent.show"
+             :content="visibleContent.content"
+             @close="visibleContents(false)"/>
   </div>
 </template>
 
@@ -194,10 +205,12 @@ import { cloneDeep } from 'lodash'
 import TableRowDelete from '@/views/pages/admin/source/components/TableRowDelete.vue'
 import TableCellInfo from '@/views/pages/admin/source/components/TableCellInfo.vue'
 import TableColumn from '@/views/pages/admin/source/components/TableColumn.vue'
+import TableRowFilter from '@/views/pages/admin/source/components/TableRowFilter.vue'
+import SqlInfo from '@/views/components/sql/SqlInfo.vue'
 
 export default defineComponent({
   name: 'SourceTableData',
-  components: { TableColumn, TableCellInfo, TableRowDelete, AgGridVue },
+  components: { SqlInfo, TableRowFilter, TableColumn, TableCellInfo, TableRowDelete, AgGridVue },
   created()
   {
     this.i18n = useI18n()
@@ -290,12 +303,7 @@ export default defineComponent({
                     .finally(() => this.loading = false)
       }
     },
-    handlerGridReady(params: { api: GridApi; columnApi: ColumnApi; })
-    {
-      this.gridApi = params.api
-      this.gridColumnApi = params.columnApi
-    },
-    handlerRefererData(configure: TableFilter)
+    handleRefererData(configure: TableFilter)
     {
       this.configure.datasets = []
       this.gridOptions.overlayNoRowsTemplate = '<span></span>'
@@ -326,11 +334,20 @@ export default defineComponent({
                     .finally(() => this.refererLoading = false)
       }
     },
-    handlerSortChanged()
+    onRefresh()
     {
-      this.handlerRefererData(this.getConfigure())
+      this.handleRefererData(this.getConfigure())
     },
-    handlerCellValueChanged(event: { data: any; colDef: { field: string; }; oldValue: any; newValue: any; rowIndex: number })
+    onGridReady(params: { api: GridApi; columnApi: ColumnApi; })
+    {
+      this.gridApi = params.api
+      this.gridColumnApi = params.columnApi
+    },
+    onSortChanged()
+    {
+      this.handleRefererData(this.getConfigure())
+    },
+    onCellValueChanged(event: { data: any; colDef: { field: string; }; oldValue: any; newValue: any; rowIndex: number })
     {
       // If the index is less than or equal to the length of the current data collection -1, no request type is specified for the new data
       if (event.rowIndex <= this.originalDatasets.length - 1) {
@@ -347,29 +364,29 @@ export default defineComponent({
         this.dataCellChanged.columns.push(column)
       }
     },
-    visibleCellChanged(isOpen: boolean)
-    {
-      this.dataCellChanged.pending = isOpen
-      if (!isOpen) {
-        this.dataCellChanged.changed = false
-        this.dataCellChanged.columns = []
-      }
-    },
-    handlerSelectionChanged()
+    onSelectionChanged()
     {
       const selectedRows = this.gridApi.getSelectedRows()
       this.dataSelectedChanged.changed = true
       this.dataSelectedChanged.columns = selectedRows
     },
-    visibleChanged(isOpen: boolean)
+    onColumnVisible(event: { visible: any; column: { visible: any; colId: any; }; })
     {
-      this.dataSelectedChanged.pending = isOpen
-      this.dataSelectedChanged.changed = false
-      if (!isOpen) {
-        this.handleInitialize()
+      if (!event.visible) {
+        this.configure.headers.map((column: { field: any; checked: boolean; }) => {
+          if (column.field === event.column.colId) {
+            column.checked = false
+          }
+        })
       }
     },
-    handlerApplyPagination(operator: PaginationEnum)
+    onColumnMoved(event: { finished: any; })
+    {
+      if (event.finished) {
+        this.handleRefererData(this.getConfigure())
+      }
+    },
+    onApplyPagination(operator: PaginationEnum)
     {
       if (this.configure.pagination.currentPage) {
         if (operator === PaginationEnum.PREVIOUS) {
@@ -386,62 +403,21 @@ export default defineComponent({
             this.configure.pagination.currentPage = this.configure.pagination.totalPages
           }
         }
-        this.handlerSortChanged()
+        this.onSortChanged()
       }
     },
-    handlerVisibleContent(show: boolean)
-    {
-      this.visibleContent.show = show
-    },
-    handlerColumnVisible(event: { visible: any; column: { visible: any; colId: any; }; })
-    {
-      if (!event.visible) {
-        this.configure.headers.map((column: { field: any; checked: boolean; }) => {
-          if (column.field === event.column.colId) {
-            column.checked = false
-          }
-        })
-      }
-    },
-    visibleColumns(event: any, show: boolean)
-    {
-      this.visibleColumn.show = show
-      if (event) {
-        const configure: TableFilter = this.getConfigure()
-        const columns = event.map((item: string) => ({ column: item }))
-        configure.columns = columns
-        // Remove the reduced column is not selected
-        this.originalColumns.filter((item: { field: string; }) => !event.includes(item.field))
-            .map((item: { checked: boolean; }) => {
-              item.checked = false
-            })
-        // Add new Column is selected
-        this.originalColumns.filter((item: { field: string; }) => event.includes(item.field))
-            .map((item: { checked: boolean; }) => {
-              item.checked = true
-            })
-        this.handlerRefererData(configure)
-      }
-      this.visibleColumn.columns = this.originalColumns
-    },
-    handlerColumnMoved(event: { finished: any; })
-    {
-      if (event.finished) {
-        this.handlerRefererData(this.getConfigure())
-      }
-    },
-    handlerFilterConfigure(show: boolean)
-    {
-      this.filterConfigure.show = show
-      if (!show) {
-        this.handlerRefererData(this.getConfigure())
-      }
-    },
-    handlerApplyFilter(value: any)
+    onApplyFilter(value: any)
     {
       this.filterConfigure.configure = value
     },
-    handlerAddOrCloneRow(clone: boolean)
+    onFilterConfigure(show: boolean)
+    {
+      this.filterConfigure.show = show
+      if (!show) {
+        this.handleRefererData(this.getConfigure())
+      }
+    },
+    onAddOrCloneRow(clone: boolean)
     {
       const newData = {} as any
       if (!clone) {
@@ -462,9 +438,46 @@ export default defineComponent({
       this.dataCellChanged.columns = this.newRows
       this.gridApi.setRowData(this.configure.datasets)
     },
-    handlerRefresh()
+    visibleCellChanged(isOpen: boolean)
     {
-      this.handlerRefererData(this.getConfigure())
+      this.dataCellChanged.pending = isOpen
+      if (!isOpen) {
+        this.dataCellChanged.changed = false
+        this.dataCellChanged.columns = []
+      }
+    },
+    visibleChanged(isOpen: boolean)
+    {
+      this.dataSelectedChanged.pending = isOpen
+      this.dataSelectedChanged.changed = false
+      if (!isOpen) {
+        this.handleInitialize()
+      }
+    },
+    visibleContents(show: boolean)
+    {
+      this.visibleContent.show = show
+    },
+    visibleColumns(event: any, show: boolean)
+    {
+      this.visibleColumn.show = show
+      if (event) {
+        const configure: TableFilter = this.getConfigure()
+        const columns = event.map((item: string) => ({ column: item }))
+        configure.columns = columns
+        // Remove the reduced column is not selected
+        this.originalColumns.filter((item: { field: string; }) => !event.includes(item.field))
+            .map((item: { checked: boolean; }) => {
+              item.checked = false
+            })
+        // Add new Column is selected
+        this.originalColumns.filter((item: { field: string; }) => event.includes(item.field))
+            .map((item: { checked: boolean; }) => {
+              item.checked = true
+            })
+        this.handleRefererData(configure)
+      }
+      this.visibleColumn.columns = this.originalColumns
     },
     getSortConfigure(configure: TableFilter)
     {

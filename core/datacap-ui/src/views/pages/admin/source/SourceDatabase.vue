@@ -1,25 +1,34 @@
 <template>
-  <div class="pl-3 pr-3">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else-if="dataInfo">
-      <div class="grid w-full grid-cols-3 gap-6 pt-2">
-        <div class="flex items-center space-x-2">
-          <Database :size="18"/>
-          <span>{{ dataInfo?.name }}</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <Tooltip :content="$t('common.createTime')">
-            <Clock :size="18"/>
-            <span>{{ dataInfo?.createTime === 'null' ? $t('source.common.notSpecified') : dataInfo.createTime }}</span>
-          </Tooltip>
-        </div>
-        <div class="flex items-center space-x-2">
-          <Tooltip :content="$t('common.updateTime')">
-            <Clock :size="18"/>
-            <span>{{ dataInfo?.updateTime === 'null' ? $t('source.common.notUpdated') : dataInfo.updateTime }}</span>
-          </Tooltip>
-        </div>
-      </div>
+  <div class="relative min-h-screen">
+    <ShadcnSpin v-if="loading" fixed/>
+
+    <div v-if="dataInfo">
+      <ShadcnRow class="space-y-4">
+        <ShadcnCol span="4">
+          <div class="flex items-center space-x-2">
+            <ShadcnIcon icon="Database"/>
+            <span>{{ dataInfo.name }}</span>
+          </div>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('common.createTime')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="Clock"/>
+              <span>{{ dataInfo?.createTime === 'null' ? $t('source.common.notSpecified') : dataInfo.createTime }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+
+        <ShadcnCol span="4">
+          <ShadcnTooltip arrow :content="$t('common.updateTime')">
+            <div class="flex items-center space-x-2">
+              <ShadcnIcon icon="Clock"/>
+              <span>{{ dataInfo?.updateTime === 'null' ? $t('source.common.notUpdated') : dataInfo.updateTime }}</span>
+            </div>
+          </ShadcnTooltip>
+        </ShadcnCol>
+      </ShadcnRow>
     </div>
   </div>
 </template>

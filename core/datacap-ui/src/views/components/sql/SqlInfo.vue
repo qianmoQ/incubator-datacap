@@ -1,11 +1,9 @@
 <template>
-  <ShadcnModal v-model="visible" title="Show Content">
-    <template #content>
-      <AceEditor :value="content as string" read-only/>
-    </template>
+  <ShadcnModal v-model="visible" title="Show Content" width="40%">
+    <AceEditor :value="content as string" read-only/>
 
     <template #footer>
-      <ShadcnButton type="error" @click="handlerCancel">
+      <ShadcnButton type="error" @click="onCancel">
         {{ $t('common.cancel') }}
       </ShadcnButton>
     </template>
@@ -18,8 +16,18 @@ import AceEditor from '@/views/components/editor/AceEditor.vue'
 
 export default defineComponent({
   name: 'SqlInfo',
-  components: {
-    AceEditor
+  components: { AceEditor },
+  computed: {
+    visible: {
+      get(): boolean
+      {
+        return this.isVisible
+      },
+      set(value: boolean)
+      {
+        this.$emit('close', value)
+      }
+    }
   },
   props: {
     isVisible: {
@@ -31,21 +39,9 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
-    }
-  },
-  computed: {
-    visible: {
-      get(): boolean
-      {
-        return this.isVisible
-      },
-      set(value: boolean)
-      {
-        this.$emit('close', value)
-      }
     }
   }
 })

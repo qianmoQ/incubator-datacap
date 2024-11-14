@@ -1,112 +1,80 @@
 <template>
-  <Dialog :is-visible="visible" :title="$t('source.common.filterData')">
-    <div class="space-y-2 pl-3 pr-3">
-      <FormField name="condition">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('source.common.filterCondition') }}</FormLabel>
-          <FormMessage/>
-          <Select v-model="formState.condition">
-            <SelectTrigger>
-              <SelectValue placeholder="Select"/>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="AND">AND</SelectItem>
-                <SelectItem value="OR">OR</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormItem>
-      </FormField>
-      <Divider class="mt-2 mb-4"/>
-      <div v-for="(item, index) in formState.filters">
-        <div class="grid w-full grid-cols-3 gap-2 pt-1 pl-3 pr-3">
-          <FormField name="column">
-            <FormItem class="space-y-1">
-              <FormMessage/>
-              <Select v-model="item.index" @update:modelValue="handlerFetchOperations($event, item)">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select"/>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem v-for="(column, index) in columns" :value="index.toString()" class="cursor-pointer">{{ column }}</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          </FormField>
-          <FormField name="operator">
-            <FormItem class="space-y-1">
-              <FormMessage/>
-              <Select v-model="item.operator" :disabled="!item.index">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select"/>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem v-for="operation in item.operations" :value="Object.keys(OPERATOR)[Object.values(OPERATOR).indexOf(operation)]" class="cursor-pointer">
-                      {{ operation }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          </FormField>
-          <FormField name="value">
-            <FormItem class="space-y-1 flex items-center">
-              <FormMessage/>
-              <div class="flex space-x-2 items-center">
-                <Input v-model="item.value" :disabled="!item.operator"/>
-                <Button size="icon" color="#ed4014" class="rounded-full w-4 h-4" @click="handlerRemoveFilter(index)">
-                  <Minus/>
-                </Button>
-              </div>
-            </FormItem>
-          </FormField>
-        </div>
+  <ShadcnModal v-model="visible"
+               height="410"
+               width="50%"
+               :title="$t('source.common.filterData')"
+               @on-close="onCancel">
+
+    <ShadcnForm v-model="formState">
+      <ShadcnFormItem :label="$t('source.common.filterCondition')" name="condition">
+        <ShadcnSelect v-model="formState.condition">
+          <template #options>
+            <ShadcnSelectOption value="AND" label="AND"/>
+            <ShadcnSelectOption value="OR" label="OR"/>
+          </template>
+        </ShadcnSelect>
+      </ShadcnFormItem>
+
+      <div class="flex items-center space-x-2" v-for="(item, index) in formState.filters">
+        <ShadcnFormItem name="column" class="w-full">
+          <ShadcnSelect v-model="item.index" @on-change="onFetchOperations(item.index, item)">
+            <template #options>
+              <ShadcnSelectOption v-for="column in columns" :value="column" :label="column"/>
+            </template>
+          </ShadcnSelect>
+        </ShadcnFormItem>
+
+        <ShadcnFormItem name="operator" class="w-full">
+          <ShadcnSelect v-model="item.operator" :disabled="!item.index">
+            <template #options>
+              <ShadcnSelectOption v-for="operation in item.operations" :value="Object.keys(OPERATOR)[Object.values(OPERATOR).indexOf(operation)]" :label="operation">
+                {{ operation }}
+              </ShadcnSelectOption>
+            </template>
+          </ShadcnSelect>
+        </ShadcnFormItem>
+
+        <ShadcnFormItem name="value" class="w-full">
+          <ShadcnInput v-model="item.value" :disabled="!item.operator"/>
+        </ShadcnFormItem>
+
+        <ShadcnFormItem>
+          <ShadcnButton circle
+                        size="small"
+                        type="error"
+                        @click="onRemoveFilter(index)">
+            <ShadcnIcon icon="Minus"/>
+          </ShadcnButton>
+        </ShadcnFormItem>
       </div>
-      <FormField name="button">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('source.common.filterCondition') }}</FormLabel>
-          <Button size="sm" class="ml-2" @click="handlerAddFilter">
-            {{ $t('source.common.addFilter') }}
-          </Button>
-        </FormItem>
-      </FormField>
-    </div>
+
+      <ShadcnFormItem class="space-y-1" :label="$t('source.common.filterCondition')">
+        <ShadcnButton size="small" @click="onAddFilter">
+          {{ $t('source.common.addFilter') }}
+        </ShadcnButton>
+      </ShadcnFormItem>
+    </ShadcnForm>
+
     <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">
           {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" @click="handlerApplyFilter">
+        </ShadcnButton>
+        <ShadcnButton @click="onFilter">
           {{ $t('common.apply') }}
-        </Button>
-      </div>
+        </ShadcnButton>
+      </ShadcnSpace>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ColumnFilter, ColumnFilterRequest, Operator } from '@/model/table'
 import { cloneDeep } from 'lodash'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-import Divider from '@/views/ui/divider'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
 
 export default defineComponent({
   name: 'TableRowFilter',
-  components: {
-    Input,
-    Dialog,
-    Button,
-    Divider,
-    Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue
-  },
   computed: {
     visible: {
       get(): boolean
@@ -152,32 +120,34 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerAddFilter()
+    onAddFilter()
     {
       const filter: ColumnFilter = ColumnFilterRequest.of()
       this.formState.filters.push(filter)
     },
-    handlerRemoveFilter(index: number)
+    onRemoveFilter(index: number)
     {
       this.formState.filters.splice(index, 1)
     },
-    handlerFetchOperations(value: any, filter: ColumnFilter)
+    onFetchOperations(value: any, filter: ColumnFilter)
     {
       const type = this.types[value]
-      filter.column = this.columns[value] as string
+      filter.column = value
       if (type === 'Long' || type === 'Double' || type === 'Integer') {
         filter.operations = [Operator.EQ, Operator.NEQ, Operator.GT, Operator.LT, Operator.GTE, Operator.LTE]
       }
       else {
         filter.operations = [Operator.EQ, Operator.NEQ, Operator.LIKE, Operator.NLIKE, Operator.NULL, Operator.NNULL]
       }
+      console.log(filter)
     },
-    handlerApplyFilter()
+    onFilter()
     {
       this.$emit('apply', this.formState)
-      this.handlerCancel()
+
+      this.onCancel()
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
