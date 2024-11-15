@@ -51,14 +51,16 @@
             </div>
           </ShadcnContextMenuItem>
         </ShadcnContextMenuSub>
+
+        <ShadcnContextMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" @click="visibleTruncateTable(true)">
+          <div class="flex items-center space-x-1">
+            <ShadcnIcon icon="Trash" size="15"/>
+            <span>{{ $t('source.common.truncateTable') }}</span>
+          </div>
+        </ShadcnContextMenuItem>
       </ShadcnContextMenu>
     </div>
   </ShadcnCard>
-  <!--                  <DropdownMenuSeparator/>-->
-  <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" class="cursor-pointer" @click="handlerTruncateTable(true)">-->
-  <!--                    <Trash :size="18" class="mr-2"/>-->
-  <!--                    {{ $t('source.common.truncateTable') }}-->
-  <!--                  </DropdownMenuItem>-->
   <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" class="cursor-pointer" @click="handlerDropTable(true)">-->
   <!--                    <Delete :size="18" class="mr-2"/>-->
   <!--                    {{ $t('source.common.dropTable') }}-->
@@ -88,7 +90,10 @@
                :info="dataInfo"
                @close="visibleExportData(false)"/>
 
-  <!--  <TableTruncate v-if="tableTruncateVisible" :isVisible="tableTruncateVisible" :info="dataInfo" @close="handlerTruncateTable(false)"/>-->
+  <TableTruncate v-if="tableTruncateVisible"
+                 :isVisible="tableTruncateVisible"
+                 :info="dataInfo"
+                 @close="visibleTruncateTable(false)"/>
   <!--  <TableDrop v-if="tableDropVisible" :isVisible="tableDropVisible" :info="dataInfo" @close="handlerDropTable(false)"/>-->
   <!--  <ColumnChange v-if="columnChangeVisible" :isVisible="columnChangeVisible" :info="dataInfo" @close="handlerChangeColumn(false)"/>-->
   <!--  <ColumnDrop v-if="columnDropVisible" :isVisible="columnDropVisible" :info="dataInfo" @close="handlerDropColumn(false)"/>-->
@@ -258,7 +263,7 @@ export default defineComponent({
     {
       this.tableExportVisible = opened
     },
-    handlerTruncateTable(opened: boolean)
+    visibleTruncateTable(opened: boolean)
     {
       this.tableTruncateVisible = opened
     },

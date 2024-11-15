@@ -1,28 +1,37 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'40%'">
-    <div class="grid w-full gap-2 pt-1 pl-3 pr-3">
-      <Alert type="error" :description="$t('source.tip.truncateTable1')"/>
-      <Alert type="error" :description="$t('source.tip.truncateTable2')"/>
-      <Alert type="error" :description="$t('source.tip.truncateTable3')"/>
-      <Alert type="error" :description="$t('source.tip.truncateTable4')"/>
-      <Alert type="error" :description="$t('source.tip.truncateTable5')"/>
+  <ShadcnModal v-model="visible"
+               :title="title"
+               width="60%"
+               @on-close="onCancel">
+    <ShadcnSpace wrap>
+      <ShadcnAlert type="error" :title="$t('source.tip.truncateTable1')"/>
+      <ShadcnAlert type="error" :title="$t('source.tip.truncateTable2')"/>
+      <ShadcnAlert type="error" :title="$t('source.tip.truncateTable3')"/>
+      <ShadcnAlert type="error" :title="$t('source.tip.truncateTable4')"/>
+      <ShadcnAlert type="error" :title="$t('source.tip.truncateTable5')"/>
+    </ShadcnSpace>
+
+    <div class="relative">
+      <ShadcnSpin v-model="loading"/>
+
+      <AceEditor v-if="formState.statement"
+                 class="mt-2"
+                 :value="formState.statement"
+                 :read-only="true"/>
     </div>
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else>
-      <Divider class="mt-2 mb-4"/>
-      <AceEditor :value="formState.statement" :read-only="true"/>
-    </div>
+
     <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">
           {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" color="#ed4014" :loading="submitting" :disabled="submitting" @click="handlerSubmit(false)">
+        </ShadcnButton>
+
+        <ShadcnButton type="error" :loading="submitting" :disabled="submitting" @click="onSubmit(false)">
           {{ $t('source.common.truncateTable') }}
-        </Button>
-      </div>
+        </ShadcnButton>
+      </ShadcnSpace>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
@@ -70,11 +79,11 @@ export default defineComponent({
     this.formState.type = SqlType.TRUNCATE
     if (this.info) {
       this.title = this.$t('source.common.truncateTableInfo').replace('$VALUE', this.info.title as string)
-      this.handlerSubmit(true)
+      this.onSubmit(true)
     }
   },
   methods: {
-    handlerSubmit(preview: boolean)
+    onSubmit(preview: boolean)
     {
       if (this.info && this.formState) {
         if (preview) {
@@ -84,19 +93,26 @@ export default defineComponent({
           this.submitting = true
         }
         this.formState.preview = preview
-        TableService.getData(this.info.code as string, this.formState)
+        TableService.getData(String(this.info.value), this.formState)
                     .then(response => {
                       if (response.status) {
                         if (preview) {
                           this.formState.statement = response.data.content
                         }
                         else {
-                          ToastUtils.success(this.$t('source.tip.truncateTableSuccess').replace('$VALUE', this.info?.title as string))
-                          this.handlerCancel()
+                          this.$Message.success({
+                            content: this.$t('source.tip.truncateTableSuccess').replace('$VALUE', String(this.info?.title)),
+                            showIcon: true
+                          })
+
+                          this.onCancel()
                         }
                       }
                       else {
-                        ToastUtils.success(response.message)
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => {
@@ -109,7 +125,7 @@ export default defineComponent({
                     })
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
