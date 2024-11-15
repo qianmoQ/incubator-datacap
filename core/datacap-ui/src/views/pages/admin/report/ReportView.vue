@@ -1,35 +1,35 @@
 <template>
-  <Dialog :is-visible="visible" :width="'40%'" @close="handlerCancel">
-    <template #title>{{ title }}</template>
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else-if="info">
-      <VisualView :code="info.dataset?.code" :type="info.type" :configuration="JSON.parse(info.configure as string)"
-                  :query="info.type === 'DATASET' ? JSON.parse(info.query as string) : info.query" :original="info?.source?.id"/>
+  <ShadcnModal v-model="visible"
+               width="60%"
+               height="80%"
+               :title="title"
+               @on-close="onCancel">
+    <div class="relative w-full h-full items-center">
+      <div v-if="info">
+        <VisualView :code="info.dataset?.code"
+                    :type="info.type"
+                    :configuration="JSON.parse(info.configure as string)"
+                    :query="info.type === 'DATASET' ? JSON.parse(info.query as string) : info.query"
+                    :original="info?.source?.id"/>
+      </div>
     </div>
+
     <template #footer>
-      <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnButton type="default" @click="onCancel">
         {{ $t('common.cancel') }}
-      </Button>
+      </ShadcnButton>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ReportModel } from '@/model/report'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-
 import VisualView from '@/views/components/visual/VisualView.vue'
 
 export default defineComponent({
   name: 'ReportView',
-  components: {
-    VisualView,
-
-    Dialog,
-    Button
-  },
+  components: { VisualView },
   props: {
     isVisible: {
       type: Boolean
@@ -53,22 +53,21 @@ export default defineComponent({
   data()
   {
     return {
-      loading: false,
       title: null as string | null
     }
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       if (this.info) {
-        this.title = `${ this.$t('report.common.view').replace('$VALUE', this.info.name as string) }`
+        this.title = `${ this.$t('report.common.view').replace('$VALUE', String(this.info.name)) }`
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }

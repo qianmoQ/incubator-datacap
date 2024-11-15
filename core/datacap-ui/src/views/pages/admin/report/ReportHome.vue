@@ -8,24 +8,48 @@
       <ShadcnSpin v-if="loading" fixed/>
 
       <ShadcnTable size="small" :columns="headers" :data="data">
-        <template #plugin="{ row }">
-          <ShadcnAvatar v-for="item in row?.plugin.split(',')"
-                        size="small"
-                        :src="'/static/images/plugin/' + item + '.png'"
-                        :alt="item"/>
+        <template #realtime="{ row }">
+          <ShadcnSwitch v-model="row.realtime" size="small" :disabled="row.realtime"/>
         </template>
 
-        <template #system="{ row }">
-          <ShadcnSwitch v-model="row.system" size="small" :disabled="row.system"/>
+        <template #source="{ row }">
+          <ShadcnTooltip v-if="row.source" :content="row.source?.type">
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.source?.type + '.png'" :alt="row.source?.type"/>
+          </ShadcnTooltip>
+
+          <ShadcnTooltip v-else :content="row.dataset?.name">
+            <ShadcnTag>{{ $t('common.dataset') }}</ShadcnTag>
+          </ShadcnTooltip>
         </template>
 
         <template #action="{ row }">
           <ShadcnSpace>
-            <ShadcnTooltip :content="$t('common.editData')">
-              <ShadcnButton size="small" circle @click="handlerInfo(true, row)">
-                <ShadcnIcon icon="Pencil" size="15"/>
+            <ShadcnTooltip :content="$t('report.common.view').replace('$VALUE', row.name)">
+              <ShadcnButton circle size="small" @click="visibleView(true, row)">
+                <ShadcnIcon icon="Eye" size="15"/>
               </ShadcnButton>
             </ShadcnTooltip>
+            <!--            <DropdownMenu>-->
+            <!--              <DropdownMenuTrigger as-child>-->
+            <!--                <Button size="icon" class="rounded-full w-6 h-6" variant="outline">-->
+            <!--                  <Cog class="w-full justify-center" :size="14"/>-->
+            <!--                </Button>-->
+            <!--              </DropdownMenuTrigger>-->
+            <!--              <DropdownMenuContent>-->
+            <!--                <DropdownMenuGroup>-->
+            <!--                  <DropdownMenuItem :disabled="row.type === 'QUERY'" class="cursor-pointer">-->
+            <!--                    <RouterLink :to="`/admin/dataset/adhoc/${row.dataset?.code}/${row.id}`" target="_blank" class="flex items-center">-->
+            <!--                      <Pencil class="mr-2 h-4 w-4"/>-->
+            <!--                      <span>{{ $t('report.common.modify') }}</span>-->
+            <!--                    </RouterLink>-->
+            <!--                  </DropdownMenuItem>-->
+            <!--                  <DropdownMenuItem class="cursor-pointer" @click="handlerDelete(true, row)">-->
+            <!--                    <Delete class="mr-2 h-4 w-4"/>-->
+            <!--                    <span>{{ $t('report.common.delete') }}</span>-->
+            <!--                  </DropdownMenuItem>-->
+            <!--                </DropdownMenuGroup>-->
+            <!--              </DropdownMenuContent>-->
+            <!--            </DropdownMenu>-->
           </ShadcnSpace>
         </template>
       </ShadcnTable>
@@ -45,57 +69,11 @@
     </div>
   </ShadcnCard>
 
-  <!--  <div class="w-full">-->
-  <!--    <DataCapCard shadow="never">-->
-  <!--      <template #content>-->
-  <!--        <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">-->
-  <!--          <template #realtime="{row}">-->
-  <!--            <Switch :value="row.realtime" :disabled="true"/>-->
-  <!--          </template>-->
-  <!--          <template #source="{ row }">-->
-  <!--            <Tooltip v-if="row.source" :content="row.source?.type">-->
-  <!--              <Avatar :size="'sm'" :src="'/static/images/plugin/' + row.source?.type + '.png'" :alt="row.source?.type"/>-->
-  <!--            </Tooltip>-->
-  <!--            <Tooltip v-else :content="row.dataset?.name">-->
-  <!--              <Tag>{{ $t('common.dataset') }}</Tag>-->
-  <!--            </Tooltip>-->
-  <!--          </template>-->
-  <!--          <template #action="{ row }">-->
-  <!--            <div class="space-x-2">-->
-  <!--              <Tooltip :content="$t('report.common.view').replace('$VALUE', row.name)">-->
-  <!--                <Button size="icon" class="rounded-full w-6 h-6" @click="handlerView(true, row)">-->
-  <!--                  <Eye :size="14"/>-->
-  <!--                </Button>-->
-  <!--              </Tooltip>-->
-  <!--              <DropdownMenu>-->
-  <!--                <DropdownMenuTrTableExport.vueigger as-child>-->
-  <!--                  <Button size="icon" class="rounded-full w-6 h-6" variant="outline">-->
-  <!--                    <Cog class="w-full justify-center" :size="14"/>-->
-  <!--                  </Button>-->
-  <!--                </DropdownMenuTrigger>-->
-  <!--                <DropdownMenuContent>-->
-  <!--                  <DropdownMenuGroup>-->
-  <!--                    <DropdownMenuItem :disabled="row.type === 'QUERY'" class="cursor-pointer">-->
-  <!--                      <RouterLink :to="`/admin/dataset/adhoc/${row.dataset?.code}/${row.id}`" target="_blank" class="flex items-center">-->
-  <!--                        <Pencil class="mr-2 h-4 w-4"/>-->
-  <!--                        <span>{{ $t('report.common.modify') }}</span>-->
-  <!--                      </RouterLink>-->
-  <!--                    </DropdownMenuItem>-->
-  <!--                    <DropdownMenuItem class="cursor-pointer" @click="handlerDelete(true, row)">-->
-  <!--                      <Delete class="mr-2 h-4 w-4"/>-->
-  <!--                      <span>{{ $t('report.common.delete') }}</span>-->
-  <!--                    </DropdownMenuItem>-->
-  <!--                  </DropdownMenuGroup>-->
-  <!--                </DropdownMenuContent>-->
-  <!--              </DropdownMenu>-->
-  <!--            </div>-->
-  <!--          </template>-->
-  <!--        </TableCommon>-->
-  <!--      </template>-->
-  <!--    </DataCapCard>-->
-  <!--  </div>-->
-  <ReportView v-if="dataViewVisible" :is-visible="dataViewVisible" :info="dataInfo" @close="handlerView(false, null)"/>
-  <ReportDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>
+  <ReportView v-if="dataViewVisible"
+              :is-visible="dataViewVisible"
+              :info="dataInfo"
+              @close="visibleView(false, null)"/>
+  <!--  <ReportDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
 </template>
 
 <script lang="ts">
@@ -103,31 +81,13 @@ import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
 import { useI18n } from 'vue-i18n'
 import { createHeaders } from '@/views/pages/admin/report/ReportUtils'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
-import { ToastUtils } from '@/utils/toast'
 import ReportService from '@/services/report'
-import Switch from '@/views/ui/switch'
-import Tooltip from '@/views/ui/tooltip'
-import Avatar from '@/views/ui/avatar'
-import Tag from '@/views/ui/tag'
-import Button from '@/views/ui/button'
 import { ReportModel } from '@/model/report'
 import ReportView from '@/views/pages/admin/report/ReportView.vue'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import ReportDelete from '@/views/pages/admin/report/ReportDelete.vue'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'ReportHome',
-  components: { ReportDelete, ReportView },
+  components: { ReportView },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -152,10 +112,10 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       ReportService.getAll(this.filter)
@@ -179,7 +139,7 @@ export default defineComponent({
     {
       this.filter.page = value
       this.filter.size = this.pageSize
-      this.handlerInitialize()
+      this.handleInitialize()
     },
     onPageChange(value: number)
     {
@@ -198,7 +158,7 @@ export default defineComponent({
       this.pageSize = value
       this.fetchData(this.pageIndex)
     },
-    handlerView(opened: boolean, value: ReportModel | null)
+    visibleView(opened: boolean, value: ReportModel | null)
     {
       this.dataViewVisible = opened
       this.dataInfo = value
@@ -208,7 +168,7 @@ export default defineComponent({
       this.dataDeleteVisible = opened
       this.dataInfo = data
       if (!opened) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
     }
   }
