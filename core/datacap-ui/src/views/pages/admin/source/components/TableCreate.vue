@@ -132,10 +132,6 @@
       </div>
     </ShadcnForm>
   </ShadcnModal>
-
-  <div class="h-96 overflow-y-auto">
-
-  </div>
 </template>
 
 <script lang="ts">
@@ -186,7 +182,7 @@ export default defineComponent({
         this.loading = true
         TableService.createTable(Number(this.info.databaseId), this.formState)
                     .then(response => {
-                      if (response.data) {
+                      if (response.status) {
                         if (response.data.isSuccessful) {
                           this.$Message.success({
                             content: this.$t('source.tip.createTableSuccess').replace('$VALUE', String(this.formState.name)),
@@ -201,6 +197,12 @@ export default defineComponent({
                             showIcon: true
                           })
                         }
+                      }
+                      else {
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => this.loading = false)

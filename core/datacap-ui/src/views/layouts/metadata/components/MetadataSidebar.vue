@@ -34,21 +34,18 @@
               <span>{{ $t('source.common.menuNewTable') }}</span>
             </div>
           </ShadcnContextMenuItem>
+
+          <ShadcnContextMenuItem @click="visibleCreateColumn(true)">
+            <div class="flex items-center space-x-1">
+              <ShadcnIcon icon="Columns" size="15"/>
+              <span>{{ $t('source.common.newColumn') }}</span>
+            </div>
+          </ShadcnContextMenuItem>
         </ShadcnContextMenuSub>
       </ShadcnContextMenu>
     </div>
   </ShadcnCard>
 
-  <!--                      <DropdownMenuPortal>-->
-  <!--                        <DropdownMenuSubContent>-->
-  <!--                          <DropdownMenuItem class="cursor-pointer" @click="handlerCreateColumn(true)">-->
-  <!--                            <Columns :size="18" class="mr-2"/>-->
-  <!--                            {{ $t('source.common.newColumn') }}-->
-  <!--                          </DropdownMenuItem>-->
-  <!--                        </DropdownMenuSubContent>-->
-  <!--                      </DropdownMenuPortal>-->
-  <!--                    </DropdownMenuSub>-->
-  <!--                  </DropdownMenuGroup>-->
   <!--                  <DropdownMenuGroup v-if="dataInfo?.level === StructureEnum.TABLE">-->
   <!--                    <DropdownMenuSub>-->
   <!--                      <DropdownMenuSubTrigger class="cursor-pointer">{{ $t('source.common.menuExport') }}</DropdownMenuSubTrigger>-->
@@ -82,13 +79,18 @@
   <!--                </DropdownMenuContent>-->
   <!--              </DropdownMenu>-->
   <TableCreate v-if="tableCreateVisible"
-               :isVisible="tableCreateVisible"
+               :is-visible="tableCreateVisible"
                :info="dataInfo"
                @close="visibleCreateTable(false)"/>
+
+  <ColumnCreate v-if="columnCreateVisible"
+                :is-visible="columnCreateVisible"
+                :info="dataInfo"
+                @close="visibleCreateColumn(false)"/>
+
   <!--  <TableExport v-if="tableExportVisible" :isVisible="tableExportVisible" :info="dataInfo" @close="handlerExportData(false)"/>-->
   <!--  <TableTruncate v-if="tableTruncateVisible" :isVisible="tableTruncateVisible" :info="dataInfo" @close="handlerTruncateTable(false)"/>-->
   <!--  <TableDrop v-if="tableDropVisible" :isVisible="tableDropVisible" :info="dataInfo" @close="handlerDropTable(false)"/>-->
-  <!--  <ColumnCreate v-if="columnCreateVisible" :isVisible="columnCreateVisible" :info="dataInfo" @close="handlerCreateColumn(false)"/>-->
   <!--  <ColumnChange v-if="columnChangeVisible" :isVisible="columnChangeVisible" :info="dataInfo" @close="handlerChangeColumn(false)"/>-->
   <!--  <ColumnDrop v-if="columnDropVisible" :isVisible="columnDropVisible" :info="dataInfo" @close="handlerDropColumn(false)"/>-->
 </template>
@@ -249,7 +251,7 @@ export default defineComponent({
     {
       this.tableCreateVisible = opened
     },
-    handlerCreateColumn(opened: boolean)
+    visibleCreateColumn(opened: boolean)
     {
       this.columnCreateVisible = opened
     },
