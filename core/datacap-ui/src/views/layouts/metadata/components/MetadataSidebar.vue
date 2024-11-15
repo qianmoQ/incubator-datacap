@@ -72,16 +72,17 @@
             <span>{{ $t('source.common.changeColumn') }}</span>
           </div>
         </ShadcnContextMenuItem>
+
+        <ShadcnContextMenuItem v-if="dataInfo?.level === StructureEnum.COLUMN" @click="visibleDropColumn(true)">
+          <div class="flex items-center space-x-1">
+            <ShadcnIcon icon="Delete" size="15"/>
+            <span>{{ $t('source.common.dropColumn') }}</span>
+          </div>
+        </ShadcnContextMenuItem>
       </ShadcnContextMenu>
     </div>
   </ShadcnCard>
 
-  <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.COLUMN" class="cursor-pointer" @click="handlerDropColumn(true)">-->
-  <!--                    <Delete :size="18" class="mr-2"/>-->
-  <!--                    {{ $t('source.common.dropColumn') }}-->
-  <!--                  </DropdownMenuItem>-->
-  <!--                </DropdownMenuContent>-->
-  <!--              </DropdownMenu>-->
   <TableCreate v-if="tableCreateVisible"
                :is-visible="tableCreateVisible"
                :info="dataInfo"
@@ -112,7 +113,10 @@
                 :info="dataInfo"
                 @close="visibleChangeColumn(false)"/>
 
-  <!--  <ColumnDrop v-if="columnDropVisible" :isVisible="columnDropVisible" :info="dataInfo" @close="handlerDropColumn(false)"/>-->
+  <ColumnDrop v-if="columnDropVisible"
+              :is-visible="columnDropVisible"
+              :info="dataInfo"
+              @close="visibleDropColumn(false)"/>
 </template>
 
 <script lang="ts">
@@ -291,7 +295,7 @@ export default defineComponent({
     {
       this.columnChangeVisible = opened
     },
-    handlerDropColumn(opened: boolean)
+    visibleDropColumn(opened: boolean)
     {
       this.columnDropVisible = opened
     },
@@ -303,21 +307,6 @@ export default defineComponent({
       }
       this.dataInfo = node
       this.contextmenu.visible = true
-    },
-    getColumnIcon(type: string)
-    {
-      if (type === 'PRI') {
-        return 'key'
-      }
-      else if (type === 'MUL') {
-        return 'repeat'
-      }
-      else if (type === 'UNI') {
-        return 'circle'
-      }
-      else {
-        return 'columns'
-      }
     },
     getColumnTitle(dataType: string, extra: string, isKey: string, defaultValue: string)
     {
