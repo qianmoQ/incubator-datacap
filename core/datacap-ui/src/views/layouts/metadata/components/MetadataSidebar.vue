@@ -65,13 +65,17 @@
             <span>{{ $t('source.common.dropTable') }}</span>
           </div>
         </ShadcnContextMenuItem>
+
+        <ShadcnContextMenuItem v-if="dataInfo?.level === StructureEnum.COLUMN" @click="visibleChangeColumn(true)">
+          <div class="flex items-center space-x-1">
+            <ShadcnIcon icon="Pencil" size="15"/>
+            <span>{{ $t('source.common.changeColumn') }}</span>
+          </div>
+        </ShadcnContextMenuItem>
       </ShadcnContextMenu>
     </div>
   </ShadcnCard>
-  <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.COLUMN" class="cursor-pointer" @click="handlerChangeColumn(true)">-->
-  <!--                    <Pencil :size="18" class="mr-2"/>-->
-  <!--                    {{ $t('source.common.changeColumn') }}-->
-  <!--                  </DropdownMenuItem>-->
+
   <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.COLUMN" class="cursor-pointer" @click="handlerDropColumn(true)">-->
   <!--                    <Delete :size="18" class="mr-2"/>-->
   <!--                    {{ $t('source.common.dropColumn') }}-->
@@ -94,15 +98,20 @@
                @close="visibleExportData(false)"/>
 
   <TableTruncate v-if="tableTruncateVisible"
-                 :isVisible="tableTruncateVisible"
+                 :is-visible="tableTruncateVisible"
                  :info="dataInfo"
                  @close="visibleTruncateTable(false)"/>
 
   <TableDrop v-if="tableDropVisible"
-             :isVisible="tableDropVisible"
+             :is-visible="tableDropVisible"
              :info="dataInfo"
              @close="visibleDropTable(false)"/>
-  <!--  <ColumnChange v-if="columnChangeVisible" :isVisible="columnChangeVisible" :info="dataInfo" @close="handlerChangeColumn(false)"/>-->
+
+  <ColumnChange v-if="columnChangeVisible"
+                :is-visible="columnChangeVisible"
+                :info="dataInfo"
+                @close="visibleChangeColumn(false)"/>
+
   <!--  <ColumnDrop v-if="columnDropVisible" :isVisible="columnDropVisible" :info="dataInfo" @close="handlerDropColumn(false)"/>-->
 </template>
 
@@ -278,7 +287,7 @@ export default defineComponent({
     {
       this.tableDropVisible = opened
     },
-    handlerChangeColumn(opened: boolean)
+    visibleChangeColumn(opened: boolean)
     {
       this.columnChangeVisible = opened
     },

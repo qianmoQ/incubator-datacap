@@ -1,92 +1,94 @@
 <template>
-  <Dialog :is-visible="visible" :title="$t('source.common.newColumn')" :width="'40%'">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else class="h-96 overflow-y-auto">
-      <div v-for="item in formState.columns" class="mt-1">
-        <Collapsible :default-open="item.opened">
-          <div class="flex items-center justify-between bg-color-gray">
-            <CollapsibleTrigger class="p-2 cursor-pointer" as-child>
-              <div class="flex items-center text-sm font-semibold">{{ item.name }}</div>
-            </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent class="space-y-2 mt-1 pl-3 pr-3 pb-3">
-            <div class="grid w-full grid-cols-2 gap-4 pt-2 pl-3 pr-3">
-              <FormField name="columnName">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnName') }}</FormLabel>
-                  <FormMessage/>
-                  <Input v-model="item.name"/>
-                </FormItem>
-              </FormField>
-              <FormField name="columnType">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnType') }}</FormLabel>
-                  <FormMessage/>
-                  <Input v-model="item.type"/>
-                </FormItem>
-              </FormField>
-              <FormField name="columnLength">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnLength') }}</FormLabel>
-                  <FormMessage/>
-                  <Input type="number" v-model="item.length"/>
-                </FormItem>
-              </FormField>
-              <FormField name="columnDefaultValue">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnDefaultValue') }}</FormLabel>
-                  <FormMessage/>
-                  <Input v-model="item.defaultValue"/>
-                </FormItem>
-              </FormField>
-            </div>
-            <div class="grid w-full grid-cols-3 gap-4 pt-2 pl-3 pr-3">
-              <FormField name="columnPrimaryKey">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnPrimaryKey') }}</FormLabel>
-                  <FormMessage/>
-                  <Switch class="ml-4" :value="item.primaryKey" @changeValue="item.primaryKey = $event"/>
-                </FormItem>
-              </FormField>
-              <FormField name="columnAutoIncrement">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnAutoIncrement') }}</FormLabel>
-                  <FormMessage/>
-                  <Switch class="ml-4" :value="item.autoIncrement" @changeValue="item.autoIncrement = $event"/>
-                </FormItem>
-              </FormField>
-              <FormField name="columnIsNullable">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnIsNullable') }}</FormLabel>
-                  <FormMessage/>
-                  <Switch class="ml-4" :value="item.isNullable" @changeValue="item.isNullable = $event"/>
-                </FormItem>
-              </FormField>
-            </div>
-            <div class="pt-2 pl-3 pr-3">
-              <FormField name="columnComment">
-                <FormItem class="space-y-1">
-                  <FormLabel>{{ $t('source.common.columnComment') }}</FormLabel>
-                  <FormMessage/>
-                  <Textarea v-model="item.comment"/>
-                </FormItem>
-              </FormField>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-    </div>
-    <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" :loading="submitting" :disabled="submitting" @click="handlerSave()">
+  <ShadcnModal v-model="visible"
+               height="60%"
+               width="40%"
+               :title="$t('source.common.newColumn')"
+               @on-close="onCancel">
+    <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
+      <ShadcnRow gutter="16">
+        <ShadcnCol v-for="(item, index) in formState.columns" span="12">
+          <ShadcnDivider orientation="left">{{ item.name }}</ShadcnDivider>
+
+          <ShadcnRow gutter="16">
+            <ShadcnCol span="6">
+              <ShadcnFormItem :name="`columns[${index}].name`"
+                              :label="`${$t('source.common.columnName')} ${index + 1}`"
+                              :rules="[
+                                  { required: true, message: $t('source.validator.columnName.required') },
+                                  { pattern: /^[A-Za-z][A-Za-z0-9_-]*$/, message: $t('source.validator.columnName.pattern') }
+                              ]">
+                <ShadcnInput v-model="formState.columns[index].name" :placeholder="$t('source.placeholder.columnName')" :name="`columns[${index}].name`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="6">
+              <ShadcnFormItem :name="`columns[${index}].type`"
+                              :label="$t('source.common.columnType')"
+                              :rules="[{ required: true, message: $t('source.validator.columnType.required') }]">
+                <ShadcnInput v-model="formState.columns[index].type" :placeholder="$t('source.placeholder.columnType')" :name="`columns[${index}].type`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="6">
+              <ShadcnFormItem :name="`columns[${index}].length`"
+                              :label="$t('source.common.columnLength')"
+                              :rules="[
+                                  { required: true, message: $t('source.validator.columnLength.required') },
+                                  { min: 1, message: $t('source.validator.columnLength.min') }
+                              ]">
+                <ShadcnNumber v-model="formState.columns[index].length"
+                              :placeholder="$t('source.placeholder.columnLength')"
+                              :name="`columns[${index}].length`"
+                              :min="1"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="6">
+              <ShadcnFormItem :name="`columns[${index}].defaultValue`" :label="$t('source.common.columnDefaultValue')">
+                <ShadcnInput v-model="formState.columns[index].defaultValue" :placeholder="$t('source.placeholder.columnDefaultValue')" :name="`columns[${index}].defaultValue`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="4">
+              <ShadcnFormItem :name="`columns[${index}].primaryKey`" :label="$t('source.common.columnPrimaryKey')">
+                <ShadcnSwitch v-model="formState.columns[index].primaryKey" :placeholder="$t('source.placeholder.columnPrimaryKey')" :name="`columns[${index}].primaryKey`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="4">
+              <ShadcnFormItem :name="`columns[${index}].autoIncrement`" :label="$t('source.common.columnAutoIncrement')">
+                <ShadcnSwitch v-model="formState.columns[index].autoIncrement" :placeholder="$t('source.placeholder.columnAutoIncrement')"
+                              :name="`columns[${index}].autoIncrement`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="4">
+              <ShadcnFormItem :name="`columns[${index}].isNullable`" :label="$t('source.common.columnIsNullable')">
+                <ShadcnSwitch v-model="formState.columns[index].isNullable" :placeholder="$t('source.placeholder.columnIsNullable')" :name="`columns[${index}].isNullable`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+
+            <ShadcnCol span="12">
+              <ShadcnFormItem :name="`columns[${index}].comment`" :label="$t('source.common.columnComment')">
+                <ShadcnInput v-model="formState.columns[index].comment"
+                             type="textarea"
+                             :placeholder="$t('source.placeholder.columnComment')"
+                             :name="`columns[${index}].comment`"/>
+              </ShadcnFormItem>
+            </ShadcnCol>
+          </ShadcnRow>
+        </ShadcnCol>
+      </ShadcnRow>
+
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">{{ $t('common.cancel') }}</ShadcnButton>
+
+        <ShadcnButton submit :loading="submitting" :disabled="submitting">
           {{ $t('common.save') }}
-        </Button>
-      </div>
-    </template>
-  </Dialog>
+        </ShadcnButton>
+      </ShadcnSpace>
+    </ShadcnForm>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
@@ -96,7 +98,6 @@ import { SqlType, TableModel, TableRequest } from '@/model/table'
 import { ColumnModel } from '@/model/column'
 import TableService from '@/services/table'
 import ColumnService from '@/services/column'
-
 
 export default defineComponent({
   name: 'ColumnChange',
@@ -132,14 +133,14 @@ export default defineComponent({
   {
     this.formState = TableRequest.of()
     this.formState.type = SqlType.MODIFY
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       if (this.info) {
         this.loading = true
-        ColumnService.getByCode(this.info.code as string)
+        ColumnService.getByCode(String(this.info.value))
                      .then(response => {
                        if (response.status) {
                          const data = response.data
@@ -162,30 +163,43 @@ export default defineComponent({
                      .finally(() => this.loading = false)
       }
     },
-    handlerSave()
+    onSubmit()
     {
       if (this.info) {
         this.submitting = true
-        TableService.manageColumn(this.info.code as string, this.formState)
+        TableService.manageColumn(String(this.info.tableId), this.formState)
                     .then(response => {
-                      if (response.data) {
+                      if (response.status) {
                         if (response.data.isSuccessful) {
                           const columns = this.formState
                                               ?.columns
                                               ?.map(item => item.name)
                                               .join(', ') as string
-                          ToastUtils.success(this.$t('source.tip.changeColumnSuccess').replace('$VALUE', columns))
-                          this.handlerCancel()
+                          this.$Message.success({
+                            content: this.$t('source.tip.changeColumnSuccess').replace('$VALUE', columns),
+                            showIcon: true
+                          })
+
+                          this.onCancel()
                         }
                         else {
-                          ToastUtils.error(response.message)
+                          this.$Message.error({
+                            content: response.data.message,
+                            showIcon: true
+                          })
                         }
+                      }
+                      else {
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => this.submitting = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
