@@ -62,35 +62,26 @@
                 </ShadcnButton>
               </template>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available">
-                <ShadcnLink :link="`/admin/source/${row?.code}`" target="_blank">
-                  <div class="flex items-center space-x-2">
-                    <ShadcnIcon icon="Cog" size="15"/>
-                    <span>{{ $t('source.common.manager') }}</span>
-                  </div>
-                </ShadcnLink>
-              </ShadcnDropdownItem>
-
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id)" @on-click="visibleHistory(true, row)">
+              <ShadcnDropdownItem :disabled="row.state !== 'RUNNING'" @on-click="onStop(true, row)">
                 <div class="flex items-center space-x-2">
-                  <ShadcnIcon icon="History" size="15"/>
-                  <span>{{ $t('source.common.syncHistory') }}</span>
+                  <ShadcnIcon icon="CircleStop" size="15"/>
+                  <span>{{ $t('pipeline.common.stop') }}</span>
                 </div>
               </ShadcnDropdownItem>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" @on-click="visibleSyncMetadata(true, row)">
-                <div class="flex items-center space-x-2">
-                  <ShadcnIcon icon="RefreshCcwDot" size="15"/>
-                  <span>{{ $t('source.common.syncMetadata') }}</span>
-                </div>
-              </ShadcnDropdownItem>
+<!--              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" @on-click="visibleSyncMetadata(true, row)">-->
+<!--                <div class="flex items-center space-x-2">-->
+<!--                  <ShadcnIcon icon="RefreshCcwDot" size="15"/>-->
+<!--                  <span>{{ $t('source.common.syncMetadata') }}</span>-->
+<!--                </div>-->
+<!--              </ShadcnDropdownItem>-->
 
-              <ShadcnDropdownItem :disabled="loginUserId !== row.user.id" @on-click="visibleDelete(true, row)">
-                <div class="flex items-center space-x-2">
-                  <ShadcnIcon icon="Trash" size="15"/>
-                  <span>{{ $t('common.deleteData') }}</span>
-                </div>
-              </ShadcnDropdownItem>
+<!--              <ShadcnDropdownItem :disabled="loginUserId !== row.user.id" @on-click="visibleDelete(true, row)">-->
+<!--                <div class="flex items-center space-x-2">-->
+<!--                  <ShadcnIcon icon="Trash" size="15"/>-->
+<!--                  <span>{{ $t('common.deleteData') }}</span>-->
+<!--                </div>-->
+<!--              </ShadcnDropdownItem>-->
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -110,19 +101,9 @@
                         @on-change-size="onSizeChange"/>
     </div>
   </ShadcnCard>
-
   <!--              <DropdownMenu>-->
-  <!--                <DropdownMenuTrigger as-child>-->
-  <!--                  <Button size="icon" class="rounded-full w-6 h-6" variant="outline">-->
-  <!--                    <Cog class="w-full justify-center" :size="14"/>-->
-  <!--                  </Button>-->
-  <!--                </DropdownMenuTrigger>-->
   <!--                <DropdownMenuContent>-->
   <!--                  <DropdownMenuGroup>-->
-  <!--                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state !== 'RUNNING'" @click="handlerStop(true, row)">-->
-  <!--                      <CircleStop class="mr-2 h-4 w-4"/>-->
-  <!--                      <span>{{ $t('pipeline.common.stop') }}</span>-->
-  <!--                    </DropdownMenuItem>-->
   <!--                    <DropdownMenuItem class="cursor-pointer" @click="handlerLogger(true, row)">-->
   <!--                      <Rss class="mr-2 h-4 w-4"/>-->
   <!--                      <span>{{ $t('pipeline.common.logger') }}</span>-->
@@ -147,7 +128,10 @@
 
   <!--  <PipelineLogger v-if="dataLoggerVisible && dataInfo" :is-visible="dataLoggerVisible" :info="dataInfo" @close="handlerLogger(false, null)"/>-->
   <!--  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
-  <!--  <PipelineStop v-if="dataStopVisible && dataInfo" :is-visible="dataStopVisible" :info="dataInfo" @close="handlerStop(false, null)"/>-->
+  <PipelineStop v-if="dataStopVisible && dataInfo"
+                :is-visible="dataStopVisible"
+                :info="dataInfo"
+                @close="onStop(false, null)"/>
   <!--  <PipelineFlow v-if="dataFlowVisible && dataInfo" :is-visible="dataFlowVisible" :info="dataInfo" @close="handlerFlow(false, null)"/>-->
 </template>
 
@@ -160,10 +144,11 @@ import PipelineService from '@/services/pipeline'
 import Common from '@/utils/common.ts'
 import { PipelineModel } from '@/model/pipeline.ts'
 import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
+import PipelineStop from '@/views/pages/admin/pipeline/PipelineStop.vue'
 
 export default defineComponent({
   name: 'PipelineHome',
-  components: { MarkdownPreview },
+  components: { PipelineStop, MarkdownPreview },
   setup()
   {
     const i18n = useI18n()
@@ -239,6 +224,14 @@ export default defineComponent({
       this.pageSize = value
       this.fetchData(this.pageIndex)
     },
+    onStop(opened: boolean, value: null | PipelineModel)
+    {
+      this.dataStopVisible = opened
+      this.dataInfo = value
+      if (!opened) {
+        this.handleInitialize()
+      }
+    },
     visibleShowMessage(opened: boolean, value: null | PipelineModel)
     {
       this.dataMessageVisible = opened
@@ -252,14 +245,6 @@ export default defineComponent({
     handlerDelete(opened: boolean, value: null | PipelineModel)
     {
       this.dataDeleteVisible = opened
-      this.dataInfo = value
-      if (!opened) {
-        this.handleInitialize()
-      }
-    },
-    handlerStop(opened: boolean, value: null | PipelineModel)
-    {
-      this.dataStopVisible = opened
       this.dataInfo = value
       if (!opened) {
         this.handleInitialize()

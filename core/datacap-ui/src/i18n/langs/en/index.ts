@@ -603,11 +603,6 @@ export default {
             output: 'Output Source',
             resetTransform: 'Reset Transform'
         },
-        validator: {
-            from: 'Please configure the input source information',
-            to: 'Please configure the output source information',
-            edge: 'Please connect the input and output source'
-        },
         tip: {
             deleteSuccess: 'Delete pipeline [ $VALUE ] successfully',
             deleteAlert1: 'You are deleting a pipeline. This action permanently deletes the pipeline. Please be sure to confirm your actions before proceeding.',
@@ -618,6 +613,18 @@ export default {
             stopAlert3: 'To confirm, type [ $VALUE ] in the box below',
             stopSuccess: 'Pipeline [ $VALUE ] stopped successfully',
             publishSuccess: 'Pipeline [ $VALUE ] published successfully'
+        },
+        placeholder: {
+            name: 'Please enter the pipeline name',
+        },
+        validator: {
+            from: 'Please configure the input source information',
+            to: 'Please configure the output source information',
+            edge: 'Please connect the input and output source',
+            name: {
+                required: 'Pipeline name cannot be empty',
+                match: 'The entered pipeline name is incorrect, please enter [$VALUE]'
+            }
         }
     },
     common: {

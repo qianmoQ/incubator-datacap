@@ -603,11 +603,6 @@ export default {
             output: '输出源',
             resetTransform: '重置变换'
         },
-        validator: {
-            from: '请配置输入源信息',
-            to: '请配置输出源信息',
-            edge: '请连接输入和输出源'
-        },
         tip: {
             deleteSuccess: '删除流水线 [ $VALUE ] 成功',
             deleteAlert1: '您正在删除流水线。此操作将永久删除流水线。在继续操作之前，请务必确认您的操作。',
@@ -618,6 +613,18 @@ export default {
             stopAlert3: '要确认，请在下面的框中键入 [ $VALUE ]',
             stopSuccess: '流水线 [ $VALUE ] 停止成功',
             publishSuccess: '流水线 [ $VALUE ] 发布成功'
+        },
+        placeholder: {
+            name: '请输入流水线名称'
+        },
+        validator: {
+            from: '请配置输入源信息',
+            to: '请配置输出源信息',
+            edge: '请连接输入和输出源',
+            name: {
+                required: '流水线名称不能为空',
+                match: '输入的流水线名称不正确，请输入 [$VALUE]'
+            }
         }
     },
     common: {

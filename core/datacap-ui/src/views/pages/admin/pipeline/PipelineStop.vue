@@ -1,45 +1,45 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'40%'" @close="handlerCancel">
-    <div class="grid w-full gap-2 pt-1 pl-3 pr-3">
-      <Alert type="error" :description="$t('pipeline.tip.stopAlert1')"/>
-      <Alert type="error" :description="$t('pipeline.tip.stopAlert2')"/>
-      <Alert :description="$t('pipeline.tip.stopAlert3').replace('$VALUE', info?.name as string)"/>
-    </div>
-    <div class="pl-3 pr-3">
-      <Input v-model="inputValue"/>
-    </div>
-    <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" color="#ed4014" :loading="loading" :disabled="loading || inputValue !== info?.name" @click="handlerSubmit">
-          {{ $t('pipeline.common.stop') }}
-        </Button>
+  <ShadcnModal v-model="visible"
+               width="40%"
+               :title="title"
+               @on-close="onCancel">
+    <ShadcnSpace wrap>
+      <ShadcnAlert type="error" :title="$t('pipeline.tip.stopAlert1')"/>
+      <ShadcnAlert type="error" :title="$t('pipeline.tip.stopAlert2')"/>
+      <ShadcnAlert :title="$t('pipeline.tip.stopAlert3').replace('$VALUE', String(info?.name))"/>
+    </ShadcnSpace>
+
+    <ShadcnForm v-model="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="name"
+                      :rules="[
+                            { required: true, message: $t('pipeline.validator.name.required') },
+                            { validator: validateMatch }
+                      ]">
+        <ShadcnInput v-model="formState.name" name="name" :placeholder="$t('pipeline.placeholder.name')"/>
+      </ShadcnFormItem>
+
+      <div class="flex justify-end">
+        <ShadcnSpace>
+          <ShadcnButton type="default" @click="onCancel">
+            {{ $t('common.cancel') }}
+          </ShadcnButton>
+
+          <ShadcnButton submit type="error" :disabled="loading" :loading="loading">
+            {{ $t('pipeline.common.stop') }}
+          </ShadcnButton>
+        </ShadcnSpace>
       </div>
-    </template>
-  </Dialog>
+    </ShadcnForm>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
 import PipelineService from '@/services/pipeline'
-import { ToastUtils } from '@/utils/toast'
-import Button from '@/views/ui/button'
-import Alert from '@/views/ui/alert'
-import { toNumber } from 'lodash'
-import { Input } from '@/components/ui/input'
 import { PipelineModel } from '@/model/pipeline.ts'
 
 export default defineComponent({
   name: 'PipelineStop',
-  components: {
-    Input,
-    Dialog,
-    Button,
-    Alert
-  },
   computed: {
     visible: {
       get(): boolean
@@ -65,36 +65,52 @@ export default defineComponent({
     return {
       loading: false,
       title: null as string | null,
-      inputValue: undefined
+      formState: {
+        name: ''
+      }
     }
   },
   created()
   {
     if (this.info) {
-      this.title = this.$t('pipeline.common.stopInfo').replace('$VALUE', this.info.name as string)
+      this.title = this.$t('pipeline.common.stopInfo').replace('$VALUE', String(this.info.name))
     }
   },
   methods: {
-    handlerSubmit()
+    onSubmit()
     {
       if (this.info) {
         this.loading = true
-        PipelineService.stop(toNumber(this.info.id))
+        PipelineService.stop(Number(this.info.id))
                        .then(response => {
                          if (response.status) {
-                           ToastUtils.success(this.$t('pipeline.tip.stopSuccess').replace('$VALUE', this.info?.name as string))
-                           this.handlerCancel()
+                           this.$Message.success({
+                             content: this.$t('pipeline.tip.stopSuccess').replace('$VALUE', String(this.info?.name)),
+                             showIcon: true
+                           })
+
+                           this.onCancel()
                          }
                          else {
-                           ToastUtils.success(response.message)
+                           this.$Message.error({
+                             content: response.message,
+                             showIcon: true
+                           })
                          }
                        })
                        .finally(() => this.loading = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
+    },
+    validateMatch(value: string)
+    {
+      if (value !== String(this.info?.name)) {
+        return Promise.reject(new Error(this.$t('pipeline.validator.name.match').replace('$VALUE', String(this.info?.name))))
+      }
+      return Promise.resolve(true)
     }
   }
 })
