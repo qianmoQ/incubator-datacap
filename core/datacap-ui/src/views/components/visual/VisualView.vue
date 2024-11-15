@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div v-else-if="localConfiguration">
+  <div class="relative">
+    <ShadcnSpin v-model="loading"/>
+
+    <div v-if="localConfiguration">
       <div v-if="localConfiguration.message" class="p-4">
-        <Alert :type="'error' as any" class="overflow-x-auto" :title="localConfiguration.message"/>
+        <ShadcnAlert type="error" :title="localConfiguration.message"/>
       </div>
+
       <div v-else>
         <VisualTable v-if="configuration?.type === Type.TABLE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
         <VisualLine v-else-if="configuration?.type === Type.LINE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
@@ -24,6 +26,7 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Type } from '@/views/components/visual/Type'
 import VisualWordCloud from '@/views/components/visual/components/VisualWordCloud.vue'
@@ -34,16 +37,12 @@ import { Configuration } from './Configuration'
 import VisualBar from '@/views/components/visual/components/VisualBar.vue'
 import VisualLine from '@/views/components/visual/components/VisualLine.vue'
 import VisualTable from '@/views/components/visual/components/VisualTable.vue'
-import { ToastUtils } from '@/utils/toast'
 import DatasetService from '@/services/dataset'
-
-import { defineComponent } from 'vue'
 import VisualRadar from '@/views/components/visual/components/VisualRadar.vue'
 import VisualScatter from '@/views/components/visual/components/VisualScatter.vue'
 import VisualFunnel from '@/views/components/visual/components/VisualFunnel.vue'
 import VisualGauge from '@/views/components/visual/components/VisualGauge.vue'
 import VisualRose from '@/views/components/visual/components/VisualRose.vue'
-import Alert from '@/views/ui/alert'
 import ExecuteService from '@/services/execute.ts'
 import { ExecuteModel } from '@/model/execute.ts'
 
@@ -56,13 +55,7 @@ export default defineComponent({
     }
   },
   components: {
-    Alert,
-    VisualRose,
-    VisualGauge,
-    VisualFunnel,
-    VisualScatter,
-    VisualRadar,
-
+    VisualRose, VisualGauge, VisualFunnel, VisualScatter, VisualRadar,
     VisualWordCloud, VisualHistogram, VisualPie, VisualArea, VisualBar, VisualLine, VisualTable
   },
   props: {
@@ -99,10 +92,10 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.localConfiguration = cloneDeep(this.configuration) as Configuration
       setTimeout(() => {
@@ -115,7 +108,10 @@ export default defineComponent({
                             this.formatRaw(response)
                           }
                           else {
-                            ToastUtils.error(response.data.message)
+                            this.$Message.error({
+                              content: response.data.message,
+                              showIcon: true
+                            })
                           }
                         })
                         .finally(() => this.loading = false)
@@ -127,7 +123,10 @@ export default defineComponent({
                             this.formatRaw(response)
                           }
                           else {
-                            ToastUtils.error(response.message)
+                            this.$Message.error({
+                              content: response.message,
+                              showIcon: true
+                            })
                           }
                         })
                         .finally(() => this.loading = false)

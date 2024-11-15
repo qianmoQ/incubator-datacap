@@ -1,47 +1,54 @@
 <template>
-  <div @drop="onDrop">
-    <div class="hidden space-y-6 pb-16 md:block">
-      <div class="flex flex-col space-y-8 h-screen lg:flex-row lg:space-x-6 lg:space-y-0">
-        <aside class="-mx-4 w-[165px]">
-          <FlowSider :data="data"/>
-        </aside>
-        <div class="flex-1">
-          <VueFlow :default-viewport="{ zoom: 1.5 }" :min-zoom="0.2" :max-zoom="4" @dragover="onDragOver" @nodeClick="handlerNodeClick($event, true)">
-            <Background pattern-color="#aaa" :gap="8"/>
-            <Controls/>
-            <Panel position="top-right">
-              <div class="space-x-2">
-                <Tooltip :content="$t('pipeline.common.resetTransform')">
-                  <Button size="icon" class="w-6 h-6 rounded-full" @click="resetTransform">
-                    <RefreshCcw :size="16"/>
-                  </Button>
-                </Tooltip>
-                <Tooltip :content="$t('common.save')">
-                  <Button size="icon" class="w-6 h-6 rounded-full" @click="saveConfigure(configure)">
-                    <Save :size="16"/>
-                  </Button>
-                </Tooltip>
-              </div>
-            </Panel>
-          </VueFlow>
-        </div>
-      </div>
-    </div>
-    <FlowConfigure v-if="configureVisible" :isVisible="configureVisible" :data="contextData" @onChange="handlerChangeConfigure" @close="handlerNodeClick(null, false)"/>
-  </div>
+  <ShadcnLayout style="height: calc(100vh - 35px)" @drop="onDrop">
+    <ShadcnLayoutWrapper>
+      <ShadcnLayoutSider>
+        <FlowSider v-if="data" :data="data"/>
+      </ShadcnLayoutSider>
+
+      <ShadcnLayoutContent>
+        <VueFlow :default-viewport="{ zoom: 1.5 }"
+                 :min-zoom="0.2"
+                 :max-zoom="4"
+                 @dragover="onDragOver"
+                 @nodeClick="onNodeClick($event, true)">
+          <Background pattern-color="#aaa" :gap="8"/>
+          <Controls/>
+          <Panel position="top-right">
+            <div class="space-x-2">
+              <ShadcnTooltip :content="$t('pipeline.common.resetTransform')">
+                <ShadcnButton circle @click="resetTransform">
+                  <ShadcnIcon icon="RefreshCcw"/>
+                </ShadcnButton>
+              </ShadcnTooltip>
+
+              <ShadcnTooltip :content="$t('common.save')">
+                <ShadcnButton circle @click="saveConfigure(configure)">
+                  <ShadcnIcon icon="Save"/>
+                </ShadcnButton>
+              </ShadcnTooltip>
+            </div>
+          </Panel>
+        </VueFlow>
+      </ShadcnLayoutContent>
+    </ShadcnLayoutWrapper>
+  </ShadcnLayout>
+
+  <FlowConfigure v-if="configureVisible"
+                 :isVisible="configureVisible"
+                 :data="contextData"
+                 @onChange="onChangeConfigure"
+                 @close="onNodeClick(null, false)"/>
 </template>
+
 <script lang="ts">
-import { defineComponent, nextTick, watch } from 'vue'
+import { defineComponent, getCurrentInstance, nextTick, watch } from 'vue'
 import { Panel, Position, useVueFlow, VueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { Controls } from '@vue-flow/controls'
 import { v4 as uuidv4 } from 'uuid'
 import { useI18n } from 'vue-i18n'
 import { Configuration } from '@/views/components/editor/flow/Configuration.ts'
-import { ToastUtils } from '@/utils/toast.ts'
 import FlowSider from '@/views/components/editor/flow/components/FlowSider.vue'
-import Button from '@/views/ui/button'
-import Tooltip from '@/views/ui/tooltip'
 import FlowConfigure from '@/views/components/editor/flow/components/FlowConfigure.vue'
 
 export default defineComponent({
@@ -51,14 +58,7 @@ export default defineComponent({
       type: Array as () => Configuration[]
     }
   },
-  components: {
-    FlowConfigure,
-    FlowSider,
-    VueFlow, Background, Controls, Panel,
-    Save, RefreshCcw,
-    Button,
-    Tooltip
-  },
+  components: { FlowConfigure, FlowSider, VueFlow, Background, Controls, Panel },
   setup(props, { emit })
   {
     console.debug(props.data)
@@ -125,20 +125,31 @@ export default defineComponent({
       return setTransform({ x: 0, y: 0, zoom: 1 })
     }
 
+    const { proxy } = getCurrentInstance()!
+
     const saveConfigure = (configure: any) => {
       const data = toObject()
       if (!configure.from) {
-        ToastUtils.error(i18n.t('pipeline.validator.from'))
+        proxy?.$Message.error({
+          content: i18n.t('pipeline.validator.from'),
+          showIcon: true
+        })
         return
       }
 
       if (!configure.to) {
-        ToastUtils.error(i18n.t('pipeline.validator.to'))
+        proxy?.$Message.error({
+          content: i18n.t('pipeline.validator.to'),
+          showIcon: true
+        })
         return
       }
 
       if (data.edges.length === 0) {
-        ToastUtils.error(i18n.t('pipeline.validator.edge'))
+        proxy?.$Message.error({
+          content: i18n.t('pipeline.validator.edge'),
+          showIcon: true
+        })
         return
       }
       configure.flow = data
@@ -161,12 +172,12 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerNodeClick(event: any, isOpen: boolean)
+    onNodeClick(event: any, isOpen: boolean)
     {
       this.configureVisible = isOpen
       this.contextData = event?.node?.data
     },
-    handlerChangeConfigure(value: any)
+    onChangeConfigure(value: any)
     {
       if (value.type === 'input') {
         this.configure.from = value
@@ -174,7 +185,7 @@ export default defineComponent({
       else if (value.type === 'output') {
         this.configure.to = value
       }
-      this.handlerNodeClick(null, false)
+      this.onNodeClick(null, false)
     }
   }
 })

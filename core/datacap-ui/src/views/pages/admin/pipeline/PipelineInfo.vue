@@ -1,32 +1,29 @@
 <template>
-  <div class="w-full h-screen">
-    <DataCapCard>
-      <template #title>{{ $t('pipeline.common.create') }}</template>
-      <CircularLoading v-if="loading" :show="loading"/>
-      <FlowEditor v-else :data="contextData" @onCommit="handlerSave"/>
-    </DataCapCard>
-  </div>
+  <ShadcnCard class="w-full h-screen">
+    <template #title>
+      <div class="ml-2">{{ $t('pipeline.common.create') }}</div>
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-model="loading"/>
+
+      <FlowEditor v-if="contextData && !loading" :data="contextData" @onCommit="onSubmit"/>
+    </div>
+  </ShadcnCard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { DataCapCard } from '@/views/ui/card'
 import FlowEditor from '@/views/components/editor/flow/FlowEditor.vue'
 import SourceService from '@/services/source'
 import PipelineService from '@/services/pipeline'
-
 import { Configuration } from '@/views/components/editor/flow/Configuration.ts'
-import { ToastUtils } from '@/utils/toast.ts'
 import router from '@/router'
 import { FilterModel } from '@/model/filter.ts'
 
 export default defineComponent({
   name: 'PipelineInfo',
-  components: {
-
-    FlowEditor,
-    DataCapCard
-  },
+  components: { FlowEditor },
   data()
   {
     return {
@@ -36,10 +33,10 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       this.contextData = []
@@ -61,16 +58,22 @@ export default defineComponent({
                    })
                    .finally(() => this.loading = false)
     },
-    handlerSave(value: any)
+    onSubmit(value: any)
     {
       PipelineService.submit(value)
                      .then((response) => {
                        if (response.status) {
-                         ToastUtils.success(`${ this.$t('pipeline.tip.publishSuccess').replace('$VALUE', response.data) }`)
+                         this.$Message.success({
+                           content: `${ this.$t('pipeline.tip.publishSuccess').replace('$VALUE', response.data) }`,
+                           showIcon: true
+                         })
                          router.push('/admin/pipeline')
                        }
                        else {
-                         ToastUtils.error(response.message)
+                         this.$Message.error({
+                           content: response.message,
+                           showIcon: true
+                         })
                        }
                      })
     }

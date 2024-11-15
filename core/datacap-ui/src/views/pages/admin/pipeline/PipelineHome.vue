@@ -1,131 +1,196 @@
 <template>
-  <div class="w-full">
-    <DataCapCard>
-      <template #title>{{ $t('pipeline.common.list') }}</template>
-      <template #extra>
-        <Tooltip :content="$t('pipeline.common.create')">
-          <Button size="icon" class="w-6 h-6 rounded-full" to="/admin/pipeline/info">
-            <Plus :size="14"/>
-          </Button>
-        </Tooltip>
-      </template>
-      <template #content>
-        <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">
-          <template #executor="{row}">
-            <Tooltip :content="row.executor">
-              <Avatar :src="`/static/images/executor/${row.executor}.png`"/>
-            </Tooltip>
-          </template>
-          <template #from="{row}">
-            <Tooltip :content="row.from.name">
-              <Avatar :src="'/static/images/plugin/' + row.from.type + '.png'"/>
-            </Tooltip>
-          </template>
-          <template #to="{row}">
-            <Tooltip :content="row.to.name">
-              <Avatar :src="'/static/images/plugin/' + row.to.type + '.png'"/>
-            </Tooltip>
-          </template>
-          <template #state="{row}">
-            <Tag :color="Common.getColor(row.state)">
-              {{ Common.getText(i18n, row.state) }}
-            </Tag>
-          </template>
-          <template #action="{row}">
-            <div class="space-x-2">
-              <Tooltip :content="$t('common.error')">
-                <Button :disabled="row.state !== 'FAILURE' && !(row.state == 'STOPPED' && row.message)" :color="'#ed4014'" size="icon" class="w-6 h-6 rounded-full"
-                        @click="handlerShowMessage(true, row)">
-                  <TriangleAlert :size="14"/>
-                </Button>
-              </Tooltip>
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child>
-                  <Button size="icon" class="rounded-full w-6 h-6" variant="outline">
-                    <Cog class="w-full justify-center" :size="14"/>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state !== 'RUNNING'" @click="handlerStop(true, row)">
-                      <CircleStop class="mr-2 h-4 w-4"/>
-                      <span>{{ $t('pipeline.common.stop') }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem class="cursor-pointer" @click="handlerLogger(true, row)">
-                      <Rss class="mr-2 h-4 w-4"/>
-                      <span>{{ $t('pipeline.common.logger') }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state == 'RUNNING'" @click="handlerDelete(true, row)">
-                      <Delete class="mr-2 h-4 w-4"/>
-                      <span>{{ $t('pipeline.common.delete') }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem class="cursor-pointer" @click="handlerFlow(true, row)">
-                      <Flower class="mr-2 h-4 w-4"/>
-                      <span>{{ $t('pipeline.common.flow') }}</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </template>
-        </TableCommon>
-      </template>
-    </DataCapCard>
-  </div>
-  <MarkdownPreview v-if="dataMessageVisible && dataInfo" :is-visible="dataMessageVisible" :content="dataInfo.message" @close="handlerShowMessage(false, null)"/>
-  <PipelineLogger v-if="dataLoggerVisible && dataInfo" :is-visible="dataLoggerVisible" :info="dataInfo" @close="handlerLogger(false, null)"/>
-  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>
-  <PipelineStop v-if="dataStopVisible && dataInfo" :is-visible="dataStopVisible" :info="dataInfo" @close="handlerStop(false, null)"/>
-  <PipelineFlow v-if="dataFlowVisible && dataInfo" :is-visible="dataFlowVisible" :info="dataInfo" @close="handlerFlow(false, null)"/>
+  <ShadcnCard>
+    <template #title>
+      <div class="ml-2">{{ $t('pipeline.common.list') }}</div>
+    </template>
+
+    <template #extra>
+      <ShadcnTooltip :content="$t('pipeline.common.create')">
+        <ShadcnLink link="/admin/pipeline/info">
+          <ShadcnButton circle size="small">
+            <ShadcnIcon icon="Plus" size="15"/>
+          </ShadcnButton>
+        </ShadcnLink>
+      </ShadcnTooltip>
+
+    </template>
+
+    <div class="relative">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnTable size="small" :columns="headers" :data="data">
+        <template #type="{row}">
+          <ShadcnTooltip :content="row.type">
+            <ShadcnAvatar class="cursor-pointer"
+                          size="small"
+                          :src="'/static/images/plugin/' + row.type + '.png'"
+                          :alt="row.type"/>
+          </ShadcnTooltip>
+        </template>
+
+        <template #public="{row}">
+          <ShadcnSwitch v-model="row.public" disabled size="small"/>
+        </template>
+
+        <template #version="{row}">
+          <ShadcnTag :text="row.version || '-'" size="default" type="primary"/>
+        </template>
+
+        <template #available="{row}">
+          <ShadcnTooltip v-if="!row.available" :content="row.message">
+            <ShadcnIcon icon="CircleX" :size="20" class="cursor-pointer text-red-500"/>
+          </ShadcnTooltip>
+          <ShadcnIcon v-else icon="CirclePlay" :size="20" class="text-green-500"/>
+        </template>
+
+        <template #action="{row}">
+          <ShadcnSpace>
+            <ShadcnTooltip :content="$t('source.common.modify').replace('$NAME', row.name)">
+              <ShadcnButton circle
+                            size="small"
+                            :disabled="loginUserId !== row.user.id"
+                            @click="visibleInfo(true, row)">
+                <ShadcnIcon icon="Pencil" :size="15"/>
+              </ShadcnButton>
+            </ShadcnTooltip>
+
+            <ShadcnDropdown trigger="click">
+              <template #trigger>
+                <ShadcnButton circle size="small">
+                  <ShadcnIcon icon="Cog" :size="15"/>
+                </ShadcnButton>
+              </template>
+
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available">
+                <ShadcnLink :link="`/admin/source/${row?.code}`" target="_blank">
+                  <div class="flex items-center space-x-2">
+                    <ShadcnIcon icon="Cog" size="15"/>
+                    <span>{{ $t('source.common.manager') }}</span>
+                  </div>
+                </ShadcnLink>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id)" @on-click="visibleHistory(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="History" size="15"/>
+                  <span>{{ $t('source.common.syncHistory') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" @on-click="visibleSyncMetadata(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="RefreshCcwDot" size="15"/>
+                  <span>{{ $t('source.common.syncMetadata') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="loginUserId !== row.user.id" @on-click="visibleDelete(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="Trash" size="15"/>
+                  <span>{{ $t('common.deleteData') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+            </ShadcnDropdown>
+          </ShadcnSpace>
+        </template>
+      </ShadcnTable>
+
+      <ShadcnPagination v-if="data.length > 0"
+                        v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[10, 20, 50]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
+  </ShadcnCard>
+
+  <!--      <template #content>-->
+  <!--        <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">-->
+  <!--          <template #executor="{row}">-->
+  <!--            <Tooltip :content="row.executor">-->
+  <!--              <Avatar :src="`/static/images/executor/${row.executor}.png`"/>-->
+  <!--            </Tooltip>-->
+  <!--          </template>-->
+  <!--          <template #from="{row}">-->
+  <!--            <Tooltip :content="row.from.name">-->
+  <!--              <Avatar :src="'/static/images/plugin/' + row.from.type + '.png'"/>-->
+  <!--            </Tooltip>-->
+  <!--          </template>-->
+  <!--          <template #to="{row}">-->
+  <!--            <Tooltip :content="row.to.name">-->
+  <!--              <Avatar :src="'/static/images/plugin/' + row.to.type + '.png'"/>-->
+  <!--            </Tooltip>-->
+  <!--          </template>-->
+  <!--          <template #state="{row}">-->
+  <!--            <Tag :color="Common.getColor(row.state)">-->
+  <!--              {{ Common.getText(i18n, row.state) }}-->
+  <!--            </Tag>-->
+  <!--          </template>-->
+  <!--          <template #action="{row}">-->
+  <!--            <div class="space-x-2">-->
+  <!--              <Tooltip :content="$t('common.error')">-->
+  <!--                <Button :disabled="row.state !== 'FAILURE' && !(row.state == 'STOPPED' && row.message)" :color="'#ed4014'" size="icon" class="w-6 h-6 rounded-full"-->
+  <!--                        @click="handlerShowMessage(true, row)">-->
+  <!--                  <TriangleAlert :size="14"/>-->
+  <!--                </Button>-->
+  <!--              </Tooltip>-->
+  <!--              <DropdownMenu>-->
+  <!--                <DropdownMenuTrigger as-child>-->
+  <!--                  <Button size="icon" class="rounded-full w-6 h-6" variant="outline">-->
+  <!--                    <Cog class="w-full justify-center" :size="14"/>-->
+  <!--                  </Button>-->
+  <!--                </DropdownMenuTrigger>-->
+  <!--                <DropdownMenuContent>-->
+  <!--                  <DropdownMenuGroup>-->
+  <!--                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state !== 'RUNNING'" @click="handlerStop(true, row)">-->
+  <!--                      <CircleStop class="mr-2 h-4 w-4"/>-->
+  <!--                      <span>{{ $t('pipeline.common.stop') }}</span>-->
+  <!--                    </DropdownMenuItem>-->
+  <!--                    <DropdownMenuItem class="cursor-pointer" @click="handlerLogger(true, row)">-->
+  <!--                      <Rss class="mr-2 h-4 w-4"/>-->
+  <!--                      <span>{{ $t('pipeline.common.logger') }}</span>-->
+  <!--                    </DropdownMenuItem>-->
+  <!--                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state == 'RUNNING'" @click="handlerDelete(true, row)">-->
+  <!--                      <Delete class="mr-2 h-4 w-4"/>-->
+  <!--                      <span>{{ $t('pipeline.common.delete') }}</span>-->
+  <!--                    </DropdownMenuItem>-->
+  <!--                    <DropdownMenuItem class="cursor-pointer" @click="handlerFlow(true, row)">-->
+  <!--                      <Flower class="mr-2 h-4 w-4"/>-->
+  <!--                      <span>{{ $t('pipeline.common.flow') }}</span>-->
+  <!--                    </DropdownMenuItem>-->
+  <!--                  </DropdownMenuGroup>-->
+  <!--                </DropdownMenuContent>-->
+  <!--              </DropdownMenu>-->
+  <!--            </div>-->
+  <!--          </template>-->
+  <!--        </TableCommon>-->
+  <!--      </template>-->
+  <!--    </DataCapCard>-->
+  <!--  </div>-->
+  <!--  <MarkdownPreview v-if="dataMessageVisible && dataInfo" :is-visible="dataMessageVisible" :content="dataInfo.message" @close="handlerShowMessage(false, null)"/>-->
+  <!--  <PipelineLogger v-if="dataLoggerVisible && dataInfo" :is-visible="dataLoggerVisible" :info="dataInfo" @close="handlerLogger(false, null)"/>-->
+  <!--  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
+  <!--  <PipelineStop v-if="dataStopVisible && dataInfo" :is-visible="dataStopVisible" :info="dataInfo" @close="handlerStop(false, null)"/>-->
+  <!--  <PipelineFlow v-if="dataFlowVisible && dataInfo" :is-visible="dataFlowVisible" :info="dataInfo" @close="handlerFlow(false, null)"/>-->
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Tooltip from '@/views/ui/tooltip'
-import Avatar from '@/views/ui/avatar'
-import Tag from '@/views/ui/tag'
-import Button from '@/views/ui/button'
 import { FilterModel } from '@/model/filter'
-import TableCommon from '@/views/components/table/TableCommon.vue'
 import { createHeaders } from '@/views/pages/admin/pipeline/PipelineUtils'
 import { useI18n } from 'vue-i18n'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import PipelineService from '@/services/pipeline'
 import Common from '@/utils/common.ts'
 import { PipelineModel } from '@/model/pipeline.ts'
-import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import PipelineLogger from '@/views/pages/admin/pipeline/PipelineLogger.vue'
-import PipelineDelete from '@/views/pages/admin/pipeline/PipelineDelete.vue'
-import PipelineStop from '@/views/pages/admin/pipeline/PipelineStop.vue'
-import PipelineFlow from '@/views/pages/admin/pipeline/PipelineFlow.vue'
-import { DataCapCard } from '@/views/ui/card'
 
 export default defineComponent({
   name: 'PipelineHome',
-  components: {
-    DataCapCard,
-    PipelineFlow,
-    PipelineStop,
-    PipelineDelete,
-    PipelineLogger,
-    MarkdownPreview,
-    Button,
-    TableCommon,
-    Tooltip,
-    Avatar,
-    Tag,
-    TriangleAlert, Cog, Rss, Delete, CircleStop, Flower, Plus,
-    DropdownMenuItem, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuContent, DropdownMenuTrigger, DropdownMenu
-  },
   setup()
   {
     const i18n = useI18n()
@@ -148,7 +213,9 @@ export default defineComponent({
     return {
       loading: false,
       data: [],
-      pagination: {} as PaginationModel,
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as PipelineModel | null,
       dataMessageVisible: false,
       dataLoggerVisible: false,
@@ -159,26 +226,45 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       PipelineService.getAll(this.filter)
                      .then((response) => {
                        if (response.status) {
                          this.data = response.data.content
-                         this.pagination = PaginationRequest.of(response.data)
+                         this.dataCount = response.data.total
+                         this.pageSize = response.data.size
+                         this.pageIndex = response.data.page
                        }
                      })
                      .finally(() => this.loading = false)
     },
-    handlerChangePage(value: PaginationModel)
+    fetchData(value: number)
     {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
-      this.handlerInitialize()
+      this.filter.page = value
+      this.filter.size = this.pageSize
+      this.handleInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
     },
     handlerShowMessage(opened: boolean, value: null | PipelineModel)
     {
@@ -195,7 +281,7 @@ export default defineComponent({
       this.dataDeleteVisible = opened
       this.dataInfo = value
       if (!opened) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
     },
     handlerStop(opened: boolean, value: null | PipelineModel)
@@ -203,7 +289,7 @@ export default defineComponent({
       this.dataStopVisible = opened
       this.dataInfo = value
       if (!opened) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
     },
     handlerFlow(opened: boolean, value: null | PipelineModel)
