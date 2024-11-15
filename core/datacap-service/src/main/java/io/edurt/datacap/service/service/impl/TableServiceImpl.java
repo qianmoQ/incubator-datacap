@@ -135,12 +135,12 @@ public class TableServiceImpl
     }
 
     @Override
-    public CommonResponse exportDataById(Long id, ExportBody configure)
+    public CommonResponse exportDataByCode(String code, ExportBody configure)
     {
-        TableEntity table = this.repository.findById(id)
+        TableEntity table = this.repository.findByCode(code)
                 .orElse(null);
         if (table == null) {
-            return CommonResponse.failure(String.format("Table [ %s ] not found", id));
+            return CommonResponse.failure(String.format("Table [ %s ] not found", code));
         }
 
         SourceEntity source = table.getDatabase().getSource();

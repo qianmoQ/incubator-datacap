@@ -1,4 +1,4 @@
-<template>dd
+<template>
   <ShadcnModal v-model="visible"
                height="80%"
                width="40%"
@@ -92,13 +92,13 @@
         </ShadcnCol>
       </ShadcnRow>
 
-      <div class="space-x-2">
+      <ShadcnSpace>
         <ShadcnButton type="default" @click="onCancel">{{ $t('common.cancel') }}</ShadcnButton>
 
         <ShadcnButton submit :loading="loading" :disabled="loading">
           {{ $t('common.save') }}
         </ShadcnButton>
-      </div>
+      </ShadcnSpace>
     </ShadcnForm>
   </ShadcnModal>
 </template>

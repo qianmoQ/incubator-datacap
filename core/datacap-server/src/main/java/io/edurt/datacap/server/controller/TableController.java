@@ -44,10 +44,10 @@ public class TableController
         return this.service.fetchData(code, configure);
     }
 
-    @PostMapping(value = "export/{id}")
-    public CommonResponse exportDataById(@PathVariable Long id, @RequestBody ExportBody configure)
+    @PostMapping(value = "export/{code}")
+    public CommonResponse exportDataByCode(@PathVariable String code, @RequestBody ExportBody configure)
     {
-        return this.service.exportDataById(id, configure);
+        return this.service.exportDataByCode(code, configure);
     }
 
     @GetMapping(value = "dataDownload/{username}/{filename}")

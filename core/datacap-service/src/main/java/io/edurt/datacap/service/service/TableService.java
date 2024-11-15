@@ -19,6 +19,7 @@ public interface TableService
      */
     CommonResponse<List<TableEntity>> getAllByDatabase(String code);
 
+
     /**
      * Retrieves data from the database based on the provided ID and table filter.
      *
@@ -35,7 +36,7 @@ public interface TableService
      * @param configure the export configuration
      * @return the response containing the exported data
      */
-    CommonResponse exportDataById(Long id, ExportBody configure);
+    CommonResponse exportDataByCode(String code, ExportBody configure);
 
     Object dataDownload(String username, String filename);
 
