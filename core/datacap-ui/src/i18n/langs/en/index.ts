@@ -583,7 +583,8 @@ export default {
         },
         validator: {
             name: {
-                required: 'Report name cannot be empty'
+                required: 'Report name cannot be empty',
+                match: 'The entered report name is incorrect, please enter [$VALUE]'
             }
         }
     },

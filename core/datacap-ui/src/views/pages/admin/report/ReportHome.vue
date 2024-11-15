@@ -29,27 +29,30 @@
                 <ShadcnIcon icon="Eye" size="15"/>
               </ShadcnButton>
             </ShadcnTooltip>
-            <!--            <DropdownMenu>-->
-            <!--              <DropdownMenuTrigger as-child>-->
-            <!--                <Button size="icon" class="rounded-full w-6 h-6" variant="outline">-->
-            <!--                  <Cog class="w-full justify-center" :size="14"/>-->
-            <!--                </Button>-->
-            <!--              </DropdownMenuTrigger>-->
-            <!--              <DropdownMenuContent>-->
-            <!--                <DropdownMenuGroup>-->
-            <!--                  <DropdownMenuItem :disabled="row.type === 'QUERY'" class="cursor-pointer">-->
-            <!--                    <RouterLink :to="`/admin/dataset/adhoc/${row.dataset?.code}/${row.id}`" target="_blank" class="flex items-center">-->
-            <!--                      <Pencil class="mr-2 h-4 w-4"/>-->
-            <!--                      <span>{{ $t('report.common.modify') }}</span>-->
-            <!--                    </RouterLink>-->
-            <!--                  </DropdownMenuItem>-->
-            <!--                  <DropdownMenuItem class="cursor-pointer" @click="handlerDelete(true, row)">-->
-            <!--                    <Delete class="mr-2 h-4 w-4"/>-->
-            <!--                    <span>{{ $t('report.common.delete') }}</span>-->
-            <!--                  </DropdownMenuItem>-->
-            <!--                </DropdownMenuGroup>-->
-            <!--              </DropdownMenuContent>-->
-            <!--            </DropdownMenu>-->
+
+            <ShadcnDropdown trigger="click">
+              <template #trigger>
+                <ShadcnButton circle size="small">
+                  <ShadcnIcon icon="Cog" size="15"/>
+                </ShadcnButton>
+              </template>
+
+              <ShadcnDropdownItem :disabled="row.type === 'QUERY'">
+                <ShadcnLink :link="`/admin/dataset/adhoc/${row.dataset?.code}/${row.id}`" target="_blank">
+                  <div class="flex items-center space-x-2">
+                    <ShadcnIcon icon="Pencil" size="15"/>
+                    <span>{{ $t('report.common.modify') }}</span>
+                  </div>
+                </ShadcnLink>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem @on-click="visibleDelete(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="Delete" size="15"/>
+                  <span>{{ $t('report.common.delete') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+            </ShadcnDropdown>
           </ShadcnSpace>
         </template>
       </ShadcnTable>
@@ -73,7 +76,11 @@
               :is-visible="dataViewVisible"
               :info="dataInfo"
               @close="visibleView(false, null)"/>
-  <!--  <ReportDelete v-if="dataDeleteVisible" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
+
+  <ReportDelete v-if="dataDeleteVisible"
+                :is-visible="dataDeleteVisible"
+                :info="dataInfo"
+                @close="visibleDelete(false, null)"/>
 </template>
 
 <script lang="ts">
@@ -84,10 +91,11 @@ import { createHeaders } from '@/views/pages/admin/report/ReportUtils'
 import ReportService from '@/services/report'
 import { ReportModel } from '@/model/report'
 import ReportView from '@/views/pages/admin/report/ReportView.vue'
+import ReportDelete from '@/views/pages/admin/report/ReportDelete.vue'
 
 export default defineComponent({
   name: 'ReportHome',
-  components: { ReportView },
+  components: { ReportDelete, ReportView },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -163,7 +171,7 @@ export default defineComponent({
       this.dataViewVisible = opened
       this.dataInfo = value
     },
-    handlerDelete(opened: boolean, data: ReportModel | null)
+    visibleDelete(opened: boolean, data: ReportModel | null)
     {
       this.dataDeleteVisible = opened
       this.dataInfo = data

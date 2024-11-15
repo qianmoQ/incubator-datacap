@@ -583,7 +583,8 @@ export default {
         },
         validator: {
             name: {
-                required: '报表名称不能为空'
+                required: '报表名称不能为空',
+                match: '输入的报表名称不正确，请输入 [$VALUE]'
             }
         }
     },
