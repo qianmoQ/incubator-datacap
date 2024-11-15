@@ -577,8 +577,14 @@ export default {
             deleteAlert3: 'To confirm, type [ $VALUE ] in the box below',
             publishSuccess: 'Report [ $VALUE ] published successfully'
         },
+        placeholder: {
+            name: 'Please enter the report name',
+            description: 'Please enter the report description'
+        },
         validator: {
-            name: 'Please enter the report name'
+            name: {
+                required: 'Report name cannot be empty'
+            }
         }
     },
     pipeline: {

@@ -1,53 +1,63 @@
 <template>
-  <Dialog :is-visible="visible" :title="$t('common.configure')" width="40%" @close="handlerCancel">
-    <div v-if="configuration && formState" class="space-y-2 pl-3 pr-3">
-      <Tabs v-model="activeGroup">
-        <TabsList class="grid w-full grid-cols-2">
-          <TabsTrigger v-for="group in fieldGroup" :key="group.label" :value="group.label as string">{{ group.label }}</TabsTrigger>
-        </TabsList>
-        <TabsContent :value="activeGroup as any" class="grid grid-cols-4 gap-4">
-          <FormField v-for="item in fieldGroup.find(value => value.label === activeGroup)?.fields" :name="item.field as string">
-            <FormItem>
-              <FormLabel>{{ item.label }}</FormLabel>
-              <FormControl>
-                <div v-if="item.type === 'SWITCH'">
-                  <Switch class="mt-2" :value="item.value" :default-checked="formState[item.field as keyof IChart] ? formState[item.field as keyof IChart] as boolean : item.value"
-                          @update:checked="formState[item.field as keyof IChart] = $event as any"/>
-                </div>
-                <Tooltip v-else-if="item.type === 'SLIDER'" :content="formState[item.field as keyof IChart] ? formState[item.field as keyof IChart] : [item.value] as any">
-                  <Slider v-model="formState[item.field as keyof IChart] as any" class="pt-3" :default-value="[item.value]" :min="item.min" :max="item.max"
-                          :step="item.step"
-                          @update:modelValue="formState[item.field as keyof IChart] = $event as any"/>
-                </Tooltip>
-                <Input v-else-if="item.type === 'TEXT'" v-model="formState[item.field as keyof IChart] as string" :placeholder="item.label"
-                       :disabled="item.disabled?.field ? formState[item.disabled?.field as keyof IChart] === item.disabled?.value : false"/>
-                <Select v-else v-model="formState[item.field as keyof IChart] as string" :default-value="item.value"
-                        :disabled="item.disabled?.field ? formState[item.disabled?.field as keyof IChart] === item.disabled?.value : false">
-                  <SelectTrigger class="w-full">
-                    <SelectValue :placeholder="item.label"/>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem v-if="item.values" class="cursor-pointer" v-for="data in item.values" :value="data.value as string">{{ data.label }}</SelectItem>
-                    <SelectItem v-else v-for="item in configuration.headers" class="cursor-pointer" :value="item as string">{{ item }}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          </FormField>
-        </TabsContent>
-      </Tabs>
+  <ShadcnDrawer v-model="visible"
+                width="40%"
+                :title="$t('common.configure')"
+                @close="onCancel">
+
+    <div v-if="configuration && formState" style="margin-right: -1rem">
+      <ShadcnTab v-model="activeGroup" direction="vertical" position="right">
+        <ShadcnTabItem v-for="group in fieldGroup"
+                       class="space-y-4"
+                       :name="group.label"
+                       :label="group.label"
+                       :key="group.label"
+                       :value="group.label">
+          <ShadcnFormItem v-for="item in fieldGroup.find(value => value.label === activeGroup)?.fields"
+                          :name="item.field"
+                          :key="item.field"
+                          :label="item.label">
+            <ShadcnSwitch v-if="item.type === 'SWITCH'" v-model="formState[Object(item.field)]"/>
+
+            <ShadcnSlider v-else-if="item.type === 'SLIDER'" v-model="formState[Object(item.field)]"
+                          :min="item.min"
+                          :max="item.max"
+                          :step="item.step"/>
+
+            <ShadcnInput v-else-if="item.type === 'TEXT'"
+                         v-model="formState[Object(item.field)]"
+                         :placeholder="item.label"
+                         :disabled="item.disabled?.field ? formState[Object(item.disabled?.field)] === item.disabled?.value : false"/>
+
+            <ShadcnSelect v-else v-model="formState[Object(item.field)]"
+                          :disabled="item.disabled?.field ? formState[Object(item.disabled?.field)] === item.disabled?.value : false">
+              <template #options>
+                <ShadcnSelectOption v-if="item.values"
+                                    v-for="data in item.values"
+                                    :value="data.value"
+                                    :label="data.label"/>
+
+                <ShadcnSelectOption v-else
+                                    v-for="item in configuration.headers"
+                                    :value="item"
+                                    :label="item"/>
+              </template>
+            </ShadcnSelect>
+          </ShadcnFormItem>
+        </ShadcnTabItem>
+      </ShadcnTab>
     </div>
+
     <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">
           {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" @click="handlerSubmit">
+        </ShadcnButton>
+        <ShadcnButton @click="onSubmit">
           {{ $t('common.apply') }}
-        </Button>
-      </div>
+        </ShadcnButton>
+      </ShadcnSpace>
     </template>
-  </Dialog>
+  </ShadcnDrawer>
 </template>
 
 <script lang="ts">
@@ -106,14 +116,14 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     },
-    handlerSubmit()
+    onSubmit()
     {
       this.$emit('change', this.formState)
-      this.handlerCancel()
+      this.onCancel()
     }
   }
 })

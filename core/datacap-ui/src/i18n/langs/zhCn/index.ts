@@ -577,8 +577,14 @@ export default {
             deleteAlert3: '要确认，请在下面的框中键入 [ $VALUE ]',
             publishSuccess: '报表 [ $VALUE ] 发布成功'
         },
+        placeholder: {
+            name: '请输入报表名称',
+            description: '请输入报表描述'
+        },
         validator: {
-            name: '请输入报表名称'
+            name: {
+                required: '报表名称不能为空'
+            }
         }
     },
     pipeline: {
