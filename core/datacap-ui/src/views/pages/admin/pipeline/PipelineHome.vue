@@ -19,28 +19,28 @@
       <ShadcnSpin v-if="loading" fixed/>
 
       <ShadcnTable size="small" :columns="headers" :data="data">
-        <template #type="{row}">
-          <ShadcnTooltip :content="row.type">
-            <ShadcnAvatar class="cursor-pointer"
-                          size="small"
-                          :src="'/static/images/plugin/' + row.type + '.png'"
-                          :alt="row.type"/>
+        <template #executor="{row}">
+          <ShadcnTooltip :content="row.executor">
+            <ShadcnAvatar size="small" :src="`/static/images/executor/${row.executor}.png`"/>
           </ShadcnTooltip>
         </template>
 
-        <template #public="{row}">
-          <ShadcnSwitch v-model="row.public" disabled size="small"/>
-        </template>
-
-        <template #version="{row}">
-          <ShadcnTag :text="row.version || '-'" size="default" type="primary"/>
-        </template>
-
-        <template #available="{row}">
-          <ShadcnTooltip v-if="!row.available" :content="row.message">
-            <ShadcnIcon icon="CircleX" :size="20" class="cursor-pointer text-red-500"/>
+        <template #from="{row}">
+          <ShadcnTooltip :content="row.from.name">
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.from.type + '.png'"/>
           </ShadcnTooltip>
-          <ShadcnIcon v-else icon="CirclePlay" :size="20" class="text-green-500"/>
+        </template>
+
+        <template #to="{row}">
+          <ShadcnTooltip :content="row.to.name">
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.to.type + '.png'"/>
+          </ShadcnTooltip>
+        </template>
+
+        <template #state="{row}">
+          <ShadcnTag class="w-20" :color="Common.getColor(row.state)">
+            {{ Common.getText(i18n, row.state) }}
+          </ShadcnTag>
         </template>
 
         <template #action="{row}">
@@ -110,28 +110,7 @@
     </div>
   </ShadcnCard>
 
-  <!--      <template #content>-->
-  <!--        <TableCommon :loading="loading" :columns="headers" :data="data" :pagination="pagination" @changePage="handlerChangePage">-->
-  <!--          <template #executor="{row}">-->
-  <!--            <Tooltip :content="row.executor">-->
-  <!--              <Avatar :src="`/static/images/executor/${row.executor}.png`"/>-->
-  <!--            </Tooltip>-->
-  <!--          </template>-->
-  <!--          <template #from="{row}">-->
-  <!--            <Tooltip :content="row.from.name">-->
-  <!--              <Avatar :src="'/static/images/plugin/' + row.from.type + '.png'"/>-->
-  <!--            </Tooltip>-->
-  <!--          </template>-->
-  <!--          <template #to="{row}">-->
-  <!--            <Tooltip :content="row.to.name">-->
-  <!--              <Avatar :src="'/static/images/plugin/' + row.to.type + '.png'"/>-->
-  <!--            </Tooltip>-->
-  <!--          </template>-->
-  <!--          <template #state="{row}">-->
-  <!--            <Tag :color="Common.getColor(row.state)">-->
-  <!--              {{ Common.getText(i18n, row.state) }}-->
-  <!--            </Tag>-->
-  <!--          </template>-->
+
   <!--          <template #action="{row}">-->
   <!--            <div class="space-x-2">-->
   <!--              <Tooltip :content="$t('common.error')">-->
@@ -169,10 +148,6 @@
   <!--              </DropdownMenu>-->
   <!--            </div>-->
   <!--          </template>-->
-  <!--        </TableCommon>-->
-  <!--      </template>-->
-  <!--    </DataCapCard>-->
-  <!--  </div>-->
   <!--  <MarkdownPreview v-if="dataMessageVisible && dataInfo" :is-visible="dataMessageVisible" :content="dataInfo.message" @close="handlerShowMessage(false, null)"/>-->
   <!--  <PipelineLogger v-if="dataLoggerVisible && dataInfo" :is-visible="dataLoggerVisible" :info="dataInfo" @close="handlerLogger(false, null)"/>-->
   <!--  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
