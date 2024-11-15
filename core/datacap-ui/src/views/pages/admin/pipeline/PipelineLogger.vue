@@ -1,37 +1,31 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'60%'">
-    <CircularLoading v-if="loading" :show="loading"/>
-    <div class="overflow-y-auto h-[500px] pl-2 pr-2" v-else>
-      <div v-for="(log, index) in logs" :key="index" style="white-space: nowrap;">
-        <div v-html="log" style="margin-bottom: 5px; font-size: 16px"/>
-      </div>
+  <ShadcnModal v-model="visible"
+               width="60%"
+               height="60%"
+               :title="title"
+               @on-close="onCancel">
+    <ShadcnSpin v-model="loading"/>
+
+    <div v-for="(log, index) in logs" :key="index" style="white-space: nowrap;">
+      <div v-html="log" style="margin-bottom: 5px; font-size: 16px"/>
     </div>
+
     <template #footer>
-      <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnButton type="default" @click="onCancel">
         {{ $t('common.cancel') }}
-      </Button>
+      </ShadcnButton>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-
 import { PipelineModel } from '@/model/pipeline.ts'
 import PipelineService from '@/services/pipeline'
-import { toNumber } from 'lodash'
 import { AnsiUp } from 'ansi_up'
-import { ToastUtils } from '@/utils/toast.ts'
 
 export default defineComponent({
   name: 'PipelineLogger',
-  components: {
-
-    Dialog,
-    Button
-  },
   computed: {
     visible: {
       get(): boolean
@@ -62,15 +56,15 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       if (this.info) {
-        this.title = `${ this.$t('pipeline.common.loggerInfo').replace('$VALUE', this.info.name as string) }`
+        this.title = `${ this.$t('pipeline.common.loggerInfo').replace('$VALUE', String(this.info.name)) }`
         this.loading = true
-        PipelineService.getLogger(toNumber(this.info.id))
+        PipelineService.getLogger(Number(this.info.id))
                        .then(response => {
                          if (response.status) {
                            const ansi = new AnsiUp()
@@ -80,13 +74,16 @@ export default defineComponent({
                            }
                          }
                          else {
-                           ToastUtils.error(response.message)
+                           this.$Message.error({
+                             content: response.message,
+                             showIcon: true
+                           })
                          }
                        })
                        .finally(() => this.loading = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }

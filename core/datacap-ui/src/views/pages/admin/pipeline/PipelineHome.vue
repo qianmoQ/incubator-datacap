@@ -62,26 +62,19 @@
                 </ShadcnButton>
               </template>
 
-              <ShadcnDropdownItem :disabled="row.state !== 'RUNNING'" @on-click="onStop(true, row)">
+              <ShadcnDropdownItem :disabled="row.state !== 'RUNNING'" @on-click="visibleStop(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="CircleStop" size="15"/>
                   <span>{{ $t('pipeline.common.stop') }}</span>
                 </div>
               </ShadcnDropdownItem>
 
-<!--              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" @on-click="visibleSyncMetadata(true, row)">-->
-<!--                <div class="flex items-center space-x-2">-->
-<!--                  <ShadcnIcon icon="RefreshCcwDot" size="15"/>-->
-<!--                  <span>{{ $t('source.common.syncMetadata') }}</span>-->
-<!--                </div>-->
-<!--              </ShadcnDropdownItem>-->
-
-<!--              <ShadcnDropdownItem :disabled="loginUserId !== row.user.id" @on-click="visibleDelete(true, row)">-->
-<!--                <div class="flex items-center space-x-2">-->
-<!--                  <ShadcnIcon icon="Trash" size="15"/>-->
-<!--                  <span>{{ $t('common.deleteData') }}</span>-->
-<!--                </div>-->
-<!--              </ShadcnDropdownItem>-->
+              <ShadcnDropdownItem @on-click="visibleLogger(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="Rss" size="15"/>
+                  <span>{{ $t('pipeline.common.logger') }}</span>
+                </div>
+              </ShadcnDropdownItem>
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -101,13 +94,6 @@
                         @on-change-size="onSizeChange"/>
     </div>
   </ShadcnCard>
-  <!--              <DropdownMenu>-->
-  <!--                <DropdownMenuContent>-->
-  <!--                  <DropdownMenuGroup>-->
-  <!--                    <DropdownMenuItem class="cursor-pointer" @click="handlerLogger(true, row)">-->
-  <!--                      <Rss class="mr-2 h-4 w-4"/>-->
-  <!--                      <span>{{ $t('pipeline.common.logger') }}</span>-->
-  <!--                    </DropdownMenuItem>-->
   <!--                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state == 'RUNNING'" @click="handlerDelete(true, row)">-->
   <!--                      <Delete class="mr-2 h-4 w-4"/>-->
   <!--                      <span>{{ $t('pipeline.common.delete') }}</span>-->
@@ -126,12 +112,16 @@
                    :content="dataInfo.message"
                    @close="visibleShowMessage(false, null)"/>
 
-  <!--  <PipelineLogger v-if="dataLoggerVisible && dataInfo" :is-visible="dataLoggerVisible" :info="dataInfo" @close="handlerLogger(false, null)"/>-->
+  <PipelineLogger v-if="dataLoggerVisible && dataInfo"
+                  :is-visible="dataLoggerVisible"
+                  :info="dataInfo"
+                  @close="visibleLogger(false, null)"/>
+
   <!--  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
   <PipelineStop v-if="dataStopVisible && dataInfo"
                 :is-visible="dataStopVisible"
                 :info="dataInfo"
-                @close="onStop(false, null)"/>
+                @close="visibleStop(false, null)"/>
   <!--  <PipelineFlow v-if="dataFlowVisible && dataInfo" :is-visible="dataFlowVisible" :info="dataInfo" @close="handlerFlow(false, null)"/>-->
 </template>
 
@@ -145,10 +135,11 @@ import Common from '@/utils/common.ts'
 import { PipelineModel } from '@/model/pipeline.ts'
 import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
 import PipelineStop from '@/views/pages/admin/pipeline/PipelineStop.vue'
+import PipelineLogger from '@/views/pages/admin/pipeline/PipelineLogger.vue'
 
 export default defineComponent({
   name: 'PipelineHome',
-  components: { PipelineStop, MarkdownPreview },
+  components: { PipelineLogger, PipelineStop, MarkdownPreview },
   setup()
   {
     const i18n = useI18n()
@@ -224,7 +215,7 @@ export default defineComponent({
       this.pageSize = value
       this.fetchData(this.pageIndex)
     },
-    onStop(opened: boolean, value: null | PipelineModel)
+    visibleStop(opened: boolean, value: null | PipelineModel)
     {
       this.dataStopVisible = opened
       this.dataInfo = value
@@ -237,7 +228,7 @@ export default defineComponent({
       this.dataMessageVisible = opened
       this.dataInfo = value
     },
-    handlerLogger(opened: boolean, value: null | PipelineModel)
+    visibleLogger(opened: boolean, value: null | PipelineModel)
     {
       this.dataLoggerVisible = opened
       this.dataInfo = value
