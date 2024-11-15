@@ -58,13 +58,16 @@
             <span>{{ $t('source.common.truncateTable') }}</span>
           </div>
         </ShadcnContextMenuItem>
+
+        <ShadcnContextMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" @click="visibleDropTable(true)">
+          <div class="flex items-center space-x-1">
+            <ShadcnIcon icon="Delete" size="15"/>
+            <span>{{ $t('source.common.dropTable') }}</span>
+          </div>
+        </ShadcnContextMenuItem>
       </ShadcnContextMenu>
     </div>
   </ShadcnCard>
-  <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.TABLE" class="cursor-pointer" @click="handlerDropTable(true)">-->
-  <!--                    <Delete :size="18" class="mr-2"/>-->
-  <!--                    {{ $t('source.common.dropTable') }}-->
-  <!--                  </DropdownMenuItem>-->
   <!--                  <DropdownMenuItem v-if="dataInfo?.level === StructureEnum.COLUMN" class="cursor-pointer" @click="handlerChangeColumn(true)">-->
   <!--                    <Pencil :size="18" class="mr-2"/>-->
   <!--                    {{ $t('source.common.changeColumn') }}-->
@@ -94,7 +97,11 @@
                  :isVisible="tableTruncateVisible"
                  :info="dataInfo"
                  @close="visibleTruncateTable(false)"/>
-  <!--  <TableDrop v-if="tableDropVisible" :isVisible="tableDropVisible" :info="dataInfo" @close="handlerDropTable(false)"/>-->
+
+  <TableDrop v-if="tableDropVisible"
+             :isVisible="tableDropVisible"
+             :info="dataInfo"
+             @close="visibleDropTable(false)"/>
   <!--  <ColumnChange v-if="columnChangeVisible" :isVisible="columnChangeVisible" :info="dataInfo" @close="handlerChangeColumn(false)"/>-->
   <!--  <ColumnDrop v-if="columnDropVisible" :isVisible="columnDropVisible" :info="dataInfo" @close="handlerDropColumn(false)"/>-->
 </template>
@@ -267,7 +274,7 @@ export default defineComponent({
     {
       this.tableTruncateVisible = opened
     },
-    handlerDropTable(opened: boolean)
+    visibleDropTable(opened: boolean)
     {
       this.tableDropVisible = opened
     },
