@@ -75,6 +75,20 @@
                   <span>{{ $t('pipeline.common.logger') }}</span>
                 </div>
               </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem @on-click="visibleDelete(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="Delete" size="15"/>
+                  <span>{{ $t('pipeline.common.delete') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem @on-click="visibleFlow(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="Flower" size="15"/>
+                  <span>{{ $t('pipeline.common.flow') }}</span>
+                </div>
+              </ShadcnDropdownItem>
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -94,19 +108,7 @@
                         @on-change-size="onSizeChange"/>
     </div>
   </ShadcnCard>
-  <!--                    <DropdownMenuItem class="cursor-pointer" :disabled="row.state == 'RUNNING'" @click="handlerDelete(true, row)">-->
-  <!--                      <Delete class="mr-2 h-4 w-4"/>-->
-  <!--                      <span>{{ $t('pipeline.common.delete') }}</span>-->
-  <!--                    </DropdownMenuItem>-->
-  <!--                    <DropdownMenuItem class="cursor-pointer" @click="handlerFlow(true, row)">-->
-  <!--                      <Flower class="mr-2 h-4 w-4"/>-->
-  <!--                      <span>{{ $t('pipeline.common.flow') }}</span>-->
-  <!--                    </DropdownMenuItem>-->
-  <!--                  </DropdownMenuGroup>-->
-  <!--                </DropdownMenuContent>-->
-  <!--              </DropdownMenu>-->
-  <!--            </div>-->
-  <!--          </template>-->
+
   <MarkdownPreview v-if="dataMessageVisible && dataInfo"
                    :is-visible="dataMessageVisible"
                    :content="dataInfo.message"
@@ -117,12 +119,20 @@
                   :info="dataInfo"
                   @close="visibleLogger(false, null)"/>
 
-  <!--  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
+  <PipelineDelete v-if="dataDeleteVisible && dataInfo"
+                  :is-visible="dataDeleteVisible"
+                  :info="dataInfo"
+                  @close="visibleDelete(false, null)"/>
+
   <PipelineStop v-if="dataStopVisible && dataInfo"
                 :is-visible="dataStopVisible"
                 :info="dataInfo"
                 @close="visibleStop(false, null)"/>
-  <!--  <PipelineFlow v-if="dataFlowVisible && dataInfo" :is-visible="dataFlowVisible" :info="dataInfo" @close="handlerFlow(false, null)"/>-->
+
+  <PipelineFlow v-if="dataFlowVisible && dataInfo"
+                :is-visible="dataFlowVisible"
+                :info="dataInfo"
+                @close="visibleFlow(false, null)"/>
 </template>
 
 <script lang="ts">
@@ -136,10 +146,12 @@ import { PipelineModel } from '@/model/pipeline.ts'
 import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
 import PipelineStop from '@/views/pages/admin/pipeline/PipelineStop.vue'
 import PipelineLogger from '@/views/pages/admin/pipeline/PipelineLogger.vue'
+import PipelineDelete from '@/views/pages/admin/pipeline/PipelineDelete.vue'
+import PipelineFlow from '@/views/pages/admin/pipeline/PipelineFlow.vue'
 
 export default defineComponent({
   name: 'PipelineHome',
-  components: { PipelineLogger, PipelineStop, MarkdownPreview },
+  components: { PipelineFlow, PipelineDelete, PipelineLogger, PipelineStop, MarkdownPreview },
   setup()
   {
     const i18n = useI18n()
@@ -233,7 +245,7 @@ export default defineComponent({
       this.dataLoggerVisible = opened
       this.dataInfo = value
     },
-    handlerDelete(opened: boolean, value: null | PipelineModel)
+    visibleDelete(opened: boolean, value: null | PipelineModel)
     {
       this.dataDeleteVisible = opened
       this.dataInfo = value
@@ -241,7 +253,7 @@ export default defineComponent({
         this.handleInitialize()
       }
     },
-    handlerFlow(opened: boolean, value: null | PipelineModel)
+    visibleFlow(opened: boolean, value: null | PipelineModel)
     {
       this.dataFlowVisible = opened
       this.dataInfo = value

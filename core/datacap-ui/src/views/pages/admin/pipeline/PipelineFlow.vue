@@ -1,35 +1,27 @@
 <template>
-  <Dialog :is-visible="visible" :title="title as string" :width="'60%'" @close="handlerCancel">
-    <div class="grid w-full gap-2 pt-1 pl-3 pr-3">
-      <FlowView v-if="configure" :info="configure"/>
-    </div>
+  <ShadcnModal v-model="visible"
+               width="60%"
+               :title="title"
+               @on-close="onCancel">
+    <FlowView v-if="configure" :info="configure"/>
+
     <template #footer>
-      <Button variant="outline" size="sm" @click="handlerCancel">
+      <ShadcnButton type="default" @click="onCancel">
         {{ $t('common.cancel') }}
-      </Button>
+      </ShadcnButton>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-import Alert from '@/views/ui/alert'
-import { Input } from '@/components/ui/input'
 import { PipelineModel } from '@/model/pipeline.ts'
 import FlowView from '@/views/components/editor/flow/FlowView.vue'
 import { Configuration, ConfigurationRequest } from '@/views/components/editor/flow/Configuration.ts'
 
 export default defineComponent({
   name: 'PipelineFlow',
-  components: {
-    FlowView,
-    Input,
-    Dialog,
-    Button,
-    Alert
-  },
+  components: { FlowView },
   computed: {
     visible: {
       get(): boolean
@@ -61,7 +53,7 @@ export default defineComponent({
   created()
   {
     if (this.info) {
-      this.title = this.$t('pipeline.common.flowInfo').replace('$VALUE', this.info.name as string)
+      this.title = this.$t('pipeline.common.flowInfo').replace('$VALUE', String(this.info.name))
 
       if (!this.configure) {
         this.configure = ConfigurationRequest.of()
@@ -78,7 +70,7 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
