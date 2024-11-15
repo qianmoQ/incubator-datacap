@@ -45,16 +45,17 @@
 
         <template #action="{row}">
           <ShadcnSpace>
-            <ShadcnTooltip :content="$t('source.common.modify').replace('$NAME', row.name)">
+            <ShadcnTooltip :content="$t('common.error')">
               <ShadcnButton circle
                             size="small"
-                            :disabled="loginUserId !== row.user.id"
-                            @click="visibleInfo(true, row)">
-                <ShadcnIcon icon="Pencil" :size="15"/>
+                            type="error"
+                            :disabled="row.state !== 'FAILURE' && !(row.state == 'STOPPED' && row.message)"
+                            @click="visibleShowMessage(true, row)">
+                <ShadcnIcon icon="TriangleAlert" size="15"/>
               </ShadcnButton>
             </ShadcnTooltip>
 
-            <ShadcnDropdown trigger="click">
+            <ShadcnDropdown trigger="click" position="right">
               <template #trigger>
                 <ShadcnButton circle size="small">
                   <ShadcnIcon icon="Cog" :size="15"/>
@@ -110,15 +111,6 @@
     </div>
   </ShadcnCard>
 
-
-  <!--          <template #action="{row}">-->
-  <!--            <div class="space-x-2">-->
-  <!--              <Tooltip :content="$t('common.error')">-->
-  <!--                <Button :disabled="row.state !== 'FAILURE' && !(row.state == 'STOPPED' && row.message)" :color="'#ed4014'" size="icon" class="w-6 h-6 rounded-full"-->
-  <!--                        @click="handlerShowMessage(true, row)">-->
-  <!--                  <TriangleAlert :size="14"/>-->
-  <!--                </Button>-->
-  <!--              </Tooltip>-->
   <!--              <DropdownMenu>-->
   <!--                <DropdownMenuTrigger as-child>-->
   <!--                  <Button size="icon" class="rounded-full w-6 h-6" variant="outline">-->
@@ -148,7 +140,11 @@
   <!--              </DropdownMenu>-->
   <!--            </div>-->
   <!--          </template>-->
-  <!--  <MarkdownPreview v-if="dataMessageVisible && dataInfo" :is-visible="dataMessageVisible" :content="dataInfo.message" @close="handlerShowMessage(false, null)"/>-->
+  <MarkdownPreview v-if="dataMessageVisible && dataInfo"
+                   :is-visible="dataMessageVisible"
+                   :content="dataInfo.message"
+                   @close="visibleShowMessage(false, null)"/>
+
   <!--  <PipelineLogger v-if="dataLoggerVisible && dataInfo" :is-visible="dataLoggerVisible" :info="dataInfo" @close="handlerLogger(false, null)"/>-->
   <!--  <PipelineDelete v-if="dataDeleteVisible && dataInfo" :is-visible="dataDeleteVisible" :info="dataInfo" @close="handlerDelete(false, null)"/>-->
   <!--  <PipelineStop v-if="dataStopVisible && dataInfo" :is-visible="dataStopVisible" :info="dataInfo" @close="handlerStop(false, null)"/>-->
@@ -163,9 +159,11 @@ import { useI18n } from 'vue-i18n'
 import PipelineService from '@/services/pipeline'
 import Common from '@/utils/common.ts'
 import { PipelineModel } from '@/model/pipeline.ts'
+import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
 
 export default defineComponent({
   name: 'PipelineHome',
+  components: { MarkdownPreview },
   setup()
   {
     const i18n = useI18n()
@@ -241,7 +239,7 @@ export default defineComponent({
       this.pageSize = value
       this.fetchData(this.pageIndex)
     },
-    handlerShowMessage(opened: boolean, value: null | PipelineModel)
+    visibleShowMessage(opened: boolean, value: null | PipelineModel)
     {
       this.dataMessageVisible = opened
       this.dataInfo = value
