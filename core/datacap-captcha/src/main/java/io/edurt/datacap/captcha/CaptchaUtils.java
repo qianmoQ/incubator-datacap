@@ -85,34 +85,12 @@ public class CaptchaUtils
     {
         CaptchaEntity entity = generateCalcNumber();
         int calc = entity.getCalc();
-        int number = entity.getNumber();
         int firstNumber = entity.getFirstNumber();
         int lastNumber = entity.getLastNumber();
-        String _calc = null;
-        String _firstNumber = null;
-        String _lastNumber = null;
-        String equals = null;
-        // display 0 Arabic numerals
-//        if (number == 0) {
-        _firstNumber = String.valueOf(firstNumber);
-        _lastNumber = String.valueOf(lastNumber);
-        _calc = getCalculateEn(calc, calc);
-        equals = CalculateEnum.EQUAL.getValueEn();
-//        }
-        // Display 1 Chinese uppercase character
-//        if (number == 1) {
-//            for (NumberEnum numberEnum : NumberEnum.values()) {
-//                if (numberEnum.getValueEn().equals(String.valueOf(firstNumber))) {
-//                    _firstNumber = numberEnum.getValueZh();
-//                }
-//                if (numberEnum.getValueEn().equals(String.valueOf(lastNumber))) {
-//                    _lastNumber = numberEnum.getValueZh();
-//                }
-//            }
-//            _calc = getCalculateZh(calc, number);
-//            equals = CalculateEnum.EQUAL.getValueZh();
-//        }
-        String[] result = new String[] {_firstNumber, _calc, _lastNumber, equals, "?"};
+        String _firstNumber = String.valueOf(firstNumber);
+        String _lastNumber = String.valueOf(lastNumber);
+        String _calc = getCalculateEn(calc, calc);
+        String[] result = new String[] {_firstNumber, _calc, _lastNumber, CalculateEnum.EQUAL.getValueEn(), "?"};
         ResultEntity resultEntity = new ResultEntity();
         resultEntity.setExpression(result);
         resultEntity.setResult(generateCalculateResult(entity));
