@@ -867,6 +867,16 @@ export default {
             deleteTip3: '要确认，请在下面的框中键入 [ $NAME ]',
             publishSuccess: '仪表板 [ $VALUE ] 发布成功',
             notFound: '仪表板 [ $VALUE ] 不存在'
+        },
+        placeholder: {
+            name: '请输入仪表盘名称',
+            description: '请输入仪表盘描述'
+        },
+        validator: {
+            name: {
+                required: '仪表盘名称不能为空',
+                match: '输入的仪表盘名称不正确，请输入 [$VALUE]'
+            }
         }
     },
     function: {

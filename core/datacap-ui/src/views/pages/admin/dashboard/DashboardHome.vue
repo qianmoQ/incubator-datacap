@@ -43,8 +43,10 @@
                   </ShadcnDropdownItem>
 
                   <ShadcnDropdownItem @on-click="visibleDelete(true, item)">
-                    <ShadcnIcon icon="Trash" size="15"/>
-                    <span>{{ $t('dashboard.common.delete') }}</span>
+                    <div class="flex items-center space-x-2">
+                      <ShadcnIcon icon="Trash" size="15"/>
+                      <span>{{ $t('dashboard.common.delete') }}</span>
+                    </div>
                   </ShadcnDropdownItem>
                 </ShadcnDropdown>
               </ShadcnSpace>
@@ -84,7 +86,11 @@
                         @on-change-size="onSizeChange"/>
     </div>
   </ShadcnCard>
-  <!--    <DashboardDelete v-if="deleteVisible" :is-visible="deleteVisible" :data="dataInfo" @close="handlerDelete(false, null)"></DashboardDelete>-->
+
+  <DashboardDelete v-if="deleteVisible"
+                   :is-visible="deleteVisible"
+                   :data="dataInfo"
+                   @close="visibleDelete(false, null)"/>
 </template>
 
 <script lang="ts">
@@ -92,9 +98,11 @@ import { defineComponent } from 'vue'
 import DashboardService from '@/services/dashboard'
 import { FilterModel } from '@/model/filter'
 import { DashboardModel } from '@/model/dashboard'
+import DashboardDelete from '@/views/pages/admin/dashboard/DashboardDelete.vue'
 
 export default defineComponent({
   name: 'DashboardHome',
+  components: { DashboardDelete },
   setup()
   {
     const filter: FilterModel = new FilterModel()

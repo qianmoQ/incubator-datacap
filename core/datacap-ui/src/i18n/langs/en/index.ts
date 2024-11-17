@@ -867,6 +867,16 @@ export default {
             deleteTip3: 'To confirm, type [ $NAME ] in the box below',
             publishSuccess: 'Dashboard [ $VALUE ] published successfully',
             notFound: 'Dashboard [ $VALUE ] not found'
+        },
+        placeholder: {
+            name: 'Please enter the dashboard name',
+            description: 'Please enter the dashboard description'
+        },
+        validator: {
+            name: {
+                required: 'Dashboard name cannot be empty',
+                match: 'The entered dashboard name is incorrect, please enter [$VALUE]'
+            }
         }
     },
     function: {
