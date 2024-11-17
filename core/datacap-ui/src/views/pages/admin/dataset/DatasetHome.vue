@@ -52,6 +52,13 @@
                   <span class="ml-2">{{ $t('dataset.common.info') }}</span>
                 </RouterLink>
               </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="!isSuccess(row?.state)" @on-click="visibleSyncData(row, true)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="RefreshCcw" size="15"/>
+                  <span>{{ $t('dataset.common.syncData') }}</span>
+                </div>
+              </ShadcnDropdownItem>
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -70,12 +77,6 @@
                         @on-next="onNextChange"
                         @on-change-size="onSizeChange"/>
     </div>
-    <!--              <DropdownMenuGroup>-->
-    <!--                <DropdownMenuSeparator/>-->
-    <!--                <DropdownMenuItem :disabled="!isSuccess(row?.state)" style="cursor: pointer;" @click="handlerSyncData(row, true)">-->
-    <!--                  <RefreshCcw class="mr-2 h-4 w-4"/>-->
-    <!--                  <span>{{ $t('dataset.common.syncData') }}</span>-->
-    <!--                </DropdownMenuItem>-->
     <!--                <DropdownMenuItem style="cursor: pointer;" @click="handlerHistory(row, true)">-->
     <!--                  <History class="mr-2 h-4 w-4"/>-->
     <!--                  <span>{{ $t('dataset.common.history') }}</span>-->
@@ -98,7 +99,10 @@
 
   <!--    <DatasetRebuild v-if="rebuildVisible" :is-visible="rebuildVisible" :data="contextData" @close="handlerRebuild(null, false)"/>-->
   <!--    <DatasetHistory v-if="historyVisible" :is-visible="historyVisible" :info="contextData" @close="handlerHistory(null, false)"/>-->
-  <!--    <DatasetSync v-if="syncDataVisible" :is-visible="syncDataVisible" :info="contextData" @close="handlerSyncData(null, false)"/>-->
+  <DatasetSync v-if="syncDataVisible"
+               :is-visible="syncDataVisible"
+               :info="contextData"
+               @close="visibleSyncData(null, false)"/>
   <!--    <DatasetClear v-if="clearDataVisible" :is-visible="clearDataVisible" :info="contextData" @close="handlerClearData(null, false)"/>-->
   <!--    <MarkdownPreview v-if="errorVisible && contextData" :is-visible="errorVisible" :content="'```java\n' + contextData.message + '\n```'" @close="handlerError(null, false)"/>-->
 </template>
@@ -111,10 +115,11 @@ import { createHeaders } from './DatasetUtils'
 import DatasetService from '@/services/dataset'
 import { DatasetModel } from '@/model/dataset'
 import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vue'
+import DatasetSync from '@/views/pages/admin/dataset/DatasetSync.vue'
 
 export default defineComponent({
   name: 'DatasetHome',
-  components: { DatasetState },
+  components: { DatasetSync, DatasetState },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -196,7 +201,7 @@ export default defineComponent({
       this.contextData = record
       this.historyVisible = opened
     },
-    handlerSyncData(record: DatasetModel | null, opened: boolean)
+    visibleSyncData(record: DatasetModel | null, opened: boolean)
     {
       if (record && !this.isSuccess(record.state)) {
         return
@@ -212,7 +217,7 @@ export default defineComponent({
       this.contextData = record
       this.clearDataVisible = opened
       if (!opened) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
     },
     handlerError(record: DatasetModel | null, opened: boolean)

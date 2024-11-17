@@ -1,46 +1,26 @@
 <template>
-  <div>
-    <AlertDialog :default-open="visible">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle class="border-b -mt-4 pb-2">
-            {{ `[ ${info?.name} ] ${$t('dataset.common.syncData')}` }}
-          </AlertDialogTitle>
-        </AlertDialogHeader>
-        <Alert>
-          <AlertTitle>
-            {{ $t('dataset.tip.syncData') }}
-          </AlertTitle>
-        </Alert>
-        <AlertDialogFooter class="-mb-4 border-t pt-2">
-          <Button variant="outline" @click="handlerCancel">{{ $t('common.cancel') }}</Button>
-          <Button :disabled="loading" @click="handlerSubmit">
-            <Loader2 v-if="loading" class="w-full justify-center animate-spin"/>
-            {{ $t('dataset.common.syncData') }}
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  </div>
+  <ShadcnModal v-model="visible" :title="`[ ${ info?.name } ] ${ $t('dataset.common.syncData') }`" @on-close="onCancel">
+    <ShadcnAlert type="error" :title="$t('dataset.tip.syncData')"/>
+
+    <template #footer>
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">{{ $t('common.cancel') }}</ShadcnButton>
+
+        <ShadcnButton :disabled="loading" :loading="loading" @click="onSubmit">
+          {{ $t('dataset.common.syncData') }}
+        </ShadcnButton>
+      </ShadcnSpace>
+    </template>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatasetService from '@/services/dataset'
 import { DatasetModel } from '@/model/dataset'
-import { ToastUtils } from '@/utils/toast'
-import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-
-import { Alert, AlertTitle } from '@/components/ui/alert'
 
 export default defineComponent({
   name: 'DatasetSync',
-  components: {
-    AlertTitle, Alert,
-    Button,
-    AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogFooter, AlertDialogHeader
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -69,24 +49,31 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerSubmit()
+    onSubmit()
     {
       if (this.info) {
         this.loading = true
         DatasetService.syncData(this.info.id)
-            .then(response => {
-              if (response.status) {
-                ToastUtils.success(`${this.$t('dataset.common.syncData')} [ ${this.info?.name} ] ${this.$t('common.successfully')}`)
-                this.handlerCancel()
-              }
-              else {
-                ToastUtils.error(`${this.$t('dataset.common.syncData')} [ ${this.info?.name} ] ${this.$t('common.fail')}`)
-              }
-            })
-            .finally(() => this.loading = false)
+                      .then(response => {
+                        if (response.status) {
+                          this.$Message.success({
+                            content: `${ this.$t('dataset.common.syncData') } [ ${ this.info?.name } ] ${ this.$t('common.successfully') }`,
+                            showIcon: true
+                          })
+
+                          this.onCancel()
+                        }
+                        else {
+                          this.$Message.error({
+                            content: `${ this.$t('dataset.common.syncData') } [ ${ this.info?.name } ] ${ this.$t('common.fail') }`,
+                            showIcon: true
+                          })
+                        }
+                      })
+                      .finally(() => this.loading = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
