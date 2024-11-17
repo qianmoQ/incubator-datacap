@@ -149,6 +149,9 @@ export class HttpUtils
 
     private handlerMessage(message: string)
     {
+        if (message) {
+            console.debug(message)
+        }
     }
 
     getAxios()

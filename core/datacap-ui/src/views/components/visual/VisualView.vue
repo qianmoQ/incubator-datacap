@@ -8,18 +8,77 @@
       </div>
 
       <div v-else>
-        <VisualTable v-if="configuration?.type === Type.TABLE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualLine v-else-if="configuration?.type === Type.LINE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualBar v-else-if="configuration?.type === Type.BAR" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualArea v-else-if="configuration?.type === Type.AREA" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualPie v-else-if="configuration?.type === Type.PIE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualHistogram v-else-if="configuration?.type === Type.HISTOGRAM" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualWordCloud v-else-if="configuration?.type === Type.WORDCLOUD" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualScatter v-else-if="configuration?.type === Type.SCATTER" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualRadar v-else-if="configuration?.type === Type.RADAR" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualFunnel v-else-if="configuration?.type === Type.FUNNEL" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualGauge v-else-if="configuration?.type === Type.GAUGE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
-        <VisualRose v-else-if="configuration?.type === Type.ROSE" :configuration="localConfiguration" :submitted="false" :width="width" :height="height"/>
+        <VisualTable v-if="configuration?.type === Type.TABLE"
+                     :configuration="localConfiguration as any"
+                     :submitted="false"
+                     :width="width"
+                     :height="height"/>
+
+        <VisualLine v-else-if="configuration?.type === Type.LINE"
+                    :configuration="localConfiguration as any"
+                    :submitted="false"
+                    :width="width"
+                    :height="height"/>
+
+        <VisualBar v-else-if="configuration?.type === Type.BAR"
+                   :configuration="localConfiguration as any"
+                   :submitted="false"
+                   :width="width"
+                   :height="height"/>
+
+        <VisualArea v-else-if="configuration?.type === Type.AREA"
+                    :configuration="localConfiguration as any"
+                    :submitted="false"
+                    :width="width"
+                    :height="height"/>
+
+        <VisualPie v-else-if="configuration?.type === Type.PIE"
+                   :configuration="localConfiguration as any"
+                   :submitted="false"
+                   :width="width"
+                   :height="height"/>
+
+        <VisualHistogram v-else-if="configuration?.type === Type.HISTOGRAM"
+                         :configuration="localConfiguration as any"
+                         :submitted="false"
+                         :width="width"
+                         :height="height"/>
+
+        <VisualWordCloud v-else-if="configuration?.type === Type.WORDCLOUD"
+                         :configuration="localConfiguration as any"
+                         :submitted="false"
+                         :width="width"
+                         :height="height"/>
+
+        <VisualScatter v-else-if="configuration?.type === Type.SCATTER"
+                       :configuration="localConfiguration as any"
+                       :submitted="false"
+                       :width="width"
+                       :height="height"/>
+
+        <VisualRadar v-else-if="configuration?.type === Type.RADAR"
+                     :configuration="localConfiguration as any"
+                     :submitted="false"
+                     :width="width"
+                     :height="height"/>
+
+        <VisualFunnel v-else-if="configuration?.type === Type.FUNNEL"
+                      :configuration="localConfiguration as any"
+                      :submitted="false"
+                      :width="width"
+                      :height="height"/>
+
+        <VisualGauge v-else-if="configuration?.type === Type.GAUGE"
+                     :configuration="localConfiguration as any"
+                     :submitted="false"
+                     :width="width"
+                     :height="height"/>
+
+        <VisualRose v-else-if="configuration?.type === Type.ROSE"
+                    :configuration="localConfiguration as any"
+                    :submitted="false"
+                    :width="width"
+                    :height="height"/>
       </div>
     </div>
   </div>
@@ -108,6 +167,7 @@ export default defineComponent({
                             this.formatRaw(response)
                           }
                           else {
+                            // @ts-ignore
                             this.$Message.error({
                               content: response.data.message,
                               showIcon: true

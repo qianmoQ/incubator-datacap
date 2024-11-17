@@ -197,7 +197,7 @@
         <ShadcnDivider class="my-2"/>
       </div>
 
-      <VisualEditor :loading="loading" :configuration="configuration" @commitOptions="visibleCommitOptions"/>
+      <VisualEditor :loading="loading" :configuration="configuration as any" @commitOptions="visibleCommitOptions"/>
     </ShadcnCol>
   </ShadcnRow>
 
@@ -384,7 +384,7 @@ export default defineComponent({
     {
       return cloneDeep(value)
     },
-    onRemove(index: number, array: never[])
+    onRemove(index: number, array: any[])
     {
       array.splice(index, 1)
       this.onApplyAdhoc()

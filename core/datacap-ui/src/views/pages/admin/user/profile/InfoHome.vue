@@ -51,7 +51,7 @@
                     :description="$t('user.tip.radar7Days')"
                     :loading="loading">
           <div class="p-2">
-            <VisualPie v-if="radar.configuration" :configuration="radar.configuration" :height="'200px'" :submitted="false"/>
+            <VisualPie v-if="radar.configuration" :configuration="radar.configuration as any" :height="'200px'" :submitted="false"/>
           </div>
         </ShadcnCard>
       </ShadcnCol>

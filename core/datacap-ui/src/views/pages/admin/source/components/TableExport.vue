@@ -83,7 +83,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        TableService.exportData(String(this.info.value), this.formState)
+        TableService.exportData(Number(this.info.value), this.formState)
                     .then(response => {
                       if (response.status) {
                         this.formState.path = response.data

@@ -9,6 +9,7 @@ export interface ReportModel
     realtime?: boolean
     type?: string
     query?: string
+    description?: string
     dataset?: DatasetModel
     source?: SourceModel
 }

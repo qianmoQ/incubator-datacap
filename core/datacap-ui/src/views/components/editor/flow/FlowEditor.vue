@@ -130,6 +130,7 @@ export default defineComponent({
     const saveConfigure = (configure: any) => {
       const data = toObject()
       if (!configure.from) {
+        // @ts-ignore
         proxy?.$Message.error({
           content: i18n.t('pipeline.validator.from'),
           showIcon: true
@@ -138,6 +139,7 @@ export default defineComponent({
       }
 
       if (!configure.to) {
+        // @ts-ignore
         proxy?.$Message.error({
           content: i18n.t('pipeline.validator.to'),
           showIcon: true
@@ -146,6 +148,7 @@ export default defineComponent({
       }
 
       if (data.edges.length === 0) {
+        // @ts-ignore
         proxy?.$Message.error({
           content: i18n.t('pipeline.validator.edge'),
           showIcon: true

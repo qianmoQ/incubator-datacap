@@ -134,7 +134,7 @@ export default defineComponent({
                        const result = Array.from(
                            new Set(
                                (Object.values(response.data)
-                                      .reduce((acc, curr) => acc.concat(curr), []) as any[])
+                                      .reduce((acc: any, curr) => acc.concat(curr), []) as any[])
                                    .map((value: { name: string }) => ({ label: value.name, value: value.name }))
                            )
                        )

@@ -24,7 +24,7 @@
       </ShadcnFormItem>
 
       <ShadcnFormItem>
-        <VisualEditor :loading="loading" :configuration="configuration" @commitOptions="onCommitOptions"/>
+        <VisualEditor :loading="loading" :configuration="configuration as any" @commitOptions="onCommitOptions"/>
       </ShadcnFormItem>
 
       <div class="flex justify-end">

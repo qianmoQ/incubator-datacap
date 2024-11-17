@@ -73,6 +73,7 @@ const onSubmit = () => {
   ReportService.saveOrUpdate(configure)
                .then(response => {
                  if (response.status) {
+                   // @ts-ignore
                    proxy?.$Message.success({
                      content: proxy.$t('report.tip.publishSuccess').replace('$VALUE', formState.value.name),
                      showIcon: true

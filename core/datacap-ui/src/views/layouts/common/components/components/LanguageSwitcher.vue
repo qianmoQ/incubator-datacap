@@ -29,7 +29,7 @@ export default defineComponent({
   {
     const { locale } = useI18n()
 
-    const changeLanguage = (language: string) => {
+    const changeLanguage = (language: any) => {
       const prefix = 'language_'
 
       language = language.value

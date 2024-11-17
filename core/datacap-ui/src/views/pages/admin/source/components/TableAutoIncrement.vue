@@ -57,6 +57,7 @@ const onSubmit = () => {
     TableService.getData(props.info.code, configure)
                 .then(response => {
                   if (response.status) {
+                    // @ts-ignore
                     proxy.$Message.success({
                       content: proxy.$t('source.tip.resetAutoIncrementSuccess').replace('$VALUE', String(formState.value.autoIncrement)),
                       showIcon: true
@@ -65,6 +66,7 @@ const onSubmit = () => {
                     onCancel()
                   }
                   else {
+                    // @ts-ignore
                     proxy.$Message.error({
                       content: response.message,
                       showIcon: true

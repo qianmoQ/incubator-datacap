@@ -3,7 +3,7 @@
     <template #content>
       <div class="relative h-24">
         <ShadcnSpin v-if="loading" fixed/>
-        <VisualTable :configuration="configuration" :submitted="false"/>
+        <VisualTable :configuration="configuration as any" :submitted="false"/>
       </div>
     </template>
 

@@ -85,37 +85,37 @@
 
   <TableCreate v-if="tableCreateVisible"
                :is-visible="tableCreateVisible"
-               :info="dataInfo"
+               :info="dataInfo as any"
                @close="visibleCreateTable(false)"/>
 
   <ColumnCreate v-if="columnCreateVisible"
                 :is-visible="columnCreateVisible"
-                :info="dataInfo"
+                :info="dataInfo as any"
                 @close="visibleCreateColumn(false)"/>
 
   <TableExport v-if="tableExportVisible"
                :isVisible="tableExportVisible"
-               :info="dataInfo"
+               :info="dataInfo as any"
                @close="visibleExportData(false)"/>
 
   <TableTruncate v-if="tableTruncateVisible"
                  :is-visible="tableTruncateVisible"
-                 :info="dataInfo"
+                 :info="dataInfo as any"
                  @close="visibleTruncateTable(false)"/>
 
   <TableDrop v-if="tableDropVisible"
              :is-visible="tableDropVisible"
-             :info="dataInfo"
+             :info="dataInfo as any"
              @close="visibleDropTable(false)"/>
 
   <ColumnChange v-if="columnChangeVisible"
                 :is-visible="columnChangeVisible"
-                :info="dataInfo"
+                :info="dataInfo as any"
                 @close="visibleChangeColumn(false)"/>
 
   <ColumnDrop v-if="columnDropVisible"
               :is-visible="columnDropVisible"
-              :info="dataInfo"
+              :info="dataInfo as any"
               @close="visibleDropColumn(false)"/>
 </template>
 
