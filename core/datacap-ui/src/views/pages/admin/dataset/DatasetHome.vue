@@ -66,6 +66,13 @@
                   <span>{{ $t('dataset.common.history') }}</span>
                 </div>
               </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="isSuccess(row?.state)" @on-click="visibleError(row, true)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="TriangleAlert" size="15"/>
+                  <span>{{ $t('dataset.common.error') }}</span>
+                </div>
+              </ShadcnDropdownItem>
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -84,11 +91,7 @@
                         @on-next="onNextChange"
                         @on-change-size="onSizeChange"/>
     </div>
-    <!--                <DropdownMenuSeparator/>-->
-    <!--                <DropdownMenuItem :disabled="isSuccess(row?.state)" style="cursor: pointer;" @click="handlerError(row, true)">-->
-    <!--                  <TriangleAlert class="mr-2 h-4 w-4"/>-->
-    <!--                  <span>{{ $t('dataset.common.error') }}</span>-->
-    <!--                </DropdownMenuItem>-->
+
     <!--                <DropdownMenuItem :disabled="isSuccess(row?.state)" style="cursor: pointer;" @click="handlerRebuild(row, true)">-->
     <!--                  <CirclePlay v-if="row?.state === 'SUCCESS'" class="mr-2 h-4 w-4"/>-->
     <!--                  <CircleStop v-else class="mr-2 h-4 w-4"/>-->
@@ -111,7 +114,11 @@
                :info="contextData"
                @close="visibleSyncData(null, false)"/>
   <!--    <DatasetClear v-if="clearDataVisible" :is-visible="clearDataVisible" :info="contextData" @close="handlerClearData(null, false)"/>-->
-  <!--    <MarkdownPreview v-if="errorVisible && contextData" :is-visible="errorVisible" :content="'```java\n' + contextData.message + '\n```'" @close="handlerError(null, false)"/>-->
+
+  <MarkdownPreview v-if="errorVisible && contextData"
+                   :is-visible="errorVisible"
+                   :content="'```java\n' + contextData.message + '\n```'"
+                   @close="visibleError(null, false)"/>
 </template>
 
 <script lang="ts">
@@ -124,10 +131,11 @@ import { DatasetModel } from '@/model/dataset'
 import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vue'
 import DatasetSync from '@/views/pages/admin/dataset/DatasetSync.vue'
 import DatasetHistory from '@/views/pages/admin/dataset/DatasetHistory.vue'
+import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
 
 export default defineComponent({
   name: 'DatasetHome',
-  components: { DatasetHistory, DatasetSync, DatasetState },
+  components: { MarkdownPreview, DatasetHistory, DatasetSync, DatasetState },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -228,7 +236,7 @@ export default defineComponent({
         this.handleInitialize()
       }
     },
-    handlerError(record: DatasetModel | null, opened: boolean)
+    visibleError(record: DatasetModel | null, opened: boolean)
     {
       this.errorVisible = opened
       this.contextData = record
