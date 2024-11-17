@@ -2,7 +2,7 @@
   <div class="relative">
     <ShadcnSpin v-model="loading" fixed/>
 
-    <DashboardEditor :info="dataInfo"/>
+    <DashboardEditor v-if="dataInfo" :info="dataInfo"/>
   </div>
 </template>
 

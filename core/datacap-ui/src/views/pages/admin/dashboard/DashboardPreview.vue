@@ -1,8 +1,10 @@
 <template>
-  <div class="relative">
-    <Loader2 v-if="loading" class="w-full justify-center animate-spin mt-10"/>
-    <DashboardView v-else-if="data" :layouts="JSON.parse(data.configure as string)"/>
-    <Alert v-else type="error" :title="$t('dashboard.tip.notFound').replace('$VALUE', $router.currentRoute?.value?.params['code'] as string)"/>
+  <div class="relative min-h-screen">
+    <ShadcnSpin v-if="loading" fixed/>
+
+    <DashboardView v-if="data && !loading" :layouts="JSON.parse(String(data.configure))"/>
+
+    <ShadcnAlert v-else-if="!loading" type="error" :title="$t('dashboard.tip.notFound').replace('$VALUE', String($router.currentRoute?.value?.params['code']))"/>
   </div>
 </template>
 

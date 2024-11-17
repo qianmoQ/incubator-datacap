@@ -115,7 +115,8 @@ import ChartContainer from '@/views/pages/admin/dashboard/components/ChartContai
 
 export default defineComponent({
   name: 'DashboardEditor',
-  components: { ChartContainer, CropperHome, VisualView, GridItem, GridLayout
+  components: {
+    ChartContainer, CropperHome, VisualView, GridItem, GridLayout
   },
   props: {
     info: {
