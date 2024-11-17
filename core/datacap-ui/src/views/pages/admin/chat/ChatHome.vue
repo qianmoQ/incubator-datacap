@@ -1,109 +1,112 @@
 <template>
-  <div class="hidden space-y-6 pb-16 w-full md:block">
-    <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">
-      <aside class="-mx-4 w-[200px]">
-        <DataCapCard>
-          <template #title>{{ $t('common.chat') }}</template>
+  <ShadcnLayout>
+    <ShadcnLayoutWrapper>
+      <ShadcnLayoutSider>
+        <ShadcnCard :title="$t('common.chat')">
           <template #extra>
-            <Button size="icon" class="w-6 h-6 rounded-full" @click="handlerInfo(true)">
-              <Plus :size="15"/>
-            </Button>
+            <ShadcnButton circle size="small" @click="visibleInfo(true)">
+              <ShadcnIcon icon="Plus" size="15"/>
+            </ShadcnButton>
           </template>
-          <CircularLoading v-if="loading" :show="loading"/>
-          <div v-else>
-            <FormField type="radio" name="theme">
-              <FormItem class="space-y-1">
-                <RadioGroup class="grid gap-3 pt-2 cursor-pointer" @update:modelValue="handlerChange">
-                  <FormItem v-for="item of data" :key="item.id">
-                    <FormLabel class="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
-                      <FormControl>
-                        <RadioGroupItem :value="item.id as unknown as string" class="sr-only cursor-pointer"/>
-                      </FormControl>
-                      <div class="items-center rounded-md border-4 border-muted p-1 hover:border-accent">
-                        <div class="flex flex-row items-center justify-between">
-                          <div class="flex items-center space-x-4">
-                            <Avatar :src="item.avatar" :alt="item.name"/>
-                            <div>
-                              <p class="text-sm font-medium leading-none">{{ item.name }}</p>
-                            </div>
-                          </div>
+
+          <div class="relative min-h-screen">
+            <ShadcnSpin v-model="loading" fixed/>
+
+            <ShadcnToggleGroup v-model="toggleValue" @on-change="onChange" class="p-1">
+              <ShadcnRow gutter="8">
+                <ShadcnCol v-for="item of data" span="12">
+                  <ShadcnToggle class="w-full" :key="item.id" :value="item.id">
+                    <div class="flex items-center space-x-4">
+                      <ShadcnAvatar size="small" :src="item.avatar" :alt="item.name"/>
+
+                      <div class="text-sm font-medium leading-none">{{ item.name }}</div>
+                    </div>
+                  </ShadcnToggle>
+                </ShadcnCol>
+              </ShadcnRow>
+
+            </ShadcnToggleGroup>
+          </div>
+        </ShadcnCard>
+      </ShadcnLayoutSider>
+
+      <ShadcnLayoutMain>
+        <ShadcnLayoutContent>
+          <div v-if="dataInfo">
+            <ShadcnCard>
+              <template #title>
+                <div class="flex flex-row items-center justify-between">
+                  <div class="flex items-center space-x-4">
+                    <ShadcnAvatar :src="dataInfo.avatar" :alt="dataInfo.name"/>
+                    <div>
+                      <p class="text-sm font-medium leading-none">{{ dataInfo.name }}</p>
+                      <p class="text-sm text-muted-foreground">{{ dataInfo.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <template #extra>
+                <div class="flex h-5 items-center space-x-4 text-sm">
+                  <div>
+                    Prompt Tokens: {{ promptTokens }}
+                  </div>
+                  <Separator orientation="vertical"/>
+                  <div>
+                    Completion Tokens: {{ completionTokens }}
+                  </div>
+                  <Separator orientation="vertical"/>
+                  <div>
+                    Total Tokens: {{ totalTokens }}
+                  </div>
+                </div>
+              </template>
+
+              <div class="relative min-h-screen">
+                <ShadcnSpin v-model="loadingMessages" fixed/>
+
+                <div class="w-full overflow-y-auto overflow-x-hidden h-full flex flex-col">
+                  <div ref="messagesContainer" class="w-full overflow-y-auto overflow-x-hidden flex flex-col" style="height: 550px;">
+                    <template v-for="item in messages">
+                      <div :class="cn('flex flex-col gap-2 p-4 whitespace-pre-wrap',
+                                  item.type === 'question' ? 'items-end' : 'items-start'
+                            )">
+                        <div class="flex gap-3 items-center">
+                          <span class="bg-accent p-3 rounded-md max-w-lg">{{ item.content }}</span>
+                        </div>
+
+                        <div v-if="item.type === 'answer'" class="flex text-sm text-muted-foreground mt-0.5 space-x-2">
+                          <div>Model: {{ item.model }}</div>
+                          <ShadcnDivider type="horizontal"/>
+                          <div>Prompt Tokens: {{ item.promptTokens }}</div>
+                          <ShadcnDivider type="horizontal"/>
+                          <div>Completion Tokens: {{ item.completionTokens }}</div>
+                          <ShadcnDivider type="horizontal"/>
+                          <div>Total Tokens: {{ item.totalTokens }}</div>
                         </div>
                       </div>
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormItem>
-            </FormField>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <template #footer>
+                <div class="p-2 flex justify-between w-full items-center gap-2">
+                  <ShadcnInput v-model="inputValue" type="textarea" placeholder="Type a message ..."/>
+
+                  <ShadcnButton :loading="submitting" :disabled="!inputValue || submitting" @click="onSubmit">
+                    <ShadcnIcon icon="Send" size="18"/>
+                  </ShadcnButton>
+                </div>
+              </template>
+            </ShadcnCard>
           </div>
-        </DataCapCard>
-      </aside>
-      <div class="flex-1">
-        <div v-if="dataInfo">
-          <DataCapCard>
-            <template #title>
-              <div class="flex flex-row items-center justify-between">
-                <div class="flex items-center space-x-4">
-                  <Avatar :src="dataInfo.avatar" :alt="dataInfo.name"/>
-                  <div>
-                    <p class="text-sm font-medium leading-none">{{ dataInfo.name }}</p>
-                    <p class="text-sm text-muted-foreground">{{ dataInfo.description }}</p>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template #extra>
-              <div class="flex h-5 items-center space-x-4 text-sm">
-                <div>
-                  Prompt Tokens: {{ promptTokens }}
-                </div>
-                <Separator orientation="vertical"/>
-                <div>
-                  Completion Tokens: {{ completionTokens }}
-                </div>
-                <Separator orientation="vertical"/>
-                <div>
-                  Total Tokens: {{ totalTokens }}
-                </div>
-              </div>
-            </template>
-            <CircularLoading v-if="loadingMessages" :show="loadingMessages"/>
-            <div class="w-full overflow-y-auto overflow-x-hidden h-full flex flex-col">
-              <div ref="messagesContainer" class="w-full overflow-y-auto overflow-x-hidden h-[550px] flex flex-col">
-                <template v-for="item in messages">
-                  <div :class="cn('flex flex-col gap-2 p-4 whitespace-pre-wrap',
-                                  item.type === 'question' ? 'items-end' : 'items-start'
-                                )">
-                    <div class="flex gap-3 items-center">
-                      <span class="bg-accent p-3 rounded-md max-w-lg">{{ item.content }}</span>
-                    </div>
-                    <div v-if="item.type === 'answer'" class="flex text-sm text-muted-foreground mt-0.5 space-x-2">
-                      <div>Model: {{ item.model }}</div>
-                      <Separator orientation="vertical"/>
-                      <div>Prompt Tokens: {{ item.promptTokens }}</div>
-                      <Separator orientation="vertical"/>
-                      <div>Completion Tokens: {{ item.completionTokens }}</div>
-                      <Separator orientation="vertical"/>
-                      <div>Total Tokens: {{ item.totalTokens }}</div>
-                    </div>
-                  </div>
-                </template>
-              </div>
-            </div>
-            <template #footer>
-              <div class="p-2 flex justify-between w-full items-center gap-2">
-                <Textarea v-model="inputValue" placeholder="Type a message ..."/>
-                <Button class="dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white" :loading="submitting" :disabled="!inputValue || submitting"
-                        @click="handlerSubmit">
-                  <Send v-if="!submitting" :size="18"/>
-                </Button>
-              </div>
-            </template>
-          </DataCapCard>
-        </div>
-      </div>
-    </div>
-  </div>
-  <ChatInfo v-if="dataVisible" :is-visible="dataVisible" @close="handlerInfo($event)"/>
+        </ShadcnLayoutContent>
+      </ShadcnLayoutMain>
+    </ShadcnLayoutWrapper>
+  </ShadcnLayout>
+
+  <ChatInfo v-if="dataVisible" :is-visible="dataVisible" @close="visibleInfo($event)"/>
 </template>
 
 <script lang="ts">
@@ -111,37 +114,20 @@ import { defineComponent } from 'vue'
 
 import { FilterModel } from '@/model/filter.ts'
 import ChatService from '@/services/chat.ts'
-import { ToastUtils } from '@/utils/toast.ts'
-import { DataCapCard } from '@/views/ui/card'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import Button from '@/views/ui/button'
 import ChatInfo from '@/views/pages/admin/chat/ChatInfo.vue'
-import Avatar from '@/views/ui/avatar'
 import { ChatModel } from '@/model/chat.ts'
 import { toNumber } from 'lodash'
 import { cn } from '@/lib/utils.ts'
 import { MessageModel } from '@/model/message.ts'
-import { Input } from '@/components/ui/input'
 import MessageService from '@/services/message.ts'
-import { Separator } from '@/components/ui/separator'
-import { Textarea } from '@/components/ui/textarea'
 
 export default defineComponent({
   name: 'ChatHome',
-  components: {
-    Textarea,
-    Separator,
-    Input,
-    Avatar,
-    ChatInfo,
-    Button,
-
-    RadioGroup, RadioGroupItem,
-    DataCapCard
-  },
+  components: { ChatInfo },
   setup()
   {
     const filter: FilterModel = new FilterModel()
+
     return {
       filter,
       cn
@@ -160,15 +146,16 @@ export default defineComponent({
       completionTokens: 0,
       totalTokens: 0,
       submitting: false,
+      toggleValue: null,
       inputValue: ''
     }
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       ChatService.getAll(this.filter)
@@ -177,19 +164,22 @@ export default defineComponent({
                      this.data = response.data.content
                    }
                    else {
-                     ToastUtils.error(response.message)
+                     this.$Message.error({
+                       content: response.message,
+                       showIcon: true
+                     })
                    }
                  })
                  .finally(() => this.loading = false)
     },
-    handlerInfo(opened: boolean)
+    visibleInfo(opened: boolean)
     {
       this.dataVisible = opened
       if (!opened) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
     },
-    handlerChange(value: string)
+    onChange(value: string)
     {
       this.dataInfo = this.data.find(item => item.id === toNumber(value)) as unknown as ChatModel
       this.loadingMessages = true
@@ -203,7 +193,7 @@ export default defineComponent({
                    this.handlerGoBottom()
                  })
     },
-    handlerSubmit()
+    onSubmit()
     {
       this.submitting = true
       const message = {
@@ -220,7 +210,10 @@ export default defineComponent({
                         this.inputValue = ''
                       }
                       else {
-                        ToastUtils.error(response.message)
+                        this.$Message.error({
+                          content: response.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => {

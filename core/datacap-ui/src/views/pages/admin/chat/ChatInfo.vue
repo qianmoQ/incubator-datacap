@@ -1,61 +1,44 @@
 <template>
-  <Dialog :is-visible="visible" :title="$t('common.chat')">
-    <div class="space-y-2 pl-3 pr-3">
-      <FormField name="name">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('common.name') }}</FormLabel>
-          <FormMessage/>
-          <Input v-model="formState.name"/>
-        </FormItem>
-      </FormField>
-      <FormField name="avatar">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('common.avatar') }}</FormLabel>
-          <FormMessage/>
-          <Input v-model="formState.avatar"/>
-        </FormItem>
-      </FormField>
-      <FormField name="description">
-        <FormItem class="space-y-1">
-          <FormLabel>{{ $t('common.description') }}</FormLabel>
-          <FormMessage/>
-          <Textarea v-model="formState.description"/>
-        </FormItem>
-      </FormField>
-    </div>
-    <template #footer>
-      <div class="space-x-5">
-        <Button variant="outline" size="sm" @click="handlerCancel">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button size="sm" :loading="loading" :disabled="loading" @click="handlerSave()">
-          {{ $t('common.save') }}
-        </Button>
+  <ShadcnModal v-model="visible" :title="$t('common.chat')">
+
+    <ShadcnForm v-model="formState" @on-submit="onSubmit">
+      <ShadcnFormItem name="name"
+                      :label="$t('common.name')"
+                      :rules="[ { required: true, message: $t('common.name') } ]">
+        <ShadcnInput v-model="formState.name" name="name"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="avatar" :label="$t('common.avatar')">
+        <ShadcnInput v-model="formState.avatar" name="avatar"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="description" :label="$t('common.description')">
+        <ShadcnInput v-model="formState.description" type="textarea" name="description"/>
+      </ShadcnFormItem>
+
+      <div class="flex justify-end">
+        <ShadcnSpace>
+          <ShadcnButton type="default" @click="onCancel">
+            {{ $t('common.cancel') }}
+          </ShadcnButton>
+
+          <ShadcnButton submit :disabled="loading" :loading="loading">
+            {{ $t('common.save') }}
+          </ShadcnButton>
+        </ShadcnSpace>
       </div>
-    </template>
-  </Dialog>
+    </ShadcnForm>
+
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
-import { ToastUtils } from '@/utils/toast'
 import ChatService from '@/services/chat.ts'
-
 import { ChatModel, ChatRequest } from '@/model/chat.ts'
 
 export default defineComponent({
   name: 'ChatInfo',
-  components: {
-
-    Input,
-    Textarea,
-    Button,
-    Dialog
-  },
   computed: {
     visible: {
       get(): boolean
@@ -85,24 +68,33 @@ export default defineComponent({
     this.formState = ChatRequest.of()
   },
   methods: {
-    handlerSave()
+    onSubmit()
     {
       if (this.formState) {
         this.loading = true
         ChatService.saveOrUpdate(this.formState)
                    .then(response => {
                      if (response.status) {
-                       ToastUtils.success(this.$t('common.success'))
-                       this.handlerCancel()
+                       this.$Message.success({
+                         content: this.$t('common.success'),
+                         showIcon: true
+                       })
+
+                       this.onCancel()
                      }
                      else {
-                       ToastUtils.error(response.message)
+                       this.$Message.error(
+                           {
+                             content: response.message,
+                             showIcon: true
+                           }
+                       )
                      }
                    })
                    .finally(() => this.loading = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
