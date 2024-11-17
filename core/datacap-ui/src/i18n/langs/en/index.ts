@@ -1020,6 +1020,7 @@ export default {
             info: 'View Info',
             lifeCycleColumn: 'Lifecycle columns',
             lifeCycleNumber: 'Lifecycle number',
+            lifeCycleType: 'Lifecycle type',
             continuousBuild: 'Continuous Build'
         },
         validator: {
