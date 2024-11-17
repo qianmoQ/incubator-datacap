@@ -1,63 +1,43 @@
 <template>
-  <div>
-    <AlertDialog :default-open="visible">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle class="border-b -mt-4 pb-2">
-            {{ `[ ${info?.name} ] ${$t('dataset.common.clearData')}` }}
-          </AlertDialogTitle>
-        </AlertDialogHeader>
-        <Alert variant="destructive">
-          <AlertTitle>{{ $t('dataset.tip.clearData') }}</AlertTitle>
-        </Alert>
-        <div class="flex">
-          <Card class="left text-center w-1/2">
-            <CardHeader class="border-b p-4">
-              <CardTitle>{{ $t('dataset.common.totalRows') }}</CardTitle>
-            </CardHeader>
-            <CardContent class="mt-3">
-              <p>{{ info?.totalRows }}</p>
-            </CardContent>
-          </Card>
-          <Card class="ml-3 right text-center w-1/2">
-            <CardHeader class="border-b p-4">
-              <CardTitle>{{ $t('dataset.common.totalSize') }}</CardTitle>
-            </CardHeader>
-            <CardContent class="mt-3">
-              <p>{{ info?.totalSize }}</p>
-            </CardContent>
-          </Card>
-        </div>
-        <AlertDialogFooter class="-mb-4 border-t pt-2">
-          <Button variant="outline" @click="handlerCancel">{{ $t('common.cancel') }}</Button>
-          <Button :disabled="loading" @click="handlerSubmit">
-            <Loader2 v-if="loading" class="w-full justify-center animate-spin"/>
-            {{ $t('dataset.common.clearData') }}
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  </div>
+  <ShadcnModal v-model="visible" :title="`[ ${ info?.name } ] ${ $t('dataset.common.clearData') }`" @on-close="onCancel">
+    <ShadcnAlert :title="$t('dataset.tip.clearData')"/>
+
+    <ShadcnRow class="mt-2.5" gutter="8">
+      <ShadcnCol span="6">
+        <ShadcnCard :title="$t('dataset.common.totalRows')">
+          <div class="mt-3 flex items-center p-4 text-center">{{ info?.totalRows }}</div>
+        </ShadcnCard>
+      </ShadcnCol>
+
+      <ShadcnCol span="6">
+        <ShadcnCard :title="$t('dataset.common.totalSize')">
+          <div class="mt-3 flex items-center p-4 text-center">{{ info?.totalSize }}</div>
+        </ShadcnCard>
+      </ShadcnCol>
+    </ShadcnRow>
+
+    <template #footer>
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="onCancel">{{ $t('common.cancel') }}</ShadcnButton>
+
+        <ShadcnButton type="error"
+                      :disabled="loading"
+                      :loading="loading"
+                      @click="onSubmit">
+          {{ $t('dataset.common.clearData') }}
+        </ShadcnButton>
+      </ShadcnSpace>
+    </template>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatasetService from '@/services/dataset'
 import { DatasetModel } from '@/model/dataset'
-import { ToastUtils } from '@/utils/toast'
-import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog'
-import { Alert, AlertTitle } from '@/components/ui/alert'
-
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default defineComponent({
   name: 'DatasetClear',
-  components: {
-    CardContent, CardTitle, CardHeader, Card,
-    Button,
-    AlertDialogFooter, AlertDialogHeader, AlertTitle, Alert, AlertDialog, AlertDialogContent
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -86,27 +66,34 @@ export default defineComponent({
     }
   },
   methods: {
-    handlerSubmit()
+    onSubmit()
     {
       if (this.info) {
         this.loading = true
         DatasetService.clearData(this.info.code)
-            .then((response: { status: boolean; }) => {
-              if (response.status) {
-                ToastUtils.success(`${this.$t('dataset.common.clearData')} [ ${this.info?.name} ] ${this.$t('common.successfully')}`)
-                this.handlerCancel()
-              }
-              else {
-                ToastUtils.error(`${this.$t('dataset.common.clearData')} [ ${this.info?.name} ] ${this.$t('common.fail')}`)
-              }
-            })
-            .finally(() => this.loading = false)
+                      .then((response: { status: boolean; }) => {
+                        if (response.status) {
+                          this.$Message.success({
+                            content: `${ this.$t('dataset.common.clearData') } [ ${ this.info?.name } ] ${ this.$t('common.successfully') }`,
+                            showIcon: true
+                          })
+
+                          this.onCancel()
+                        }
+                        else {
+                          this.$Message.error({
+                            content: `${ this.$t('dataset.common.clearData') } [ ${ this.info?.name } ] ${ this.$t('common.fail') }`,
+                            showIcon: true
+                          })
+                        }
+                      })
+                      .finally(() => this.loading = false)
       }
     },
-    handlerCancel()
+    onCancel()
     {
       this.visible = false
     }
   }
-});
+})
 </script>

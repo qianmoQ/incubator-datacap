@@ -73,6 +73,20 @@
                   <span>{{ $t('dataset.common.error') }}</span>
                 </div>
               </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="isSuccess(row?.state)" @on-click="visibleRebuild(row, true)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon :icon="row?.state === 'SUCCESS' ? 'CirclePlay' : 'CircleStop'" size="15"/>
+                  <span>{{ $t('dataset.common.rebuild') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="!(row?.totalRows > 0)" @on-click="visibleClearData(row, true)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="SquareX" size="15"/>
+                  <span>{{ $t('dataset.common.clearData') }}</span>
+                </div>
+              </ShadcnDropdownItem>
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -91,19 +105,13 @@
                         @on-next="onNextChange"
                         @on-change-size="onSizeChange"/>
     </div>
-
-    <!--                <DropdownMenuItem :disabled="isSuccess(row?.state)" style="cursor: pointer;" @click="handlerRebuild(row, true)">-->
-    <!--                  <CirclePlay v-if="row?.state === 'SUCCESS'" class="mr-2 h-4 w-4"/>-->
-    <!--                  <CircleStop v-else class="mr-2 h-4 w-4"/>-->
-    <!--                  {{ $t('dataset.common.rebuild') }}-->
-    <!--                </DropdownMenuItem>-->
-    <!--                <DropdownMenuItem :disabled="!(row?.totalRows > 0)" style="cursor: pointer;" @click="handlerClearData(row, true)">-->
-    <!--                  <SquareX class="mr-2 h-4 w-4"/>-->
-    <!--                  {{ $t('dataset.common.clearData') }}-->
-    <!--                </DropdownMenuItem>-->
   </ShadcnCard>
 
-  <!--    <DatasetRebuild v-if="rebuildVisible" :is-visible="rebuildVisible" :data="contextData" @close="handlerRebuild(null, false)"/>-->
+  <DatasetRebuild v-if="rebuildVisible"
+                  :is-visible="rebuildVisible"
+                  :data="contextData"
+                  @close="visibleRebuild(null, false)"/>
+
   <DatasetHistory v-if="historyVisible"
                   :is-visible="historyVisible"
                   :info="contextData"
@@ -113,7 +121,11 @@
                :is-visible="syncDataVisible"
                :info="contextData"
                @close="visibleSyncData(null, false)"/>
-  <!--    <DatasetClear v-if="clearDataVisible" :is-visible="clearDataVisible" :info="contextData" @close="handlerClearData(null, false)"/>-->
+
+  <DatasetClear v-if="clearDataVisible"
+                :is-visible="clearDataVisible"
+                :info="contextData"
+                @close="visibleClearData(null, false)"/>
 
   <MarkdownPreview v-if="errorVisible && contextData"
                    :is-visible="errorVisible"
@@ -132,10 +144,12 @@ import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vu
 import DatasetSync from '@/views/pages/admin/dataset/DatasetSync.vue'
 import DatasetHistory from '@/views/pages/admin/dataset/DatasetHistory.vue'
 import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
+import DatasetRebuild from '@/views/pages/admin/dataset/DatasetRebuild.vue'
+import DatasetClear from '@/views/pages/admin/dataset/DatasetClear.vue'
 
 export default defineComponent({
   name: 'DatasetHome',
-  components: { MarkdownPreview, DatasetHistory, DatasetSync, DatasetState },
+  components: { DatasetClear, DatasetRebuild, MarkdownPreview, DatasetHistory, DatasetSync, DatasetState },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -204,7 +218,7 @@ export default defineComponent({
       this.pageSize = value
       this.fetchData(this.pageIndex)
     },
-    handlerRebuild(record: DatasetModel | null, opened: boolean)
+    visibleRebuild(record: DatasetModel | null, opened: boolean)
     {
       if (record && this.isSuccess(record.state)) {
         return
@@ -225,7 +239,7 @@ export default defineComponent({
       this.contextData = record
       this.syncDataVisible = opened
     },
-    handlerClearData(record: DatasetModel | null, opened: boolean)
+    visibleClearData(record: DatasetModel | null, opened: boolean)
     {
       if (record && !(record.totalRows > 0)) {
         return

@@ -1,40 +1,22 @@
 <template>
-  <div>
-    <AlertDialog :default-open="visible">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle class="border-b -mt-4 pb-2">
-            {{ $t('dataset.common.rebuild') + ' [ ' + data?.name + ' ]' }}
-          </AlertDialogTitle>
-        </AlertDialogHeader>
-        <Alert>
-          <AlertTitle>{{ $t('dataset.tip.rebuildProgress') }}</AlertTitle>
-        </Alert>
-        <AlertDialogFooter class="-mb-4 border-t pt-2">
-          <Button :disabled="loading" @click="handlerRebuild">
-            <Loader2 v-if="loading" class="w-full justify-center animate-spin"/>
-            {{ $t('dataset.common.rebuild') }}
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  </div>
+  <ShadcnModal v-model="visible" :title="$t('dataset.common.rebuild') + ' [ ' + data?.name + ' ]'" @on-close="onCancel">
+    <ShadcnAlert :title="$t('dataset.tip.rebuildProgress')"/>
+
+    <template #footer>
+      <ShadcnButton :disabled="loading" :loading="loading" @click="onRebuild">
+        {{ $t('dataset.common.rebuild') }}
+      </ShadcnButton>
+    </template>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatasetService from '@/services/dataset'
-import { ToastUtils } from '@/utils/toast'
 import { DatasetModel } from '@/model/dataset'
-import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Alert, AlertTitle } from '@/components/ui/alert'
-
-
 
 export default defineComponent({
   name: 'DatasetRebuild',
-  components: { AlertTitle, Alert, AlertDialogContent, AlertDialogFooter, Button, AlertDialogHeader, AlertDialog },
   props: {
     isVisible: {
       type: Boolean,
@@ -42,34 +24,6 @@ export default defineComponent({
     },
     data: {
       type: Object as () => DatasetModel | null
-    }
-  },
-  data()
-  {
-    return {
-      loading: false
-    }
-  },
-  methods: {
-    handlerRebuild()
-    {
-      if (this.data) {
-        this.loading = true
-        DatasetService.rebuild(this.data.id)
-                      .then((response) => {
-                        if (response.status) {
-                          ToastUtils.success(`${ this.$t('dataset.common.rebuild') } [ ${ this.data?.name } ] ${ this.$t('common.successfully') }`)
-                          this.handlerCancel()
-                        }
-                      })
-                      .finally(() => {
-                        this.loading = false
-                      })
-      }
-    },
-    handlerCancel()
-    {
-      this.visible = false
     }
   },
   computed: {
@@ -82,6 +36,36 @@ export default defineComponent({
       {
         this.$emit('close', value)
       }
+    }
+  },
+  data()
+  {
+    return {
+      loading: false
+    }
+  },
+  methods: {
+    onRebuild()
+    {
+      if (this.data) {
+        this.loading = true
+        DatasetService.rebuild(this.data.id)
+                      .then((response) => {
+                        if (response.status) {
+                          this.$Message.success({
+                            content: `${ this.$t('dataset.common.rebuild') } [ ${ this.data?.name } ] ${ this.$t('common.successfully') }`,
+                            showIcon: true
+                          })
+
+                          this.onCancel()
+                        }
+                      })
+                      .finally(() => this.loading = false)
+      }
+    },
+    onCancel()
+    {
+      this.visible = false
     }
   }
 })
