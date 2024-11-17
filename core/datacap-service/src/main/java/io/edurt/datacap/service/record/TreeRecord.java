@@ -32,6 +32,7 @@ public class TreeRecord
     private Boolean checked = false;
     private Boolean selected = false;
     private String description;
+    private Long parent;
 
     public static TreeRecord of(MenuEntity entity, boolean checked, boolean selected, List<TreeRecord> children)
     {
@@ -46,6 +47,7 @@ public class TreeRecord
                 .checked(checked)
                 .selected(selected)
                 .children(children)
+                .parent(entity.getParent())
                 .build();
     }
 }

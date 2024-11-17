@@ -3,7 +3,6 @@ package io.edurt.datacap.captcha;
 import io.edurt.datacap.captcha.entity.CaptchaEntity;
 import io.edurt.datacap.captcha.entity.ResultEntity;
 import io.edurt.datacap.captcha.enums.CalculateEnum;
-import io.edurt.datacap.captcha.enums.NumberEnum;
 
 import java.awt.Color;
 import java.util.Random;
@@ -94,25 +93,25 @@ public class CaptchaUtils
         String _lastNumber = null;
         String equals = null;
         // display 0 Arabic numerals
-        if (number == 0) {
-            _firstNumber = String.valueOf(firstNumber);
-            _lastNumber = String.valueOf(lastNumber);
-            _calc = getCalculateEn(calc, calc);
-            equals = CalculateEnum.EQUAL.getValueEn();
-        }
+//        if (number == 0) {
+        _firstNumber = String.valueOf(firstNumber);
+        _lastNumber = String.valueOf(lastNumber);
+        _calc = getCalculateEn(calc, calc);
+        equals = CalculateEnum.EQUAL.getValueEn();
+//        }
         // Display 1 Chinese uppercase character
-        if (number == 1) {
-            for (NumberEnum numberEnum : NumberEnum.values()) {
-                if (numberEnum.getValueEn().equals(String.valueOf(firstNumber))) {
-                    _firstNumber = numberEnum.getValueZh();
-                }
-                if (numberEnum.getValueEn().equals(String.valueOf(lastNumber))) {
-                    _lastNumber = numberEnum.getValueZh();
-                }
-            }
-            _calc = getCalculateZh(calc, number);
-            equals = CalculateEnum.EQUAL.getValueZh();
-        }
+//        if (number == 1) {
+//            for (NumberEnum numberEnum : NumberEnum.values()) {
+//                if (numberEnum.getValueEn().equals(String.valueOf(firstNumber))) {
+//                    _firstNumber = numberEnum.getValueZh();
+//                }
+//                if (numberEnum.getValueEn().equals(String.valueOf(lastNumber))) {
+//                    _lastNumber = numberEnum.getValueZh();
+//                }
+//            }
+//            _calc = getCalculateZh(calc, number);
+//            equals = CalculateEnum.EQUAL.getValueZh();
+//        }
         String[] result = new String[] {_firstNumber, _calc, _lastNumber, equals, "?"};
         ResultEntity resultEntity = new ResultEntity();
         resultEntity.setExpression(result);
@@ -160,7 +159,7 @@ public class CaptchaUtils
      */
     private static String getCalculateEn(int calc, int number)
     {
-        String result = null; // Calculation method: 0 addition, 1 subtraction, 2 multiplication, 3 division, 4 equal
+        String result; // Calculation method: 0 addition, 1 subtraction, 2 multiplication, 3 division, 4 equal
         switch (calc) {
             case 0:
                 result = CalculateEnum.ADD.getValueEn();

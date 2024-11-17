@@ -30,6 +30,7 @@ import io.edurt.datacap.service.record.TreeRecord;
 import io.edurt.datacap.service.repository.RoleRepository;
 import io.edurt.datacap.service.repository.SourceRepository;
 import io.edurt.datacap.service.repository.UserRepository;
+import io.edurt.datacap.service.repository.admin.MenuRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.JwtService;
 import io.edurt.datacap.service.service.UserService;
@@ -72,6 +73,7 @@ public class UserServiceImpl
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final SourceRepository sourceRepository;
+    private final MenuRepository menuRepository;
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -80,11 +82,12 @@ public class UserServiceImpl
     private final InitializerConfigure initializerConfigure;
     private final Injector injector;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, SourceRepository sourceRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService, RedisTemplate redisTemplate, Environment environment, InitializerConfigure initializerConfigure, Injector injector)
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, SourceRepository sourceRepository, MenuRepository menuRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService, RedisTemplate redisTemplate, Environment environment, InitializerConfigure initializerConfigure, Injector injector)
     {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.sourceRepository = sourceRepository;
+        this.menuRepository = menuRepository;
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -257,6 +260,18 @@ public class UserServiceImpl
                         childrens.sort(Comparator.comparing(TreeRecord::getSorted));
                         temp.setChildren(childrens);
                         treeMap.put(temp.getId(), temp);
+                    }
+                    else {
+                        // Handle cases where no parent menu is selected, only child menus are selected
+                        menuRepository.findById(menu.getParent())
+                                .ifPresent(v -> {
+                                    TreeRecord parent = TreeRecord.of(v, true, true, Lists.newArrayList());
+                                    parent.setNew(v.isNew());
+                                    List<TreeRecord> children = Lists.newArrayList();
+                                    children.add(TreeRecord.of(menu, true, true, Lists.newArrayList()));
+                                    parent.setChildren(children);
+                                    treeMap.put(v.getId(), parent);
+                                });
                     }
                 }
             });
