@@ -208,24 +208,26 @@ export default defineComponent({
                      }
                    })
     },
-    onChange(node: ReportModel)
+    onChange(nodes: ReportModel[])
     {
-      const newItem = {
-        x: 0,
-        y: 0,
-        w: 3,
-        h: 4,
-        i: 'new-' + Date.now(),
-        title: node.name,
-        node: {
-          id: node.id,
-          configure: node.configure,
-          code: node.dataset?.code,
-          query: node?.query
-        },
-        original: node
-      }
-      this.layouts.push(newItem)
+      nodes.forEach((node: ReportModel) => {
+        const newItem = {
+          x: 0,
+          y: 0,
+          w: 3,
+          h: 4,
+          i: 'new-' + Date.now(),
+          title: node.name,
+          node: {
+            id: node.id,
+            configure: node.configure,
+            code: node.dataset?.code,
+            query: node?.query
+          },
+          original: node
+        }
+        this.layouts.push(newItem)
+      })
     },
     onSubmit()
     {

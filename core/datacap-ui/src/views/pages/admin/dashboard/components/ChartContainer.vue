@@ -9,7 +9,7 @@
       <ShadcnSpin v-model="loading" fixed/>
 
       <div v-if="!loading" class="p-2">
-        <ShadcnToggleGroup v-model="report">
+        <ShadcnToggleGroup v-model="report" multiple>
           <ShadcnRow gutter="8">
             <ShadcnCol v-for="item of data" span="4">
               <ShadcnToggle :key="item.id" class="px-1 py-1" :value="item.id">
@@ -111,7 +111,7 @@ export default defineComponent({
     return {
       loading: false,
       data: [] as ReportModel[],
-      report: '',
+      report: [] as any[],
       pageIndex: 1,
       pageSize: 10,
       dataCount: 0
@@ -157,8 +157,10 @@ export default defineComponent({
     },
     onSubmit()
     {
-      const node = this.data.find(item => item.id === toNumber(this.report[0]))
-      this.$emit('change', node)
+      const nodes = this.data.filter(item =>
+          this.report.some((reportId: number) => toNumber(item.id) === toNumber(reportId))
+      )
+      this.$emit('change', nodes)
 
       this.onCancel()
     },
