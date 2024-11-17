@@ -2,7 +2,7 @@
   <ShadcnCard>
     <template #title>
       <ShadcnSpace>
-        <ShadcnButton size="small">
+        <ShadcnButton>
           <RouterLink :to="`/admin/dataset/info/source/${configure.code}`" target="_blank">
               <span class="flex items-center">
                 <ShadcnIcon icon="Plus" size="15"/>
@@ -11,17 +11,17 @@
           </RouterLink>
         </ShadcnButton>
 
-        <ShadcnButton size="small" type="default" @click="visualVisible = true">
+        <ShadcnButton type="default" @click="visualVisible = true">
           <ShadcnIcon icon="BarChart" :size="15"/>
           <span>{{ $t('dataset.common.visual') }}</span>
         </ShadcnButton>
 
-        <ShadcnTooltip :content="$t('query.tip.pageShow')">
+        <ShadcnTooltip class="mt-1" :content="$t('query.tip.pageShow')">
           <ShadcnSwitch v-model="isPage" @on-change="onChange"/>
         </ShadcnTooltip>
 
         <ShadcnTooltip :content="$t('query.tip.smallTips')">
-          <ShadcnButton circle size="small" type="default">
+          <ShadcnButton circle type="default">
             <ShadcnIcon icon="CircleHelp" :size="15"/>
           </ShadcnButton>
         </ShadcnTooltip>

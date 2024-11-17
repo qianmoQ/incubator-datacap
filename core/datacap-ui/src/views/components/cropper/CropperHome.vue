@@ -5,14 +5,12 @@
     </ShadcnButton>
   </div>
 
-  <div v-if="result.blobURL || pic" class="pt-2 grid place-items-center">
-    <div>
-      <img class="max-h-[180px]" :src="result.blobURL ? result.blobURL : pic" alt=""/>
-    </div>
+  <div v-if="result.blobURL || pic" class="mt-2.5 flex justify-center">
+    <ShadcnAvatar square :src="result.blobURL ? result.blobURL : pic" style="width: 200px; height: 200px"/>
   </div>
 
   <ShadcnModal v-if="isShowModal"
-               :is-visible="isShowModal"
+               v-model="isShowModal"
                :title="$t('common.cropper')"
                @close="isShowModal = $event">
     <div class="p-0">
@@ -27,12 +25,15 @@
         <ShadcnButton size="small" @click="isShowModal = false">
           {{ $t('common.cancel') }}
         </ShadcnButton>
+
         <ShadcnButton size="small" type="error" @click="clear">
           {{ $t('common.clear') }}
         </ShadcnButton>
+
         <ShadcnButton size="small" type="error" @click="reset">
           {{ $t('common.reset') }}
         </ShadcnButton>
+
         <ShadcnButton size="small" @click="getResult">
           {{ $t('common.cropper') }}
         </ShadcnButton>

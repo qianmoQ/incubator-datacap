@@ -12,64 +12,88 @@
       </ShadcnSpace>
     </template>
 
-    <!--    <div id="content">-->
-    <!--      <GridLayout ref="refLayout" :layout="layouts" :responsive="true" :col-num="12" :row-height="30" :is-draggable="true" :is-resizable="true" :vertical-compact="true"-->
-    <!--                  :use-css-transforms="true">-->
-    <!--        <GridItem v-for="item in layouts" :ref="el => set$Children(el)" :key="item.i" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :min-h="3" :min-w="3"-->
-    <!--                  @resized="onResize">-->
-    <!--          <DataCapCard :style="{width: item.width, height: item.height}">-->
-    <!--            <template #title>{{ item.title ? item.title : $t('dataset.common.notSpecifiedTitle') }}</template>-->
-    <!--            <template #extra>-->
-    <!--              <Button size="icon" class="w-6 h-6 rounded-full bg-color-error" @click="onRemove(item.i)">-->
-    <!--                <Trash :size="15"/>-->
-    <!--              </Button>-->
-    <!--            </template>-->
-    <!--            <VisualView v-if="item.original" class="-ml-3" :width="item.width.replace('px', '') - 20 + 'px'" :height="item.height.replace('px', '') - 48 + 'px'"-->
-    <!--                        :code="item.node.code" :configuration="JSON.parse(item.node.configure)" :type="item.original?.type"-->
-    <!--                        :query="item.original.type === 'DATASET' ? JSON.parse(item.original.query as string) : item.original.query" :original="item?.original?.source?.id"/>-->
-    <!--            <VisualView v-else class="-ml-3" :width="item.width.replace('px', '') - 20 + 'px'" :height="item.height.replace('px', '') - 48 + 'px'"-->
-    <!--                        :code="item.node.code" :configuration="JSON.parse(item.node.configure)" :query="JSON.parse(item.node.query)"/>-->
-    <!--          </DataCapCard>-->
-    <!--        </GridItem>-->
-    <!--      </GridLayout>-->
-    <!--    </div>-->
+    <div class="min-h-screen">
+      <GridLayout ref="refLayout"
+                  :layout="layouts"
+                  :responsive="true"
+                  :col-num="12"
+                  :row-height="60"
+                  :is-draggable="true"
+                  :is-resizable="true"
+                  :vertical-compact="true"
+                  :use-css-transforms="true">
+        <GridItem v-for="item in layouts"
+                  :ref="el => set$Children(el)"
+                  :key="item.i"
+                  :x="item.x"
+                  :y="item.y"
+                  :w="item.w"
+                  :h="item.h"
+                  :i="item.i"
+                  :min-h="3"
+                  :min-w="3"
+                  @resized="onResize">
+          <ShadcnCard class="h-full w-full">
+            <template #title>{{ item.title ? item.title : $t('dataset.common.notSpecifiedTitle') }}</template>
+
+            <template #extra>
+              <ShadcnButton circle size="small" type="error" @click="onRemove(item.i)">
+                <ShadcnIcon icon="Trash" size="15"/>
+              </ShadcnButton>
+            </template>
+
+            <VisualView v-if="item.original"
+                        :width="calculateWidth(item)"
+                        :height="calculateHeight(item)"
+                        :code="item.node.code"
+                        :configuration="JSON.parse(item.node.configure)"
+                        :type="item.original?.type"
+                        :query="item.original.type === 'DATASET' ? JSON.parse(item.original.query as string) : item.original.query"
+                        :original="item?.original?.source?.id"/>
+
+            <VisualView v-else
+                        :width="calculateWidth(item)"
+                        :height="calculateHeight(item)"
+                        :code="item.node.code"
+                        :configuration="JSON.parse(item.node.configure)"
+                        :query="JSON.parse(item.node.query)"/>
+          </ShadcnCard>
+        </GridItem>
+      </GridLayout>
+    </div>
   </ShadcnCard>
 
-  <!--  <Dialog :is-visible="configureVisible" :title="$t('common.configure')">-->
-  <!--    <div v-if="formState" class="pl-3 pr-4">-->
-  <!--      <FormField name="name">-->
-  <!--        <FormItem class="space-y-2">-->
-  <!--          <FormLabel>{{ $t('common.name') }}</FormLabel>-->
-  <!--          <FormMessage/>-->
-  <!--          <Input v-model="formState.name"/>-->
-  <!--        </FormItem>-->
-  <!--      </FormField>-->
-  <!--      <FormField name="description">-->
-  <!--        <FormItem class="space-y-2">-->
-  <!--          <FormLabel>{{ $t('common.description') }}</FormLabel>-->
-  <!--          <FormMessage/>-->
-  <!--          <Textarea v-model="formState.description"/>-->
-  <!--        </FormItem>-->
-  <!--      </FormField>-->
-  <!--      <FormField name="avatar">-->
-  <!--        <FormItem class="space-y-2">-->
-  <!--          <FormLabel>{{ $t('common.avatar') }}</FormLabel>-->
-  <!--          <FormMessage/>-->
-  <!--          <CropperHome :pic="formState?.avatar?.path" @update:value="handlerCropper"/>-->
-  <!--        </FormItem>-->
-  <!--      </FormField>-->
-  <!--    </div>-->
-  <!--    <template #footer>-->
-  <!--      <div class="space-x-5">-->
-  <!--        <Button variant="outline" size="sm" @click="configureVisible = false">-->
-  <!--          {{ $t('common.cancel') }}-->
-  <!--        </Button>-->
-  <!--        <Button :loading="loading" :disabled="loading" size="sm" @click="handlerSave">-->
-  <!--          {{ $t('common.save') }}-->
-  <!--        </Button>-->
-  <!--      </div>-->
-  <!--    </template>-->
-  <!--  </Dialog>-->
+  <ShadcnModal v-model="configureVisible" :title="$t('common.configure')">
+    <ShadcnForm v-if="configureVisible && formState"
+                v-model="formState"
+                @on-submit="onSubmit">
+      <ShadcnFormItem name="name"
+                      :label="$t('common.name')"
+                      :rules="[{ required: true, message: $t('common.name') }]">
+        <ShadcnInput v-model="formState.name" name="name"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="description" :label="$t('common.description')">
+        <ShadcnInput v-model="formState.description" type="textarea" name="description"/>
+      </ShadcnFormItem>
+
+      <ShadcnFormItem name="avatar" :label="$t('common.avatar')">
+        <CropperHome :pic="formState?.avatar?.path" @update:value="onCropper"/>
+      </ShadcnFormItem>
+
+      <div class="flex justify-end">
+        <ShadcnSpace>
+          <ShadcnButton type="default" @click="configureVisible = false">
+            {{ $t('common.cancel') }}
+          </ShadcnButton>
+
+          <ShadcnButton submit :loading="loading" :disabled="loading">
+            {{ $t('common.save') }}
+          </ShadcnButton>
+        </ShadcnSpace>
+      </div>
+    </ShadcnForm>
+  </ShadcnModal>
 
   <ChartContainer v-if="dataReportVisible"
                   :is-visible="dataReportVisible"
@@ -91,7 +115,8 @@ import ChartContainer from '@/views/pages/admin/dashboard/components/ChartContai
 
 export default defineComponent({
   name: 'DashboardEditor',
-  components: { ChartContainer, CropperHome, VisualView, GridItem, GridLayout },
+  components: { ChartContainer, CropperHome, VisualView, GridItem, GridLayout
+  },
   props: {
     info: {
       type: Object as () => DashboardModel | null
@@ -108,7 +133,8 @@ export default defineComponent({
       loading: false,
       configureVisible: false,
       formState: null as DashboardModel | null,
-      dataReportVisible: false
+      dataReportVisible: false,
+      rowHeight: 60
     }
   },
   created()
@@ -130,18 +156,32 @@ export default defineComponent({
         }
       }, 300)
     },
-    onResize(i: string | number, w: number, h: number, x: number, y: number)
+    // Modified resize handler
+    onResize(i: string | number, w: number, h: number)
     {
-      console.debug(w, h)
       const node = this.layouts.find((obj: { i: string; }) => obj.i === i)
-      node.width = `${ y }px`
-      node.height = `${ x }px`
+      if (node) {
+        node.w = w
+        node.h = h
+      }
     },
     onRemove(i: string | number)
     {
       this.layouts = this.layouts.filter((obj: { i: string; }) => obj.i !== i)
     },
-    handlerCropper(value: any)
+    // The method of calculating the width
+    calculateWidth(item: any): string
+    {
+      const widthPercentage = (item.w * (100 / this.columnNumber))
+      return `calc(${ widthPercentage }% - rem)` // Subtract margins
+    },
+    // How to calculate the height
+    calculateHeight(item: any): string
+    {
+      const totalHeight = item.h * this.rowHeight
+      return `${ totalHeight - 48 }px` // Subtract the height of the card head
+    },
+    onCropper(value: any)
     {
       const configure = {
         code: this.formState?.code,
@@ -154,7 +194,6 @@ export default defineComponent({
                        if (this.formState) {
                          this.formState.avatar = response.data
                        }
-
                        this.$Message.success({
                          content: this.$t('common.successfully'),
                          showIcon: true
@@ -175,8 +214,6 @@ export default defineComponent({
         y: 0,
         w: 3,
         h: 4,
-        width: '350px',
-        height: '150px',
         i: 'new-' + Date.now(),
         title: node.name,
         node: {
@@ -193,16 +230,17 @@ export default defineComponent({
     {
       if (this.formState) {
         this.formState.configure = JSON.stringify(this.layouts)
-        this.layouts.forEach((item: { node: { id: any; }; }) => this.formState?.reports?.push({ id: item.node.id }))
+        this.layouts.forEach((item: { node: { id: any; }; }) => {
+          this.formState?.reports?.push({ id: item.node.id })
+        })
         this.loading = true
         DashboardService.saveOrUpdate(this.formState)
                         .then(response => {
                           if (response.status) {
                             this.$Message.success({
-                              content: this.$t('dashboard.tip.publishSuccess').replace('$VALUE', this.formState?.name),
+                              content: this.$t('dashboard.tip.publishSuccess').replace('$VALUE', String(this.formState?.name)),
                               showIcon: true
                             })
-
                             if (response.data) {
                               this.$router.push(`/admin/dashboard/preview/${ response.data?.code }`)
                             }

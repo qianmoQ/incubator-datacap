@@ -11,7 +11,7 @@
     </template>
 
     <template #content>
-      <div class="mb-3">
+      <div class="mb-3 min-h-screen">
         <Loader2 v-if="loading" class="w-full justify-center animate-spin"/>
         <div v-else class="hidden flex-col md:flex">
           <div class="flex-1 space-y-4 pt-6">

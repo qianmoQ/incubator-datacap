@@ -1,13 +1,11 @@
 <template>
   <div>
-    <ShadcnSelect v-model="applySource" :placeholder="$t('source.tip.selectSource')" @on-change="onChange">
-      <template #options>
-        <ShadcnSelectOption v-for="item in items"
-                            :label="item.name"
-                            :value="`${item.id}:${item.type}:${item.code}`"
-                            :disabled="!item.available">
-        </ShadcnSelectOption>
-      </template>
+    <ShadcnSelect v-model="applySource"
+                  v-model:options="options"
+                  lazy
+                  :placeholder="$t('source.tip.selectSource')"
+                  :load-data="loadMoreData"
+                  @on-change="onChange">
     </ShadcnSelect>
   </div>
 </template>
@@ -36,29 +34,51 @@ export default defineComponent({
   data()
   {
     return {
-      items: [] as SourceModel[],
+      options: [] as SourceModel[],
       loading: false,
-      applySource: undefined
+      applySource: undefined,
+      pageIndex: 1,
+      pageTotal: 10,
+      dataCount: 0
     }
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       SourceService.getAll(this.filter)
                    .then((response) => {
                      if (response.status) {
-                       this.items = response.data.content
+                       this.options = response.data.content.map((item: any) => ({ ...item, label: item.name, value: `${ item.id }:${ item.type }:${ item.code }` }))
+                       this.dataCount = response.data.total
+                       this.pageTotal = response.data.totalPage
+                       this.pageIndex = response.data.page
                        if (this.value) {
                          this.applySource = this.value as any
                        }
                      }
                    })
                    .finally(() => this.loading = false)
+    },
+    async loadMoreData(callback: (children: any[]) => void)
+    {
+      if (this.pageIndex < this.pageTotal) {
+        this.filter.page = this.pageIndex + 1
+        const response = await SourceService.getAll(this.filter)
+
+        if (response.status) {
+          const options = response.data.content.map((item: any) => ({ ...item, label: item.name, value: `${ item.id }:${ item.type }:${ item.code }` }))
+          this.dataCount = response.data.total
+          this.pageTotal = response.data.totalPage
+          this.pageIndex = response.data.page
+          console.log(options)
+          callback(options)
+        }
+      }
     },
     onChange()
     {
