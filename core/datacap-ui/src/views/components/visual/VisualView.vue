@@ -1,8 +1,8 @@
 <template>
-  <div class="relative">
-    <ShadcnSpin v-model="loading"/>
+  <div class="relative h-full w-full">
+    <ShadcnSpin v-model="loading" fixed style="margin-top: 100px;"/>
 
-    <div v-if="localConfiguration">
+    <div v-if="localConfiguration && !loading">
       <div v-if="localConfiguration.message" class="p-4">
         <ShadcnAlert type="error" :title="localConfiguration.message"/>
       </div>

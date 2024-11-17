@@ -1,24 +1,21 @@
 <template>
-  <div class="w-full">
-    <CircularLoading v-if="loading" :show="loading" class="mt-20"></CircularLoading>
-    <div v-else>
-      <DashboardEditor :info="dataInfo"/>
-    </div>
+  <div class="relative">
+    <ShadcnSpin v-model="loading" fixed/>
+
+    <DashboardEditor :info="dataInfo"/>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
 import DashboardService from '@/services/dashboard'
-import { ToastUtils } from '@/utils/toast'
 import { useRouter } from 'vue-router'
 import { DashboardModel } from '@/model/dashboard'
 import DashboardEditor from '@/views/pages/admin/dashboard/components/DashboardEditor.vue'
 
 export default defineComponent({
   name: 'DashboardInfo',
-  components: { DashboardEditor, CircularLoading },
+  components: { DashboardEditor },
   data()
   {
     return {
@@ -29,14 +26,14 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       const router = useRouter()
       const params = router.currentRoute.value.params
-      const code = params['code'] as string
+      const code = String(params['code'])
       if (code) {
         this.loading = true
         DashboardService.getByCode(code)
@@ -45,7 +42,10 @@ export default defineComponent({
                             this.dataInfo = response.data
                           }
                           else {
-                            ToastUtils.error(response.message)
+                            this.$Message.error({
+                              content: response.message,
+                              showIcon: true
+                            })
                           }
                         })
                         .finally(() => this.loading = false)

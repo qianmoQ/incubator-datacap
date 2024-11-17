@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Button class="p-0 w-full">
-      <Input ref="uploadInput" type="file" accept="image/jpg, image/jpeg, image/png, image/gif" @change="selectFile"/>
-    </Button>
+    <ShadcnButton class="p-0 w-full">
+      <input ref="uploadInput" type="file" accept="image/jpg, image/jpeg, image/png, image/gif" @change="selectFile"/>
+    </ShadcnButton>
   </div>
 
   <div v-if="result.blobURL || pic" class="pt-2 grid place-items-center">
@@ -11,44 +11,42 @@
     </div>
   </div>
 
-  <Dialog v-if="isShowModal" :is-visible="isShowModal" :title="$t('common.cropper')" @close="isShowModal = $event">
+  <ShadcnModal v-if="isShowModal"
+               :is-visible="isShowModal"
+               :title="$t('common.cropper')"
+               @close="isShowModal = $event">
     <div class="p-0">
-      <VuePictureCropper style="max-height: 400px" :boxStyle="{ width: '100%', height: '100%', backgroundColor: '#f8f8f8', margin: 'auto' }"
-                         :options="{ viewMode: 1, dragMode: 'crop', }" :img="pic" @ready="ready"/>
+      <VuePictureCropper style="max-height: 400px"
+                         :boxStyle="{ width: '100%', height: '100%', backgroundColor: '#f8f8f8', margin: 'auto' }"
+                         :options="{ viewMode: 1, dragMode: 'crop', }"
+                         :img="pic"
+                         @ready="ready"/>
     </div>
     <template #footer>
       <div class="space-x-2">
-        <Button class="btn" size="sm" @click="isShowModal = false">
+        <ShadcnButton size="small" @click="isShowModal = false">
           {{ $t('common.cancel') }}
-        </Button>
-        <Button class="btn" size="sm" variant="destructive" @click="clear">
+        </ShadcnButton>
+        <ShadcnButton size="small" type="error" @click="clear">
           {{ $t('common.clear') }}
-        </Button>
-        <Button class="btn" size="sm" variant="destructive" @click="reset">
+        </ShadcnButton>
+        <ShadcnButton size="small" type="error" @click="reset">
           {{ $t('common.reset') }}
-        </Button>
-        <Button class="btn primary" size="sm" @click="getResult">
+        </ShadcnButton>
+        <ShadcnButton size="small" @click="getResult">
           {{ $t('common.cropper') }}
-        </Button>
+        </ShadcnButton>
       </div>
     </template>
-  </Dialog>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 import VuePictureCropper, { cropper } from 'vue-picture-cropper'
-import Button from '@/views/ui/button'
-import { Input } from '@/components/ui/input'
-import Dialog from '@/views/ui/dialog'
 
 export default defineComponent({
-  components: {
-    Dialog,
-    Input,
-    VuePictureCropper,
-    Button
-  },
+  components: { VuePictureCropper },
   props: {
     pic: {
       type: String

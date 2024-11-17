@@ -1,12 +1,13 @@
 <template>
   <ShadcnModal v-model="visible"
                width="60%"
-               height="80%"
+               height="60%"
                :title="title"
                @on-close="onCancel">
-    <div class="relative w-full h-full items-center">
+    <div class="relative w-full h-full justify-center items-center">
       <div v-if="info">
-        <VisualView :code="info.dataset?.code"
+        <VisualView class="h-full"
+                    :code="info.dataset?.code"
                     :type="info.type"
                     :configuration="JSON.parse(info.configure as string)"
                     :query="info.type === 'DATASET' ? JSON.parse(info.query as string) : info.query"

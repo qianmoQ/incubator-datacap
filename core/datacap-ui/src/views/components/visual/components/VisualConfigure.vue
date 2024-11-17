@@ -1,10 +1,11 @@
 <template>
-  <ShadcnDrawer v-model="visible"
-                width="40%"
-                :title="$t('common.configure')"
-                @close="onCancel">
+  <ShadcnForm v-model="formState" class="mt-2" @on-submit="onSubmit">
+    <ShadcnDrawer v-model="visible"
+                  width="40%"
+                  style="margin-right: -1rem;"
+                  :title="$t('common.configure')"
+                  @close="onCancel">
 
-    <div v-if="configuration && formState" style="margin-right: -1rem">
       <ShadcnTab v-model="activeGroup" direction="vertical" position="right">
         <ShadcnTabItem v-for="group in fieldGroup"
                        class="space-y-4"
@@ -45,19 +46,19 @@
           </ShadcnFormItem>
         </ShadcnTabItem>
       </ShadcnTab>
-    </div>
 
-    <template #footer>
-      <ShadcnSpace>
-        <ShadcnButton type="default" @click="onCancel">
-          {{ $t('common.cancel') }}
-        </ShadcnButton>
-        <ShadcnButton @click="onSubmit">
-          {{ $t('common.apply') }}
-        </ShadcnButton>
-      </ShadcnSpace>
-    </template>
-  </ShadcnDrawer>
+      <template #footer>
+        <ShadcnSpace>
+          <ShadcnButton type="default" @click="onCancel">
+            {{ $t('common.cancel') }}
+          </ShadcnButton>
+          <ShadcnButton submit>
+            {{ $t('common.apply') }}
+          </ShadcnButton>
+        </ShadcnSpace>
+      </template>
+    </ShadcnDrawer>
+  </ShadcnForm>
 </template>
 
 <script lang="ts">

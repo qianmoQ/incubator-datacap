@@ -1,76 +1,80 @@
 <template>
-  <div class="layout">
-    <DataCapCard>
-      <template #title>{{ title }}</template>
-      <template #extra>
-        <div class="space-x-5">
-          <Button size="sm" @click="handlerAddReport(true)">
-            {{ $t('dashboard.common.addReport') }}
-          </Button>
-          <Button size="sm" @click="handlerSaveVisible(true)">
-            {{ $t('common.save') }}
-          </Button>
-        </div>
-      </template>
-      <div id="content">
-        <GridLayout ref="refLayout" :layout="layouts" :responsive="true" :col-num="12" :row-height="30" :is-draggable="true" :is-resizable="true" :vertical-compact="true"
-                    :use-css-transforms="true">
-          <GridItem v-for="item in layouts" :ref="el => set$Children(el)" :key="item.i" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :min-h="3" :min-w="3"
-                    @resized="handlerResize">
-            <DataCapCard :style="{width: item.width, height: item.height}">
-              <template #title>{{ item.title ? item.title : $t('dataset.common.notSpecifiedTitle') }}</template>
-              <template #extra>
-                <Button size="icon" class="w-6 h-6 rounded-full bg-color-error" @click="handlerRemove(item.i)">
-                  <Trash :size="15"/>
-                </Button>
-              </template>
-              <VisualView v-if="item.original" class="-ml-3" :width="item.width.replace('px', '') - 20 + 'px'" :height="item.height.replace('px', '') - 48 + 'px'"
-                          :code="item.node.code" :configuration="JSON.parse(item.node.configure)" :type="item.original?.type"
-                          :query="item.original.type === 'DATASET' ? JSON.parse(item.original.query as string) : item.original.query" :original="item?.original?.source?.id"/>
-              <VisualView v-else class="-ml-3" :width="item.width.replace('px', '') - 20 + 'px'" :height="item.height.replace('px', '') - 48 + 'px'"
-                          :code="item.node.code" :configuration="JSON.parse(item.node.configure)" :query="JSON.parse(item.node.query)"/>
-            </DataCapCard>
-          </GridItem>
-        </GridLayout>
-      </div>
-    </DataCapCard>
-    <Dialog :is-visible="configureVisible" :title="$t('common.configure')">
-      <div v-if="formState" class="pl-3 pr-4">
-        <FormField name="name">
-          <FormItem class="space-y-2">
-            <FormLabel>{{ $t('common.name') }}</FormLabel>
-            <FormMessage/>
-            <Input v-model="formState.name"/>
-          </FormItem>
-        </FormField>
-        <FormField name="description">
-          <FormItem class="space-y-2">
-            <FormLabel>{{ $t('common.description') }}</FormLabel>
-            <FormMessage/>
-            <Textarea v-model="formState.description"/>
-          </FormItem>
-        </FormField>
-        <FormField name="avatar">
-          <FormItem class="space-y-2">
-            <FormLabel>{{ $t('common.avatar') }}</FormLabel>
-            <FormMessage/>
-            <CropperHome :pic="formState?.avatar?.path" @update:value="handlerCropper"/>
-          </FormItem>
-        </FormField>
-      </div>
-      <template #footer>
-        <div class="space-x-5">
-          <Button variant="outline" size="sm" @click="configureVisible = false">
-            {{ $t('common.cancel') }}
-          </Button>
-          <Button :loading="loading" :disabled="loading" size="sm" @click="handlerSave">
-            {{ $t('common.save') }}
-          </Button>
-        </div>
-      </template>
-    </Dialog>
-  </div>
-  <ChartContainer v-if="dataReportVisible" :is-visible="dataReportVisible" @change="handlerChange" @close="handlerAddReport(false)"/>
+  <ShadcnCard :title="title">
+    <template #extra>
+      <ShadcnSpace>
+        <ShadcnButton type="default" @click="visibleAddReport(true)">
+          {{ $t('dashboard.common.addReport') }}
+        </ShadcnButton>
+
+        <ShadcnButton @click="visibleSave(true)">
+          {{ $t('common.save') }}
+        </ShadcnButton>
+      </ShadcnSpace>
+    </template>
+
+    <!--    <div id="content">-->
+    <!--      <GridLayout ref="refLayout" :layout="layouts" :responsive="true" :col-num="12" :row-height="30" :is-draggable="true" :is-resizable="true" :vertical-compact="true"-->
+    <!--                  :use-css-transforms="true">-->
+    <!--        <GridItem v-for="item in layouts" :ref="el => set$Children(el)" :key="item.i" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :min-h="3" :min-w="3"-->
+    <!--                  @resized="onResize">-->
+    <!--          <DataCapCard :style="{width: item.width, height: item.height}">-->
+    <!--            <template #title>{{ item.title ? item.title : $t('dataset.common.notSpecifiedTitle') }}</template>-->
+    <!--            <template #extra>-->
+    <!--              <Button size="icon" class="w-6 h-6 rounded-full bg-color-error" @click="onRemove(item.i)">-->
+    <!--                <Trash :size="15"/>-->
+    <!--              </Button>-->
+    <!--            </template>-->
+    <!--            <VisualView v-if="item.original" class="-ml-3" :width="item.width.replace('px', '') - 20 + 'px'" :height="item.height.replace('px', '') - 48 + 'px'"-->
+    <!--                        :code="item.node.code" :configuration="JSON.parse(item.node.configure)" :type="item.original?.type"-->
+    <!--                        :query="item.original.type === 'DATASET' ? JSON.parse(item.original.query as string) : item.original.query" :original="item?.original?.source?.id"/>-->
+    <!--            <VisualView v-else class="-ml-3" :width="item.width.replace('px', '') - 20 + 'px'" :height="item.height.replace('px', '') - 48 + 'px'"-->
+    <!--                        :code="item.node.code" :configuration="JSON.parse(item.node.configure)" :query="JSON.parse(item.node.query)"/>-->
+    <!--          </DataCapCard>-->
+    <!--        </GridItem>-->
+    <!--      </GridLayout>-->
+    <!--    </div>-->
+  </ShadcnCard>
+
+  <!--  <Dialog :is-visible="configureVisible" :title="$t('common.configure')">-->
+  <!--    <div v-if="formState" class="pl-3 pr-4">-->
+  <!--      <FormField name="name">-->
+  <!--        <FormItem class="space-y-2">-->
+  <!--          <FormLabel>{{ $t('common.name') }}</FormLabel>-->
+  <!--          <FormMessage/>-->
+  <!--          <Input v-model="formState.name"/>-->
+  <!--        </FormItem>-->
+  <!--      </FormField>-->
+  <!--      <FormField name="description">-->
+  <!--        <FormItem class="space-y-2">-->
+  <!--          <FormLabel>{{ $t('common.description') }}</FormLabel>-->
+  <!--          <FormMessage/>-->
+  <!--          <Textarea v-model="formState.description"/>-->
+  <!--        </FormItem>-->
+  <!--      </FormField>-->
+  <!--      <FormField name="avatar">-->
+  <!--        <FormItem class="space-y-2">-->
+  <!--          <FormLabel>{{ $t('common.avatar') }}</FormLabel>-->
+  <!--          <FormMessage/>-->
+  <!--          <CropperHome :pic="formState?.avatar?.path" @update:value="handlerCropper"/>-->
+  <!--        </FormItem>-->
+  <!--      </FormField>-->
+  <!--    </div>-->
+  <!--    <template #footer>-->
+  <!--      <div class="space-x-5">-->
+  <!--        <Button variant="outline" size="sm" @click="configureVisible = false">-->
+  <!--          {{ $t('common.cancel') }}-->
+  <!--        </Button>-->
+  <!--        <Button :loading="loading" :disabled="loading" size="sm" @click="handlerSave">-->
+  <!--          {{ $t('common.save') }}-->
+  <!--        </Button>-->
+  <!--      </div>-->
+  <!--    </template>-->
+  <!--  </Dialog>-->
+
+  <ChartContainer v-if="dataReportVisible"
+                  :is-visible="dataReportVisible"
+                  @change="onChange"
+                  @close="visibleAddReport(false)"/>
 </template>
 
 <script lang="ts">
@@ -80,30 +84,14 @@ import DashboardService from '@/services/dashboard'
 import { ReportModel } from '@/model/report.ts'
 import VisualView from '@/views/components/visual/VisualView.vue'
 import { DashboardModel, DashboardRequest } from '@/model/dashboard.ts'
-import { DataCapCard } from '@/views/ui/card'
-import ChartContainer from '@/views/pages/admin/dashboard/components/ChartContainer.vue'
-import { ToastUtils } from '@/utils/toast.ts'
-import Dialog from '@/views/ui/dialog'
-import Button from '@/views/ui/button'
-import { Input } from '@/components/ui/input'
 import { cloneDeep } from 'lodash'
-import { Textarea } from '@/components/ui/textarea'
 import CropperHome from '@/views/components/cropper/CropperHome.vue'
 import UploadService from '@/services/upload'
+import ChartContainer from '@/views/pages/admin/dashboard/components/ChartContainer.vue'
 
 export default defineComponent({
   name: 'DashboardEditor',
-  components: {
-    CropperHome,
-    Textarea,
-    Input,
-    ChartContainer,
-    VisualView,
-    GridItem, GridLayout,
-    DataCapCard,
-    Button,
-    Dialog,
-  },
+  components: { ChartContainer, CropperHome, VisualView, GridItem, GridLayout },
   props: {
     info: {
       type: Object as () => DashboardModel | null
@@ -125,37 +113,33 @@ export default defineComponent({
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       setTimeout(() => {
         this.title = this.$t('dashboard.common.create')
         if (this.info) {
-          this.title = this.$t('dashboard.common.modifyInfo').replace('$VALUE', this.info.name as string)
+          this.title = this.$t('dashboard.common.modifyInfo').replace('$VALUE', String(this.info.name))
           this.formState = cloneDeep(this.info)
-          this.layouts = JSON.parse(this.info?.configure as string)
+          this.layouts = JSON.parse(String(this.info?.configure))
         }
         else {
           this.formState = DashboardRequest.of()
         }
       }, 300)
     },
-    handlerResize(i: string | number, w: number, h: number, x: number, y: number)
+    onResize(i: string | number, w: number, h: number, x: number, y: number)
     {
       console.debug(w, h)
       const node = this.layouts.find((obj: { i: string; }) => obj.i === i)
       node.width = `${ y }px`
       node.height = `${ x }px`
     },
-    handlerRemove(i: string | number)
+    onRemove(i: string | number)
     {
       this.layouts = this.layouts.filter((obj: { i: string; }) => obj.i !== i)
-    },
-    handlerSaveVisible(opened: boolean)
-    {
-      this.configureVisible = opened
     },
     handlerCropper(value: any)
     {
@@ -170,42 +154,21 @@ export default defineComponent({
                        if (this.formState) {
                          this.formState.avatar = response.data
                        }
-                       ToastUtils.success(this.$t('common.successfully'))
+
+                       this.$Message.success({
+                         content: this.$t('common.successfully'),
+                         showIcon: true
+                       })
                      }
                      else {
-                       ToastUtils.error(response.message)
+                       this.$Message.error({
+                         content: response.message,
+                         showIcon: true
+                       })
                      }
                    })
     },
-    handlerSave()
-    {
-      if (this.formState) {
-        this.formState.configure = JSON.stringify(this.layouts)
-        this.layouts.forEach((item: { node: { id: any; }; }) => this.formState?.reports?.push({ id: item.node.id }))
-        this.loading = true
-        DashboardService.saveOrUpdate(this.formState)
-                        .then(response => {
-                          if (response.status) {
-                            ToastUtils.success(this.$t('dashboard.tip.publishSuccess').replace('$VALUE', <string>this.formState?.name))
-                            if (response.data) {
-                              this.$router.push(`/admin/dashboard/preview/${ response.data?.code }`)
-                            }
-                            else {
-                              this.$router.push('/console/dashboard')
-                            }
-                          }
-                          else {
-                            ToastUtils.error(response.message)
-                          }
-                        })
-                        .finally(() => this.loading = false)
-      }
-    },
-    handlerAddReport(opened: boolean)
-    {
-      this.dataReportVisible = opened
-    },
-    handlerChange(node: ReportModel)
+    onChange(node: ReportModel)
     {
       const newItem = {
         x: 0,
@@ -225,6 +188,45 @@ export default defineComponent({
         original: node
       }
       this.layouts.push(newItem)
+    },
+    onSubmit()
+    {
+      if (this.formState) {
+        this.formState.configure = JSON.stringify(this.layouts)
+        this.layouts.forEach((item: { node: { id: any; }; }) => this.formState?.reports?.push({ id: item.node.id }))
+        this.loading = true
+        DashboardService.saveOrUpdate(this.formState)
+                        .then(response => {
+                          if (response.status) {
+                            this.$Message.success({
+                              content: this.$t('dashboard.tip.publishSuccess').replace('$VALUE', this.formState?.name),
+                              showIcon: true
+                            })
+
+                            if (response.data) {
+                              this.$router.push(`/admin/dashboard/preview/${ response.data?.code }`)
+                            }
+                            else {
+                              this.$router.push('/console/dashboard')
+                            }
+                          }
+                          else {
+                            this.$Message.error({
+                              content: response.message,
+                              showIcon: true
+                            })
+                          }
+                        })
+                        .finally(() => this.loading = false)
+      }
+    },
+    visibleSave(opened: boolean)
+    {
+      this.configureVisible = opened
+    },
+    visibleAddReport(opened: boolean)
+    {
+      this.dataReportVisible = opened
     },
     set$Children(vm: any)
     {
