@@ -1,6 +1,7 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.service.enums.ReportType;
 import lombok.AllArgsConstructor;
@@ -54,20 +55,20 @@ public class ReportEntity
     @JoinTable(name = "datacap_report_user_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnoreProperties(value = {"roles", "thirdConfigure", "avatarConfigure"})
+    @JsonIncludeProperties(value = {"name", "username", "code"})
     private UserEntity user;
 
     @ManyToOne
     @JoinTable(name = "datacap_report_source_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "source_id"))
-    @JsonIgnoreProperties(value = {"user"})
+    @JsonIncludeProperties(value = {"code", "name"})
     private SourceEntity source;
 
     @ManyToOne
     @JoinTable(name = "datacap_report_dataset_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "dataset_id"))
-    @JsonIgnoreProperties(value = {"user", "columns"})
+    @JsonIncludeProperties(value = {"code", "name", "query", "description"})
     private DataSetEntity dataset;
 }

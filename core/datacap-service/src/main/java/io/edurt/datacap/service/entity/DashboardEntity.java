@@ -1,6 +1,6 @@
 package io.edurt.datacap.service.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.service.converter.AvatarConverter;
 import io.edurt.datacap.service.entity.convert.AvatarEntity;
@@ -51,7 +51,7 @@ public class DashboardEntity
     @JoinTable(name = "datacap_dashboard_user_relation",
             joinColumns = @JoinColumn(name = "dashboard_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnoreProperties(value = {"roles", "thirdConfigure", "avatarConfigure"})
+    @JsonIncludeProperties(value = {"name", "username", "code"})
     private UserEntity user;
 
     @ManyToMany

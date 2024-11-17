@@ -5,8 +5,8 @@
                 :responsive="true"
                 :col-num="12"
                 :row-height="60"
-                :is-draggable="true"
-                :is-resizable="true"
+                :is-draggable="false"
+                :is-resizable="false"
                 :vertical-compact="true"
                 :use-css-transforms="true">
       <GridItem v-for="item in layouts"
