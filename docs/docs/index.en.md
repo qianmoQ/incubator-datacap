@@ -51,9 +51,6 @@ hide:
     <a href="https://github.com/devlive-community/datacap" target="_blank" title="Join us on GitHub" class="md-button md-button--primary">
       Join us on GitHub
     </a>
-    <a href="http://try.datacap.devlive.org/" target="_blank" title="Check out the online demo" class="md-button md-button--primary">
-      Check out the online demo
-    </a>
     <p/><p/><p/><p/>
 </div>
 
