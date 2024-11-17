@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="relative">
     <Loader2 v-if="loading" class="w-full justify-center animate-spin mt-10"/>
     <DashboardView v-else-if="data" :layouts="JSON.parse(data.configure as string)"/>
     <Alert v-else type="error" :title="$t('dashboard.tip.notFound').replace('$VALUE', $router.currentRoute?.value?.params['code'] as string)"/>
@@ -13,15 +13,10 @@ import DashboardService from '@/services/dashboard'
 import { useRouter } from 'vue-router'
 import DashboardView from '@/views/pages/admin/dashboard/components/DashboardView.vue'
 import { DashboardModel } from '@/model/dashboard'
-import Alert from '@/views/ui/alert'
 
 export default defineComponent({
   name: 'DashboardPreview',
-  components: {
-    Alert,
-    DashboardView,
-    Loader2
-  },
+  components: { DashboardView },
   data()
   {
     return {

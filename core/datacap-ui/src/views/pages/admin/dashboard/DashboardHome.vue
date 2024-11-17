@@ -10,64 +10,79 @@
       </ShadcnTooltip>
     </template>
 
-    <template #content>
-      <div class="mb-3 min-h-screen">
-        <Loader2 v-if="loading" class="w-full justify-center animate-spin"/>
-        <div v-else class="hidden flex-col md:flex">
-          <div class="flex-1 space-y-4 pt-6">
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-              <DataCapCard v-for="item in data">
-                <template #title>
-                  <div class="flex space-x-1">
-                    <div>
-                      <RouterLink :to="`/admin/dashboard/preview/${item.code}`" target="_blank">{{ item.name }}</RouterLink>
-                    </div>
-                    <div>
-                      <Tooltip :content="item.description">
-                        <Info :size="18" class="cursor-pointer"/>
-                      </Tooltip>
-                    </div>
-                  </div>
-                </template>
-                <template #extra>
-                  <DropdownMenu class="justify-items-end">
-                    <DropdownMenuTrigger>
-                      <Cog :size="20"/>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem class="cursor-pointer">
-                        <RouterLink :to="`/admin/dashboard/info/${item.code}`" target="_blank" class="flex items-center">
-                          <Pencil :size="15" class="mr-1"/>
-                          {{ $t('dashboard.common.modify') }}
-                        </RouterLink>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem class="cursor-pointer" @click="handlerDelete(true, item)">
-                        <Trash :size="15" class="mr-1"/>
-                        {{ $t('dashboard.common.delete') }}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </template>
-                <div class="shadow-blackA7 w-full overflow-hidden rounded-md">
-                  <AspectRatio :ratio="16 / 11">
-                    <img class="h-full w-full object-cover" :src="`${item.avatar?.path ? item.avatar.path : '/static/images/dashboard.png'}`" :alt="item.name"/>
-                  </AspectRatio>
+    <div class="mb-3 min-h-screen p-2">
+      <ShadcnSpin v-if="loading" fixed/>
+
+      <ShadcnRow :gutter="16">
+        <ShadcnCol v-for="item in data" span="3">
+          <ShadcnCard>
+            <template #title>
+              <RouterLink :to="`/admin/dashboard/preview/${item.code}`" target="_blank">{{ item.name }}</RouterLink>
+            </template>
+
+            <template #extra>
+              <ShadcnSpace class="items-center">
+                <div v-if="item.description" class="cursor-pointer mt-1">
+                  <ShadcnTooltip :content="item.description">
+                    <ShadcnIcon icon="Info" size="20"/>
+                  </ShadcnTooltip>
                 </div>
-                <template #footer>
-                  <p class="text-xs text-muted-foreground text-right">{{ item.createTime }}</p>
-                </template>
-              </DataCapCard>
+
+                <ShadcnDropdown trigger="click" position="right">
+                  <template #trigger>
+                    <ShadcnButton circle size="small">
+                      <ShadcnIcon icon="Cog" size="18"/>
+                    </ShadcnButton>
+                  </template>
+
+                  <ShadcnDropdownItem>
+                    <RouterLink :to="`/admin/dashboard/info/${item.code}`" target="_blank" class="flex items-center space-x-2">
+                      <ShadcnIcon icon="Pencil" size="15"/>
+                      <span>{{ $t('dashboard.common.modify') }}</span>
+                    </RouterLink>
+                  </ShadcnDropdownItem>
+
+                  <ShadcnDropdownItem @on-click="visibleDelete(true, item)">
+                    <ShadcnIcon icon="Trash" size="15"/>
+                    <span>{{ $t('dashboard.common.delete') }}</span>
+                  </ShadcnDropdownItem>
+                </ShadcnDropdown>
+              </ShadcnSpace>
+            </template>
+
+            <div class="p-3">
+              <ShadcnAvatar square
+                            class="w-full object-fit"
+                            :src="`${item.avatar?.path ? item.avatar.path : '/static/images/dashboard.png'}`"
+                            :alt="item.name"
+                            :style="{ height: '250px' }">
+              </ShadcnAvatar>
+
+              <div class="text-xs text-muted-foreground text-right">{{ item.createTime }}</div>
             </div>
-            <div v-if="data.length === 0" class="text-center">
-              {{ $t('common.noData') }}
-            </div>
-            <div>
-              <Pagination v-if="pagination && !loading && data.length > 0" :pagination="pagination" @changePage="handlerChangePage"/>
-            </div>
+          </ShadcnCard>
+        </ShadcnCol>
+
+        <ShadcnCol span="12">
+          <div v-if="!loading && data.length === 0" class="text-center">
+            {{ $t('common.noData') }}
           </div>
-        </div>
-      </div>
-    </template>
+        </ShadcnCol>
+      </ShadcnRow>
+
+      <ShadcnPagination v-if="data.length > 0"
+                        v-model="pageIndex"
+                        class="py-2"
+                        show-total
+                        show-sizer
+                        :page-size="pageSize"
+                        :total="dataCount"
+                        :sizerOptions="[12, 24, 36]"
+                        @on-change="onPageChange"
+                        @on-prev="onPrevChange"
+                        @on-next="onNextChange"
+                        @on-change-size="onSizeChange"/>
+    </div>
   </ShadcnCard>
   <!--    <DashboardDelete v-if="deleteVisible" :is-visible="deleteVisible" :data="dataInfo" @close="handlerDelete(false, null)"></DashboardDelete>-->
 </template>
@@ -76,7 +91,6 @@
 import { defineComponent } from 'vue'
 import DashboardService from '@/services/dashboard'
 import { FilterModel } from '@/model/filter'
-import { PaginationModel, PaginationRequest } from '@/model/pagination'
 import { DashboardModel } from '@/model/dashboard'
 
 export default defineComponent({
@@ -84,7 +98,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    filter.size = 30
+    filter.size = 12
 
     return {
       filter
@@ -96,40 +110,61 @@ export default defineComponent({
       loading: false,
       deleteVisible: false,
       data: [] as DashboardModel[],
-      pagination: {} as PaginationModel,
+      pageIndex: 1,
+      pageSize: 10,
+      dataCount: 0,
       dataInfo: null as DashboardModel | null
     }
   },
   created()
   {
-    this.handlerInitialize()
+    this.handleInitialize()
   },
   methods: {
-    handlerInitialize()
+    handleInitialize()
     {
       this.loading = true
       DashboardService.getAll(this.filter)
                       .then(response => {
                         if (response.status) {
                           this.data = response.data.content
-                          this.pagination = PaginationRequest.of(response.data)
+                          this.dataCount = response.data.total
+                          this.pageSize = response.data.size
+                          this.pageIndex = response.data.page
                         }
                       })
                       .finally(() => this.loading = false)
     },
-    handlerDelete(opened: boolean, data: DashboardModel | null)
+    fetchData(value: number)
+    {
+      this.filter.page = value
+      this.filter.size = this.pageSize
+      this.handleInitialize()
+    },
+    onPageChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onPrevChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onNextChange(value: number)
+    {
+      this.fetchData(value)
+    },
+    onSizeChange(value: number)
+    {
+      this.pageSize = value
+      this.fetchData(this.pageIndex)
+    },
+    visibleDelete(opened: boolean, data: DashboardModel | null)
     {
       this.deleteVisible = opened
       this.dataInfo = data
       if (!opened) {
-        this.handlerInitialize()
+        this.handleInitialize()
       }
-    },
-    handlerChangePage(value: PaginationModel)
-    {
-      this.filter.page = value.currentPage
-      this.filter.size = value.pageSize
-      this.handlerInitialize()
     }
   }
 })
