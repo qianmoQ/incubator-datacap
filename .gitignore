@@ -52,7 +52,6 @@ config/
 docs/site/
 data/
 !parser/datacap-parser-trino/src/main/java/io/edurt/datacap/parser/node/
-pnpm-lock.yaml
 depcheck-output.json
 
 !configure/schema/*/data/
