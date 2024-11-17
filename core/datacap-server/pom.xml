@@ -18,7 +18,7 @@
         <findbugs.version>3.0.1</findbugs.version>
         <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
         <node.version>v18.18.2</node.version>
-        <yarn.version>v1.22.11</yarn.version>
+        <pnpm.version>9.13.2</pnpm.version>
     </properties>
 
     <dependencies>
@@ -562,29 +562,29 @@
                     <installDirectory>../datacap-ui/</installDirectory>
                     <workingDirectory>../datacap-ui/</workingDirectory>
                     <nodeVersion>${node.version}</nodeVersion>
-                    <yarnVersion>${yarn.version}</yarnVersion>
+                    <pnpmVersion>${pnpm.version}</pnpmVersion>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and yarn</id>
+                        <id>install node and pnpm</id>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
+                            <goal>install-node-and-pnpm</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>yarn install</id>
+                        <id>pnpm install</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>--legacy-peer-deps install</arguments>
+                            <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>yarn run build</id>
+                        <id>pnpm run build</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>

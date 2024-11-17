@@ -71,3 +71,4 @@ convert/datacap-convert-xml/*.xml
 
 # Skip ui #
 core/datacap-ui/depcheck-output.json
+core/datacap-ui/yarn.lock
