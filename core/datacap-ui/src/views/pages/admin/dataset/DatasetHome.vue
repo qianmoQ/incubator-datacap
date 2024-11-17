@@ -59,6 +59,13 @@
                   <span>{{ $t('dataset.common.syncData') }}</span>
                 </div>
               </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem @on-click="visibleHistory(row, true)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="History" size="15"/>
+                  <span>{{ $t('dataset.common.history') }}</span>
+                </div>
+              </ShadcnDropdownItem>
             </ShadcnDropdown>
           </ShadcnSpace>
         </template>
@@ -77,10 +84,6 @@
                         @on-next="onNextChange"
                         @on-change-size="onSizeChange"/>
     </div>
-    <!--                <DropdownMenuItem style="cursor: pointer;" @click="handlerHistory(row, true)">-->
-    <!--                  <History class="mr-2 h-4 w-4"/>-->
-    <!--                  <span>{{ $t('dataset.common.history') }}</span>-->
-    <!--                </DropdownMenuItem>-->
     <!--                <DropdownMenuSeparator/>-->
     <!--                <DropdownMenuItem :disabled="isSuccess(row?.state)" style="cursor: pointer;" @click="handlerError(row, true)">-->
     <!--                  <TriangleAlert class="mr-2 h-4 w-4"/>-->
@@ -98,7 +101,11 @@
   </ShadcnCard>
 
   <!--    <DatasetRebuild v-if="rebuildVisible" :is-visible="rebuildVisible" :data="contextData" @close="handlerRebuild(null, false)"/>-->
-  <!--    <DatasetHistory v-if="historyVisible" :is-visible="historyVisible" :info="contextData" @close="handlerHistory(null, false)"/>-->
+  <DatasetHistory v-if="historyVisible"
+                  :is-visible="historyVisible"
+                  :info="contextData"
+                  @close="visibleHistory(null, false)"/>
+
   <DatasetSync v-if="syncDataVisible"
                :is-visible="syncDataVisible"
                :info="contextData"
@@ -116,10 +123,11 @@ import DatasetService from '@/services/dataset'
 import { DatasetModel } from '@/model/dataset'
 import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vue'
 import DatasetSync from '@/views/pages/admin/dataset/DatasetSync.vue'
+import DatasetHistory from '@/views/pages/admin/dataset/DatasetHistory.vue'
 
 export default defineComponent({
   name: 'DatasetHome',
-  components: { DatasetSync, DatasetState },
+  components: { DatasetHistory, DatasetSync, DatasetState },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -196,7 +204,7 @@ export default defineComponent({
       this.rebuildVisible = opened
       this.contextData = record
     },
-    handlerHistory(record: DatasetModel | null, opened: boolean)
+    visibleHistory(record: DatasetModel | null, opened: boolean)
     {
       this.contextData = record
       this.historyVisible = opened
