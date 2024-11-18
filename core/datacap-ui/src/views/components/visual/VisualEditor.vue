@@ -1,14 +1,14 @@
 <template>
   <ShadcnRow :gutter="8">
     <ShadcnCol span="10">
-      <div class="relative">
+      <div class="relative" style="min-height: 300px;">
         <ShadcnSpin v-if="loading" fixed/>
 
         <ShadcnAlert v-if="configuration?.headers.length === 0 && !configuration?.message" class="mt-20" :title="$t('dataset.tip.adhocDnd')"/>
 
         <ShadcnAlert v-else-if="configuration?.message" class="mt-20" :title="configuration.message" type="error"/>
 
-        <div v-else>
+        <div v-else-if="!loading">
           <VisualTable v-if="configuration?.type === Type.TABLE" :configuration="configuration" @change="handlerCommit"/>
           <VisualLine v-else-if="configuration?.type === Type.LINE" :configuration="configuration" @change="handlerCommit"/>
           <VisualBar v-else-if="configuration?.type === Type.BAR" :configuration="configuration" @change="handlerCommit"/>
