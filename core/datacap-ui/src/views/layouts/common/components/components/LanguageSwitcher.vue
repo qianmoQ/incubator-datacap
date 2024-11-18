@@ -5,9 +5,9 @@
                 @on-change="changeLanguage">
     <template #options>
       <ShadcnSelectGroup :label="$t('region.common.asia.default')">
-        <ShadcnSelectOption value="language_zh_cn"
+        <ShadcnSelectOption value="language_zh-cn"
                             :label="$t('region.common.asia.chineseSimple')"
-                            :selected="language === 'language_zh_cn'"/>
+                            :selected="language === 'language_zh-cn'"/>
       </ShadcnSelectGroup>
 
       <ShadcnSelectGroup :label="$t('region.common.northAmerica.default')">
@@ -19,38 +19,30 @@
   </ShadcnSelect>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useI18nHandler } from '@/i18n/I18n'
 
-export default defineComponent({
-  name: 'LanguageSwitcher',
-  setup()
-  {
-    const { locale } = useI18n()
+console.log( useI18nHandler())
+// @ts-ignore
+const { loadLocale } = useI18nHandler()
+const language = ref('language_zh-cn')
 
-    const changeLanguage = (language: any) => {
-      const prefix = 'language_'
+const changeLanguage = async (event: any) => {
+  const prefix = 'language_'
+  const lang = event.value
 
-      language = language.value
+  if (lang.startsWith(prefix)) {
+    const locale = lang.substring(prefix.length)
+    await loadLocale(locale)
+    language.value = lang
+  }
+}
 
-      if (language.startsWith(prefix)) {
-        locale.value = language.substring(prefix.length)
-      }
-      else {
-        locale.value = language
-      }
-    }
-
-    return {
-      changeLanguage
-    }
-  },
-  data()
-  {
-    return {
-      language: 'language_zh_cn'
-    }
+onMounted(() => {
+  const currentLocale = localStorage.getItem('locale')
+  if (currentLocale) {
+    language.value = `language_${ currentLocale }`
   }
 })
 </script>

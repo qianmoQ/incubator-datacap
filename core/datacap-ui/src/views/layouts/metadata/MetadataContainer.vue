@@ -1,29 +1,26 @@
 <template>
-  <ShadcnLayout>
-    <LayoutHeader/>
-    <div class="container my-2 min-h-screen">
-      <ShadcnLayoutWrapper>
-        <ShadcnLayoutSider class="mr-4">
-          <MetadataSidebar/>
-        </ShadcnLayoutSider>
-        <ShadcnLayoutMain class="ml-2">
-          <ShadcnLayoutContent>
-            <MetadataContent/>
-          </ShadcnLayoutContent>
-        </ShadcnLayoutMain>
-      </ShadcnLayoutWrapper>
-    </div>
-    <LayoutFooter/>
-  </ShadcnLayout>
+  <BaseLayout>
+    <ShadcnLayout>
+      <div class="container my-2 min-h-screen">
+        <ShadcnLayoutWrapper>
+          <ShadcnLayoutSider class="mr-4">
+            <MetadataSidebar/>
+          </ShadcnLayoutSider>
+          <ShadcnLayoutMain class="ml-2">
+            <ShadcnLayoutContent>
+              <MetadataContent/>
+            </ShadcnLayoutContent>
+          </ShadcnLayoutMain>
+        </ShadcnLayoutWrapper>
+      </div>
+      <LayoutFooter/>
+    </ShadcnLayout>
+  </BaseLayout>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import MetadataSidebar from '@/views/layouts/metadata/components/MetadataSidebar.vue'
 import MetadataContent from '@/views/layouts/metadata/components/MetadataContent.vue'
-
-export default defineComponent({
-  name: 'MetadataContainer',
-  components: { MetadataContent, MetadataSidebar }
-})
+import LayoutFooter from '@/views/layouts/common/components/LayoutFooter.vue'
+import BaseLayout from '@/views/layouts/base/BaseLayout.vue'
 </script>
