@@ -19,7 +19,6 @@ public interface TableService
      */
     CommonResponse<List<TableEntity>> getAllByDatabase(String code);
 
-
     /**
      * Retrieves data from the database based on the provided ID and table filter.
      *
