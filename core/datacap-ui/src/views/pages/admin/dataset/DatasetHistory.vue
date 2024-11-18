@@ -45,11 +45,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
 import { useDatasetHeaders } from './DatasetUtils'
 import DatasetService from '@/services/dataset'
 import { DatasetModel } from '@/model/dataset'
-import Common from '@/utils/common'
+import Common, { useUtil } from '@/utils/common'
 
 export default defineComponent({
   name: 'DatasetHistory',
@@ -80,14 +79,14 @@ export default defineComponent({
   },
   setup()
   {
-    const i18n = useI18n()
     const filter: FilterModel = new FilterModel()
     const { historyHeaders } = useDatasetHeaders()
+    const { getText } = useUtil()
 
     return {
-      i18n,
       filter,
-      historyHeaders
+      historyHeaders,
+      getText
     }
   },
   data()
@@ -148,7 +147,7 @@ export default defineComponent({
     },
     getStateText(origin: string): string
     {
-      return Common.getText(this.i18n, origin)
+      return this.getText(origin)
     }
   }
 })
