@@ -1,7 +1,7 @@
-#!/bin/sh0
+#!/bin/sh
 
 HOME=$(pwd)
-VERSION=2024.4.0-SNAPSHOT
+VERSION=$(./mvnw -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugins.help=INFO | tail -1)
 
 common_install_handler() {
     TYPE=$1
@@ -16,8 +16,8 @@ common_install_handler() {
         full_line=$(echo "$line" | cut -c 1)
         if [ "$full_line" != "-" ] && [ "$full_line" != "#" ] && [ ! -z $full_line ]
         then
-            echo "install connector : $line"
-        		"${HOME}"/mvnw dependency:get -DgroupId=io.edurt.datacap -DartifactId="${line}" -Dversion=${VERSION} -Ddest="${HOME}/${TYPE}s"
+            echo "install ${TYPE} : $line"
+#        		"${HOME}"/mvnw dependency:get -DgroupId=io.edurt.datacap -DartifactId="${line}" -Dversion=${VERSION} -Ddest="${HOME}/${TYPE}s"
         fi
     done <"${HOME}/configure/${TYPE}".conf
 }
