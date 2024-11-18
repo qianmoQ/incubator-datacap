@@ -90,8 +90,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter.ts'
-import { createHeaders } from '@/views/pages/admin/snippet/SnippetUtils'
-import { useI18n } from 'vue-i18n'
+import { useHeaders } from '@/views/pages/admin/snippet/SnippetUtils'
 import SnippetService from '@/services/snippet'
 import { SnippetModel } from '@/model/snippet'
 import SnippetInfo from '@/views/pages/admin/snippet/SnippetInfo.vue'
@@ -104,7 +103,8 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
+
     return {
       filter,
       headers

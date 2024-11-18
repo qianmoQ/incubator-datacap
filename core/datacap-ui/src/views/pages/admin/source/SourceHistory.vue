@@ -61,9 +61,8 @@ import { defineComponent } from 'vue'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
-import { createHistoryHeaders } from '@/views/pages/admin/source/SourceUtils'
-import Common from '@/utils/common'
+import { useHeaders } from '@/views/pages/admin/source/SourceUtils'
+import Common, { useUtil } from '@/utils/common'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 
@@ -98,14 +97,14 @@ export default defineComponent({
   },
   setup()
   {
-    const i18n = useI18n()
     const filter: FilterModel = new FilterModel()
-    const headers = createHistoryHeaders(i18n)
+    const { historyHeaders: headers } = useHeaders()
+    const { getText } = useUtil()
 
     return {
       filter,
       headers,
-      i18n
+      getText
     }
   },
   data()
@@ -170,7 +169,7 @@ export default defineComponent({
     },
     getStateText(origin: string): string
     {
-      return Common.getText(this.i18n, origin)
+      return this.getText(origin)
     },
     toMarkdown(content: string)
     {

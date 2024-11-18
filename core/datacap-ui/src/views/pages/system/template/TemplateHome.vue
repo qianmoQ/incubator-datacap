@@ -58,8 +58,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { createHeaders } from '@/views/pages/system/template/TemplateUtils'
-import { useI18n } from 'vue-i18n'
+import { useHeaders } from '@/views/pages/system/template/TemplateUtils'
 import TemplateService from '@/services/template'
 import { TemplateModel } from '@/model/template'
 import TemplateInfo from '@/views/pages/system/template/TemplateInfo.vue'
@@ -70,7 +69,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
 
     return {
       filter,

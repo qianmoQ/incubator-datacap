@@ -23,7 +23,6 @@
 import { onMounted, ref } from 'vue'
 import { useI18nHandler } from '@/i18n/I18n'
 
-console.log( useI18nHandler())
 // @ts-ignore
 const { loadLocale } = useI18nHandler()
 const language = ref('language_zh-cn')

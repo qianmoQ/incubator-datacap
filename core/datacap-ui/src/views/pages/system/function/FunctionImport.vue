@@ -71,8 +71,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { createDefaultType } from '@/views/pages/system/function/FunctionUtils'
+import { useHeaders } from '@/views/pages/system/function/FunctionUtils'
 import { FunctionImportModel, FunctionMode } from '@/model/function'
 import FunctionService from '@/services/function'
 import SourceService from '@/services/source'
@@ -87,7 +86,8 @@ export default defineComponent({
   },
   setup()
   {
-    const types = createDefaultType(useI18n())
+    const { typeHeaders: types } = useHeaders()
+
     return {
       types
     }

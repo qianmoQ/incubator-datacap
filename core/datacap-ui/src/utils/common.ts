@@ -1,3 +1,5 @@
+import { useI18n } from 'vue-i18n'
+
 const token = 'DataCapAuthToken'
 const menu = 'DataCapAvailableMenus'
 const userEditorConfigure = 'DataCapUserEditorConfigure'
@@ -9,34 +11,6 @@ const userEditorConfigure = 'DataCapUserEditorConfigure'
  */
 const getCurrentUserId = (): number => {
     return JSON.parse(localStorage.getItem(token) || '{}').id
-}
-
-/**
- * Retrieves the text based on the given origin value.
- *
- * @param {any} i18n - the internationalization object
- * @param {string} origin - the origin value to determine the text to retrieve
- * @return {string} the text based on the origin value
- */
-const getText = (i18n: any, origin: string): string => {
-    switch (origin) {
-        case 'CREATED':
-            return i18n.t('state.common.create')
-        case 'RUNNING':
-            return i18n.t('state.common.running')
-        case 'SUCCESS':
-            return i18n.t('state.common.success')
-        case 'FAILURE':
-            return i18n.t('state.common.failure')
-        case 'STOPPED':
-            return i18n.t('state.common.stop')
-        case 'TIMEOUT':
-            return i18n.t('state.common.timeout')
-        case 'QUEUE':
-            return i18n.t('state.common.queue')
-        default:
-            return origin
-    }
 }
 
 /**
@@ -81,7 +55,42 @@ export default {
     menu: menu,
     getCurrentUserId: getCurrentUserId,
     userEditorConfigure: userEditorConfigure,
-    getText: getText,
     getColor: getColor,
     fileToBase64: fileToBase64
+}
+
+export function useUtil()
+{
+    const { t } = useI18n()
+
+    /**
+     * Retrieves the text based on the given origin value.
+     *
+     * @param {string} origin - the origin value to determine the text to retrieve
+     * @return {string} the text based on the origin value
+     */
+    const getText = (origin: string): string => {
+        switch (origin) {
+            case 'CREATED':
+                return t('state.common.create')
+            case 'RUNNING':
+                return t('state.common.running')
+            case 'SUCCESS':
+                return t('state.common.success')
+            case 'FAILURE':
+                return t('state.common.failure')
+            case 'STOPPED':
+                return t('state.common.stop')
+            case 'TIMEOUT':
+                return t('state.common.timeout')
+            case 'QUEUE':
+                return t('state.common.queue')
+            default:
+                return origin
+        }
+    }
+
+    return {
+        getText
+    }
 }

@@ -136,8 +136,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
-import { createHeaders } from './DatasetUtils'
+import { useDatasetHeaders } from './DatasetUtils'
 import DatasetService from '@/services/dataset'
 import { DatasetModel } from '@/model/dataset'
 import DatasetState from '@/views/pages/admin/dataset/components/DatasetState.vue'
@@ -153,7 +152,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useDatasetHeaders()
 
     return {
       filter,

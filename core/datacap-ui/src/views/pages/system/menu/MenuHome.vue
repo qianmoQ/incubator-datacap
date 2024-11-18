@@ -47,14 +47,16 @@
     </div>
   </ShadcnCard>
 
-  <MenuInfo v-if="dataInfoVisible" :is-visible="dataInfoVisible" :info="dataInfo" @close="handlerChangeInfo(false, null)"/>
+  <MenuInfo v-if="dataInfoVisible"
+            :is-visible="dataInfoVisible"
+            :info="dataInfo"
+            @close="handlerChangeInfo(false, null)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
-import { createHeaders } from '@/views/pages/system/menu/MenuUtils'
+import { useHeaders } from '@/views/pages/system/menu/MenuUtils'
 import { MenuModel } from '@/model/menu'
 import MenuService from '@/services/menu'
 import MenuInfo from '@/views/pages/system/menu/MenuInfo.vue'
@@ -65,7 +67,8 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
+
     return {
       filter,
       headers

@@ -49,7 +49,7 @@
               </ShadcnButton>
             </ShadcnTooltip>
 
-            <ShadcnDropdown trigger="click">
+            <ShadcnDropdown trigger="click" position="right">
               <template #trigger>
                 <ShadcnButton circle size="small">
                   <ShadcnIcon icon="Cog" :size="15"/>
@@ -128,9 +128,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useI18n } from 'vue-i18n'
 import Common from '@/utils/common'
-import { createHeaders } from '@/views/pages/admin/source/SourceUtils'
+import { useHeaders } from '@/views/pages/admin/source/SourceUtils'
 import { FilterModel } from '@/model/filter'
 import { SourceModel } from '@/model/source'
 import SourceService from '@/services/source'
@@ -145,7 +144,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
     const loginUserId = Common.getCurrentUserId()
 
     return {

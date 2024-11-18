@@ -86,8 +86,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
-import { createHeaders } from '@/views/pages/admin/report/ReportUtils'
+import { useHeaders } from '@/views/pages/admin/report/ReportUtils'
 import ReportService from '@/services/report'
 import { ReportModel } from '@/model/report'
 import ReportView from '@/views/pages/admin/report/ReportView.vue'
@@ -99,7 +98,8 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
+
     return {
       filter,
       headers

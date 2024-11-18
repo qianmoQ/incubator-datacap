@@ -39,7 +39,7 @@
 
         <template #state="{row}">
           <ShadcnTag class="w-20" :color="Common.getColor(row.state)">
-            {{ Common.getText(i18n, row.state) }}
+            {{ getText(row.state) }}
           </ShadcnTag>
         </template>
 
@@ -138,10 +138,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { createHeaders } from '@/views/pages/admin/pipeline/PipelineUtils'
-import { useI18n } from 'vue-i18n'
+import { useHeaders } from '@/views/pages/admin/pipeline/PipelineUtils'
 import PipelineService from '@/services/pipeline'
-import Common from '@/utils/common.ts'
+import Common, { useUtil } from '@/utils/common.ts'
 import { PipelineModel } from '@/model/pipeline.ts'
 import MarkdownPreview from '@/views/components/markdown/MarkdownView.vue'
 import PipelineStop from '@/views/pages/admin/pipeline/PipelineStop.vue'
@@ -154,13 +153,14 @@ export default defineComponent({
   components: { PipelineFlow, PipelineDelete, PipelineLogger, PipelineStop, MarkdownPreview },
   setup()
   {
-    const i18n = useI18n()
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(i18n)
+    const { headers } = useHeaders()
+    const { getText } = useUtil()
+
     return {
-      i18n,
       filter,
-      headers
+      headers,
+      getText
     }
   },
   computed: {

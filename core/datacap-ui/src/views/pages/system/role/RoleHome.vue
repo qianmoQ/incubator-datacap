@@ -56,8 +56,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { createHeaders } from '@/views/pages/system/role/RoleUtils'
-import { useI18n } from 'vue-i18n'
+import { useHeaders } from '@/views/pages/system/role/RoleUtils'
 import RoleService from '@/services/role'
 import { RoleModel } from '@/model/role'
 import RoleInfo from '@/views/pages/system/role/RoleInfo.vue'
@@ -69,7 +68,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
 
     return {
       filter,

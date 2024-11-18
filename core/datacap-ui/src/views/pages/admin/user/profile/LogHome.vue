@@ -30,8 +30,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
-import { createHeaders } from './ProfileUtils'
+import { useHeaders } from './ProfileUtils'
 import UserService from '@/services/user'
 import Common from '@/utils/common'
 
@@ -46,7 +45,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
 
     return {
       filter,

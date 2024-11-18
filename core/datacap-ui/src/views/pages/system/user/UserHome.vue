@@ -66,8 +66,7 @@
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
 import UserService from '@/services/user'
-import { useI18n } from 'vue-i18n'
-import { createHeaders } from './UserUtils'
+import { useHeaders } from './UserUtils'
 import { UserModel } from '@/model/user'
 import UserInfo from '@/views/pages/system/user/UserInfo.vue'
 import UserRole from '@/views/pages/system/user/components/UserRole.vue'
@@ -78,8 +77,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const i18n = useI18n()
-    const headers = createHeaders(i18n)
+    const { headers } = useHeaders()
 
     return {
       filter,

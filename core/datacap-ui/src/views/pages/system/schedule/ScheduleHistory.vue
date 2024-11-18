@@ -28,8 +28,7 @@
 import { defineComponent } from 'vue'
 import { ScheduleModel } from '@/model/schedule'
 import { FilterModel } from '@/model/filter'
-import { useI18n } from 'vue-i18n'
-import { createHistoryHeaders } from '@/views/pages/system/schedule/ScheduleUtils'
+import { useHeaders } from '@/views/pages/system/schedule/ScheduleUtils'
 import ScheduleService from '@/services/schedule'
 
 export default defineComponent({
@@ -59,7 +58,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHistoryHeaders(useI18n())
+    const { historyHeaders: headers } = useHeaders()
 
     return {
       filter,

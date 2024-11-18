@@ -106,9 +106,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter.ts'
-import { useI18n } from 'vue-i18n'
 import AuditService from '@/services/audit'
-import { createHeaders } from '@/views/pages/admin/history/HistoryUtils'
+import { useHeaders } from '@/views/pages/admin/history/HistoryUtils'
 import SqlInfo from '@/views/components/sql/SqlInfo.vue'
 import { HistoryModel } from '@/model/history'
 import HistoryData from '@/views/pages/admin/history/HistoryData.vue'
@@ -122,7 +121,8 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
+
     return {
       filter,
       headers

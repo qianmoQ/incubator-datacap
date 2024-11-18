@@ -61,7 +61,7 @@ public class ReportEntity
     @JoinTable(name = "datacap_report_source_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "source_id"))
-    @JsonIncludeProperties(value = {"code", "name"})
+    @JsonIncludeProperties(value = {"id", "code", "name", "type"})
     private SourceEntity source;
 
     @ManyToOne

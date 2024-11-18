@@ -50,8 +50,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { FilterModel } from '@/model/filter'
-import { createHeaders } from './ScheduleUtils'
-import { useI18n } from 'vue-i18n'
+import { useHeaders } from './ScheduleUtils'
 import ScheduleService from '@/services/schedule'
 import ScheduleHistory from '@/views/pages/system/schedule/ScheduleHistory.vue'
 import { ScheduleModel } from '@/model/schedule'
@@ -62,7 +61,7 @@ export default defineComponent({
   setup()
   {
     const filter: FilterModel = new FilterModel()
-    const headers = createHeaders(useI18n())
+    const { headers } = useHeaders()
 
     return {
       filter,
