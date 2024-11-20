@@ -1,6 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
-import io.edurt.datacap.plugin.PluginModule;
+import io.edurt.datacap.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ public class PluginLoaderFactory
     // 注册默认的加载器
     // Register default loaders
     static {
-        registerLoader(new SPIPluginLoader());
+        registerLoader(new SpiPluginLoader());
         registerLoader(new PomPluginLoader());
         registerLoader(new DirectoryPluginLoader());
         registerLoader(new CompiledPomPluginLoader());
@@ -41,10 +41,9 @@ public class PluginLoaderFactory
             return;
         }
 
-        PluginLoader existing = loaderRegistry.putIfAbsent(type.toLowerCase(), loader);
+        PluginLoader existing = loaderRegistry.putIfAbsent(type, loader);
         if (existing != null) {
-            log.warn("Loader type '{}' is already registered, skipping registration of {}",
-                    type, loader.getClass().getName());
+            log.warn("Loader type '{}' is already registered, skipping registration of {}", type, loader.getClass().getName());
         }
         else {
             log.info("Registered plugin loader: {} for type: {}", loader.getClass().getName(), type);
@@ -77,7 +76,7 @@ public class PluginLoaderFactory
      * @return 加载的插件模块列表
      * @return list of loaded plugin modules
      */
-    public static List<PluginModule> loadPlugins(Path pluginDir)
+    public static List<Plugin> loadPlugins(Path pluginDir)
     {
         if (pluginDir == null) {
             log.warn("Plugin directory is null");
@@ -91,9 +90,9 @@ public class PluginLoaderFactory
             PluginLoader loader = entry.getValue();
 
             try {
-                List<PluginModule> modules = loader.load(pluginDir);
+                List<Plugin> modules = loader.load(pluginDir);
                 if (modules != null && !modules.isEmpty()) {
-                    log.info("Successfully loaded {} plugin(s) using loader type: {}", modules.size(), type);
+                    log.info("Successfully loaded [ {} ] plugin(s) using loader type [ {} ]", modules.size(), type);
                     return modules;
                 }
             }

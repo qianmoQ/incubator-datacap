@@ -1,6 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
-import io.edurt.datacap.plugin.PluginModule;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
-public class SPIPluginLoader
+public class SpiPluginLoader
         implements PluginLoader
 {
     @Override
@@ -22,11 +22,11 @@ public class SPIPluginLoader
     }
 
     @Override
-    public List<PluginModule> load(Path path)
+    public List<Plugin> load(Path path)
     {
         try {
             URLClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(path);
-            ServiceLoader<PluginModule> serviceLoader = ServiceLoader.load(PluginModule.class, classLoader);
+            ServiceLoader<Plugin> serviceLoader = ServiceLoader.load(Plugin.class, classLoader);
             return StreamSupport.stream(serviceLoader.spliterator(), false)
                     .collect(Collectors.toList());
         }

@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.nio.file.Path;
-import java.util.Set;
 
 @Data
 @Builder
@@ -16,6 +15,5 @@ public class PluginInfo
     private PluginState state;
     private ClassLoader classLoader;
     private Object instance;
-    private Set<String> dependencies;
     private long loadTime;
 }

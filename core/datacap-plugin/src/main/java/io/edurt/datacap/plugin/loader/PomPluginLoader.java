@@ -1,6 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
-import io.edurt.datacap.plugin.PluginModule;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.model.Model;
@@ -23,7 +23,7 @@ public class PomPluginLoader
     }
 
     @Override
-    public List<PluginModule> load(Path path)
+    public List<Plugin> load(Path path)
     {
         try {
             Path pomFile = path.resolve("pom.xml");
@@ -42,12 +42,12 @@ public class PomPluginLoader
             URLClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(path);
             Class<?> pluginClass = classLoader.loadClass(mainClass);
 
-            if (!PluginModule.class.isAssignableFrom(pluginClass)) {
+            if (!Plugin.class.isAssignableFrom(pluginClass)) {
                 log.error("Class {} does not implement PluginModule", mainClass);
                 return List.of();
             }
 
-            PluginModule plugin = (PluginModule) pluginClass.getDeclaredConstructor().newInstance();
+            Plugin plugin = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
             return List.of(plugin);
         }
         catch (Exception e) {

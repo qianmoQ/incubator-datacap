@@ -1,6 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
-import io.edurt.datacap.plugin.PluginModule;
+import io.edurt.datacap.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -13,5 +13,5 @@ public interface PluginLoader
 
     // 加载插件
     // Load plugins
-    List<PluginModule> load(Path path);
+    List<Plugin> load(Path path);
 }

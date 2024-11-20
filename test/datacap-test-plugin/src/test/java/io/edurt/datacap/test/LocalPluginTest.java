@@ -1,5 +1,7 @@
-package io.edurt.datacap.plugin;
+package io.edurt.datacap.test;
 
+import io.edurt.datacap.plugin.PluginConfig;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,7 +9,7 @@ import org.junit.Test;
 
 import java.nio.file.Path;
 
-public class PluginManagerTest
+public class LocalPluginTest
 {
     private PluginManager pluginManager;
 
@@ -27,14 +29,5 @@ public class PluginManagerTest
     public void testLoadPlugin()
     {
         Assert.assertFalse(pluginManager.getPlugin("Local").isEmpty());
-    }
-
-    @Test
-    public void testService()
-    {
-        pluginManager.getPlugin("Local")
-                .ifPresent(value -> {
-                    Service service = value.getService(Service.class);
-                });
     }
 }

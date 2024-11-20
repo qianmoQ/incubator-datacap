@@ -1,6 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
-import io.edurt.datacap.plugin.PluginModule;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ public class DirectoryPluginLoader
     }
 
     @Override
-    public List<PluginModule> load(Path path)
+    public List<Plugin> load(Path path)
     {
         try {
             URLClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(path);
@@ -40,14 +40,14 @@ public class DirectoryPluginLoader
         }
     }
 
-    private Optional<PluginModule> loadClass(URLClassLoader classLoader, Path classFile)
+    private Optional<Plugin> loadClass(URLClassLoader classLoader, Path classFile)
     {
         try {
             String className = getClassName(classFile);
             Class<?> cls = classLoader.loadClass(className);
 
-            if (PluginModule.class.isAssignableFrom(cls)) {
-                return Optional.of((PluginModule) cls.getDeclaredConstructor().newInstance());
+            if (Plugin.class.isAssignableFrom(cls)) {
+                return Optional.of((Plugin) cls.getDeclaredConstructor().newInstance());
             }
         }
         catch (Exception e) {

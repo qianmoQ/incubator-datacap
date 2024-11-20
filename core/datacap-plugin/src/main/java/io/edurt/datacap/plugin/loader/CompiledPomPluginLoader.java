@@ -1,6 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
-import io.edurt.datacap.plugin.PluginModule;
+import io.edurt.datacap.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -27,7 +27,7 @@ public class CompiledPomPluginLoader
     }
 
     @Override
-    public List<PluginModule> load(Path path)
+    public List<Plugin> load(Path path)
     {
         try {
             // 处理传入的是pom.xml文件的情况
@@ -118,9 +118,9 @@ public class CompiledPomPluginLoader
 
     // 查找并加载插件类
     // Find and load plugin classes
-    private List<PluginModule> findAndLoadPlugins(URLClassLoader classLoader, Path targetClasses)
+    private List<Plugin> findAndLoadPlugins(URLClassLoader classLoader, Path targetClasses)
     {
-        List<PluginModule> plugins = new ArrayList<>();
+        List<Plugin> plugins = new ArrayList<>();
         try {
             // 扫描编译后的类文件
             // Scan compiled class files
@@ -134,10 +134,10 @@ public class CompiledPomPluginLoader
 
                                 // 检查是否是具体的插件类
                                 // Check if it's a concrete plugin class
-                                if (PluginModule.class.isAssignableFrom(cls) &&
+                                if (Plugin.class.isAssignableFrom(cls) &&
                                         !cls.isInterface() &&
                                         !Modifier.isAbstract(cls.getModifiers())) {
-                                    PluginModule plugin = (PluginModule) cls.getDeclaredConstructor().newInstance();
+                                    Plugin plugin = (Plugin) cls.getDeclaredConstructor().newInstance();
                                     plugins.add(plugin);
                                     log.info("Loaded plugin class: {}", className);
                                 }

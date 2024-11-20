@@ -3,12 +3,7 @@ package io.edurt.datacap.plugin;
 import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import io.edurt.datacap.plugin.loader.CompiledPomPluginLoader;
-import io.edurt.datacap.plugin.loader.DirectoryPluginLoader;
-import io.edurt.datacap.plugin.loader.PluginLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
-import io.edurt.datacap.plugin.loader.PomPluginLoader;
-import io.edurt.datacap.plugin.loader.SPIPluginLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -32,14 +27,6 @@ public class PluginManager
     // Plugin storage mapping
     private final Map<String, PluginInfo> plugins;
 
-    // Guice注入器
-    // Guice injector
-    private final Injector injector;
-
-    // 插件加载器列表
-    // Plugin loaders list
-    private final List<PluginLoader> loaders;
-
     // 运行状态标志
     // Running state flag
     private volatile boolean running;
@@ -48,16 +35,6 @@ public class PluginManager
     {
         this.config = config;
         this.plugins = Maps.newConcurrentMap();
-        this.injector = Guice.createInjector(new PluginModule());
-
-        // 注册插件加载器
-        // Register plugin loaders
-        this.loaders = List.of(
-                new SPIPluginLoader(),
-                new PomPluginLoader(),
-                new DirectoryPluginLoader(),
-                new CompiledPomPluginLoader()
-        );
     }
 
     // 启动插件管理器
@@ -100,7 +77,7 @@ public class PluginManager
     {
         try (Stream<Path> paths = Files.walk(config.getPluginsDir(), 1)) {
             paths.filter(Files::isDirectory)
-                    .peek(path -> log.info("Scanning plugin directory: {}", path))
+                    .peek(path -> log.debug("Scanning plugin directory: {}", path))
                     .filter(path -> !path.equals(config.getPluginsDir()))
                     .forEach(this::loadPluginFromDirectory);
         }
@@ -114,11 +91,15 @@ public class PluginManager
     private void loadPluginFromDirectory(Path pluginDir)
     {
         try {
-            List<PluginModule> modules = PluginLoaderFactory.loadPlugins(pluginDir);
+            List<Plugin> modules = PluginLoaderFactory.loadPlugins(pluginDir);
 
-            for (PluginModule module : modules) {
+            for (Plugin module : modules) {
                 String pluginName = module.getName();
-                log.info("Found plugin module: [ {} ] type [ {} ]", pluginName, module.getType());
+
+                // 为每个插件模块创建独立的注入器
+                // Create separate injector for each plugin module
+                Injector pluginInjector = Guice.createInjector(module);
+                module.setInjector(pluginInjector);
 
                 PluginInfo pluginInfo = PluginInfo.builder()
                         .name(pluginName)
@@ -138,8 +119,9 @@ public class PluginManager
                 }
 
                 plugins.put(pluginName, pluginInfo);
-                log.info("Successfully loaded plugin: [ {} ] from directory [ {} ]",
-                        pluginName, pluginDir);
+
+                log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] from directory [ {} ]",
+                        pluginName, module.getType().getName(), module.getVersion(), pluginDir);
             }
         }
         catch (Exception e) {
@@ -183,10 +165,10 @@ public class PluginManager
 
     // 获取指定名称的插件
     // Get plugin by name
-    public Optional<PluginModule> getPlugin(String name)
+    public Optional<Plugin> getPlugin(String name)
     {
         return Optional.ofNullable(plugins.get(name))
-                .map(info -> (PluginModule) info.getInstance());
+                .map(info -> (Plugin) info.getInstance());
     }
 
     // 获取所有插件信息

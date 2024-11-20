@@ -1,19 +1,14 @@
 package io.edurt.datacap.test;
 
+import com.google.inject.name.Names;
 import io.edurt.datacap.plugin.Plugin;
 
 public class LocalPlugin
-        implements Plugin
+        extends Plugin
 {
     @Override
-    public String name()
+    protected void configurePlug()
     {
-        return "Local";
-    }
-
-    @Override
-    public String version()
-    {
-        return "1.0.0";
+        bind(String.class).annotatedWith(Names.named("host")).toInstance("localhost");
     }
 }

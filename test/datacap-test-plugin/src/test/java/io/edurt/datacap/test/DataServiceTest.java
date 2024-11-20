@@ -1,13 +1,18 @@
-package io.edurt.datacap.plugin;
+package io.edurt.datacap.test;
 
+import io.edurt.datacap.plugin.PluginConfig;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Path;
+import java.util.Set;
 
-public class PluginManagerTest
+@Slf4j
+public class DataServiceTest
 {
     private PluginManager pluginManager;
 
@@ -34,7 +39,17 @@ public class PluginManagerTest
     {
         pluginManager.getPlugin("Local")
                 .ifPresent(value -> {
-                    Service service = value.getService(Service.class);
+                    log.info("Specify the Service class");
+                    DataService service = value.getService(ConsoleService.class);
+                    service.print();
+
+                    log.info("Specify the Service qualifier name");
+                    DataService logService = value.getService(DataService.class, "LogService");
+                    logService.print();
+
+                    log.info("Get all Service");
+                    Set<DataService> services = value.getAllServices(DataService.class);
+                    services.forEach(DataService::print);
                 });
     }
 }
