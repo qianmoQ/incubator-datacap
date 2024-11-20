@@ -1,94 +1,96 @@
 <template>
-  <div class="h-screen flex items-center justify-center">
-    <div class="w-full max-w-md px-4 mx-auto">
-      <ShadcnCard class="w-full">
-        <template #title>
-          <div class='flex items-center justify-center'>
-            <ShadcnAvatar src="/static/images/logo.png" alt="DataCap"/>
-          </div>
-        </template>
+  <BaseLayout>
+    <div class="h-screen flex items-center justify-center">
+      <div class="w-full max-w-md px-4 mx-auto">
+        <ShadcnCard class="w-full">
+          <template #title>
+            <div class='flex items-center justify-center'>
+              <ShadcnAvatar src="/static/images/logo.png" alt="DataCap"/>
+            </div>
+          </template>
 
-        <template #description>
-          <div class="text-center text-gray-600">
-            {{ $t('user.auth.signinTip') }}
-          </div>
-        </template>
+          <template #description>
+            <div class="text-center text-gray-600">
+              {{ $t('user.auth.signinTip') }}
+            </div>
+          </template>
 
-        <div class="px-6 py-8 relative">
-          <ShadcnSpin v-if="loading" fixed/>
-          <ShadcnForm v-else
-                      v-model="formState"
-                      ref="formRef"
-                      @on-submit="onSubmit"
-                      @on-error="onError">
-            <ShadcnFormItem name="username"
-                            :label="$t('user.common.username')"
-                            :rules="[
+          <div class="px-6 py-8 relative">
+            <ShadcnSpin v-if="loading" fixed/>
+            <ShadcnForm v-else
+                        v-model="formState"
+                        ref="formRef"
+                        @on-submit="onSubmit"
+                        @on-error="onError">
+              <ShadcnFormItem name="username"
+                              :label="$t('user.common.username')"
+                              :rules="[
                                 { required: true, message: $t('user.auth.usernameTip') },
                                 { min: 3, message: $t('user.auth.usernameSizeTip') },
                                 { max: 20, message: $t('user.auth.usernameSizeTip') }
                           ]">
-              <ShadcnInput v-model="formState.username"
-                           name="username"
-                           :placeholder="$t('user.auth.usernameTip')"/>
-            </ShadcnFormItem>
+                <ShadcnInput v-model="formState.username"
+                             name="username"
+                             :placeholder="$t('user.auth.usernameTip')"/>
+              </ShadcnFormItem>
 
-            <ShadcnFormItem name="password"
-                            :label="$t('user.common.password')"
-                            :rules="[
+              <ShadcnFormItem name="password"
+                              :label="$t('user.common.password')"
+                              :rules="[
                                 { required: true, message: $t('user.auth.passwordTip') },
                                 { min: 6, message: $t('user.auth.passwordSizeTip') },
                                 { max: 20, message: $t('user.auth.passwordSizeTip') }
                           ]">
-              <ShadcnInput v-model="formState.password"
-                           type="password"
-                           name="password"
-                           :placeholder="$t('user.auth.passwordTip')"/>
-            </ShadcnFormItem>
+                <ShadcnInput v-model="formState.password"
+                             type="password"
+                             name="password"
+                             :placeholder="$t('user.auth.passwordTip')"/>
+              </ShadcnFormItem>
 
-            <ShadcnFormItem v-if="showCaptcha"
-                            name="captcha"
-                            :label="$t('user.common.captcha')"
-                            :rules="[
+              <ShadcnFormItem v-if="showCaptcha"
+                              name="captcha"
+                              :label="$t('user.common.captcha')"
+                              :rules="[
                                 { required: true, message: $t('user.auth.captchaTip') },
                                 { min: 1, message: $t('user.auth.captchaSizeTip') },
                                 { max: 6, message: $t('user.auth.captchaSizeTip') }
                           ]">
-              <div class="flex items-center gap-2">
-                <ShadcnInput v-model="formState.captcha"
-                             name="captcha"
-                             :placeholder="$t('user.auth.captchaTip')"/>
-                <ShadcnButton style="padding: 0"
-                              type="text"
-                              :loading="captchaLoading"
-                              :disabled="captchaLoading"
-                              @click="initCaptcha">
-                  <img v-if="!captchaLoading" style="min-width: 120px; height: 100%;" :src="'data:image/png;base64,' + captchaImage"/>
+                <div class="flex items-center gap-2">
+                  <ShadcnInput v-model="formState.captcha"
+                               name="captcha"
+                               :placeholder="$t('user.auth.captchaTip')"/>
+                  <ShadcnButton style="padding: 0"
+                                type="text"
+                                :loading="captchaLoading"
+                                :disabled="captchaLoading"
+                                @click="initCaptcha">
+                    <img v-if="!captchaLoading" style="min-width: 120px; height: 100%;" :src="'data:image/png;base64,' + captchaImage"/>
+                  </ShadcnButton>
+                </div>
+              </ShadcnFormItem>
+
+              <ShadcnSpace wrap>
+                <ShadcnButton class="w-full"
+                              submit
+                              :disabled="submitting"
+                              :loading="submitting">
+                  {{ $t('user.common.signin') }}
                 </ShadcnButton>
-              </div>
-            </ShadcnFormItem>
 
-            <ShadcnSpace wrap>
-              <ShadcnButton class="w-full"
-                            submit
-                            :disabled="submitting"
-                            :loading="submitting">
-                {{ $t('user.common.signin') }}
-              </ShadcnButton>
+                <ShadcnDivider class="text-sm text-gray-400 py-2"
+                               orientation="center"
+                               :text="$t('user.auth.notUserTip')"/>
 
-              <ShadcnDivider class="text-sm text-gray-400 py-2"
-                             orientation="center"
-                             :text="$t('user.auth.notUserTip')"/>
-
-              <ShadcnButton class="w-full text-center" type="default" to="/auth/signup">
-                {{ $t('user.common.signup') }}
-              </ShadcnButton>
-            </ShadcnSpace>
-          </ShadcnForm>
-        </div>
-      </ShadcnCard>
+                <ShadcnButton class="w-full text-center" type="default" to="/auth/signup">
+                  {{ $t('user.common.signup') }}
+                </ShadcnButton>
+              </ShadcnSpace>
+            </ShadcnForm>
+          </div>
+        </ShadcnCard>
+      </div>
     </div>
-  </div>
+  </BaseLayout>
 </template>
 
 <script lang="ts">
@@ -102,6 +104,7 @@ import { HttpUtils } from '@/utils/http'
 
 import router from '@/router'
 import { createDefaultRouter } from '@/router/default'
+import BaseLayout from '@/views/layouts/base/BaseLayout.vue'
 
 interface Props
 {
@@ -113,6 +116,7 @@ interface Props
 
 export default defineComponent({
   name: 'AuthSignin',
+  components: { BaseLayout },
   data()
   {
     return {
