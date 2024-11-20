@@ -16,6 +16,7 @@
         <module>core/datacap-security</module>
         <module>core/datacap-captcha</module>
         <module>core/datacap-sql</module>
+        <module>core/datacap-plugin</module>
         <module>lib/datacap-http</module>
         <module>lib/datacap-logger</module>
         <module>lib/datacap-shell</module>
@@ -100,6 +101,7 @@
         <module>convert/datacap-convert-none</module>
         <module>convert/datacap-convert-csv</module>
         <module>convert/datacap-convert-xml</module>
+        <module>test/datacap-test-plugin</module>
     </modules>
 
     <name>datacap</name>

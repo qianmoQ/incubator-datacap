@@ -7,7 +7,12 @@ class PluginService
 {
     getPlugins(): Promise<ResponseModel>
     {
-        return new HttpUtils().get(`${DEFAULT_PATH}`)
+        return new HttpUtils().get(`${ DEFAULT_PATH }`)
+    }
+
+    filterByType(type: string): Promise<ResponseModel>
+    {
+        return new HttpUtils().get(`${ DEFAULT_PATH }/filter`, { type })
     }
 }
 

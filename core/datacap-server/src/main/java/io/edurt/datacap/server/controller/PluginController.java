@@ -7,8 +7,10 @@ import com.google.inject.TypeLiteral;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.executor.Executor;
 import io.edurt.datacap.scheduler.Scheduler;
+import io.edurt.datacap.spi.Plugin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -42,5 +44,16 @@ public class PluginController
                 .collect(Collectors.toSet());
         plugins.put("scheduler", schedulers);
         return CommonResponse.success(plugins);
+    }
+
+    @GetMapping(value = {"filter"})
+    public CommonResponse getPluginByType(@RequestParam String type)
+    {
+        if (type.equalsIgnoreCase("plugin")) {
+            return CommonResponse.success(injector.getInstance(Key.get(new TypeLiteral<Set<Plugin>>() {})));
+        }
+        else {
+            return CommonResponse.failure("Unknown type " + type);
+        }
     }
 }

@@ -25,6 +25,28 @@ const createDefaultRouter = (router: any) => {
             ]
         }
         router.addRoute(indexRouter)
+
+        const storeRouter = {
+            path: '/',
+            meta: {
+                title: 'common.store',
+                isRoot: true
+            },
+            component: LayoutContainer,
+            redirect: '/store',
+            children: [
+                {
+                    name: 'store',
+                    path: 'store',
+                    meta: {
+                        title: 'common.store',
+                        isRoot: false
+                    },
+                    component: () => import('@/views/pages/store/StoreHome.vue')
+                }
+            ]
+        }
+        router.addRoute(storeRouter)
     }
 
     createSystemRouter(router)

@@ -37,24 +37,24 @@ public class DatasetSchedulerInitializer
             throws Exception
     {
         log.info("Start dataset scheduler initializer");
-        this.repository.findAllBySyncMode(SyncMode.TIMING)
-                .forEach(item -> {
-                    log.info("Dataset [ {} ] will be scheduled", item.getName());
-                    SpiUtils.findSchedule(this.injector, item.getScheduler())
-                            .ifPresent(scheduler -> {
-                                SchedulerRequest request = new SchedulerRequest();
-                                request.setName(item.getId().toString());
-                                request.setGroup("datacap");
-                                request.setExpression(item.getExpression());
-                                request.setJobId(String.valueOf(item.getId()));
-                                request.setCreateBeforeDelete(true);
-                                if (scheduler.name().equals("Default")) {
-                                    request.setJob(new DatasetJob());
-                                    request.setScheduler(this.scheduler);
-                                }
-                                scheduler.initialize(request);
-                            });
-                });
+//        this.repository.findAllBySyncMode(SyncMode.TIMING)
+//                .forEach(item -> {
+//                    log.info("Dataset [ {} ] will be scheduled", item.getName());
+//                    SpiUtils.findSchedule(this.injector, item.getScheduler())
+//                            .ifPresent(scheduler -> {
+//                                SchedulerRequest request = new SchedulerRequest();
+//                                request.setName(item.getId().toString());
+//                                request.setGroup("datacap");
+//                                request.setExpression(item.getExpression());
+//                                request.setJobId(String.valueOf(item.getId()));
+//                                request.setCreateBeforeDelete(true);
+//                                if (scheduler.name().equals("Default")) {
+//                                    request.setJob(new DatasetJob());
+//                                    request.setScheduler(this.scheduler);
+//                                }
+//                                scheduler.initialize(request);
+//                            });
+//                });
         log.info("End dataset scheduler initializer");
     }
 }
