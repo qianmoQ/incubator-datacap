@@ -7,7 +7,7 @@
     </div>
 
     <div v-show="!loadingState">
-      <slot></slot>
+      <slot/>
     </div>
   </div>
 </template>
@@ -28,4 +28,3 @@ onBeforeMount(async () => {
   }
 })
 </script>
-

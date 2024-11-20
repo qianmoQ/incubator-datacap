@@ -25,14 +25,14 @@
                                 :name="children.id"
                                 :active="$route.path === children.url"
                                 :to="children.url">
-                  {{ $t(children.i18nKey) }}
+                  {{ children.i18nKey ? $t(children.i18nKey) : 'Unknown' }}
                 </ShadcnMenuItem>
               </ShadcnMenuSub>
               <ShadcnMenuItem v-else
                               :name="item.id"
                               :active="$route.path === item.url"
                               :to="item.url">
-                {{ $t(item.i18nKey) }}
+                {{ item.i18nKey ? $t(item.i18nKey) : 'Unknown' }}
               </ShadcnMenuItem>
             </div>
           </ShadcnMenu>
