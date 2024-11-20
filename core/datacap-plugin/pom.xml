@@ -29,25 +29,8 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.9.6</version>
+            <version>${datacap.maven.model.version}</version>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- 支持获取当前插件的版本 -->
-            <!-- Support getting the current plugin version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

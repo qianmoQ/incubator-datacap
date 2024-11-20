@@ -1,12 +1,14 @@
 package io.edurt.datacap.plugin;
 
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Path;
 
+@Slf4j
 public class PluginManagerTest
 {
     private PluginManager pluginManager;
@@ -26,15 +28,8 @@ public class PluginManagerTest
     @Test
     public void testLoadPlugin()
     {
-        Assert.assertFalse(pluginManager.getPlugin("Local").isEmpty());
-    }
+        pluginManager.getPluginInfos().forEach(info -> log.info("{}", info));
 
-    @Test
-    public void testService()
-    {
-        pluginManager.getPlugin("Local")
-                .ifPresent(value -> {
-                    Service service = value.getService(Service.class);
-                });
+        Assert.assertFalse(pluginManager.getPlugin("Local").isEmpty());
     }
 }

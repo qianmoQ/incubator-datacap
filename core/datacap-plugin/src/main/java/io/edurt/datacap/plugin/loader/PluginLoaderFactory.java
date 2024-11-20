@@ -4,7 +4,6 @@ import io.edurt.datacap.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -114,8 +113,6 @@ public class PluginLoaderFactory
      */
     public static List<String> getRegisteredTypes()
     {
-        return Collections.unmodifiableList(
-                new ArrayList<>(loaderRegistry.keySet())
-        );
+        return List.copyOf(loaderRegistry.keySet());
     }
 }

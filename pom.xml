@@ -199,6 +199,7 @@
         <datacap.cos.version>5.6.227</datacap.cos.version>
         <datacap.s3.version>1.12.771</datacap.s3.version>
         <datacap.minio.version>8.5.12</datacap.minio.version>
+        <datacap.maven.model.version>3.9.6</datacap.maven.model.version>
         <!-- maven plugin -->
         <plugin.maven.checkstyle.version>3.0.0</plugin.maven.checkstyle.version>
         <plugin.maven.findbugs.version>4.8.5.0</plugin.maven.findbugs.version>
@@ -715,6 +716,20 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+
+                <!-- 支持获取当前插件的版本 -->
+                <!-- Support getting the current plugin version -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

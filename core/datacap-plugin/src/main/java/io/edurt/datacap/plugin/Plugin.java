@@ -2,11 +2,13 @@ package io.edurt.datacap.plugin;
 
 import com.google.common.collect.Sets;
 import com.google.inject.AbstractModule;
+import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import io.edurt.datacap.plugin.service.ServiceBindings;
+import io.edurt.datacap.plugin.service.ServiceNotFoundException;
 import io.edurt.datacap.plugin.service.ServiceSpiLoader;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +64,13 @@ public abstract class Plugin
             // 绑定服务
             // Bind service
             bind(serviceType).to(implementationType).in(Singleton.class);
+        }
+    }
+
+    private void validateInjector()
+    {
+        if (injector == null) {
+            throw new IllegalStateException("Injector not set for plugin: " + getName());
         }
     }
 
@@ -130,12 +139,15 @@ public abstract class Plugin
      * @return 服务实例
      * @return service instance
      */
-    public <T> T getService(Class<T> serviceClass)
+    public <T extends Service> T getService(Class<T> serviceClass)
     {
-        if (injector == null) {
-            throw new IllegalStateException("Injector not set for plugin: " + getName());
+        validateInjector();
+        try {
+            return injector.getInstance(serviceClass);
         }
-        return injector.getInstance(serviceClass);
+        catch (ConfigurationException e) {
+            throw new ServiceNotFoundException("Service not found for type: " + serviceClass.getName(), e);
+        }
     }
 
     /**
@@ -151,19 +163,22 @@ public abstract class Plugin
      */
     public <T extends Service> T getService(Class<T> serviceClass, String name)
     {
-        if (injector == null) {
-            throw new IllegalStateException("Injector not set for plugin: " + getName());
+        validateInjector();
+        try {
+            return injector.getInstance(Key.get(serviceClass, Names.named(name)));
         }
-        return injector.getInstance(Key.get(serviceClass, Names.named(name)));
+        catch (ConfigurationException e) {
+            throw new ServiceNotFoundException(
+                    String.format("Named service not found - type: %s, name: %s",
+                            serviceClass.getName(), name), e);
+        }
     }
 
     // 获取所有服务
     // Get all services
     public <T extends Service> Set<T> getAllServices(Class<T> serviceClass)
     {
-        if (injector == null) {
-            throw new IllegalStateException("Injector not set for plugin: " + getName());
-        }
+        validateInjector();
 
         Set<T> services = Sets.newHashSet();
         ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceClass);
