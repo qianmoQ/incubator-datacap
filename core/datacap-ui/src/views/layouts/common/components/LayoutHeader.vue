@@ -20,19 +20,31 @@
           <ShadcnMenu direction="horizontal">
             <div v-for="item in activeMenus" :key="item.id">
               <ShadcnMenuSub v-if="item.children" :name="item.id">
-                <template #title>{{ $t(item.i18nKey) }}</template>
+                <template #title>
+                  <div class="flex items-center space-x-2">
+                    <ShadcnIcon v-if="item.icon" :icon="item.icon" size="18"/>
+                    <div>{{ item.i18nKey ? $t(item.i18nKey) : 'Unknown' }}</div>
+                  </div>
+                </template>
+
                 <ShadcnMenuItem v-for="children in item.children"
                                 :name="children.id"
                                 :active="$route.path === children.url"
                                 :to="children.url">
-                  {{ children.i18nKey ? $t(children.i18nKey) : 'Unknown' }}
+                  <div class="flex items-center space-x-2">
+                    <ShadcnIcon v-if="children.icon" :icon="children.icon" size="18"/>
+                    <div>{{ children.i18nKey ? $t(children.i18nKey) : 'Unknown' }}</div>
+                  </div>
                 </ShadcnMenuItem>
               </ShadcnMenuSub>
               <ShadcnMenuItem v-else
                               :name="item.id"
                               :active="$route.path === item.url"
                               :to="item.url">
-                {{ item.i18nKey ? $t(item.i18nKey) : 'Unknown' }}
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon v-if="item.icon" :icon="item.icon" size="18"/>
+                  <div>{{ item.i18nKey ? $t(item.i18nKey) : 'Unknown' }}</div>
+                </div>
               </ShadcnMenuItem>
             </div>
           </ShadcnMenu>
@@ -114,6 +126,7 @@ interface NavigationItem
   i18nKey: string
   url: string
   description: string
+  icon: string
   children: NavigationItem[] | undefined
 }
 

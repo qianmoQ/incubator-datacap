@@ -44,11 +44,7 @@
 
       <ShadcnRow class="space-x-2">
         <ShadcnCol span="6">
-          <ShadcnFormItem name="sorted"
-                          :label="$t('common.sorted')"
-                          :rules="[
-                              { required: true, message: $t('common.sorted') }
-                          ]">
+          <ShadcnFormItem name="sorted" :label="$t('common.sorted')">
             <ShadcnNumber v-model="formState.sorted" name="sorted"/>
           </ShadcnFormItem>
         </ShadcnCol>
@@ -73,7 +69,10 @@
 
       <ShadcnRow class="space-x-2">
         <ShadcnCol span="6">
-          <ShadcnSelect v-model="formState.parent" :placeholder="$t('menu.tip.selectParent')" name="parent" :label="$t('common.parent')">
+          <ShadcnSelect v-model="formState.parent"
+                        name="parent"
+                        :placeholder="$t('menu.tip.selectParent')"
+                        :label="$t('common.parent')">
             <template #options>
               <ShadcnSelectOption v-for="menu in fullMenus" :label="menu.name as string" :value="menu.id as string"/>
             </template>
@@ -100,7 +99,7 @@
         </ShadcnCol>
 
         <ShadcnCol span="6">
-          <ShadcnFormItem name="i18nKey" :label="$t('menu.common.i18nKey')">
+          <ShadcnFormItem name="i18nKey" :label="$t('menu.common.i18nKey')" :rules="[ { required: true, message: $t('common.sorted') } ]">
             <ShadcnInput v-model="formState.i18nKey" name="i18nKey"/>
           </ShadcnFormItem>
         </ShadcnCol>
