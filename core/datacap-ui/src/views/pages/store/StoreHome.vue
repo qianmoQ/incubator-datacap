@@ -145,7 +145,7 @@ interface Metadata
   children: MetadataItem[]
 }
 
-const metadataUrl = ref('https://cdn.north.devlive.org/applications/datacap/metadata.json')
+const metadataUrl = ref('https://cdn.north.devlive.org/applications/datacap/metadata/metadata.json')
 const { proxy } = getCurrentInstance()!
 // @ts-ignore
 const { loadingState } = useI18nHandler()

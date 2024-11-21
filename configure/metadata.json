@@ -7,9 +7,9 @@
     {
       "key": "MySQL",
       "label": "MySQL",
-      "description": "Integrate MySQL data sources",
+      "description": "A powerful MySQL integration plugin that provides comprehensive database connectivity. Features include table/view management, data import/export, SQL query execution, stored procedure support, and real-time data synchronization. Optimized for high-performance data operations with connection pooling and batch processing capabilities.",
       "i18nFormat": true,
-      "type": "JDBC",
+      "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
       "logo": "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg",
@@ -19,6 +19,66 @@
         "5.7"
       ],
       "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-mysql-bin.tar.gz"
+    },
+    {
+      "key": "CsvConvert",
+      "label": "CsvConvert",
+      "description": "A CSV file conversion plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Converter",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-csv-bin.tar.gz"
+    },
+    {
+      "key": "TxtConvert",
+      "label": "TxtConvert",
+      "description": "A TXT file conversion plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Converter",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-txt-bin.tar.gz"
+    },
+    {
+      "key": "JsonConvert",
+      "label": "JsonConvert",
+      "description": "A JSON file conversion plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Converter",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://www.vectorlogo.zone/logos/json/json-icon.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-json-bin.tar.gz"
+    },
+    {
+      "key": "XmlConvert",
+      "label": "XmlConvert",
+      "description": "A XML file conversion plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Converter",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://www.vectorlogo.zone/logos/w3c_xml/w3c_xml-icon.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-xml-bin.tar.gz"
     }
   ]
 }
