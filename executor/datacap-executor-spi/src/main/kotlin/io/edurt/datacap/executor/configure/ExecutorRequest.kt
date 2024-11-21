@@ -1,10 +1,10 @@
 package io.edurt.datacap.executor.configure
 
-import com.google.inject.Injector
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.executor.common.RunEngine
 import io.edurt.datacap.executor.common.RunMode
 import io.edurt.datacap.executor.common.RunWay
+import io.edurt.datacap.plugin.PluginManager
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP", "EI_EXPOSE_REP2"])
 data class ExecutorRequest(
@@ -14,7 +14,7 @@ data class ExecutorRequest(
     var output: ExecutorConfigure,
     var executorHome: String? = null,
     var workHome: String? = null,
-    var injector: Injector? = null,
+    var pluginManager: PluginManager? = null,
     var timeout: Long = 600,
     var runWay: RunWay = RunWay.LOCAL,
     var runMode: RunMode = RunMode.CLIENT,

@@ -1,13 +1,13 @@
 package io.edurt.datacap.service.service.impl;
 
-import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.CodeUtils;
-import io.edurt.datacap.common.utils.SpiUtils;
 import io.edurt.datacap.common.utils.UrlUtils;
 import io.edurt.datacap.fs.FsRequest;
 import io.edurt.datacap.fs.FsResponse;
+import io.edurt.datacap.fs.FsService;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.body.UploadBody;
 import io.edurt.datacap.service.entity.convert.AvatarEntity;
 import io.edurt.datacap.service.enums.UploadMode;
@@ -28,13 +28,13 @@ import java.io.IOException;
 public class UploadServiceImpl
         implements UploadService
 {
-    private final Injector injector;
+    private final PluginManager pluginManager;
     private final HttpServletRequest request;
     private final InitializerConfigure initializer;
 
-    public UploadServiceImpl(Injector injector, HttpServletRequest request, InitializerConfigure initializer)
+    public UploadServiceImpl(PluginManager pluginManager, HttpServletRequest request, InitializerConfigure initializer)
     {
-        this.injector = injector;
+        this.pluginManager = pluginManager;
         this.request = request;
         this.initializer = initializer;
     }
@@ -49,9 +49,10 @@ public class UploadServiceImpl
                     .build();
             try {
                 FsRequest fsRequest = getFsRequest(configure.getFile(), configure);
-                SpiUtils.findFs(injector, initializer.getFsConfigure().getType())
-                        .ifPresent(fs -> {
-                            FsResponse response = fs.writer(fsRequest);
+                pluginManager.getPlugin(initializer.getFsConfigure().getType())
+                        .ifPresent(plugin -> {
+                            FsService fsService = plugin.getService(FsService.class);
+                            FsResponse response = fsService.writer(fsRequest);
                             entity.setPath(response.getRemote());
                             entity.setLocal(response.getRemote());
                             if (initializer.getFsConfigure().getType().equals("Local")) {

@@ -1,7 +1,7 @@
 package io.edurt.datacap.spi.model;
 
-import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.plugin.PluginManager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Configure
 {
-    private Injector injector;
+    private PluginManager pluginManager;
     private String host;
     private Integer port;
     private Optional<String> username = Optional.empty();

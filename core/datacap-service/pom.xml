@@ -112,6 +112,11 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-convert-spi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-fs-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Sql Parser -->
         <dependency>
             <groupId>io.edurt.datacap</groupId>

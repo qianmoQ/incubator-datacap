@@ -250,4 +250,18 @@ public class PluginPathUtils
             return Optional.empty();
         }
     }
+
+    /**
+     * 安全地将子路径添加到项目根目录
+     * Safely append a sub-path to the project root directory
+     *
+     * @param subPath 要添加的子路径
+     * @return 组合后的路径
+     */
+    public static Path appendPath(String subPath)
+    {
+        Path root = findProjectRoot();
+        String safePath = subPath.startsWith("/") ? subPath.substring(1) : subPath;
+        return root.resolve(safePath);
+    }
 }

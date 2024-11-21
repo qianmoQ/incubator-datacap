@@ -2,8 +2,9 @@ package io.edurt.datacap.convert
 
 import io.edurt.datacap.convert.model.ConvertRequest
 import io.edurt.datacap.convert.model.ConvertResponse
+import io.edurt.datacap.plugin.Service
 
-interface Convert
+interface ConvertService : Service
 {
     fun name(): String
     {

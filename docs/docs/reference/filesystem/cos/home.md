@@ -51,7 +51,7 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import com.google.inject.Key
 import com.google.inject.TypeLiteral
-import io.edurt.datacap.fs.Fs
+import io.edurt.datacap.fs.FsService
 import io.edurt.datacap.fs.FsManager
 import io.edurt.datacap.fs.FsRequest
 import org.junit.Assert.assertTrue

@@ -5,11 +5,11 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import io.edurt.datacap.common.response.CommonResponse;
-import io.edurt.datacap.executor.Executor;
+import io.edurt.datacap.executor.ExecutorService;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.PluginMetadata;
 import io.edurt.datacap.plugin.PluginType;
-import io.edurt.datacap.scheduler.Scheduler;
+import io.edurt.datacap.scheduler.SchedulerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,15 +37,15 @@ public class PluginController
     public CommonResponse<Map<String, Set<String>>> getPlugins()
     {
         Map<String, Set<String>> plugins = Maps.newHashMap();
-        Set<String> executors = injector.getInstance(Key.get(new TypeLiteral<Set<Executor>>() {}))
+        Set<String> executors = injector.getInstance(Key.get(new TypeLiteral<Set<ExecutorService>>() {}))
                 .stream()
-                .map(Executor::name)
+                .map(ExecutorService::name)
                 .collect(Collectors.toSet());
         plugins.put("executor", executors);
 
-        Set<String> schedulers = injector.getInstance(Key.get(new TypeLiteral<Set<Scheduler>>() {}))
+        Set<String> schedulers = injector.getInstance(Key.get(new TypeLiteral<Set<SchedulerService>>() {}))
                 .stream()
-                .map(Scheduler::name)
+                .map(SchedulerService::name)
                 .collect(Collectors.toSet());
         plugins.put("scheduler", schedulers);
         return CommonResponse.success(plugins);

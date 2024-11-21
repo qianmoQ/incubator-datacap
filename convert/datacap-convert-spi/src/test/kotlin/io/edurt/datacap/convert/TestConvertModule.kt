@@ -6,8 +6,8 @@ class TestConvertModule : ConvertModule()
 {
     override fun configure()
     {
-        Multibinder.newSetBinder(this.binder(), Convert::class.java)
+        Multibinder.newSetBinder(this.binder(), ConvertService::class.java)
             .addBinding()
-            .to(TestConvert::class.java)
+            .to(TestConvertService::class.java)
     }
 }

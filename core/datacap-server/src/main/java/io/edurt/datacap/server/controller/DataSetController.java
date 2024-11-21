@@ -1,6 +1,7 @@
 package io.edurt.datacap.server.controller;
 
 import io.edurt.datacap.common.response.CommonResponse;
+import io.edurt.datacap.plugin.PluginMetadata;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.body.adhoc.Adhoc;
 import io.edurt.datacap.service.entity.DataSetColumnEntity;
@@ -78,7 +79,7 @@ public class DataSetController
     }
 
     @GetMapping(value = "getActuators")
-    public CommonResponse<Set<String>> getActuators()
+    public CommonResponse<Set<PluginMetadata>> getActuators()
     {
         return service.getActuators();
     }

@@ -1,15 +1,15 @@
 package io.edurt.datacap.service.service.impl;
 
-import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.DateUtils;
-import io.edurt.datacap.common.utils.SpiUtils;
-import io.edurt.datacap.convert.ConvertFilter;
+import io.edurt.datacap.convert.ConvertService;
 import io.edurt.datacap.convert.model.ConvertRequest;
 import io.edurt.datacap.convert.model.ConvertResponse;
 import io.edurt.datacap.fs.FsRequest;
 import io.edurt.datacap.fs.FsResponse;
+import io.edurt.datacap.fs.FsService;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.activity.HeatmapActivity;
 import io.edurt.datacap.service.adapter.PageRequestAdapter;
 import io.edurt.datacap.service.body.FilterBody;
@@ -43,13 +43,13 @@ public class PluginAuditServiceImpl
 {
     private final PluginAuditRepository pluginAuditRepository;
     private final InitializerConfigure initializer;
-    private final Injector injector;
+    private final PluginManager pluginManager;
 
-    public PluginAuditServiceImpl(PluginAuditRepository pluginAuditRepository, InitializerConfigure initializer, Injector injector)
+    public PluginAuditServiceImpl(PluginAuditRepository pluginAuditRepository, InitializerConfigure initializer, PluginManager pluginManager)
     {
         this.pluginAuditRepository = pluginAuditRepository;
         this.initializer = initializer;
-        this.injector = injector;
+        this.pluginManager = pluginManager;
     }
 
     @Override
@@ -116,22 +116,26 @@ public class PluginAuditServiceImpl
                         fsRequest.setEndpoint(initializer.getFsConfigure().getEndpoint());
                         fsRequest.setFileName(String.join(File.separator, value.getUser().getUsername(), DateUtils.formatYMD(), String.join(File.separator, "adhoc", code), "result.csv"));
                     }
-                    FsResponse fsResponse = SpiUtils.findFs(injector, initializer.getFsConfigure().getType())
-                            .map(v -> v.reader(fsRequest))
-                            .get();
-                    ConvertFilter.filter(injector, "Json")
-                            .ifPresent(it -> {
-                                ConvertRequest request = new ConvertRequest();
-                                request.setStream(fsResponse.getContext());
+                    pluginManager.getPlugin(initializer.getFsConfigure().getType())
+                            .ifPresent(plugin -> {
+                                FsService fsService = plugin.getService(FsService.class);
+                                FsResponse fsResponse = fsService.reader(fsRequest);
 
-                                ConvertResponse _response = it.formatStream(request);
-                                if (_response.getSuccessful()) {
-                                    response.setHeaders(_response.getHeaders()
-                                            .stream()
-                                            .map(String::valueOf)
-                                            .collect(Collectors.toList()));
-                                    response.setColumns(_response.getColumns());
-                                }
+                                pluginManager.getPlugin("Json")
+                                        .ifPresent(it -> {
+                                            ConvertRequest request = new ConvertRequest();
+                                            request.setStream(fsResponse.getContext());
+                                            ConvertService convertService = it.getService(ConvertService.class);
+
+                                            ConvertResponse _response = convertService.formatStream(request);
+                                            if (_response.getSuccessful()) {
+                                                response.setHeaders(_response.getHeaders()
+                                                        .stream()
+                                                        .map(String::valueOf)
+                                                        .collect(Collectors.toList()));
+                                                response.setColumns(_response.getColumns());
+                                            }
+                                        });
                             });
                     return CommonResponse.success(response);
                 })

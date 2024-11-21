@@ -4,7 +4,7 @@ import com.google.inject.Guice
 import org.junit.Assert
 import org.junit.Test
 
-class ConvertFilterTest
+class ConvertServiceFilterTest
 {
     private val injector = Guice.createInjector(ConvertManager())
 

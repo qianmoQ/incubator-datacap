@@ -2,12 +2,15 @@ package io.edurt.datacap.executor
 
 import io.edurt.datacap.executor.configure.ExecutorRequest
 import io.edurt.datacap.executor.configure.ExecutorResponse
+import io.edurt.datacap.plugin.Service
 
-interface Executor {
-    fun name(): String {
+interface ExecutorService : Service
+{
+    fun name(): String
+    {
         return this.javaClass
-                .simpleName
-                .removeSuffix("Executor")
+            .simpleName
+            .removeSuffix("Executor")
     }
 
     fun start(request: ExecutorRequest): ExecutorResponse

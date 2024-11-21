@@ -1,6 +1,5 @@
 package io.edurt.datacap.service.service.impl;
 
-import com.google.inject.Injector;
 import io.edurt.datacap.common.enums.ServiceState;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.sql.SqlBuilder;
@@ -10,7 +9,6 @@ import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.audit.AuditPlugin;
 import io.edurt.datacap.service.body.ExecuteDslBody;
 import io.edurt.datacap.service.entity.ExecuteEntity;
-import io.edurt.datacap.service.initializer.InitializerConfigure;
 import io.edurt.datacap.service.repository.SourceRepository;
 import io.edurt.datacap.service.service.ExecuteService;
 import io.edurt.datacap.spi.PluginService;
@@ -28,18 +26,14 @@ import java.util.Optional;
 public class ExecuteServiceImpl
         implements ExecuteService
 {
-    private final Injector injector;
     private final SourceRepository sourceRepository;
     private final Environment environment;
-    private final InitializerConfigure initializerConfigure;
     private final PluginManager pluginManager;
 
-    public ExecuteServiceImpl(Injector injector, SourceRepository sourceRepository, Environment environment, InitializerConfigure initializerConfigure, PluginManager pluginManager)
+    public ExecuteServiceImpl(SourceRepository sourceRepository, Environment environment, PluginManager pluginManager)
     {
-        this.injector = injector;
         this.sourceRepository = sourceRepository;
         this.environment = environment;
-        this.initializerConfigure = initializerConfigure;
         this.pluginManager = pluginManager;
     }
 
@@ -62,9 +56,8 @@ public class ExecuteServiceImpl
                                         .env(Optional.ofNullable(entity.getConfigures()))
                                         .format(configure.getFormat())
                                         .usedConfig(entity.isUsedConfig())
-                                        .injector(plugin.getInjector())
+                                        .pluginManager(pluginManager)
                                         .build();
-                                _configure.setInjector(injector);
                                 if (entity.isUsedConfig()) {
                                     _configure.setUsername(Optional.of(entity.getUser().getUsername()));
                                     String configHome = environment.getProperty("datacap.config.data");

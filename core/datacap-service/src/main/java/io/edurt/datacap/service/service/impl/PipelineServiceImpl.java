@@ -6,7 +6,7 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.BeanToPropertiesUtils;
-import io.edurt.datacap.executor.Executor;
+import io.edurt.datacap.executor.ExecutorService;
 import io.edurt.datacap.executor.common.RunEngine;
 import io.edurt.datacap.executor.common.RunMode;
 import io.edurt.datacap.executor.common.RunState;
@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
@@ -157,9 +156,9 @@ public class PipelineServiceImpl
             log.info("Pipeline containers is not full, submit to executor [ {} ]", pipelineName);
             pipelineEntity.setState(RunState.RUNNING);
             repository.save(pipelineEntity);
-            Optional<Executor> executorOptional = injector.getInstance(Key.get(new TypeLiteral<Set<Executor>>() {}))
+            Optional<ExecutorService> executorOptional = injector.getInstance(Key.get(new TypeLiteral<Set<ExecutorService>>() {}))
                     .stream()
-                    .filter(executor -> executor.name().equals(configure.getExecutor()))
+                    .filter(executorService -> executorService.name().equals(configure.getExecutor()))
                     .findFirst();
 
             try {
@@ -176,7 +175,7 @@ public class PipelineServiceImpl
                     environment.getProperty("datacap.executor.startScript"),
                     RunEngine.valueOf(environment.getProperty("datacap.executor.engine")));
 
-            final ExecutorService executorService = Executors.newCachedThreadPool();
+            final java.util.concurrent.ExecutorService executorService = Executors.newCachedThreadPool();
             PipelineEntity finalPipelineEntity = pipelineEntity;
             executorService.submit(() -> {
                 initializer.getTaskExecutors()
@@ -224,7 +223,7 @@ public class PipelineServiceImpl
             return CommonResponse.failure(String.format("Pipeline [ %s ] is already stopped", entity.getName()));
         }
 
-        ExecutorService service = initializer.getTaskExecutors()
+        java.util.concurrent.ExecutorService service = initializer.getTaskExecutors()
                 .get(entity.getName());
         if (service != null) {
             service.shutdownNow();

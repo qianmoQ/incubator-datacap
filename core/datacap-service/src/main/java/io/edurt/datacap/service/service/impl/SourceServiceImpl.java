@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.NodeType;
 import io.edurt.datacap.common.enums.ServiceState;
@@ -15,6 +12,7 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.CodeUtils;
 import io.edurt.datacap.common.utils.JsonUtils;
 import io.edurt.datacap.executor.common.RunState;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.adapter.PageRequestAdapter;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.body.SharedSourceBody;
@@ -59,13 +57,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -86,10 +82,10 @@ public class SourceServiceImpl
     private final ColumnRepository columnHandler;
     private final TemplateSqlRepository templateHandler;
     private final ScheduledHistoryRepository scheduledHistoryHandler;
-    private final Injector injector;
+    private final PluginManager pluginManager;
     private final Environment environment;
 
-    public SourceServiceImpl(SourceRepository sourceRepository, UserRepository userRepository, ScheduledHistoryRepository scheduledHistoryRepository, DatabaseRepository databaseHandler, TableRepository tableHandler, ColumnRepository columnHandler, TemplateSqlRepository templateHandler, ScheduledHistoryRepository scheduledHistoryHandler, Injector injector, Environment environment)
+    public SourceServiceImpl(SourceRepository sourceRepository, UserRepository userRepository, ScheduledHistoryRepository scheduledHistoryRepository, DatabaseRepository databaseHandler, TableRepository tableHandler, ColumnRepository columnHandler, TemplateSqlRepository templateHandler, ScheduledHistoryRepository scheduledHistoryHandler, PluginManager pluginManager, Environment environment)
     {
         this.sourceRepository = sourceRepository;
         this.userRepository = userRepository;
@@ -99,7 +95,7 @@ public class SourceServiceImpl
         this.columnHandler = columnHandler;
         this.templateHandler = templateHandler;
         this.scheduledHistoryHandler = scheduledHistoryHandler;
-        this.injector = injector;
+        this.pluginManager = pluginManager;
         this.environment = environment;
     }
 
@@ -152,28 +148,27 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<Object> testConnection(SourceEntity configure)
     {
-        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getType(), configure.getProtocol());
-        if (!pluginOptional.isPresent()) {
-            return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
-        }
-
-        Configure _configure = new Configure();
-        PluginService plugin = pluginOptional.get();
-        _configure.setHost(configure.getHost());
-        _configure.setPort(configure.getPort());
-        _configure.setUsername(Optional.ofNullable(configure.getUsername()));
-        _configure.setPassword(Optional.ofNullable(configure.getPassword()));
-        Optional<String> _database = StringUtils.isNotEmpty(configure.getDatabase()) ? Optional.ofNullable(configure.getDatabase()) : Optional.empty();
-        _configure.setDatabase(_database);
-        _configure.setEnv(Optional.ofNullable(configure.getConfigures()));
-        _configure.setSsl(Optional.ofNullable(configure.getSsl()));
-        plugin.connect(_configure);
-        io.edurt.datacap.spi.model.Response response = plugin.execute(plugin.validator());
-        plugin.destroy();
-        if (response.getIsSuccessful()) {
-            return CommonResponse.success(response);
-        }
-        return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+        return pluginManager.getPlugin(configure.getType())
+                .map(plugin -> {
+                    Configure _configure = new Configure();
+                    PluginService pluginService = plugin.getService(PluginService.class);
+                    _configure.setHost(configure.getHost());
+                    _configure.setPort(configure.getPort());
+                    _configure.setUsername(Optional.ofNullable(configure.getUsername()));
+                    _configure.setPassword(Optional.ofNullable(configure.getPassword()));
+                    Optional<String> _database = StringUtils.isNotEmpty(configure.getDatabase()) ? Optional.ofNullable(configure.getDatabase()) : Optional.empty();
+                    _configure.setDatabase(_database);
+                    _configure.setEnv(Optional.ofNullable(configure.getConfigures()));
+                    _configure.setSsl(Optional.ofNullable(configure.getSsl()));
+                    pluginService.connect(_configure);
+                    io.edurt.datacap.spi.model.Response response = pluginService.execute(pluginService.validator());
+                    pluginService.destroy();
+                    if (response.getIsSuccessful()) {
+                        return CommonResponse.success(response);
+                    }
+                    return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+                })
+                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
     }
 
     @Override
@@ -207,19 +202,19 @@ public class SourceServiceImpl
     public CommonResponse<Map<String, List<PluginEntity>>> getPlugins()
     {
         Map<String, List<PluginEntity>> pluginMap = new ConcurrentHashMap<>();
-        this.injector.getInstance(Key.get(new TypeLiteral<Set<PluginService>>() {})).stream().forEach(plugin -> {
-            PluginEntity entity = new PluginEntity();
-            entity.setName(plugin.name());
-            entity.setDescription(plugin.description());
-            entity.setType(plugin.type().name());
-            entity.setConfigure(PluginUtils.loadYamlConfigure(plugin.type().name(), plugin.name(), plugin.name(), environment));
-            List<PluginEntity> plugins = pluginMap.get(plugin.type().name());
-            if (ObjectUtils.isEmpty(plugins)) {
-                plugins = new ArrayList<>();
-            }
-            plugins.add(entity);
-            pluginMap.put(plugin.type().name(), plugins);
-        });
+//        this.injector.getInstance(Key.get(new TypeLiteral<Set<PluginService>>() {})).stream().forEach(plugin -> {
+//            PluginEntity entity = new PluginEntity();
+//            entity.setName(plugin.name());
+//            entity.setDescription(plugin.description());
+//            entity.setType(plugin.type().name());
+//            entity.setConfigure(PluginUtils.loadYamlConfigure(plugin.type().name(), plugin.name(), plugin.name(), environment));
+//            List<PluginEntity> plugins = pluginMap.get(plugin.type().name());
+//            if (ObjectUtils.isEmpty(plugins)) {
+//                plugins = new ArrayList<>();
+//            }
+//            plugins.add(entity);
+//            pluginMap.put(plugin.type().name(), plugins);
+//        });
         return CommonResponse.success(pluginMap);
     }
 
@@ -251,122 +246,120 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<Object> testConnectionV2(SourceBody configure)
     {
-        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getName(), configure.getType());
-        if (!pluginOptional.isPresent()) {
-            return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
-        }
+        return pluginManager.getPlugin(configure.getName())
+                .map(plugin -> {
+                    // Check configure
+                    IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
+                    if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
+                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
+                    }
 
-        // Check configure
-        IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
-        if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
-            return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
-        }
+                    // Filter required
+                    List<IConfigureField> requiredMismatchConfigures = configure.getConfigure().getConfigures().stream().filter(v -> v.isRequired()).filter(v -> ObjectUtils.isEmpty(v.getValue())).collect(Collectors.toList());
+                    if (requiredMismatchConfigures.size() > 0) {
+                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
+                    }
 
-        // Filter required
-        List<IConfigureField> requiredMismatchConfigures = configure.getConfigure().getConfigures().stream().filter(v -> v.isRequired()).filter(v -> ObjectUtils.isEmpty(v.getValue())).collect(Collectors.toList());
-        if (requiredMismatchConfigures.size() > 0) {
-            return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
-        }
-
-        PluginService plugin = pluginOptional.get();
-        // The filter parameter value is null data
-        List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
-        Configure _configure = ConfigureUtils.preparedConfigure(applyConfigures);
-        // Adapter file configure
-        if (_configure.isUsedConfig()) {
-            String cacheHome = environment.getProperty("datacap.cache.data");
-            if (StringUtils.isEmpty(cacheHome)) {
-                cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
-            }
-            _configure.setHome(cacheHome);
-            _configure.setUsername(Optional.of(UserDetailsService.getUser().getUsername()));
-        }
-        _configure.setInjector(injector);
-        plugin.connect(_configure);
-        io.edurt.datacap.spi.model.Response response = plugin.execute(plugin.validator());
-        if (response.getIsSuccessful()) {
-            plugin.destroy();
-            return CommonResponse.success(response);
-        }
-        return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+                    PluginService pluginService = plugin.getService(PluginService.class);
+                    // The filter parameter value is null data
+                    List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
+                    Configure _configure = ConfigureUtils.preparedConfigure(applyConfigures);
+                    // Adapter file configure
+                    if (_configure.isUsedConfig()) {
+                        String cacheHome = environment.getProperty("datacap.cache.data");
+                        if (StringUtils.isEmpty(cacheHome)) {
+                            cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
+                        }
+                        _configure.setHome(cacheHome);
+                        _configure.setUsername(Optional.of(UserDetailsService.getUser().getUsername()));
+                    }
+                    _configure.setPluginManager(pluginManager);
+                    pluginService.connect(_configure);
+                    Response response = pluginService.execute(pluginService.validator());
+                    if (response.getIsSuccessful()) {
+                        pluginService.destroy();
+                        return CommonResponse.success(response);
+                    }
+                    return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+                })
+                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
     }
 
     @Override
     public CommonResponse<SourceEntity> saveOrUpdateV2(SourceBody configure)
     {
-        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getName(), configure.getType());
-        if (!pluginOptional.isPresent()) {
-            return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
-        }
+        return pluginManager.getPlugin(configure.getName())
+                .map(plugin -> {
+                    // Check configure
+                    IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
+                    if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
+                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
+                    }
 
-        // Check configure
-        IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
-        if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
-            return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
-        }
+                    // Filter required
+                    List<IConfigureField> requiredMismatchConfigures = configure.getConfigure()
+                            .getConfigures()
+                            .stream()
+                            .filter(IConfigureField::isRequired)
+                            .filter(v -> ObjectUtils.isEmpty(v.getValue()))
+                            .collect(Collectors.toList());
+                    if (!requiredMismatchConfigures.isEmpty()) {
+                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
+                    }
 
-        // Filter required
-        List<IConfigureField> requiredMismatchConfigures = configure.getConfigure()
-                .getConfigures()
-                .stream()
-                .filter(IConfigureField::isRequired)
-                .filter(v -> ObjectUtils.isEmpty(v.getValue()))
-                .collect(Collectors.toList());
-        if (!requiredMismatchConfigures.isEmpty()) {
-            return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
-        }
-
-        // The filter parameter value is null data
-        List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
-        SourceEntity source = ConfigureUtils.preparedSourceEntity(applyConfigures);
-        source.setProtocol(configure.getType());
-        source.setType(configure.getName());
-        source.setUser(UserDetailsService.getUser());
-        if (configure.getId() == null) {
-            source.setCode(UUID.randomUUID().toString().replace("-", ""));
-        }
-        if (ObjectUtils.isNotEmpty(configure.getId()) && configure.getId() > 0) {
-            source.setId(configure.getId());
-            sourceRepository.findById(configure.getId())
-                    .ifPresent(item -> source.setCode(item.getCode()));
-        }
-        if (StringUtils.isNotEmpty(configure.getVersion())) {
-            source.setVersion(configure.getVersion());
-            source.setAvailable(true);
-        }
-        else {
-            source.setAvailable(false);
-        }
-        this.sourceRepository.save(source);
-        // Copy file to local data
-        if (source.isUsedConfig()) {
-            String cacheHome = environment.getProperty("datacap.cache.data");
-            if (StringUtils.isEmpty(cacheHome)) {
-                cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
-            }
-            String configHome = environment.getProperty("datacap.config.data");
-            if (StringUtils.isEmpty(configHome)) {
-                configHome = String.join(File.separator, System.getProperty("user.dir"), "config");
-            }
-            File sourceFile = new File(String.join(File.separator, cacheHome, source.getUser().getUsername(), source.getType()));
-            String destination = String.join(File.separator, configHome, source.getUser().getUsername(), source.getType(), String.valueOf(source.getId()));
-            File directory = new File(destination);
-            try {
-                if (!directory.exists()) {
-                    directory.mkdirs();
-                }
-                for (File file : sourceFile.listFiles()) {
-                    Files.copy(file, new File(String.join(File.separator, destination, file.getName())));
-                }
-                FileUtils.deleteDirectory(sourceFile);
-            }
-            catch (Exception e) {
-                return CommonResponse.failure("Copy failed: " + e.getMessage());
-            }
-        }
-        // Start sync metadata
-        this.syncMetadata(source.getId());
-        return CommonResponse.success(source);
+                    // The filter parameter value is null data
+                    List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
+                    SourceEntity source = ConfigureUtils.preparedSourceEntity(applyConfigures);
+                    source.setProtocol(configure.getType());
+                    source.setType(configure.getName());
+                    source.setUser(UserDetailsService.getUser());
+                    if (configure.getId() == null) {
+                        source.setCode(UUID.randomUUID().toString().replace("-", ""));
+                    }
+                    if (ObjectUtils.isNotEmpty(configure.getId()) && configure.getId() > 0) {
+                        source.setId(configure.getId());
+                        sourceRepository.findById(configure.getId())
+                                .ifPresent(item -> source.setCode(item.getCode()));
+                    }
+                    if (StringUtils.isNotEmpty(configure.getVersion())) {
+                        source.setVersion(configure.getVersion());
+                        source.setAvailable(true);
+                    }
+                    else {
+                        source.setAvailable(false);
+                    }
+                    this.sourceRepository.save(source);
+                    // Copy file to local data
+                    if (source.isUsedConfig()) {
+                        String cacheHome = environment.getProperty("datacap.cache.data");
+                        if (StringUtils.isEmpty(cacheHome)) {
+                            cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
+                        }
+                        String configHome = environment.getProperty("datacap.config.data");
+                        if (StringUtils.isEmpty(configHome)) {
+                            configHome = String.join(File.separator, System.getProperty("user.dir"), "config");
+                        }
+                        File sourceFile = new File(String.join(File.separator, cacheHome, source.getUser().getUsername(), source.getType()));
+                        String destination = String.join(File.separator, configHome, source.getUser().getUsername(), source.getType(), String.valueOf(source.getId()));
+                        File directory = new File(destination);
+                        try {
+                            if (!directory.exists()) {
+                                directory.mkdirs();
+                            }
+                            for (File file : sourceFile.listFiles()) {
+                                Files.copy(file, new File(String.join(File.separator, destination, file.getName())));
+                            }
+                            FileUtils.deleteDirectory(sourceFile);
+                        }
+                        catch (Exception e) {
+                            return CommonResponse.failure("Copy failed: " + e.getMessage());
+                        }
+                    }
+                    // Start sync metadata
+                    this.syncMetadata(source.getId());
+                    return CommonResponse.success(source);
+                })
+                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
     }
 
     @Override
@@ -407,31 +400,27 @@ public class SourceServiceImpl
         ScheduledHistoryEntity scheduledHistory = ScheduledHistoryEntity.builder().name(String.format("Sync source [ %s ]", entity.getName())).scheduled(scheduled).source(entity).state(RunState.RUNNING).build();
         scheduledHistoryHandler.save(scheduledHistory);
         log.info("==================== Sync metadata  [ {} ] started =================", entity.getName());
-        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, entity.getType(), entity.getProtocol());
-        if (pluginOptional.isEmpty()) {
-            log.warn("The source [ {} ] protocol [ {} ] is not available", entity.getName(), entity.getProtocol());
-        }
-        else {
-            try {
-                PluginService plugin = pluginOptional.get();
-                Configure pConfigure = entity.toConfigure();
-                pConfigure.setInjector(injector);
-                plugin.connect(pConfigure);
-                Response response = plugin.execute(plugin.validator());
-                if (!response.getIsSuccessful()) {
-                    log.error("The source [ {} ] not available", entity.getName());
-                }
-                else {
-                    this.startSyncDatabase(entity, plugin, databaseCache, databaseTableCache, tableCache, tableColumnCache, databaseAddedCount, databaseUpdatedCount, databaseRemovedCount, tableAddedCount, tableUpdatedCount, tableRemovedCount, columnAddedCount, columnUpdatedCount, columnRemovedCount);
-                }
-                scheduledHistory.setState(RunState.SUCCESS);
-            }
-            catch (Exception e) {
-                log.error("The scheduled task [ {} ] source [ {} ] not available ", scheduled.getName(), entity.getName(), e);
-                scheduledHistory.setState(RunState.FAILURE);
-                scheduledHistory.setMessage(ExceptionUtils.getStackTrace(e));
-            }
-        }
+        pluginManager.getPlugin(entity.getType())
+                .ifPresent(plugin -> {
+                    try {
+                        PluginService pluginService = plugin.getService(PluginService.class);
+                        Configure pConfigure = entity.toConfigure();
+                        pConfigure.setPluginManager(pluginManager);
+                        Response response = pluginService.execute(pConfigure, pluginService.validator());
+                        if (!response.getIsSuccessful()) {
+                            log.error("The source [ {} ] not available", entity.getName());
+                        }
+                        else {
+                            this.startSyncDatabase(entity, pluginService, databaseCache, databaseTableCache, tableCache, tableColumnCache, databaseAddedCount, databaseUpdatedCount, databaseRemovedCount, tableAddedCount, tableUpdatedCount, tableRemovedCount, columnAddedCount, columnUpdatedCount, columnRemovedCount);
+                        }
+                        scheduledHistory.setState(RunState.SUCCESS);
+                    }
+                    catch (Exception e) {
+                        log.error("The scheduled task [ {} ] source [ {} ] not available ", scheduled.getName(), entity.getName(), e);
+                        scheduledHistory.setState(RunState.FAILURE);
+                        scheduledHistory.setMessage(ExceptionUtils.getStackTrace(e));
+                    }
+                });
         log.info("==================== Sync metadata  [ {} ] finished =================", entity.getName());
         Properties info = new Properties();
         info.put("databaseAddedCount", databaseAddedCount.get());
@@ -545,7 +534,7 @@ public class SourceServiceImpl
         }
         else {
             Configure pConfigure = entity.toConfigure();
-            pConfigure.setInjector(injector);
+            pConfigure.setPluginManager(pluginManager);
             plugin.connect(pConfigure);
             Response response = plugin.execute(getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
@@ -617,7 +606,7 @@ public class SourceServiceImpl
         }
         else {
             Configure pConfigure = entity.toConfigure();
-            pConfigure.setInjector(injector);
+            pConfigure.setPluginManager(pluginManager);
             plugin.connect(pConfigure);
             Response response = plugin.execute(getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
@@ -710,7 +699,7 @@ public class SourceServiceImpl
         }
         else {
             Configure pConfigure = entity.toConfigure();
-            pConfigure.setInjector(injector);
+            pConfigure.setPluginManager(pluginManager);
             plugin.connect(pConfigure);
             Response response = plugin.execute(getSqlContext(template, null));
             if (!response.getIsSuccessful()) {

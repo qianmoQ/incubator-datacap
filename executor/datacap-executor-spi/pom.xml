@@ -30,6 +30,11 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-spi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

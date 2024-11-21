@@ -1,10 +1,14 @@
 package io.edurt.datacap.scheduler
 
-interface Scheduler {
-    fun name(): String {
+import io.edurt.datacap.plugin.Service
+
+interface SchedulerService : Service
+{
+    fun name(): String
+    {
         return this.javaClass
-                .simpleName
-                .removeSuffix("Scheduler")
+            .simpleName
+            .removeSuffix("Scheduler")
     }
 
     fun initialize(request: SchedulerRequest): SchedulerResponse

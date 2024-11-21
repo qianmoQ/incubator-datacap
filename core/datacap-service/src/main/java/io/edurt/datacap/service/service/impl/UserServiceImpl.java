@@ -2,7 +2,6 @@ package io.edurt.datacap.service.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.ServiceState;
 import io.edurt.datacap.common.response.CommonResponse;
@@ -10,9 +9,10 @@ import io.edurt.datacap.common.response.JwtResponse;
 import io.edurt.datacap.common.utils.CodeUtils;
 import io.edurt.datacap.common.utils.JsonUtils;
 import io.edurt.datacap.common.utils.NullAwareBeanUtils;
-import io.edurt.datacap.common.utils.SpiUtils;
 import io.edurt.datacap.fs.FsRequest;
 import io.edurt.datacap.fs.FsResponse;
+import io.edurt.datacap.fs.FsService;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.adapter.PageRequestAdapter;
 import io.edurt.datacap.service.audit.AuditUserLog;
 import io.edurt.datacap.service.body.FilterBody;
@@ -80,9 +80,9 @@ public class UserServiceImpl
     private final RedisTemplate redisTemplate;
     private final Environment environment;
     private final InitializerConfigure initializerConfigure;
-    private final Injector injector;
+    private final PluginManager pluginManager;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, SourceRepository sourceRepository, MenuRepository menuRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService, RedisTemplate redisTemplate, Environment environment, InitializerConfigure initializerConfigure, Injector injector)
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, SourceRepository sourceRepository, MenuRepository menuRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService, RedisTemplate redisTemplate, Environment environment, InitializerConfigure initializerConfigure, PluginManager pluginManager)
     {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -94,7 +94,7 @@ public class UserServiceImpl
         this.redisTemplate = redisTemplate;
         this.environment = environment;
         this.initializerConfigure = initializerConfigure;
-        this.injector = injector;
+        this.pluginManager = pluginManager;
     }
 
     @Override
@@ -304,8 +304,9 @@ public class UserServiceImpl
     @Override
     public CommonResponse<FsResponse> uploadAvatar(MultipartFile file)
     {
-        return SpiUtils.findFs(injector, initializerConfigure.getFsConfigure().getType())
-                .map(fs -> {
+
+        return pluginManager.getPlugin(initializerConfigure.getFsConfigure().getType())
+                .map(plugin -> {
                     UserEntity user = UserDetailsService.getUser();
                     try {
                         String avatarPath = initializerConfigure.getAvatarPath();
@@ -319,7 +320,9 @@ public class UserServiceImpl
                                 .stream(file.getInputStream())
                                 .fileName(String.format("%s.png", user.getId()))
                                 .build();
-                        FsResponse response = fs.writer(fsRequest);
+
+                        FsService fsService = plugin.getService(FsService.class);
+                        FsResponse response = fsService.writer(fsRequest);
                         UserEntity entity = userRepository.findById(user.getId()).get();
                         Map<String, String> avatar = Maps.newConcurrentMap();
                         avatar.put("fsType", initializerConfigure.getFsConfigure().getType());

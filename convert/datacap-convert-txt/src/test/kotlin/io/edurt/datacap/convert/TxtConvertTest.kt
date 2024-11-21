@@ -1,4 +1,4 @@
-package io.edurt.datacap.convert.txt
+package io.edurt.datacap.convert
 
 import com.google.inject.Guice
 import com.google.inject.Injector

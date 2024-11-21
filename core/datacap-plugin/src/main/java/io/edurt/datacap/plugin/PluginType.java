@@ -2,7 +2,9 @@ package io.edurt.datacap.plugin;
 
 public enum PluginType
 {
-    CONNECTOR("Connector");
+    CONNECTOR("Connector"),
+    EXECUTOR("Executor"),
+    SCHEDULER("Scheduler");
 
     private String name;
 

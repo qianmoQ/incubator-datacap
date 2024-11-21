@@ -1,6 +1,7 @@
 package io.edurt.datacap.service.service;
 
 import io.edurt.datacap.common.response.CommonResponse;
+import io.edurt.datacap.plugin.PluginMetadata;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.body.adhoc.Adhoc;
 import io.edurt.datacap.service.entity.DataSetColumnEntity;
@@ -23,7 +24,7 @@ public interface DataSetService
 
     CommonResponse<Object> adhoc(String code, Adhoc configure);
 
-    CommonResponse<Set<String>> getActuators();
+    CommonResponse<Set<PluginMetadata>> getActuators();
 
     CommonResponse<DataSetEntity> getInfo(String code);
 

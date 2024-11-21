@@ -77,24 +77,6 @@ public class JdbcConnection
         try {
             this.jdbcConfigure = (JdbcConfigure) getConfigure();
             this.response = getResponse();
-
-            // Remove org.apache.pinot.client.PinotDriver and net.suteren.jdbc.influxdb.InfluxDbDriver
-            Enumeration<Driver> drivers = DriverManager.getDrivers();
-            while (drivers.hasMoreElements()) {
-                Driver driver = drivers.nextElement();
-                if (driver instanceof org.apache.pinot.client.PinotDriver
-                        || driver instanceof net.suteren.jdbc.influxdb.InfluxDbDriver) {
-                    DriverManager.deregisterDriver(driver);
-                    log.info("Deregistered driver {}", driver);
-                }
-            }
-
-            // Manually loading and registering the driver
-            Driver driver = (Driver) Class.forName(this.jdbcConfigure.getJdbcDriver())
-                    .getDeclaredConstructor()
-                    .newInstance();
-            DriverManager.registerDriver(driver);
-
             String url = formatJdbcUrl();
             log.info("Connection driver {}", this.jdbcConfigure.getJdbcDriver());
             log.info("Connection url {}", url);

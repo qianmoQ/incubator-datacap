@@ -1,10 +1,8 @@
-package io.edurt.datacap.convert.txt
+package io.edurt.datacap.convert
 
 import com.google.common.base.Preconditions.checkArgument
 import com.google.common.base.Preconditions.checkState
 import io.edurt.datacap.common.utils.DateUtils
-import io.edurt.datacap.convert.Convert
-import io.edurt.datacap.convert.FileConvert
 import io.edurt.datacap.convert.model.ConvertRequest
 import io.edurt.datacap.convert.model.ConvertResponse
 import org.apache.commons.io.FileUtils
@@ -15,7 +13,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.Objects.requireNonNull
 
-class TxtConvert : Convert
+class TxtService : ConvertService
 {
     private val log = getLogger(this::class.java)
 

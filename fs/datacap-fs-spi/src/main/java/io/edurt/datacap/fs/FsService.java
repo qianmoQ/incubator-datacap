@@ -1,6 +1,9 @@
 package io.edurt.datacap.fs;
 
-public interface Fs
+import io.edurt.datacap.plugin.Service;
+
+public interface FsService
+        extends Service
 {
     default String name()
     {
