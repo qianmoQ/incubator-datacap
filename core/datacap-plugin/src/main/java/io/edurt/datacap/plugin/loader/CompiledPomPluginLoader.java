@@ -1,6 +1,7 @@
 package io.edurt.datacap.plugin.loader;
 
 import io.edurt.datacap.plugin.Plugin;
+import io.edurt.datacap.plugin.SpiType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -21,9 +22,9 @@ public class CompiledPomPluginLoader
         implements PluginLoader
 {
     @Override
-    public String getType()
+    public SpiType getType()
     {
-        return "CompiledPom";
+        return SpiType.COMPILED_POM;
     }
 
     @Override

@@ -6,5 +6,6 @@ public enum PluginState
     INITIALIZED,
     STARTED,
     STOPPED,
-    FAILED
+    FAILED,
+    UNLOADED
 }

@@ -17,7 +17,7 @@ public class PluginManagerTest
     public void before()
     {
         Path projectRoot = PluginPathUtils.findProjectRoot();
-        PluginConfig config = PluginConfig.builder()
+        PluginConfigure config = PluginConfigure.builder()
                 .pluginsDir(projectRoot.resolve("test/datacap-test-plugin"))
                 .build();
 

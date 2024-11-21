@@ -3,7 +3,6 @@ package io.edurt.datacap.server.configure;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.edurt.datacap.common.utils.EnvironmentUtils;
-import io.edurt.datacap.plugin.PluginConfig;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
 import io.edurt.datacap.spi.PluginLoader;
@@ -31,7 +30,7 @@ public class PluginConfigure
 
         String root = environment.getProperty("spring.config.location");
         Path projectRoot = PluginPathUtils.findProjectRoot();
-        PluginConfig config = PluginConfig.builder()
+        io.edurt.datacap.plugin.PluginConfigure config = io.edurt.datacap.plugin.PluginConfigure.builder()
                 .pluginsDir(Path.of(String.join(File.separator, root, "plugins")))
                 .build();
 

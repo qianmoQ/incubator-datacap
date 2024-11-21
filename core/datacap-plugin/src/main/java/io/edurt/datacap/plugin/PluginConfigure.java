@@ -8,24 +8,30 @@ import java.nio.file.Paths;
 
 @Data
 @Builder
-public class PluginConfig
+public class PluginConfigure
 {
     private Path pluginsDir;
     private boolean autoReload;
     private long scanInterval;
     private String pluginConfigFile;
+
     // 扫描层级，只有目录情况下才会生效
     // Scan depth, only effective when scanning directory
     private int scanDepth;
 
-    public static PluginConfig defaultConfig()
+    // 自动清理, 只有卸载时才会生效
+    // Auto cleanup, only effective when unloading
+    public boolean autoCleanup;
+
+    public static PluginConfigure defaultConfig()
     {
-        return PluginConfig.builder()
+        return PluginConfigure.builder()
                 .pluginsDir(Paths.get("plugins"))
                 .autoReload(false)
                 .scanInterval(5000)
                 .pluginConfigFile("plugin.properties")
                 .scanDepth(1)
+                .autoCleanup(true)
                 .build();
     }
 }

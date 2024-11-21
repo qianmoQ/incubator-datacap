@@ -35,7 +35,7 @@ public class PluginLoaderFactory
      */
     public static void registerLoader(PluginLoader loader)
     {
-        String type = loader.getType();
+        String type = loader.getType().getName();
         if (type == null || type.trim().isEmpty()) {
             log.warn("Attempted to register loader with null or empty type: {}", loader.getClass().getName());
             return;

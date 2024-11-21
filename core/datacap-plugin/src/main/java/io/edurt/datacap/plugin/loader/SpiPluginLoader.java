@@ -1,6 +1,7 @@
 package io.edurt.datacap.plugin.loader;
 
 import io.edurt.datacap.plugin.Plugin;
+import io.edurt.datacap.plugin.SpiType;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,9 +17,9 @@ public class SpiPluginLoader
         implements PluginLoader
 {
     @Override
-    public String getType()
+    public SpiType getType()
     {
-        return "SPI";
+        return SpiType.SPI;
     }
 
     @Override

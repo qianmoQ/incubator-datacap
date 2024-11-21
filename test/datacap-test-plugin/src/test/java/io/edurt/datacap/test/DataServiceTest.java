@@ -1,6 +1,6 @@
 package io.edurt.datacap.test;
 
-import io.edurt.datacap.plugin.PluginConfig;
+import io.edurt.datacap.plugin.PluginConfigure;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class DataServiceTest
     public void before()
     {
         Path projectRoot = PluginPathUtils.findProjectRoot();
-        PluginConfig config = PluginConfig.builder()
+        PluginConfigure config = PluginConfigure.builder()
                 .pluginsDir(projectRoot.resolve("test/datacap-test-plugin"))
                 .build();
 
