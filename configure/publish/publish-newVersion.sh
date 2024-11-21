@@ -1,6 +1,7 @@
 #!/bin/sh
 VERSION=$1
 HOME=$(pwd)
+CURRENT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 
 job_before_echo_basic() {
     printf "\n\tJob before echo basic \n"
@@ -38,6 +39,12 @@ job_runner_apply() {
 
     echo "Apply new version for plugin ..."
     perl -pi -e 's/VERSION=.*/VERSION='"$VERSION"'/g' configure/etc/bin/install-plugin.sh
+
+    echo "Apply new version for metadata ..."
+    # Update version and URL in metadata.json using perl
+    perl -i -pe 's/"version": "[^"]*"/"version": "'"$VERSION"'"/' "$HOME/configure/metadata.json"
+    perl -i -pe 's|/plugins/[^/]+/|/plugins/'"$VERSION"'/|g' "$HOME/configure/metadata.json"
+    perl -i -pe 's/"released": "[^"]*"/"released": "'"$CURRENT_DATE"'"/' "$HOME/configure/metadata.json"
 
     printf "Apply new version for web ...\n"
     # shellcheck disable=SC2164

@@ -30,7 +30,7 @@
 
                     <ShadcnSpace class="pl-8" wrap :size="[20, 40]">
                       <!-- Description -->
-                      <div class="flex flex-col space-y-2">
+                      <div class="flex flex-col space-y-4">
                         <ShadcnText class="text-sm text-gray-500" type="small">
                           {{ child.i18nFormat ? $t(child.description) : child.description }}
                         </ShadcnText>
@@ -48,11 +48,32 @@
 
                         <!-- Version -->
                         <div class="flex space-x-2 text-sm text-gray-500">
-                          <div class="flex items-center space-x-2">
+                          <div class="space-x-1">
                             {{ $t('common.plugin.version') }} :
+                            <ShadcnTag>{{ child.version }}</ShadcnTag>
                           </div>
 
-                          <ShadcnTag>{{ child.version }}</ShadcnTag>
+                          <ShadcnDivider v-if="child.installed" type="vertical"/>
+
+                          <div v-if="child.installed" class="space-x-1">
+                            {{ $t('common.installVersion') }}:
+                            <ShadcnTag color="#00BFFF">{{ child.installVersion }}</ShadcnTag>
+                          </div>
+                        </div>
+
+                        <!-- Time -->
+                        <div class="flex space-x-2 text-sm text-gray-500">
+                          <div class="space-x-1">
+                            {{ $t('common.releasedTime') }}：
+                            <ShadcnTag type="warning">{{ child.released }}</ShadcnTag>
+                          </div>
+
+                          <ShadcnDivider v-if="child.installed" type="vertical"/>
+
+                          <div v-if="child.installed" class="space-x-1">
+                            {{ $t('common.installTime') }}：
+                            <ShadcnTag color="#00BFFF">{{ child.installTime }}</ShadcnTag>
+                          </div>
                         </div>
 
                         <!-- Other -->
@@ -67,20 +88,6 @@
                             {{ $t('common.type') }}：
                             <ShadcnTag>{{ child.type }}</ShadcnTag>
                           </div>
-
-                          <ShadcnDivider type="vertical"/>
-
-                          <div class="space-x-1">
-                            {{ $t('common.releasedTime') }}：
-                            <ShadcnTag type="warning">{{ child.released }}</ShadcnTag>
-                          </div>
-
-                          <ShadcnDivider v-if="child.installed" type="vertical"/>
-
-                          <div v-if="child.installed" class="space-x-1">
-                            {{ $t('common.installTime') }}：
-                            <ShadcnTag color="#00BFFF">{{ child.installTime }}</ShadcnTag>
-                          </div>
                         </div>
                       </div>
                     </ShadcnSpace>
@@ -88,7 +95,7 @@
 
                   <!-- Action -->
                   <div class="flex items-center space-x-2">
-                    <ShadcnButton :type="child.installed ? 'danger' : 'success'">
+                    <ShadcnButton :type="child.installed ? 'danger' : 'primary'">
                       <template #icon>
                         <ShadcnIcon :icon="child.installed ? 'Trash' : 'Plus'" size="15"/>
                       </template>
@@ -125,6 +132,8 @@ interface MetadataItem
   author: string
   installed: boolean
   installTime: string
+  installVersion: string
+  url: string
 }
 
 interface Metadata
@@ -173,10 +182,11 @@ const loadMetadata = async () => {
     // 绑定安装信息
     // Bind installation information
     metadata.value.children.map(item => {
-      installResponse.data.some((installedPlugin: { name: string, loadTime: string }) => {
+      installResponse.data.some((installedPlugin: { name: string, loadTime: string, version: string }) => {
         if (installedPlugin.name === item.label) {
           item.installed = true
           item.installTime = installedPlugin.loadTime
+          item.installVersion = installedPlugin.version
         }
       })
     })

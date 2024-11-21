@@ -10,14 +10,15 @@
       "description": "Integrate MySQL data sources",
       "i18nFormat": true,
       "type": "JDBC",
-      "version": "2024.4.0",
+      "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
       "logo": "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg",
-      "released": "2024-01-01",
+      "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "8.0",
         "5.7"
-      ]
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-mysql-bin.tar.gz"
     }
   ]
 }
