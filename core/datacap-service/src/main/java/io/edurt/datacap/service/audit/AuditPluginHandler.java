@@ -111,7 +111,7 @@ public class AuditPluginHandler
                 String workHome = FolderUtils.getWorkHome(initializer.getDataHome(), user.getUsername(), String.join(File.separator, "adhoc", uniqueId));
                 log.info("Writer file to folder [ {} ] on [ {} ]", workHome, pluginAudit.getId());
                 try {
-                    ConvertFilter.filter(pluginManager, "Json")
+                    ConvertFilter.filter(pluginManager, "JsonConvert")
                             .ifPresent(it -> {
                                 try {
                                     FileUtils.forceMkdir(new File(workHome));

@@ -21,7 +21,7 @@ class JsonModuleTest
             .stream()
             .findFirst()
             .ifPresent {
-                assertEquals("Json", it.name())
+                assertEquals("JsonConvert", it.name())
             }
     }
 }

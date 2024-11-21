@@ -89,7 +89,7 @@ public class PluginManager
             else {
                 // 如果是目录则遍历加载
                 // Load plugins from directory
-                try (Stream<Path> paths = Files.walk(pluginsPath, 1)) {
+                try (Stream<Path> paths = Files.walk(pluginsPath, config.getScanDepth())) {
                     paths.filter(Files::isDirectory)
                             .peek(path -> log.debug("Scanning plugin directory: {}", path))
                             .filter(path -> !path.equals(pluginsPath))

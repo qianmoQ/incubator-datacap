@@ -4,7 +4,8 @@ public enum PluginType
 {
     CONNECTOR("Connector"),
     EXECUTOR("Executor"),
-    SCHEDULER("Scheduler");
+    SCHEDULER("Scheduler"),
+    CONVERT("Convert");
 
     private String name;
 

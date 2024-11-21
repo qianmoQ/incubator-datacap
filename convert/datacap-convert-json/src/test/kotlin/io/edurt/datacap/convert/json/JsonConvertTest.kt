@@ -15,7 +15,7 @@ import kotlin.test.assertTrue
 class JsonConvertTest
 {
     private val log = getLogger(this::class.java)
-    private val name = "Json"
+    private val name = "JsonConvert"
     private var injector: Injector? = null
     private val request: ConvertRequest = ConvertRequest()
 

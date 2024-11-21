@@ -121,7 +121,7 @@ public class PluginAuditServiceImpl
                                 FsService fsService = plugin.getService(FsService.class);
                                 FsResponse fsResponse = fsService.reader(fsRequest);
 
-                                pluginManager.getPlugin("Json")
+                                pluginManager.getPlugin("JsonConvert")
                                         .ifPresent(it -> {
                                             ConvertRequest request = new ConvertRequest();
                                             request.setStream(fsResponse.getContext());

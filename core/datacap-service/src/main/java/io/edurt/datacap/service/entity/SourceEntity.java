@@ -159,7 +159,7 @@ public class SourceEntity
         configure.setDatabase(database);
         configure.setSsl(Optional.ofNullable(this.getSsl()));
         configure.setEnv(Optional.ofNullable(this.getConfigures()));
-        configure.setFormat("Json");
+        configure.setFormat("JsonConvert");
         return configure;
     }
 }

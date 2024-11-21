@@ -85,7 +85,7 @@ public class ConfigureUtils
                     break;
             }
         });
-        configure.setFormat("Json");
+        configure.setFormat("JsonConvert");
         return configure;
     }
 

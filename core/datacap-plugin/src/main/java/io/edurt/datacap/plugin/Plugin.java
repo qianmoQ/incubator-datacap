@@ -170,7 +170,7 @@ public abstract class Plugin
         return version;
     }
 
-    PluginType getType()
+    public PluginType getType()
     {
         return PluginType.CONNECTOR;
     }

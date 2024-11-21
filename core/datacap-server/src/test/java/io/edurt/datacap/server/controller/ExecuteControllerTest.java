@@ -52,7 +52,7 @@ public class ExecuteControllerTest
             throws Exception
     {
         ExecuteEntity entity = BaseParamTest.builderExecute();
-        entity.setFormat("Json");
+        entity.setFormat("JsonConvert");
         entity.setName("MySQL1");
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/execute").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.objectmapper.writeValueAsString(entity))).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.code").exists()).andDo(MockMvcResultHandlers.print()).andReturn();
         log.info(mvcResult.getResponse().getContentAsString());

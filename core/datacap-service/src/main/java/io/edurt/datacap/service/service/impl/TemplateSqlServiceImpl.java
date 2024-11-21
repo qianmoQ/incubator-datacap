@@ -163,7 +163,7 @@ public class TemplateSqlServiceImpl
                 });
             }
             executeConfigure.setContent(content[0]);
-            executeConfigure.setFormat("Json");
+            executeConfigure.setFormat("JsonConvert");
             executeConfigure.setName(String.valueOf(configure.getSourceId()));
         }
         catch (JsonProcessingException e) {

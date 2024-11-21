@@ -15,7 +15,7 @@ public class ExecuteEntity
     private String name;
     private String content;
     private Map<String, Object> env;
-    private String format = "Json";
+    private String format = "JsonConvert";
     private int limit = 1000;
     private QueryMode mode;
 }

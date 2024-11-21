@@ -28,7 +28,7 @@ public class Configure
     private Optional<String> version = Optional.empty();
     private Optional<Map<String, Object>> env = Optional.empty();
     private Optional<Boolean> ssl = Optional.empty();
-    private String format = "Json";
+    private String format = "JsonConvert";
     // if `to`: skip
     private Optional<String> query = Optional.empty();
     // Support for custom upload configuration plugins
