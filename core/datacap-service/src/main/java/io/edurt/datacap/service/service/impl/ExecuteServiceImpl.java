@@ -57,6 +57,7 @@ public class ExecuteServiceImpl
                                         .format(configure.getFormat())
                                         .usedConfig(entity.isUsedConfig())
                                         .pluginManager(pluginManager)
+                                        .classLoader(plugin.getClassLoader())
                                         .build();
                                 if (entity.isUsedConfig()) {
                                     _configure.setUsername(Optional.of(entity.getUser().getUsername()));

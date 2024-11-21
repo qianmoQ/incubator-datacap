@@ -21,80 +21,80 @@
         <module>lib/datacap-logger</module>
         <module>lib/datacap-shell</module>
         <module>lib/datacap-schedule</module>
-<!--        <module>driver/datacap-driver-redis</module>-->
-<!--        <module>driver/datacap-driver-mongo</module>-->
-<!--        <module>plugin/datacap-native-alioss</module>-->
-<!--        <module>plugin/datacap-native-zookeeper</module>-->
-<!--        <module>plugin/datacap-native-redis</module>-->
-<!--        <module>plugin/datacap-native-kafka</module>-->
-<!--        <module>plugin/datacap-native-h2</module>-->
-<!--        <module>plugin/datacap-native-hdfs</module>-->
-<!--        <module>plugin/datacap-http-cratedb</module>-->
-<!--        <module>plugin/datacap-http-clickhouse</module>-->
-<!--        <module>plugin/datacap-http-ceresdb</module>-->
-<!--        <module>plugin/datacap-http-greptime</module>-->
-<!--        <module>plugin/datacap-http-questdb</module>-->
-<!--        <module>plugin/datacap-jdbc-clickhouse</module>-->
-<!--        <module>plugin/datacap-jdbc-cratedb</module>-->
-<!--        <module>plugin/datacap-jdbc-db2</module>-->
-<!--        <module>plugin/datacap-jdbc-dm</module>-->
-<!--        <module>plugin/datacap-jdbc-dremio</module>-->
-<!--        <module>plugin/datacap-jdbc-druid</module>-->
-<!--        <module>plugin/datacap-jdbc-duckdb</module>-->
-<!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
-<!--        <module>plugin/datacap-jdbc-h2</module>-->
-<!--        <module>plugin/datacap-jdbc-hive</module>-->
-<!--        <module>plugin/datacap-jdbc-ignite</module>-->
-<!--        <module>plugin/datacap-jdbc-impala</module>-->
-<!--        <module>plugin/datacap-jdbc-iotdb</module>-->
-<!--        <module>plugin/datacap-jdbc-kylin</module>-->
-<!--        <module>plugin/datacap-jdbc-kyuubi</module>-->
-<!--        <module>plugin/datacap-jdbc-monetdb</module>-->
-<!--        <module>plugin/datacap-jdbc-mongo</module>-->
-<!--        <module>plugin/datacap-jdbc-ydb</module>-->
+        <module>driver/datacap-driver-redis</module>
+        <module>driver/datacap-driver-mongo</module>
         <module>plugin/datacap-plugin-mysql</module>
-<!--        <module>plugin/datacap-jdbc-neo4j</module>-->
-<!--        <module>plugin/datacap-jdbc-oceanbase</module>-->
-<!--        <module>plugin/datacap-jdbc-oracle</module>-->
-<!--        <module>plugin/datacap-jdbc-phoenix</module>-->
-<!--        <module>plugin/datacap-jdbc-postgresql</module>-->
-<!--        <module>plugin/datacap-jdbc-presto</module>-->
-<!--        <module>plugin/datacap-jdbc-redis</module>-->
-<!--        <module>plugin/datacap-jdbc-snowflake</module>-->
-<!--        <module>plugin/datacap-jdbc-sqlserver</module>-->
-<!--        <module>plugin/datacap-jdbc-tdengine</module>-->
-<!--        <module>plugin/datacap-jdbc-trino</module>-->
-<!--        <module>plugin/datacap-jdbc-doris</module>-->
-<!--        <module>plugin/datacap-jdbc-starrocks</module>-->
-<!--        <module>plugin/datacap-jdbc-hologres</module>-->
-<!--        <module>plugin/datacap-plugin-pinot</module>-->
-<!--        <module>plugin/datacap-plugin-mongo-community</module>-->
-<!--        <module>plugin/datacap-plugin-cassandra</module>-->
-<!--        <module>plugin/datacap-plugin-matrixone</module>-->
-<!--        <module>plugin/datacap-plugin-scylladb</module>-->
-<!--        <module>plugin/datacap-plugin-paradedb</module>-->
-<!--        <module>plugin/datacap-plugin-timescale</module>-->
-<!--        <module>plugin/datacap-plugin-solr</module>-->
-<!--        <module>plugin/datacap-plugin-influxdb</module>-->
+        <module>plugin/datacap-plugin-clickhouse</module>
+        <!--        <module>plugin/datacap-native-alioss</module>-->
+        <!--        <module>plugin/datacap-native-zookeeper</module>-->
+        <!--        <module>plugin/datacap-native-redis</module>-->
+        <!--        <module>plugin/datacap-native-kafka</module>-->
+        <!--        <module>plugin/datacap-native-h2</module>-->
+        <!--        <module>plugin/datacap-native-hdfs</module>-->
+        <!--        <module>plugin/datacap-http-cratedb</module>-->
+        <!--        <module>plugin/datacap-http-clickhouse</module>-->
+        <!--        <module>plugin/datacap-http-ceresdb</module>-->
+        <!--        <module>plugin/datacap-http-greptime</module>-->
+        <!--        <module>plugin/datacap-http-questdb</module>-->
+        <!--        <module>plugin/datacap-jdbc-cratedb</module>-->
+        <!--        <module>plugin/datacap-jdbc-db2</module>-->
+        <!--        <module>plugin/datacap-jdbc-dm</module>-->
+        <!--        <module>plugin/datacap-jdbc-dremio</module>-->
+        <!--        <module>plugin/datacap-jdbc-druid</module>-->
+        <!--        <module>plugin/datacap-jdbc-duckdb</module>-->
+        <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
+        <!--        <module>plugin/datacap-jdbc-h2</module>-->
+        <!--        <module>plugin/datacap-jdbc-hive</module>-->
+        <!--        <module>plugin/datacap-jdbc-ignite</module>-->
+        <!--        <module>plugin/datacap-jdbc-impala</module>-->
+        <!--        <module>plugin/datacap-jdbc-iotdb</module>-->
+        <!--        <module>plugin/datacap-jdbc-kylin</module>-->
+        <!--        <module>plugin/datacap-jdbc-kyuubi</module>-->
+        <!--        <module>plugin/datacap-jdbc-monetdb</module>-->
+        <!--        <module>plugin/datacap-jdbc-mongo</module>-->
+        <!--        <module>plugin/datacap-jdbc-ydb</module>-->
+        <!--        <module>plugin/datacap-jdbc-neo4j</module>-->
+        <!--        <module>plugin/datacap-jdbc-oceanbase</module>-->
+        <!--        <module>plugin/datacap-jdbc-oracle</module>-->
+        <!--        <module>plugin/datacap-jdbc-phoenix</module>-->
+        <!--        <module>plugin/datacap-jdbc-postgresql</module>-->
+        <!--        <module>plugin/datacap-jdbc-presto</module>-->
+        <!--        <module>plugin/datacap-jdbc-redis</module>-->
+        <!--        <module>plugin/datacap-jdbc-snowflake</module>-->
+        <!--        <module>plugin/datacap-jdbc-sqlserver</module>-->
+        <!--        <module>plugin/datacap-jdbc-tdengine</module>-->
+        <!--        <module>plugin/datacap-jdbc-trino</module>-->
+        <!--        <module>plugin/datacap-jdbc-doris</module>-->
+        <!--        <module>plugin/datacap-jdbc-starrocks</module>-->
+        <!--        <module>plugin/datacap-jdbc-hologres</module>-->
+        <!--        <module>plugin/datacap-plugin-pinot</module>-->
+        <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
+        <!--        <module>plugin/datacap-plugin-cassandra</module>-->
+        <!--        <module>plugin/datacap-plugin-matrixone</module>-->
+        <!--        <module>plugin/datacap-plugin-scylladb</module>-->
+        <!--        <module>plugin/datacap-plugin-paradedb</module>-->
+        <!--        <module>plugin/datacap-plugin-timescale</module>-->
+        <!--        <module>plugin/datacap-plugin-solr</module>-->
+        <!--        <module>plugin/datacap-plugin-influxdb</module>-->
         <module>executor/datacap-executor-spi</module>
-<!--        <module>executor/datacap-executor-local</module>-->
-<!--        <module>executor/datacap-executor-seatunnel</module>-->
-<!--        <module>shaded/datacap-shaded-ydb</module>-->
-<!--        <module>shaded/datacap-shaded-pinot</module>-->
+        <!--        <module>executor/datacap-executor-local</module>-->
+        <!--        <module>executor/datacap-executor-seatunnel</module>-->
+        <!--        <module>shaded/datacap-shaded-ydb</module>-->
+        <!--        <module>shaded/datacap-shaded-pinot</module>-->
         <module>fs/datacap-fs-spi</module>
-<!--        <module>fs/datacap-fs-local</module>-->
-<!--        <module>fs/datacap-fs-qiniu</module>-->
-<!--        <module>fs/datacap-fs-alioss</module>-->
-<!--        <module>fs/datacap-fs-tencent-cos</module>-->
-<!--        <module>fs/datacap-fs-amazon-s3</module>-->
-<!--        <module>fs/datacap-fs-minio</module>-->
+        <!--        <module>fs/datacap-fs-local</module>-->
+        <!--        <module>fs/datacap-fs-qiniu</module>-->
+        <!--        <module>fs/datacap-fs-alioss</module>-->
+        <!--        <module>fs/datacap-fs-tencent-cos</module>-->
+        <!--        <module>fs/datacap-fs-amazon-s3</module>-->
+        <!--        <module>fs/datacap-fs-minio</module>-->
         <module>parser/datacap-parser-spi</module>
-<!--        <module>parser/datacap-parser-trino</module>-->
-<!--        <module>parser/datacap-parser-mysql</module>-->
+        <!--        <module>parser/datacap-parser-trino</module>-->
+        <!--        <module>parser/datacap-parser-mysql</module>-->
         <module>scheduler/datacap-scheduler-spi</module>
-<!--        <module>scheduler/datacap-scheduler-local</module>-->
+        <!--        <module>scheduler/datacap-scheduler-local</module>-->
         <module>notify/datacap-notify-spi</module>
-<!--        <module>notify/datacap-notify-dingtalk</module>-->
+        <!--        <module>notify/datacap-notify-dingtalk</module>-->
         <module>convert/datacap-convert-spi</module>
         <module>convert/datacap-convert-txt</module>
         <module>convert/datacap-convert-json</module>

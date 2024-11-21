@@ -251,6 +251,8 @@ public class DataSetServiceImpl
                                 targetConfigure.setPassword(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getPassword()));
                                 targetConfigure.setDatabase(Optional.ofNullable(database));
                                 targetConfigure.setPluginManager(pluginManager);
+                                targetConfigure.setClassLoader(plugin.getClassLoader());
+                                targetConfigure.setPlugin(plugin);
                                 Response response = pluginService.execute(targetConfigure, sql);
                                 response.setContent(sql);
                                 return CommonResponse.success(response);

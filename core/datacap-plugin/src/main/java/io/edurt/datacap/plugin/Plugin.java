@@ -118,28 +118,36 @@ public abstract class Plugin
     @Override
     protected void configure()
     {
-        getServiceTypes().forEach(serviceType -> {
-            ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType, this.getClass().getClassLoader());
-            // 支持多个实现
-            // Support multiple implementations
-            bindings.getBindings().forEach((service, implementation) -> {
-                // 使用命名绑定来支持多个实现
-                // Use named binding to support multiple implementations
-                String implName = implementation.getSimpleName();
-                bindService(service, implementation, true, implName);
+        try {
+            PluginContextManager.runWithClassLoader(getClass().getClassLoader(), () -> {
+                getServiceTypes().forEach(serviceType -> {
+                    ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType, this.getClass().getClassLoader());
+                    // 支持多个实现
+                    // Support multiple implementations
+                    bindings.getBindings().forEach((service, implementation) -> {
+                        // 使用命名绑定来支持多个实现
+                        // Use named binding to support multiple implementations
+                        String implName = implementation.getSimpleName();
+                        bindService(service, implementation, true, implName);
 
-                // 默认绑定第一个实现
-                // Default binding first implementation
-                if (!binds.containsKey(service)) {
-                    bindService(service, implementation, false, null);
-                    binds.put(service, true);
-                }
+                        // 默认绑定第一个实现
+                        // Default binding first implementation
+                        if (!binds.containsKey(service)) {
+                            bindService(service, implementation, false, null);
+                            binds.put(service, true);
+                        }
+                    });
+                });
+
+                // 调用子类的配置方法
+                // Call subclass configuration method
+                configurePlug();
+                return null;
             });
-        });
-
-        // 调用子类的配置方法
-        // Call subclass configuration method
-        configurePlug();
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to configure plugin", e);
+        }
     }
 
     protected void configurePlug() {}

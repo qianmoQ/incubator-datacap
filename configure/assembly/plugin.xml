@@ -13,7 +13,7 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>./</outputDirectory>
             <unpack>false</unpack>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
             <excludes>
                 <!-- Spring related -->
                 <exclude>org.springframework.boot:*</exclude>

@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>datacap-plugin-mysql</artifactId>
+    <description>DataCap - Plugin - MySQL</description>
 
     <dependencies>
         <dependency>

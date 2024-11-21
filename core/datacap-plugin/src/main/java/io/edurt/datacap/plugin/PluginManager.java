@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.edurt.datacap.common.utils.DateUtils;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
+import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
@@ -435,40 +436,44 @@ public class PluginManager
     private void loadPluginFromDirectory(Path pluginDir)
     {
         try {
-            List<Plugin> modules = PluginLoaderFactory.loadPlugins(pluginDir);
+            URLClassLoader loader = PluginClassLoaderUtils.createClassLoader(pluginDir);
+
+            List<Plugin> modules = PluginContextManager.runWithClassLoader(loader, () -> PluginLoaderFactory.loadPlugins(pluginDir));
 
             for (Plugin module : modules) {
-                String pluginName = module.getName();
+                PluginContextManager.runWithClassLoader(loader, () -> {
+                    // 为每个插件模块创建独立的注入器
+                    // Create separate injector for each plugin module
+                    Injector pluginInjector = Guice.createInjector(module);
+                    module.setInjector(pluginInjector);
+                    String pluginName = module.getName();
+                    PluginMetadata pluginMetadata = PluginMetadata.builder()
+                            .name(pluginName)
+                            .version(module.getVersion())
+                            .location(pluginDir)
+                            .state(PluginState.CREATED)
+                            .classLoader(module.getClass().getClassLoader())
+                            .loaderName(module.getClassLoader())
+                            .instance(module)
+                            .type(module.getType())
+                            .loadTimestamp(System.currentTimeMillis())
+                            .loadTime(DateUtils.formatYMDHMSWithInterval())
+                            .build();
 
-                // 为每个插件模块创建独立的注入器
-                // Create separate injector for each plugin module
-                Injector pluginInjector = Guice.createInjector(module);
-                module.setInjector(pluginInjector);
+                    // 移除旧版本插件
+                    // Remove old version plugin
+                    PluginMetadata oldPlugin = plugins.remove(pluginName);
+                    if (oldPlugin != null) {
+                        closePluginClassLoader(oldPlugin);
+                    }
 
-                PluginMetadata pluginMetadata = PluginMetadata.builder()
-                        .name(pluginName)
-                        .version(module.getVersion())
-                        .location(pluginDir)
-                        .state(PluginState.CREATED)
-                        .classLoader(module.getClass().getClassLoader())
-                        .loaderName(module.getClassLoader())
-                        .instance(module)
-                        .type(module.getType())
-                        .loadTimestamp(System.currentTimeMillis())
-                        .loadTime(DateUtils.formatYMDHMSWithInterval())
-                        .build();
+                    plugins.put(pluginName, pluginMetadata);
 
-                // 移除旧版本插件
-                // Remove old version plugin
-                PluginMetadata oldPlugin = plugins.remove(pluginName);
-                if (oldPlugin != null) {
-                    closePluginClassLoader(oldPlugin);
-                }
+                    log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] loader [ {} ] from source [ {} ]",
+                            pluginName, module.getType().getName(), module.getVersion(), pluginMetadata.getLoaderName(), pluginDir);
 
-                plugins.put(pluginName, pluginMetadata);
-
-                log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] loader [ {} ] from source [ {} ]",
-                        pluginName, module.getType().getName(), module.getVersion(), pluginMetadata.getLoaderName(), pluginDir);
+                    return null;
+                });
             }
         }
         catch (Exception e) {

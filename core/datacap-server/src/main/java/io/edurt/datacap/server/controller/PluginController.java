@@ -54,14 +54,6 @@ public class PluginController
     @GetMapping(value = {"filter"})
     public CommonResponse getPluginByType(@RequestParam String type)
     {
-        if (type.equalsIgnoreCase("plugin")) {
-            List<PluginMetadata> plugins = pluginManager.getPluginInfos().stream()
-                    .filter(v -> v.getType().equals(PluginType.CONNECTOR))
-                    .collect(Collectors.toList());
-            return CommonResponse.success(plugins);
-        }
-        else {
-            return CommonResponse.failure("Unknown type " + type);
-        }
+        return CommonResponse.success(pluginManager.getPluginInfos());
     }
 }
