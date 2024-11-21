@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Configure
 {
+    @NonNull
     private Plugin plugin;
     private PluginManager pluginManager;
     private String host;

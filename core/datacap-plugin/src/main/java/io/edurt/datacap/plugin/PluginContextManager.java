@@ -1,7 +1,10 @@
 package io.edurt.datacap.plugin;
 
+import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 /**
@@ -11,37 +14,47 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class PluginContextManager
 {
-    private static final ThreadLocal<ClassLoader> contextClassLoader = new ThreadLocal<>();
+
+    // 使用WeakHashMap避免内存泄漏
+    // Use WeakHashMap to avoid memory leaks
+    private static final Map<Thread, PluginClassLoader> contextClassLoaders = new WeakHashMap<>();
 
     /**
      * 设置当前线程的插件类加载器
      * Set the plugin class loader for the current thread
      *
-     * @param classLoader 插件类加载器 Plugin class loader
+     * @param classLoader 插件类加载器
+     * @param classLoader Plugin class loader
      */
-    public static void setPluginClassLoader(ClassLoader classLoader)
+    public static void setPluginClassLoader(PluginClassLoader classLoader)
     {
-        log.debug("Setting plugin class loader: {}", classLoader);
-        contextClassLoader.set(classLoader);
+        log.debug("Setting plugin class loader: {} for plugin: {}",
+                classLoader, classLoader.getPluginName());
+        synchronized (contextClassLoaders) {
+            contextClassLoaders.put(Thread.currentThread(), classLoader);
+        }
     }
 
     /**
      * 获取当前线程的插件类加载器
      * Get the plugin class loader for the current thread
      *
-     * @return 插件类加载器 Plugin class loader
+     * @return 插件类加载器
+     * @return Plugin class loader
      */
     public static ClassLoader getPluginClassLoader()
     {
-        ClassLoader loader = contextClassLoader.get();
-        if (loader != null) {
-            log.debug("Returning plugin class loader: {}", loader);
-            return loader;
+        synchronized (contextClassLoaders) {
+            PluginClassLoader loader = contextClassLoaders.get(Thread.currentThread());
+            if (loader != null) {
+                log.debug("Returning plugin class loader: {} for plugin: {}",
+                        loader, loader.getPluginName());
+                return loader;
+            }
         }
-        else {
-            log.debug("Returning thread's context class loader: {}", Thread.currentThread().getContextClassLoader());
-            return Thread.currentThread().getContextClassLoader();
-        }
+        log.debug("Returning thread's context class loader: {}",
+                Thread.currentThread().getContextClassLoader());
+        return Thread.currentThread().getContextClassLoader();
     }
 
     /**
@@ -50,8 +63,12 @@ public class PluginContextManager
      */
     public static void clearPluginClassLoader()
     {
-        log.debug("Clearing plugin class loader");
-        contextClassLoader.remove();
+        synchronized (contextClassLoaders) {
+            PluginClassLoader removed = contextClassLoaders.remove(Thread.currentThread());
+            if (removed != null) {
+                log.debug("Cleared plugin class loader for plugin: {}", removed.getPluginName());
+            }
+        }
     }
 
     /**
@@ -64,7 +81,7 @@ public class PluginContextManager
      * @return 任务的执行结果 Result of the task execution
      * @throws Exception 任务执行过程中发生的异常 Exception occurred during task execution
      */
-    public static <T> T runWithClassLoader(ClassLoader classLoader, Callable<T> task)
+    public static <T> T runWithClassLoader(PluginClassLoader classLoader, Callable<T> task)
             throws Exception
     {
         log.debug("Running task with class loader: {}", classLoader);

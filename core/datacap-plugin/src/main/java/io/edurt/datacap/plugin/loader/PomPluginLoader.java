@@ -8,7 +8,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 
 import java.io.FileReader;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -32,6 +31,8 @@ public class PomPluginLoader
                 return List.of();
             }
 
+            // 读取 POM 信息
+            // Read POM information
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader(pomFile.toFile()));
 
@@ -40,7 +41,21 @@ public class PomPluginLoader
                 return List.of();
             }
 
-            URLClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(path);
+            // 获取插件版本
+            // Get plugin version
+            String version = model.getVersion();
+            if (version == null) {
+                version = "1.0.0";
+            }
+
+            // 创建插件专用类加载器
+            // Create plugin-specific class loader
+            PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
+                    path,
+                    model.getArtifactId(),
+                    version
+            );
+
             Class<?> pluginClass = classLoader.loadClass(mainClass);
 
             if (!Plugin.class.isAssignableFrom(pluginClass)) {
@@ -49,6 +64,8 @@ public class PomPluginLoader
             }
 
             Plugin plugin = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
+            plugin.setPluginClassLoader(classLoader);
+
             return List.of(plugin);
         }
         catch (Exception e) {

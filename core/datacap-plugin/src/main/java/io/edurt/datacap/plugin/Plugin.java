@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.service.ServiceBindings;
 import io.edurt.datacap.plugin.service.ServiceNotFoundException;
 import io.edurt.datacap.plugin.service.ServiceSpiLoader;
@@ -41,6 +42,24 @@ public abstract class Plugin
     @Getter
     @Setter
     private String classLoader;
+
+    // 插件专用类加载器
+    // Plugin-specific class loader
+    @Getter
+    private PluginClassLoader pluginClassLoader;
+
+    /**
+     * 设置插件类加载器
+     * Set plugin class loader
+     *
+     * @param classLoader 插件类加载器
+     * @param classLoader Plugin class loader
+     */
+    public void setPluginClassLoader(PluginClassLoader classLoader)
+    {
+        this.pluginClassLoader = classLoader;
+        this.classLoader = classLoader.getClass().getName();
+    }
 
     /**
      * 类型安全的服务绑定方法
@@ -90,7 +109,11 @@ public abstract class Plugin
     private String readVersionFromManifest()
             throws IOException
     {
-        Enumeration<URL> resources = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
+        // 优先使用插件类加载器
+        // Use plugin class loader first
+        ClassLoader loader = pluginClassLoader != null ? pluginClassLoader : getClass().getClassLoader();
+
+        Enumeration<URL> resources = loader.getResources("META-INF/MANIFEST.MF");
         while (resources.hasMoreElements()) {
             try (InputStream is = resources.nextElement().openStream()) {
                 Manifest manifest = new Manifest(is);
@@ -119,35 +142,53 @@ public abstract class Plugin
     protected void configure()
     {
         try {
-            PluginContextManager.runWithClassLoader(getClass().getClassLoader(), () -> {
-                getServiceTypes().forEach(serviceType -> {
-                    ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType, this.getClass().getClassLoader());
-                    // 支持多个实现
-                    // Support multiple implementations
-                    bindings.getBindings().forEach((service, implementation) -> {
-                        // 使用命名绑定来支持多个实现
-                        // Use named binding to support multiple implementations
-                        String implName = implementation.getSimpleName();
-                        bindService(service, implementation, true, implName);
-
-                        // 默认绑定第一个实现
-                        // Default binding first implementation
-                        if (!binds.containsKey(service)) {
-                            bindService(service, implementation, false, null);
-                            binds.put(service, true);
-                        }
-                    });
+            // 确保使用插件的类加载器
+            // Ensure using plugin's class loader
+            if (pluginClassLoader != null) {
+                PluginContextManager.runWithClassLoader(pluginClassLoader, () -> {
+                    configureServices();
+                    return null;
                 });
-
-                // 调用子类的配置方法
-                // Call subclass configuration method
-                configurePlug();
-                return null;
-            });
+            }
+            else {
+                log.warn("Plugin class loader not set, using current context class loader");
+                configureServices();
+            }
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to configure plugin", e);
         }
+    }
+
+    /**
+     * 配置服务
+     * Configure services
+     */
+    private void configureServices()
+    {
+        getServiceTypes().forEach(serviceType -> {
+            ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType, Thread.currentThread().getContextClassLoader());
+
+            // 支持多个实现
+            // Support multiple implementations
+            bindings.getBindings().forEach((service, implementation) -> {
+                // 使用命名绑定来支持多个实现
+                // Use named binding to support multiple implementations
+                String implName = implementation.getSimpleName();
+                bindService(service, implementation, true, implName);
+
+                // 默认绑定第一个实现
+                // Default binding first implementation
+                if (!binds.containsKey(service)) {
+                    bindService(service, implementation, false, null);
+                    binds.put(service, true);
+                }
+            });
+        });
+
+        // 调用子类的配置方法
+        // Call subclass configuration method
+        configurePlug();
     }
 
     protected void configurePlug() {}
@@ -163,6 +204,18 @@ public abstract class Plugin
             return cachedVersion;
         }
 
+        // 优先从插件类加载器获取版本
+        // Get version from plugin class loader first
+        if (pluginClassLoader != null) {
+            String version = pluginClassLoader.getPluginVersion();
+            if (version != null) {
+                cachedVersion = version;
+                return version;
+            }
+        }
+
+        // 回退到包信息和清单文件
+        // Fallback to package info and manifest
         String version = this.getClass().getPackage().getImplementationVersion();
         if (version == null) {
             try {
@@ -197,10 +250,19 @@ public abstract class Plugin
         validateInjector();
 
         try {
-            return injector.getInstance(serviceClass);
+            // 使用插件的类加载器
+            // Use plugin's class loader
+            if (pluginClassLoader != null) {
+                return PluginContextManager.runWithClassLoader(pluginClassLoader, () ->
+                        injector.getInstance(serviceClass));
+            }
+            else {
+                return injector.getInstance(serviceClass);
+            }
         }
-        catch (ConfigurationException e) {
-            throw new ServiceNotFoundException("Service not found for type: " + serviceClass.getName(), e);
+        catch (Exception e) {
+            throw new ServiceNotFoundException(
+                    "Service not found for type: " + serviceClass.getName(), e);
         }
     }
 
@@ -220,11 +282,24 @@ public abstract class Plugin
         validateInjector();
 
         try {
-            return injector.getInstance(Key.get(serviceClass, Names.named(name)));
+            // 使用插件的类加载器
+            // Use plugin's class loader
+            if (pluginClassLoader != null) {
+                return PluginContextManager.runWithClassLoader(pluginClassLoader, () ->
+                        injector.getInstance(Key.get(serviceClass, Names.named(name))));
+            }
+            else {
+                return injector.getInstance(Key.get(serviceClass, Names.named(name)));
+            }
         }
         catch (ConfigurationException e) {
             throw new ServiceNotFoundException(
                     String.format("Named service not found - type: %s, name: %s",
+                            serviceClass.getName(), name), e);
+        }
+        catch (Exception e) {
+            throw new ServiceNotFoundException(
+                    String.format("Error getting named service - type: %s, name: %s",
                             serviceClass.getName(), name), e);
         }
     }
@@ -235,13 +310,35 @@ public abstract class Plugin
     {
         validateInjector();
 
-        Set<T> services = Sets.newHashSet();
-        ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceClass, this.getClass().getClassLoader());
-        bindings.getBindings().get(serviceClass).forEach(impl -> {
-            String name = impl.getSimpleName();
-            services.add(getService(serviceClass, name));
-        });
-
-        return services;
+        try {
+            // 使用插件的类加载器
+            // Use plugin's class loader
+            if (pluginClassLoader != null) {
+                return PluginContextManager.runWithClassLoader(pluginClassLoader, () -> {
+                    Set<T> services = Sets.newHashSet();
+                    ServiceBindings bindings = ServiceSpiLoader.loadServices(
+                            serviceClass, pluginClassLoader);
+                    bindings.getBindings().get(serviceClass).forEach(impl -> {
+                        String name = impl.getSimpleName();
+                        services.add(getService(serviceClass, name));
+                    });
+                    return services;
+                });
+            }
+            else {
+                Set<T> services = Sets.newHashSet();
+                ServiceBindings bindings = ServiceSpiLoader.loadServices(
+                        serviceClass, Thread.currentThread().getContextClassLoader());
+                bindings.getBindings().get(serviceClass).forEach(impl -> {
+                    String name = impl.getSimpleName();
+                    services.add(getService(serviceClass, name));
+                });
+                return services;
+            }
+        }
+        catch (Exception e) {
+            throw new ServiceNotFoundException(
+                    "Error getting all services for type: " + serviceClass.getName(), e);
+        }
     }
 }

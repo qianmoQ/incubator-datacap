@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.edurt.datacap.common.utils.DateUtils;
+import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -11,16 +12,19 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLClassLoader;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -33,6 +37,10 @@ public class PluginManager
     // 插件存储映射
     // Plugin storage mapping
     private final Map<String, PluginMetadata> plugins;
+
+    // 插件类加载器映射
+    // Plugin class loader mapping
+    private final Map<String, PluginClassLoader> pluginClassLoaders;
 
     // 运行状态标志
     // Running state flag
@@ -50,6 +58,7 @@ public class PluginManager
     {
         this.config = config;
         this.plugins = Maps.newConcurrentMap();
+        this.pluginClassLoaders = Maps.newConcurrentMap();
     }
 
     // 启动插件管理器
@@ -70,7 +79,14 @@ public class PluginManager
     public void stop()
     {
         running = false;
+
+        // 关闭所有插件的类加载器
+        // Close class loaders for all plugins
         plugins.values().forEach(this::closePluginClassLoader);
+
+        // 清理映射
+        // Clean up mappings
+        pluginClassLoaders.clear();
         plugins.clear();
     }
 
@@ -436,7 +452,21 @@ public class PluginManager
     private void loadPluginFromDirectory(Path pluginDir)
     {
         try {
-            URLClassLoader loader = PluginClassLoaderUtils.createClassLoader(pluginDir);
+            // 从目录名获取插件基本信息
+            // Get plugin basic information from directory name
+            String pluginBaseName = pluginDir.getFileName().toString();
+
+            // 获取插件版本(可以从配置文件或清单文件中读取)
+            // Get plugin version (can be read from config or manifest file)
+            String pluginVersion = getPluginVersion(pluginDir);
+
+            // 创建插件专用类加载器
+            // Create plugin-specific class loader
+            PluginClassLoader loader = PluginClassLoaderUtils.createClassLoader(
+                    pluginDir,
+                    pluginBaseName,
+                    pluginVersion
+            );
 
             List<Plugin> modules = PluginContextManager.runWithClassLoader(loader, () -> PluginLoaderFactory.loadPlugins(pluginDir));
 
@@ -446,13 +476,18 @@ public class PluginManager
                     // Create separate injector for each plugin module
                     Injector pluginInjector = Guice.createInjector(module);
                     module.setInjector(pluginInjector);
+
                     String pluginName = module.getName();
+                    // 保存类加载器信息
+                    // Save class loader information
+                    pluginClassLoaders.put(pluginName, loader);
+
                     PluginMetadata pluginMetadata = PluginMetadata.builder()
                             .name(pluginName)
                             .version(module.getVersion())
                             .location(pluginDir)
                             .state(PluginState.CREATED)
-                            .classLoader(module.getClass().getClassLoader())
+                            .classLoader(loader)
                             .loaderName(module.getClassLoader())
                             .instance(module)
                             .type(module.getType())
@@ -481,13 +516,99 @@ public class PluginManager
         }
     }
 
+    // 获取插件版本
+    // Get plugin version
+    private String getPluginVersion(Path pluginDir)
+    {
+        // 这里可以实现从配置文件或清单文件中读取版本号的逻辑
+        // Here you can implement logic to read version number from config or manifest file
+        try {
+            // 优先从 plugin.properties 读取
+            // Read from plugin.properties first
+            Path propertiesFile = pluginDir.resolve("plugin.properties");
+            if (Files.exists(propertiesFile)) {
+                // 读取属性文件实现
+                // Implement properties file reading
+                return readVersionFromProperties(propertiesFile);
+            }
+
+            // 其次从 MANIFEST.MF 读取
+            // Then read from MANIFEST.MF
+            Path manifestFile = pluginDir.resolve("META-INF/MANIFEST.MF");
+            if (Files.exists(manifestFile)) {
+                return readVersionFromManifest(manifestFile);
+            }
+
+            // 最后从 pom.xml 读取
+            // Finally read from pom.xml
+            Path pomFile = pluginDir.resolve("pom.xml");
+            if (Files.exists(pomFile)) {
+                return readVersionFromPom(pomFile);
+            }
+        }
+        catch (Exception e) {
+            log.warn("Failed to read plugin version from: {}", pluginDir, e);
+        }
+
+        // 如果都读取失败，返回默认版本
+        // Return default version if all reads fail
+        return "1.0.0";
+    }
+
+    private String readVersionFromProperties(Path propertiesFile)
+    {
+        // TODO: 实现从 properties 文件读取版本号
+        // Implement reading version from properties file
+        return "1.0.0";
+    }
+
+    private String readVersionFromManifest(Path manifestFile)
+            throws IOException
+    {
+        // TODO: 实现从 MANIFEST.MF 读取版本号
+        // Implement reading version from MANIFEST.MF
+        ClassLoader loader = getClass().getClassLoader();
+
+        Enumeration<URL> resources = loader.getResources("META-INF/MANIFEST.MF");
+        while (resources.hasMoreElements()) {
+            try (InputStream is = resources.nextElement().openStream()) {
+                Manifest manifest = new Manifest(is);
+                String version = manifest.getMainAttributes().getValue("Implementation-Version");
+                if (version != null) {
+                    return version;
+                }
+            }
+        }
+        return "1.0.0";
+    }
+
+    private String readVersionFromPom(Path pomFile)
+    {
+        // TODO: 实现从 pom.xml 读取版本号
+        // Implement reading version from pom.xml
+        return "1.0.0";
+    }
+
     // 关闭插件类加载器
     // Close plugin class loader
     private void closePluginClassLoader(PluginMetadata pluginMetadata)
     {
         try {
-            if (pluginMetadata.getClassLoader() instanceof URLClassLoader) {
-                ((URLClassLoader) pluginMetadata.getClassLoader()).close();
+            String pluginName = pluginMetadata.getName();
+
+            // 从映射中移除
+            // Remove from mapping
+            PluginClassLoader removed = pluginClassLoaders.remove(pluginName);
+
+            if (removed != null) {
+                removed.close();
+                log.info("Closed class loader for plugin: {}", pluginName);
+            }
+
+            // 如果不是 PluginClassLoader，尝试关闭普通的 URLClassLoader
+            // If not PluginClassLoader, try to close normal URLClassLoader
+            if (pluginMetadata.getClassLoader() instanceof PluginClassLoader) {
+                ((PluginClassLoader) pluginMetadata.getClassLoader()).close();
             }
         }
         catch (IOException e) {
@@ -521,6 +642,20 @@ public class PluginManager
     {
         return Optional.ofNullable(plugins.get(name))
                 .map(info -> (Plugin) info.getInstance());
+    }
+
+    // 获取插件的类加载器
+    // Get plugin's class loader
+    public Optional<ClassLoader> getPluginClassLoader(String pluginName)
+    {
+        return Optional.ofNullable(pluginClassLoaders.get(pluginName));
+    }
+
+    // 获取当前已加载的所有插件类加载器
+    // Get all currently loaded plugin class loaders
+    public Map<String, PluginClassLoader> getPluginClassLoaders()
+    {
+        return Maps.newHashMap(pluginClassLoaders);
     }
 
     // 获取所有插件信息

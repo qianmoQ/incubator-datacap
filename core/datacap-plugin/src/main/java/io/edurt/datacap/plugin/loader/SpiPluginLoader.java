@@ -6,7 +6,6 @@ import io.edurt.datacap.plugin.SpiType;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -27,11 +26,28 @@ public class SpiPluginLoader
     public List<Plugin> load(Path path)
     {
         try {
-            URLClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(path);
+            // 获取目录名作为插件名
+            // Get directory name as plugin name
+            String pluginName = path.getFileName().toString();
+
+            // 创建插件专用类加载器
+            // Create plugin-specific class loader
+            PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
+                    path,
+                    pluginName,
+                    "1.0.0"
+            );
+
             return PluginContextManager.runWithClassLoader(classLoader, () -> {
                 ServiceLoader<Plugin> serviceLoader = ServiceLoader.load(Plugin.class, classLoader);
-                return StreamSupport.stream(serviceLoader.spliterator(), false)
+                List<Plugin> plugins = StreamSupport.stream(serviceLoader.spliterator(), false)
                         .collect(Collectors.toList());
+
+                // 设置插件的类加载器
+                // Set class loader for plugins
+                plugins.forEach(plugin -> plugin.setPluginClassLoader(classLoader));
+
+                return plugins;
             });
         }
         catch (Exception e) {

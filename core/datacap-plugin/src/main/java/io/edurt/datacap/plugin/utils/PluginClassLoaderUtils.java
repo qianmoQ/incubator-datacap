@@ -1,9 +1,9 @@
 package io.edurt.datacap.plugin.utils;
 
+import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -17,17 +17,26 @@ import java.util.Set;
 public class PluginClassLoaderUtils
 {
     /**
-     * 创建一个新的类加载器
-     * Create a new class loader
+     * 创建一个新的插件类加载器
+     * Create a new plugin class loader
      *
-     * @param directory 插件目录 Plugin directory
-     * @return 新创建的类加载器 The newly created class loader
-     * @throws Exception 创建类加载器时发生异常 Exception occurred when creating the class loader
+     * @param directory 插件目录
+     * @param directory Plugin directory
+     * @param pluginName 插件名称
+     * @param pluginName Plugin name
+     * @param pluginVersion 插件版本
+     * @param pluginVersion Plugin version
+     * @return 新创建的类加载器
+     * @return The newly created class loader
+     * @throws Exception 创建类加载器时发生异常
+     * @throws Exception Exception occurred when creating the class loader
      */
-    public static URLClassLoader createClassLoader(Path directory)
+    public static PluginClassLoader createClassLoader(Path directory, String pluginName, String pluginVersion)
             throws Exception
     {
-        log.debug("Creating new class loader for plugin directory: {}", directory);
+        log.debug("Creating new class loader for plugin: {} version: {} directory: {}",
+                pluginName, pluginVersion, directory);
+
         Set<URL> urls = new HashSet<>();
 
         if (Files.isDirectory(directory)) {
@@ -44,10 +53,16 @@ public class PluginClassLoaderUtils
             addDependenciesFromDir(directory.resolve("target/dependencies"), urls);
         }
 
-        log.debug("Created class loader with {} URLs", urls.size());
-        return new URLClassLoader(
+        // 创建独立的插件类加载器，使用系统类加载器作为父加载器
+        // Create isolated plugin class loader with system class loader as parent
+        ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+        log.debug("Created plugin class loader with {} URLs", urls.size());
+
+        return new PluginClassLoader(
                 urls.toArray(new URL[0]),
-                PluginClassLoaderUtils.class.getClassLoader()
+                systemClassLoader,
+                pluginName,
+                pluginVersion
         );
     }
 

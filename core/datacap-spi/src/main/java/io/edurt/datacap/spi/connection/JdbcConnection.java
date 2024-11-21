@@ -1,6 +1,8 @@
 package io.edurt.datacap.spi.connection;
 
+import com.google.common.base.Preconditions;
 import io.edurt.datacap.plugin.PluginContextManager;
+import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -76,12 +78,14 @@ public class JdbcConnection
 
     protected Connection openConnection()
     {
+        Preconditions.checkNotNull(configure.getPlugin(), "Plugin cannot be null");
+
         try {
             this.configure = (JdbcConfigure) getConfigure();
             this.response = getResponse();
 
             // Manually loading and registering the driver
-            ClassLoader pluginClassLoader = configure.getPlugin().getClass().getClassLoader();
+            PluginClassLoader pluginClassLoader = configure.getPlugin().getPluginClassLoader();
             PluginContextManager.runWithClassLoader(pluginClassLoader, () -> {
                 Class<?> driverClass = Class.forName(this.configure.getJdbcDriver(), true, pluginClassLoader);
                 Driver driver = (Driver) driverClass.getDeclaredConstructor().newInstance();
