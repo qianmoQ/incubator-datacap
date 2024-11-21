@@ -79,6 +79,21 @@
         "ALL"
       ],
       "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-xml-bin.tar.gz"
+    },
+    {
+      "key": "NoneConvert",
+      "label": "NoneConvert",
+      "description": "A multidimensional arrays file conversion plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Converter",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-none-bin.tar.gz"
     }
   ]
 }

@@ -98,7 +98,7 @@
         <module>convert/datacap-convert-spi</module>
         <module>convert/datacap-convert-txt</module>
         <module>convert/datacap-convert-json</module>
-<!--        <module>convert/datacap-convert-none</module>-->
+        <module>convert/datacap-convert-none</module>
         <module>convert/datacap-convert-csv</module>
         <module>convert/datacap-convert-xml</module>
         <module>test/datacap-test-plugin</module>

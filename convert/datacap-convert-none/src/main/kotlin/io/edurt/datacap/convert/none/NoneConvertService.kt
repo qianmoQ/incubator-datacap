@@ -3,7 +3,7 @@ package io.edurt.datacap.convert.none
 import com.google.common.base.Preconditions.checkState
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.common.utils.DateUtils
-import io.edurt.datacap.convert.Convert
+import io.edurt.datacap.convert.ConvertService
 import io.edurt.datacap.convert.FileConvert
 import io.edurt.datacap.convert.model.ConvertRequest
 import io.edurt.datacap.convert.model.ConvertResponse
@@ -13,7 +13,7 @@ import java.io.IOException
 import java.util.Objects.requireNonNull
 
 @SuppressFBWarnings(value = ["BC_BAD_CAST_TO_ABSTRACT_COLLECTION"])
-class NoneConvert : Convert
+class NoneConvertService : ConvertService
 {
     private val log = getLogger(this::class.java)
 
