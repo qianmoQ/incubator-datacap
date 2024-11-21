@@ -13,7 +13,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.Objects.requireNonNull
 
-class TxtService : ConvertService
+class TxtConvertService : ConvertService
 {
     private val log = getLogger(this::class.java)
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonEncoding
 import com.fasterxml.jackson.dataformat.xml.XmlFactory
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import io.edurt.datacap.common.utils.DateUtils
-import io.edurt.datacap.convert.Convert
+import io.edurt.datacap.convert.ConvertService
 import io.edurt.datacap.convert.FileConvert.formatFile
 import io.edurt.datacap.convert.model.ConvertRequest
 import io.edurt.datacap.convert.model.ConvertResponse
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory.getLogger
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-class XmlConvert : Convert
+class XmlConvertService : ConvertService
 {
     private val log = getLogger(this::class.java)
     private val root = "Root"

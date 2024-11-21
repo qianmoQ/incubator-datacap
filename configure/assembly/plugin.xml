@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
-    <id>plugin</id>
+    <id>bin</id>
 
     <formats>
         <format>tar.gz</format>
     </formats>
 
-    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeBaseDirectory>true</includeBaseDirectory>
 
     <dependencySets>
         <dependencySet>
@@ -64,6 +64,7 @@
                 <exclude>javax.inject:*</exclude>
                 <exclude>org.quartz-scheduler:*</exclude>
                 <exclude>org.yaml:*</exclude>
+                <exclude>org.projectlombok:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
@@ -100,6 +101,8 @@
                 <exclude>**/quartz-*.jar</exclude>
                 <exclude>**/snakeyaml-*.jar</exclude>
                 <exclude>**/xml-apis-*.jar</exclude>
+                <exclude>**/org.projectlombok-*.jar</exclude>
+                <exclude>**/lombok-*.jar</exclude>
             </excludes>
         </fileSet>
     </fileSets>
