@@ -20,15 +20,35 @@ if [ ! -d "$PLUGIN_DIR" ]; then
 fi
 
 echo "Bucket Name: $BUCKET_NAME"
-echo "Work Home: $WORK_HOME"
+echo "Work Home: $PLUGIN_HOME"
+echo "Datacap Home: $DATACAP_HOME"
+echo "Metadata Home: $METADATA_HOME"
 
 printf "============================================\n"
 printf "Publish artifact ...\n"
 
+# Handle bin.tar.gz files
+for file in "$HOME/dist"/*bin.tar.gz; do
+  if [ -e "$file" ]; then
+    filename=$(basename "$file")
+    echo "Uploading binary: $filename"
+    qshell fput --overwrite "$BUCKET_NAME" "$DATACAP_HOME/$VERSION/$filename" "$file"
+  fi
+done
+
+# Handle metadata file
+METADATA_FILE="${HOME}/configure/metadata.json"
+if [ -f "$METADATA_FILE" ]; then
+  # Upload new metadata file
+  echo "Uploading metadata file"
+  qshell fput --overwrite "$BUCKET_NAME" "$METADATA_HOME/metadata.json" "$METADATA_FILE"
+fi
+
+# Original plugin upload logic
 for file in "$PLUGIN_DIR"/*.tar.gz; do
   if [ ! -e "$file" ]; then
     echo "No tar.gz files found in directory $PLUGIN_DIR."
-    exit 0
+    break
   fi
 
   filename=$(basename "$file")
@@ -36,27 +56,27 @@ for file in "$PLUGIN_DIR"/*.tar.gz; do
 
   case "$filename" in
     datacap-executor-*)
-      target_dir="$WORK_HOME/$VERSION/executor"
+      target_dir="$PLUGIN_HOME/$VERSION/executor"
       ;;
     datacap-convert-*)
-      target_dir="$WORK_HOME/$VERSION/convert"
+      target_dir="$PLUGIN_HOME/$VERSION/convert"
       ;;
     datacap-fs-*)
-      target_dir="$WORK_HOME/$VERSION/fs"
+      target_dir="$PLUGIN_HOME/$VERSION/fs"
       ;;
     datacap-parser-*)
-      target_dir="$WORK_HOME/$VERSION/parser"
+      target_dir="$PLUGIN_HOME/$VERSION/parser"
       ;;
     datacap-scheduler-*)
-      target_dir="$WORK_HOME/$VERSION/scheduler"
+      target_dir="$PLUGIN_HOME/$VERSION/scheduler"
       ;;
     *)
-      target_dir="$WORK_HOME/$VERSION/plugin"
+      target_dir="$PLUGIN_HOME/$VERSION/plugin"
       ;;
   esac
 
   echo "Uploading $filename to $target_dir"
-  qshell rput "$BUCKET_NAME" "$target_dir/$filename" "${HOME}/dist/plugins/$filename"
+  qshell fput --overwrite "$BUCKET_NAME" "$target_dir/$filename" "$file"
 done
 
 printf "============================================\n"

@@ -19,10 +19,6 @@
             <artifactId>kotlin-reflect</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>

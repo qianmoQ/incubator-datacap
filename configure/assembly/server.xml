@@ -41,6 +41,9 @@
                 <include>**/*.yaml</include>
                 <include>**/*.conf</include>
             </includes>
+            <excludes>
+                <exclude>**/plugins.properties</exclude>
+            </excludes>
             <filtered>true</filtered>
         </fileSet>
         <fileSet>

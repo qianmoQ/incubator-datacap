@@ -1,73 +1,72 @@
 #!/bin/sh
 
 HOME=$(pwd)
-VERSION=$(./mvnw -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugins.help=INFO | tail -1)
+VERSION=2024.4.0-SNAPSHOT
+CDN_CENTER="https://cdn.north.devlive.org/applications/datacap/plugins/${VERSION}"
 
-common_install_handler() {
-    TYPE=$1
-    if [ ! -d "${HOME}/${TYPE}s" ];
-      then
-          mkdir "${HOME}/${TYPE}s"
-          echo "Create ${TYPE}s directory"
+install_package() {
+    DOWNLOAD_URL=$1
+    TARGET_DIR=$2
+    PACKAGE_NAME=$(basename $DOWNLOAD_URL)
+    PKG_BASE_NAME=$(basename $PACKAGE_NAME -bin.tar.gz)
+
+    if wget "$DOWNLOAD_URL" -P "/tmp"; then
+        echo "Downloaded $PACKAGE_NAME successfully"
+        if tar -xzf "/tmp/$PACKAGE_NAME" -C "$TARGET_DIR"; then
+            echo "Extracted $PACKAGE_NAME to $TARGET_DIR successfully"
+            rm "/tmp/$PACKAGE_NAME"
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            touch "${TARGET_DIR}/${PKG_BASE_NAME}/.${TIMESTAMP}.installed"
+            return 0
+        else
+            echo "Failed to extract $PACKAGE_NAME"
+            rm "/tmp/$PACKAGE_NAME"
+            return 1
+        fi
+    else
+        echo "Failed to download $PACKAGE_NAME"
+        return 1
+    fi
+}
+
+process_section() {
+    SECTION=$1
+    TYPE=$2
+
+    if [ ! -d "${HOME}/plugins" ]; then
+        mkdir "${HOME}/plugins"
+        echo "Create plugins directory"
     fi
 
-    echo "Install datacap ${TYPE}, usage version is ${VERSION}"
-    while read line; do
-        full_line=$(echo "$line" | cut -c 1)
-        if [ "$full_line" != "-" ] && [ "$full_line" != "#" ] && [ ! -z $full_line ]
-        then
-            echo "install ${TYPE} : $line"
-#        		"${HOME}"/mvnw dependency:get -DgroupId=io.edurt.datacap -DartifactId="${line}" -Dversion=${VERSION} -Ddest="${HOME}/${TYPE}s"
+    echo "Installing $TYPE components, version: ${VERSION}"
+    IN_SECTION=0
+
+    while IFS= read -r line; do
+        if [ "$line" = "-- ${SECTION} list --" ]; then
+            IN_SECTION=1
+            continue
+        elif [[ "$line" = --* ]] && [ $IN_SECTION -eq 1 ]; then
+            break
         fi
-    done <"${HOME}/configure/${TYPE}".conf
+
+        if [ $IN_SECTION -eq 1 ] && [ ! -z "$line" ] && [[ ! "$line" =~ ^--.*$ ]]; then
+            DOWNLOAD_URL="${CDN_CENTER}/${TYPE}/${line}-bin.tar.gz"
+            echo "Installing ${TYPE} from: $DOWNLOAD_URL"
+            install_package "$DOWNLOAD_URL" "${HOME}/plugins"
+        fi
+    done < "${HOME}/configure/plugin.conf"
 }
 
-job_install_plugin() {
-  printf "========== Job install plugin start ========== \n"
-  common_install_handler "plugin"
-  printf "========== Job install plugin end ========== \n"
-}
+echo "========== Starting installation =========="
+echo "Version: ${VERSION}"
+echo "CDN Center: ${CDN_CENTER}"
 
-job_install_notify() {
-  printf "========== Job install notify start ========== \n"
-  common_install_handler "notify"
-  printf "========== Job install notify end ========== \n"
-}
+process_section "Plugin" "plugin"
+process_section "Scheduler" "scheduler"
+process_section "Parser" "parser"
+process_section "Notify" "notify"
+process_section "Fs" "fs"
+process_section "Convert" "convert"
+process_section "Executor" "executor"
 
-job_install_scheduler() {
-  printf "========== Job install scheduler start ========== \n"
-  common_install_handler "scheduler"
-  printf "========== Job install scheduler end ========== \n"
-}
-
-job_install_parser() {
-  printf "========== Job install parser start ========== \n"
-  common_install_handler "parser"
-  printf "========== Job install parser end ========== \n"
-}
-
-job_install_fs() {
-  printf "========== Job install fs start ========== \n"
-  common_install_handler "fs"
-  printf "========== Job install fs end ========== \n"
-}
-
-job_install_convert() {
-  printf "========== Job install convert start ========== \n"
-  common_install_handler "convert"
-  printf "========== Job install convert end ========== \n"
-}
-
-job_install_executor() {
-  printf "========== Job install executor start ========== \n"
-  common_install_handler "executor"
-  printf "========== Job install executor end ========== \n"
-}
-
-job_install_plugin
-job_install_notify
-job_install_scheduler
-job_install_parser
-job_install_fs
-job_install_convert
-job_install_executor
+echo "========== Installation complete =========="

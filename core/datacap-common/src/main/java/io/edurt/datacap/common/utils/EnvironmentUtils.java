@@ -97,9 +97,11 @@ public class EnvironmentUtils
     public static void printEnvironmentInfo()
     {
         log.info("Environment Information:");
+        if (isIdeEnvironment()) {
+            log.info("ClassPath [ {} ]", CLASSPATH);
+        }
         log.info("IDE [ {} ]", getCurrentIde());
         log.info("Is IDE Environment [ {} ]", isIdeEnvironment());
-        log.info("ClassPath [ {} ]", CLASSPATH);
         log.info("Java Agent [ {} ]", JAVA_AGENT);
         log.info("Command Line [ {} ]", COMMAND_LINE);
         log.info("VM Args [ {} ]", VM_ARGS);
