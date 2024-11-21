@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import io.edurt.datacap.common.utils.DateUtils
-import io.edurt.datacap.convert.Convert
+import io.edurt.datacap.convert.ConvertService
 import io.edurt.datacap.convert.FileConvert.formatFile
 import io.edurt.datacap.convert.model.ConvertRequest
 import io.edurt.datacap.convert.model.ConvertResponse
@@ -17,7 +17,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.Objects.requireNonNull
 
-class JsonConvert : Convert
+class JsonService : ConvertService
 {
     private val log = getLogger(this::class.java)
 

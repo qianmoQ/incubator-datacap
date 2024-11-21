@@ -1,8 +1,10 @@
 package io.edurt.datacap.service.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.converter.MapConverter;
 import io.edurt.datacap.service.converter.UserEditorConverter;
 import io.edurt.datacap.service.entity.itransient.user.UserEditorEntity;
@@ -54,6 +56,7 @@ public class UserEntity
     })
     @Size(max = 20)
     @Column(name = "username")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String username;
 
     @NotBlank(groups = {
@@ -63,30 +66,36 @@ public class UserEntity
     })
     @Size(max = 120)
     @Column(name = "password")
+    @JsonView(value = {EntityView.NoneView.class})
     private String password;
 
     @Column(name = "chat_configure")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String chatConfigure;
 
     @Column(name = "is_system")
+    @JsonView(value = {EntityView.AdminView.class})
     private boolean system;
 
     @Column(name = "editor_configure")
     @Convert(converter = UserEditorConverter.class)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private UserEditorEntity editorConfigure;
 
     @Column(name = "avatar_configure")
     @Convert(converter = MapConverter.class)
     @JsonIgnoreProperties(value = {"fsType", "local"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Map<String, String> avatarConfigure;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "datacap_user_role_relation",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonIncludeProperties(value = {"code", "description"})
     private Set<RoleEntity> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonView(value = {EntityView.NoneView.class})
     private List<SourceEntity> sources;
 }

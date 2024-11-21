@@ -1,7 +1,9 @@
 package io.edurt.datacap.server.controller.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.edurt.datacap.captcha.entity.ResultEntity;
 import io.edurt.datacap.common.response.CommonResponse;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.body.AuthBody;
 import io.edurt.datacap.service.entity.UserEntity;
 import io.edurt.datacap.service.initializer.InitializerConfigure;
@@ -66,6 +68,7 @@ public class AuthController
     }
 
     @PostMapping("/signup")
+    @JsonView(value = {EntityView.UserView.class})
     public CommonResponse<?> registerUser(@RequestBody @Validated(ValidationGroup.Crud.Create.class) AuthBody configure)
     {
         if (!initializer.getRegistrationEnable()) {

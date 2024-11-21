@@ -1,7 +1,9 @@
 package io.edurt.datacap.common.response;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.edurt.datacap.common.enums.ServiceState;
 import io.edurt.datacap.common.enums.State;
+import io.edurt.datacap.common.view.EntityView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +15,16 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CommonResponse<T>
 {
+    @JsonView(value = {EntityView.AdminView.class, EntityView.UserView.class})
     private Boolean status;
+
+    @JsonView(value = {EntityView.AdminView.class, EntityView.UserView.class})
     private Integer code;
+
+    @JsonView(value = {EntityView.AdminView.class, EntityView.UserView.class})
     private Object message;
+
+    @JsonView(value = {EntityView.AdminView.class, EntityView.UserView.class})
     private T data;
 
     public static CommonResponse success(Object data)

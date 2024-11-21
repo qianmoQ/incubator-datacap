@@ -129,6 +129,8 @@ plugins:
             NavReleaseNote: 更新日志
             NavDataset: 数据集
             NavDeploy: 安装部署
+            ApiHome: 开放 API
+            ApiUser: 用户 API
         - locale: en
           name: English
           build: true
@@ -148,6 +150,8 @@ plugins:
             NavReleaseNote: Release Note
             NavDataset: Dataset
             NavDeploy: Install Deploy
+            ApiHome: Open API
+            ApiUser: User API
   - search
   - git-revision-date-localized:
       enable_creation_date: true
@@ -275,5 +279,10 @@ nav:
           - developer/notify/kotlin/home.md
       - Other:
           - developer/pipeline/home.md
+  - ApiHome:
+      - api/common/response.md
+      - ApiUser:
+        - api/user/register.md
+        - api/user/login.md
   - useCases.md
   - partners.md
