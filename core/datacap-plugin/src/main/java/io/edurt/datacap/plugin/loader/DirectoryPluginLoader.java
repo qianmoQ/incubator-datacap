@@ -3,6 +3,7 @@ package io.edurt.datacap.plugin.loader;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.SpiType;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
+import io.edurt.datacap.plugin.utils.VersionUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
@@ -28,13 +29,14 @@ public class DirectoryPluginLoader
             // 获取目录名作为插件名
             // Get directory name as plugin name
             String pluginName = path.getFileName().toString();
+            String version = VersionUtils.determinePluginVersion(path);
 
             // 创建插件专用类加载器
             // Create plugin-specific class loader
             PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
                     path,
                     pluginName,
-                    "1.0.0"
+                    version
             );
 
             List<Plugin> plugins = Files.walk(path)
