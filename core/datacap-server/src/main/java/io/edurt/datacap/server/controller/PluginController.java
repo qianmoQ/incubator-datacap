@@ -6,13 +6,16 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.executor.Executor;
+import io.edurt.datacap.plugin.PluginManager;
+import io.edurt.datacap.plugin.PluginMetadata;
+import io.edurt.datacap.plugin.PluginType;
 import io.edurt.datacap.scheduler.Scheduler;
-import io.edurt.datacap.spi.Plugin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,10 +24,12 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1/plugin")
 public class PluginController
 {
+    private final PluginManager pluginManager;
     private final Injector injector;
 
-    public PluginController(Injector injector)
+    public PluginController(PluginManager pluginManager, Injector injector)
     {
+        this.pluginManager = pluginManager;
         this.injector = injector;
     }
 
@@ -50,7 +55,10 @@ public class PluginController
     public CommonResponse getPluginByType(@RequestParam String type)
     {
         if (type.equalsIgnoreCase("plugin")) {
-            return CommonResponse.success(injector.getInstance(Key.get(new TypeLiteral<Set<Plugin>>() {})));
+            List<PluginMetadata> plugins = pluginManager.getPluginInfos().stream()
+                    .filter(v -> v.getType().equals(PluginType.CONNECTOR))
+                    .collect(Collectors.toList());
+            return CommonResponse.success(plugins);
         }
         else {
             return CommonResponse.failure("Unknown type " + type);

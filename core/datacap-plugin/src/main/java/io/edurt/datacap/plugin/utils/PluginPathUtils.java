@@ -47,7 +47,7 @@ public class PluginPathUtils
      */
     public static Path findProjectRoot()
     {
-        Path rootPath = null;
+        Path rootPath;
 
         // 1. 首先尝试从类加载路径查找
         // First try to find from class loading path

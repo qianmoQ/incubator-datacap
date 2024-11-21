@@ -4,7 +4,7 @@ import com.google.inject.Guice.createInjector
 import com.google.inject.Injector
 import com.google.inject.Key
 import com.google.inject.TypeLiteral
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.model.Configure
 import io.edurt.datacap.spi.model.Response
 import org.junit.Assert.assertTrue
@@ -52,7 +52,7 @@ class SolrPluginTest
     @Test
     fun test()
     {
-        injector !!.getInstance(Key.get(object : TypeLiteral<Set<Plugin>>()
+        injector !!.getInstance(Key.get(object : TypeLiteral<Set<_root_ide_package_.io.edurt.datacap.spi.PluginService>>()
         {}))
             .stream()
             .findFirst()

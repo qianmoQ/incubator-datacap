@@ -5,7 +5,7 @@ import io.edurt.datacap.schedule.ScheduledRunnable;
 import io.edurt.datacap.service.common.PluginUtils;
 import io.edurt.datacap.service.entity.SourceEntity;
 import io.edurt.datacap.service.repository.SourceRepository;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +35,12 @@ public class CheckScheduledRunnable
         this.sourceRepository.findAll()
                 .forEach(entity -> {
                     log.info("Before check source {}", entity.getName());
-                    Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, entity.getType(), entity.getProtocol());
+                    Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, entity.getType(), entity.getProtocol());
                     if (!pluginOptional.isPresent()) {
                         log.warn("Check scheduled task <{}> source {} protocol {} is not available", this.getName(), entity.getType(), entity.getProtocol());
                     }
                     else {
-                        Plugin plugin = pluginOptional.get();
+                        PluginService plugin = pluginOptional.get();
                         plugin.connect(getConfigure(entity));
                         Response response = plugin.execute(plugin.validator());
                         if (response.getIsSuccessful()) {

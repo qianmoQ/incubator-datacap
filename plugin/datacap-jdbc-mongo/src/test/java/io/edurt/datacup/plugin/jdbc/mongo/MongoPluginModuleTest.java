@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import io.edurt.datacap.plugin.jdbc.mongo.MongoPluginModule;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class MongoPluginModuleTest
     @Test
     public void test()
     {
-        Set<Plugin> plugins = injector.getInstance(Key.get(new TypeLiteral<Set<Plugin>>() {}));
+        Set<PluginService> plugins = injector.getInstance(Key.get(new TypeLiteral<Set<PluginService>>() {}));
         Assert.assertTrue(plugins.size() > 0);
     }
 }

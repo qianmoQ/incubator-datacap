@@ -31,7 +31,7 @@ import io.edurt.datacap.service.repository.metadata.DatabaseRepository;
 import io.edurt.datacap.service.repository.metadata.TableRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.TableService;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Pagination;
 import io.edurt.datacap.spi.model.Response;
@@ -100,11 +100,11 @@ public class TableServiceImpl
         return repository.findByCode(code)
                 .map(table -> {
                     SourceEntity source = table.getDatabase().getSource();
-                    Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol());
+                    Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol());
                     if (!pluginOptional.isPresent()) {
                         return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
                     }
-                    Plugin plugin = pluginOptional.get();
+                    PluginService plugin = pluginOptional.get();
                     if (configure.getType().equals(SqlType.SELECT)) {
                         return this.fetchSelect(plugin, table, source, configure);
                     }
@@ -144,7 +144,7 @@ public class TableServiceImpl
         }
 
         SourceEntity source = table.getDatabase().getSource();
-        Optional<Plugin> optionalPlugin = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol());
+        Optional<PluginService> optionalPlugin = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol());
         if (!optionalPlugin.isPresent()) {
             return CommonResponse.failure(String.format("Plugin [ %s ] not found", source.getType()));
         }
@@ -243,7 +243,7 @@ public class TableServiceImpl
 
         DatabaseEntity database = optionalDatabase.get();
         SourceEntity source = database.getSource();
-        Plugin plugin = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol()).get();
+        PluginService plugin = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol()).get();
         TableBuilder.Companion.BEGIN();
         TableBuilder.Companion.CREATE_TABLE(String.format("`%s`.`%s`", database.getName(), configure.getName()));
         TableBuilder.Companion.COLUMNS(configure.getColumns().stream().map(item -> item.toColumnVar()).collect(Collectors.toList()));
@@ -264,7 +264,7 @@ public class TableServiceImpl
         return repository.findByCode(code)
                 .map(table -> {
                     SourceEntity source = table.getDatabase().getSource();
-                    Plugin plugin = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol()).get();
+                    PluginService plugin = PluginUtils.getPluginByNameAndType(this.injector, source.getType(), source.getProtocol()).get();
                     AtomicReference<String> atomicReference = new AtomicReference<>(null);
                     if (configure.getType().equals(SqlType.CREATE)) {
                         ColumnBuilder.Companion.BEGIN();
@@ -323,7 +323,7 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the fetched data
      */
-    private CommonResponse<Object> fetchSelect(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchSelect(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             List<SqlColumn> columns = Lists.newArrayList();
@@ -426,7 +426,7 @@ public class TableServiceImpl
      * @param configure the table filter object
      * @return the common response object containing the result of the operation
      */
-    private CommonResponse<Object> fetchInsert(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchInsert(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure updateConfigure = source.toConfigure();
@@ -484,7 +484,7 @@ public class TableServiceImpl
      * @param configure the table filter configuration for fetching and updating the data
      * @return the response containing the fetched and updated data
      */
-    private CommonResponse<Object> fetchUpdate(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchUpdate(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure updateConfigure = source.toConfigure();
@@ -522,7 +522,7 @@ public class TableServiceImpl
      * @param configure the table filter to use for filtering the data to be deleted
      * @return the response containing the result of the delete operation
      */
-    private CommonResponse<Object> fetchDelete(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchDelete(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure updateConfigure = source.toConfigure();
@@ -556,7 +556,7 @@ public class TableServiceImpl
      * @param configure the table filter to apply to the alter operation
      * @return a CommonResponse object containing the result of the alter operation
      */
-    private CommonResponse<Object> fetchAlter(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchAlter(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure alterConfigure = source.toConfigure();
@@ -585,7 +585,7 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the result of the query
      */
-    private CommonResponse<Object> fetchShowCreateTable(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchShowCreateTable(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure alterConfigure = source.toConfigure();
@@ -613,7 +613,7 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the fetch and truncate result
      */
-    private CommonResponse<Object> fetchTruncateTable(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchTruncateTable(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure alterConfigure = source.toConfigure();
@@ -641,7 +641,7 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the fetched result
      */
-    private CommonResponse<Object> fetchDropTable(Plugin plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchDropTable(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             Configure alterConfigure = source.toConfigure();
@@ -708,7 +708,7 @@ public class TableServiceImpl
      * @param sql the SQL query to execute
      * @return the response containing the result of the SQL query
      */
-    private Response getResponse(TableFilter configure, Plugin plugin, String sql)
+    private Response getResponse(TableFilter configure, PluginService plugin, String sql)
     {
         Response response;
         if (configure.isPreview()) {

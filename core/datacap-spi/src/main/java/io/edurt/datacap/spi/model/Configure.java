@@ -3,6 +3,7 @@ package io.edurt.datacap.spi.model;
 import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

@@ -5,7 +5,7 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import com.google.inject.Key
 import com.google.inject.TypeLiteral
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.model.Configure
 import io.edurt.datacap.spi.model.Response
 import org.apache.commons.lang3.ObjectUtils
@@ -52,8 +52,8 @@ class ScyllaDBPluginTest {
 
     @Test
     fun test() {
-        val plugins: Set<Plugin?>? = injector?.getInstance(Key.get(object : TypeLiteral<Set<Plugin?>?>() {}))
-        val plugin: Plugin? = plugins?.first { v -> v?.name().equals(name) }
+        val plugins: Set<_root_ide_package_.io.edurt.datacap.spi.PluginService?>? = injector?.getInstance(Key.get(object : TypeLiteral<Set<_root_ide_package_.io.edurt.datacap.spi.PluginService?>?>() {}))
+        val plugin: _root_ide_package_.io.edurt.datacap.spi.PluginService? = plugins?.first { v -> v?.name().equals(name) }
         if (ObjectUtils.isNotEmpty(plugin)) {
             plugin?.connect(configure)
             val response: Response = plugin !!.execute(plugin.validator())

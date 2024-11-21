@@ -19,10 +19,11 @@ public class PluginLoaderFactory
     // 注册默认的加载器
     // Register default loaders
     static {
-        registerLoader(new SpiPluginLoader());
-        registerLoader(new PomPluginLoader());
-        registerLoader(new DirectoryPluginLoader());
+        registerLoader(new PropertiesPluginLoader());
         registerLoader(new CompiledPomPluginLoader());
+        registerLoader(new DirectoryPluginLoader());
+        registerLoader(new PomPluginLoader());
+        registerLoader(new SpiPluginLoader());
     }
 
     /**
@@ -45,7 +46,7 @@ public class PluginLoaderFactory
             log.warn("Loader type '{}' is already registered, skipping registration of {}", type, loader.getClass().getName());
         }
         else {
-            log.info("Registered plugin loader: {} for type: {}", loader.getClass().getName(), type);
+            log.info("Registered plugin loader [ {} ] for type [ {} ]", loader.getClass().getName(), type);
         }
     }
 
@@ -92,6 +93,7 @@ public class PluginLoaderFactory
                 List<Plugin> modules = loader.load(pluginDir);
                 if (modules != null && !modules.isEmpty()) {
                     log.info("Successfully loaded [ {} ] plugin(s) using loader type [ {} ]", modules.size(), type);
+                    modules.forEach(v -> v.setClassLoader(loader.getClass().getName()));
                     return modules;
                 }
             }
@@ -114,5 +116,14 @@ public class PluginLoaderFactory
     public static List<String> getRegisteredTypes()
     {
         return List.copyOf(loaderRegistry.keySet());
+    }
+
+    /**
+     * 清空所有已注册的加载器
+     * Clear all registered loaders
+     */
+    public static void clear()
+    {
+        loaderRegistry.clear();
     }
 }

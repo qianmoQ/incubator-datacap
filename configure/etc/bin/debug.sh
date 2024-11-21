@@ -52,7 +52,7 @@ job_runner_debug_server() {
     printf "Server starting                        | %s\n" "$APPLICATION_NAME"
     cd "$HOME"
     get_jvm_conf
-    "$JAVA_HOME"/bin/java -cp "$HOME/lib/*:$HOME/plugins/*:$HOME/notifys/*:$HOME/schedulers/*:$HOME/parsers/*:$HOME/fss/*:$HOME/converts/*:$HOME/executors/*" ${JVM_CONF} "$APPLICATION_NAME" \
+    "$JAVA_HOME"/bin/java -cp "$HOME/lib/*" ${JVM_CONF} "$APPLICATION_NAME" \
             --spring.config.location="$HOME/configure/"
 }
 

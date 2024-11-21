@@ -2,7 +2,7 @@ package io.edurt.datacap.executor.configure
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.executor.common.RunProtocol
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.model.Configure
 import java.util.*
 
@@ -12,7 +12,7 @@ data class ExecutorConfigure(
     var configure: Properties?,
     var supportOptions: Set<String> = mutableSetOf(),
     var protocol: RunProtocol = RunProtocol.NONE,
-    var plugin: Plugin? = null,
+    var plugin: _root_ide_package_.io.edurt.datacap.spi.PluginService? = null,
     var query: String? = null,
     var database: String? = null,
     var table: String? = null,

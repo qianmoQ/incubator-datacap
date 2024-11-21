@@ -5,7 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class KafkaPluginTest
     private KafkaContainer kafkaContainer;
     private Injector injector;
     private Configure configure;
-    private Optional<Plugin> pluginOptional;
+    private Optional<PluginService> pluginOptional;
 
     @Before
     public void before()
@@ -55,7 +55,7 @@ public class KafkaPluginTest
         configure = new Configure();
         configure.setHost(kafkaContainer.getBootstrapServers());
 
-        Set<Plugin> plugins = injector.getInstance(Key.get(new TypeLiteral<Set<Plugin>>() {}));
+        Set<PluginService> plugins = injector.getInstance(Key.get(new TypeLiteral<Set<PluginService>>() {}));
         pluginOptional = plugins.stream()
                 .filter(v -> v.name().equalsIgnoreCase("Kafka"))
                 .findFirst();
@@ -65,7 +65,7 @@ public class KafkaPluginTest
     {
         Response response = new Response();
         if (pluginOptional.isPresent()) {
-            Plugin plugin = pluginOptional.get();
+            PluginService plugin = pluginOptional.get();
             plugin.connect(configure);
             response = plugin.execute(content);
             plugin.destroy();

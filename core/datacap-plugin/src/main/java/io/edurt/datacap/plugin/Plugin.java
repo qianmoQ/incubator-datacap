@@ -10,13 +10,19 @@ import com.google.inject.name.Names;
 import io.edurt.datacap.plugin.service.ServiceBindings;
 import io.edurt.datacap.plugin.service.ServiceNotFoundException;
 import io.edurt.datacap.plugin.service.ServiceSpiLoader;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Manifest;
 
 @Slf4j
 public abstract class Plugin
@@ -24,10 +30,17 @@ public abstract class Plugin
 {
     private final Map<Class<? extends Service>, Boolean> binds = new HashMap<>();
 
+    private volatile String cachedVersion;
+
     // 依赖注入器
     // Dependency injector
     @Setter
+    @Getter
     private Injector injector;
+
+    @Getter
+    @Setter
+    private String classLoader;
 
     /**
      * 类型安全的服务绑定方法
@@ -74,6 +87,22 @@ public abstract class Plugin
         }
     }
 
+    private String readVersionFromManifest()
+            throws IOException
+    {
+        Enumeration<URL> resources = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
+        while (resources.hasMoreElements()) {
+            try (InputStream is = resources.nextElement().openStream()) {
+                Manifest manifest = new Manifest(is);
+                String version = manifest.getMainAttributes().getValue("Implementation-Version");
+                if (version != null) {
+                    return version;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * 获取需要加载的服务类型列表
      * Get list of service types to load
@@ -81,7 +110,7 @@ public abstract class Plugin
      * @return 服务类型列表
      * @return list of service types
      */
-    protected Set<Class<? extends Service>> getServiceTypes()
+    public Set<Class<? extends Service>> getServiceTypes()
     {
         return Set.of(Service.class);
     }
@@ -90,7 +119,7 @@ public abstract class Plugin
     protected void configure()
     {
         getServiceTypes().forEach(serviceType -> {
-            ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType);
+            ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType, this.getClass().getClassLoader());
             // 支持多个实现
             // Support multiple implementations
             bindings.getBindings().forEach((service, implementation) -> {
@@ -115,14 +144,30 @@ public abstract class Plugin
 
     protected void configurePlug() {}
 
-    String getName()
+    public String getName()
     {
         return StringUtils.remove(this.getClass().getSimpleName(), "Plugin");
     }
 
-    String getVersion()
+    public String getVersion()
     {
-        return this.getClass().getPackage().getImplementationVersion();
+        if (cachedVersion != null) {
+            return cachedVersion;
+        }
+
+        String version = this.getClass().getPackage().getImplementationVersion();
+        if (version == null) {
+            try {
+                version = readVersionFromManifest();
+            }
+            catch (IOException e) {
+                log.warn("Failed to read version from MANIFEST.MF", e);
+                version = "unknown";
+            }
+        }
+
+        cachedVersion = version;
+        return version;
     }
 
     PluginType getType()
@@ -142,6 +187,7 @@ public abstract class Plugin
     public <T extends Service> T getService(Class<T> serviceClass)
     {
         validateInjector();
+
         try {
             return injector.getInstance(serviceClass);
         }
@@ -164,6 +210,7 @@ public abstract class Plugin
     public <T extends Service> T getService(Class<T> serviceClass, String name)
     {
         validateInjector();
+
         try {
             return injector.getInstance(Key.get(serviceClass, Names.named(name)));
         }
@@ -181,7 +228,7 @@ public abstract class Plugin
         validateInjector();
 
         Set<T> services = Sets.newHashSet();
-        ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceClass);
+        ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceClass, this.getClass().getClassLoader());
         bindings.getBindings().get(serviceClass).forEach(impl -> {
             String name = impl.getSimpleName();
             services.add(getService(serviceClass, name));

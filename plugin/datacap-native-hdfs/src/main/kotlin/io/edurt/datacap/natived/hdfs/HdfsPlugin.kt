@@ -1,7 +1,7 @@
 package io.edurt.datacap.natived.hdfs
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.PluginType
 import io.edurt.datacap.spi.adapter.Adapter
 import io.edurt.datacap.spi.model.Configure
@@ -13,7 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP"])
-class HdfsPlugin : Plugin
+class HdfsPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
 {
     private val log: Logger = getLogger(HdfsPlugin::class.java)
 

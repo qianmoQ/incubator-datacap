@@ -1,8 +1,8 @@
 package io.edurt.datacap.plugin.solr
 
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 
-class SolrPlugin : Plugin
+class SolrPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
 {
     override fun validator(): String
     {

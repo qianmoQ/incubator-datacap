@@ -44,7 +44,7 @@ import io.edurt.datacap.service.repository.metadata.DatabaseRepository;
 import io.edurt.datacap.service.repository.metadata.TableRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.SourceService;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import lombok.SneakyThrows;
@@ -152,13 +152,13 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<Object> testConnection(SourceEntity configure)
     {
-        Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getType(), configure.getProtocol());
+        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getType(), configure.getProtocol());
         if (!pluginOptional.isPresent()) {
             return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
         }
 
         Configure _configure = new Configure();
-        Plugin plugin = pluginOptional.get();
+        PluginService plugin = pluginOptional.get();
         _configure.setHost(configure.getHost());
         _configure.setPort(configure.getPort());
         _configure.setUsername(Optional.ofNullable(configure.getUsername()));
@@ -207,7 +207,7 @@ public class SourceServiceImpl
     public CommonResponse<Map<String, List<PluginEntity>>> getPlugins()
     {
         Map<String, List<PluginEntity>> pluginMap = new ConcurrentHashMap<>();
-        this.injector.getInstance(Key.get(new TypeLiteral<Set<Plugin>>() {})).stream().forEach(plugin -> {
+        this.injector.getInstance(Key.get(new TypeLiteral<Set<PluginService>>() {})).stream().forEach(plugin -> {
             PluginEntity entity = new PluginEntity();
             entity.setName(plugin.name());
             entity.setDescription(plugin.description());
@@ -251,7 +251,7 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<Object> testConnectionV2(SourceBody configure)
     {
-        Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getName(), configure.getType());
+        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getName(), configure.getType());
         if (!pluginOptional.isPresent()) {
             return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
         }
@@ -268,7 +268,7 @@ public class SourceServiceImpl
             return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
         }
 
-        Plugin plugin = pluginOptional.get();
+        PluginService plugin = pluginOptional.get();
         // The filter parameter value is null data
         List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
         Configure _configure = ConfigureUtils.preparedConfigure(applyConfigures);
@@ -294,7 +294,7 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<SourceEntity> saveOrUpdateV2(SourceBody configure)
     {
-        Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getName(), configure.getType());
+        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, configure.getName(), configure.getType());
         if (!pluginOptional.isPresent()) {
             return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
         }
@@ -407,13 +407,13 @@ public class SourceServiceImpl
         ScheduledHistoryEntity scheduledHistory = ScheduledHistoryEntity.builder().name(String.format("Sync source [ %s ]", entity.getName())).scheduled(scheduled).source(entity).state(RunState.RUNNING).build();
         scheduledHistoryHandler.save(scheduledHistory);
         log.info("==================== Sync metadata  [ {} ] started =================", entity.getName());
-        Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, entity.getType(), entity.getProtocol());
+        Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(this.injector, entity.getType(), entity.getProtocol());
         if (pluginOptional.isEmpty()) {
             log.warn("The source [ {} ] protocol [ {} ] is not available", entity.getName(), entity.getProtocol());
         }
         else {
             try {
-                Plugin plugin = pluginOptional.get();
+                PluginService plugin = pluginOptional.get();
                 Configure pConfigure = entity.toConfigure();
                 pConfigure.setInjector(injector);
                 plugin.connect(pConfigure);
@@ -536,7 +536,7 @@ public class SourceServiceImpl
      * @param columnUpdatedCount the AtomicInteger object representing the count of updated columns
      * @param columnRemovedCount the AtomicInteger object representing the count of removed columns
      */
-    private void startSyncDatabase(SourceEntity entity, Plugin plugin, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger databaseAddedCount, AtomicInteger databaseUpdatedCount, AtomicInteger databaseRemovedCount, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
+    private void startSyncDatabase(SourceEntity entity, PluginService plugin, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger databaseAddedCount, AtomicInteger databaseUpdatedCount, AtomicInteger databaseRemovedCount, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
     {
         String templateName = "SYSTEM_FOR_GET_ALL_DATABASES";
         TemplateEntity template = getTemplate(templateName, entity);
@@ -608,7 +608,7 @@ public class SourceServiceImpl
      * @param columnUpdatedCount the column updated count
      * @param columnRemovedCount the column removed count
      */
-    private void startSyncTable(SourceEntity entity, Plugin plugin, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
+    private void startSyncTable(SourceEntity entity, PluginService plugin, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
     {
         String templateName = "SYSTEM_FOR_GET_ALL_TABLES";
         TemplateEntity template = getTemplate(templateName, entity);
@@ -701,7 +701,7 @@ public class SourceServiceImpl
      * @param columnUpdatedCount an atomic counter for tracking the number of columns updated
      * @param columnRemovedCount an atomic counter for tracking the number of columns removed
      */
-    private void startSyncColumn(SourceEntity entity, Plugin plugin, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
+    private void startSyncColumn(SourceEntity entity, PluginService plugin, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
     {
         String templateName = "SYSTEM_FOR_GET_ALL_COLUMNS";
         TemplateEntity template = getTemplate(templateName, entity);

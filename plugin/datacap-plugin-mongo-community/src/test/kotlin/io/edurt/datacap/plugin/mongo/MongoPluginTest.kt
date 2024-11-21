@@ -5,7 +5,7 @@ import com.google.inject.Guice.createInjector
 import com.google.inject.Injector
 import com.google.inject.Key
 import com.google.inject.TypeLiteral
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.model.Configure
 import io.edurt.datacap.spi.model.Response
 import org.apache.commons.lang3.ObjectUtils.isNotEmpty
@@ -42,7 +42,7 @@ class MongoPluginTest {
 
     @Test
     fun test() {
-        val plugin: Plugin? = injector?.getInstance(Key.get(object : TypeLiteral<Set<Plugin?>?>() {}))
+        val plugin: _root_ide_package_.io.edurt.datacap.spi.PluginService? = injector?.getInstance(Key.get(object : TypeLiteral<Set<_root_ide_package_.io.edurt.datacap.spi.PluginService?>?>() {}))
             ?.first { v -> v?.name().equals("MongoDB Community") }
         if (isNotEmpty(plugin)) {
             plugin?.connect(configure)

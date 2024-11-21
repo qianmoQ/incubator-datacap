@@ -5,7 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.model.Configure;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -63,12 +63,12 @@ public class OraclePluginTest
     @Test
     public void test()
     {
-        Set<Plugin> plugins = injector.getInstance(Key.get(new TypeLiteral<Set<Plugin>>() {}));
-        Optional<Plugin> pluginOptional = plugins.stream()
+        Set<PluginService> plugins = injector.getInstance(Key.get(new TypeLiteral<Set<PluginService>>() {}));
+        Optional<PluginService> pluginOptional = plugins.stream()
                 .filter(v -> v.name().equalsIgnoreCase("Oracle"))
                 .findFirst();
         if (pluginOptional.isPresent()) {
-            Plugin plugin = pluginOptional.get();
+            PluginService plugin = pluginOptional.get();
             plugin.connect(configure);
             Assert.assertNotNull(plugin.execute(plugin.validator()).getConnection());
             plugin.destroy();

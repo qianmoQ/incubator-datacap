@@ -3,6 +3,7 @@ package io.edurt.datacap.plugin;
 import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import io.edurt.datacap.common.utils.DateUtils;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +26,7 @@ public class PluginManager
 
     // 插件存储映射
     // Plugin storage mapping
-    private final Map<String, PluginInfo> plugins;
+    private final Map<String, PluginMetadata> plugins;
 
     // 运行状态标志
     // Running state flag
@@ -63,11 +64,13 @@ public class PluginManager
     // Create plugins directory if not exists
     private void createPluginsDirectoryIfNotExists()
     {
-        try {
-            Files.createDirectories(config.getPluginsDir());
-        }
-        catch (IOException e) {
-            log.warn("Failed to create plugins directory", e);
+        if (!config.getPluginsDir().toFile().isFile()) {
+            try {
+                Files.createDirectories(config.getPluginsDir());
+            }
+            catch (IOException e) {
+                log.warn("Failed to create plugins directory", e);
+            }
         }
     }
 
@@ -75,11 +78,24 @@ public class PluginManager
     // Load all plugins
     private void loadPlugins()
     {
-        try (Stream<Path> paths = Files.walk(config.getPluginsDir(), 1)) {
-            paths.filter(Files::isDirectory)
-                    .peek(path -> log.debug("Scanning plugin directory: {}", path))
-                    .filter(path -> !path.equals(config.getPluginsDir()))
-                    .forEach(this::loadPluginFromDirectory);
+        try {
+            Path pluginsPath = config.getPluginsDir();
+
+            if (Files.isRegularFile(pluginsPath)) {
+                // 如果是文件直接加载
+                // Load plugin from file
+                loadPluginFromDirectory(pluginsPath);
+            }
+            else {
+                // 如果是目录则遍历加载
+                // Load plugins from directory
+                try (Stream<Path> paths = Files.walk(pluginsPath, 1)) {
+                    paths.filter(Files::isDirectory)
+                            .peek(path -> log.debug("Scanning plugin directory: {}", path))
+                            .filter(path -> !path.equals(pluginsPath))
+                            .forEach(this::loadPluginFromDirectory);
+                }
+            }
         }
         catch (IOException e) {
             log.error("Failed to scan plugins directory", e);
@@ -101,27 +117,30 @@ public class PluginManager
                 Injector pluginInjector = Guice.createInjector(module);
                 module.setInjector(pluginInjector);
 
-                PluginInfo pluginInfo = PluginInfo.builder()
+                PluginMetadata pluginMetadata = PluginMetadata.builder()
                         .name(pluginName)
                         .version(module.getVersion())
                         .location(pluginDir)
                         .state(PluginState.CREATED)
                         .classLoader(module.getClass().getClassLoader())
+                        .loaderName(module.getClassLoader())
                         .instance(module)
-                        .loadTime(System.currentTimeMillis())
+                        .type(module.getType())
+                        .loadTimestamp(System.currentTimeMillis())
+                        .loadTime(DateUtils.formatYMDHMSWithInterval())
                         .build();
 
                 // 移除旧版本插件
                 // Remove old version plugin
-                PluginInfo oldPlugin = plugins.remove(pluginName);
+                PluginMetadata oldPlugin = plugins.remove(pluginName);
                 if (oldPlugin != null) {
                     closePluginClassLoader(oldPlugin);
                 }
 
-                plugins.put(pluginName, pluginInfo);
+                plugins.put(pluginName, pluginMetadata);
 
-                log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] from directory [ {} ]",
-                        pluginName, module.getType().getName(), module.getVersion(), pluginDir);
+                log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] loader [ {} ] from source [ {} ]",
+                        pluginName, module.getType().getName(), module.getVersion(), pluginMetadata.getLoaderName(), pluginDir);
             }
         }
         catch (Exception e) {
@@ -131,15 +150,15 @@ public class PluginManager
 
     // 关闭插件类加载器
     // Close plugin class loader
-    private void closePluginClassLoader(PluginInfo pluginInfo)
+    private void closePluginClassLoader(PluginMetadata pluginMetadata)
     {
         try {
-            if (pluginInfo.getClassLoader() instanceof URLClassLoader) {
-                ((URLClassLoader) pluginInfo.getClassLoader()).close();
+            if (pluginMetadata.getClassLoader() instanceof URLClassLoader) {
+                ((URLClassLoader) pluginMetadata.getClassLoader()).close();
             }
         }
         catch (IOException e) {
-            log.error("Failed to close plugin classloader: {}", pluginInfo.getName(), e);
+            log.error("Failed to close plugin classloader: {}", pluginMetadata.getName(), e);
         }
     }
 
@@ -173,7 +192,7 @@ public class PluginManager
 
     // 获取所有插件信息
     // Get all plugin information
-    public List<PluginInfo> getPluginInfos()
+    public List<PluginMetadata> getPluginInfos()
     {
         return new ArrayList<>(plugins.values());
     }
@@ -182,9 +201,9 @@ public class PluginManager
     // Unload plugin by name
     public boolean unloadPlugin(String name)
     {
-        PluginInfo pluginInfo = plugins.remove(name);
-        if (pluginInfo != null) {
-            closePluginClassLoader(pluginInfo);
+        PluginMetadata pluginMetadata = plugins.remove(name);
+        if (pluginMetadata != null) {
+            closePluginClassLoader(pluginMetadata);
             return true;
         }
         return false;

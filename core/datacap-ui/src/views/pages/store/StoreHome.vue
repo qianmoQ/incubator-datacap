@@ -6,17 +6,15 @@
       <ShadcnTag class="text-red-400">{{ version }}</ShadcnTag>
     </ShadcnAlert>
 
-    <ShadcnTab v-model="activeTab" v-show="!loading" @on-change="onChange">
-      <ShadcnTabItem v-for="item in metadata" :label="item.i18nFormat ? $t(item.label) : item.label" :value="item.key">
+    <ShadcnTab v-model="activeTab" v-show="!loading">
+      <ShadcnTabItem v-if="metadata" :label="metadata.i18nFormat ? $t(metadata.label) : metadata.label" :value="metadata.key">
         <div class="relative">
-          <ShadcnSpin v-model="item.loading" fixed/>
-
           <ShadcnSpace wrap size="15">
-            <ShadcnAlert v-if="item.description">
-              {{ item.i18nFormat ? $t(item.description) : item.description }}
+            <ShadcnAlert v-if="metadata.description">
+              {{ metadata.i18nFormat ? $t(metadata.description) : metadata.description }}
             </ShadcnAlert>
 
-            <ShadcnCard v-for="child in item.children" class="w-full">
+            <ShadcnCard v-for="child in metadata.children" class="w-full">
               <div class="p-3 px-6">
                 <div class="flex items-center justify-between">
                   <!-- Plugin -->
@@ -30,7 +28,7 @@
                       </ShadcnText>
                     </div>
 
-                    <ShadcnSpace wrap :size="[20, 40]">
+                    <ShadcnSpace class="pl-8" wrap :size="[20, 40]">
                       <!-- Description -->
                       <div class="flex flex-col space-y-2">
                         <ShadcnText class="text-sm text-gray-500" type="small">
@@ -76,6 +74,13 @@
                             {{ $t('common.releasedTime') }}：
                             <ShadcnTag type="warning">{{ child.released }}</ShadcnTag>
                           </div>
+
+                          <ShadcnDivider v-if="child.installed" type="vertical"/>
+
+                          <div v-if="child.installed" class="space-x-1">
+                            {{ $t('common.installTime') }}：
+                            <ShadcnTag color="#00BFFF">{{ child.installTime }}</ShadcnTag>
+                          </div>
                         </div>
                       </div>
                     </ShadcnSpace>
@@ -83,8 +88,11 @@
 
                   <!-- Action -->
                   <div class="flex items-center space-x-2">
-                    <ShadcnButton>
-                      {{ $t('common.install') }}
+                    <ShadcnButton :type="child.installed ? 'danger' : 'success'">
+                      <template #icon>
+                        <ShadcnIcon :icon="child.installed ? 'Trash' : 'Plus'" size="15"/>
+                      </template>
+                      {{ child.installed ? $t('common.uninstall') : $t('common.install') }}
                     </ShadcnButton>
                   </div>
                 </div>
@@ -115,6 +123,8 @@ interface MetadataItem
   version: string
   supportVersion: string[]
   author: string
+  installed: boolean
+  installTime: string
 }
 
 interface Metadata
@@ -128,16 +138,15 @@ interface Metadata
 
 const metadataUrl = ref('https://cdn.north.devlive.org/applications/datacap/metadata.json')
 const { proxy } = getCurrentInstance()!
-const loading = ref(false)
-const metadata = ref<Metadata[]>([])
-const installPlugins = ref([])
-const activeTab = ref('plugin')
 // @ts-ignore
 const { loadingState } = useI18nHandler()
+const loading = ref(false)
+const metadata = ref<Metadata>(null)
+const activeTab = ref('plugin')
 const version = ref(PackageUtils.get('version'))
 
 watch(loadingState, async (newVal) => {
-  if (!newVal && !metadata.value.length) {
+  if (!newVal && !metadata.value) {
     await loadMetadata()
   }
 })
@@ -153,28 +162,38 @@ const loadMetadata = async () => {
 
     const data = await response.json()
     metadata.value = data
-    activeTab.value = 'plugin'
+
+    const installResponse = await PluginService.filterByType('plugin')
+    if (!installResponse.status) {
+      // @ts-ignore
+      proxy?.$Message.error({ content: response.message, showIcon: true })
+      return
+    }
+
+    // 绑定安装信息
+    // Bind installation information
+    metadata.value.children.map(item => {
+      installResponse.data.some((installedPlugin: { name: string, loadTime: string }) => {
+        if (installedPlugin.name === item.label) {
+          item.installed = true
+          item.installTime = installedPlugin.loadTime
+        }
+      })
+    })
   }
   catch (error) {
     if (error instanceof TypeError) {
+      // @ts-ignore
       proxy?.$Message.error({ content: proxy?.$t('common.tip.pageNotNetwork'), showIcon: true })
     }
     else {
+      // @ts-ignore
       proxy?.$Message.error({ content: `${ proxy?.$t('common.pageNotFoundTip') }: ${ error.message }`, showIcon: true })
     }
   }
   finally {
     loading.value = false
   }
-}
-
-const onChange = (value: string) => {
-  PluginService.filterByType(value)
-               .then(response => {
-                 if (response.status) {
-                   installPlugins.value = response.data
-                 }
-               })
 }
 
 onBeforeMount(() => {

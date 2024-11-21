@@ -27,6 +27,10 @@
             <artifactId>guice</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
             <version>${datacap.maven.model.version}</version>

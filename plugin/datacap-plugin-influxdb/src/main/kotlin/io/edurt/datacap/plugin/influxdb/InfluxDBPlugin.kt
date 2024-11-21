@@ -1,8 +1,8 @@
 package io.edurt.datacap.plugin.influxdb
 
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 
-class InfluxDBPlugin : Plugin
+class InfluxDBPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
 {
     override fun validator(): String
     {

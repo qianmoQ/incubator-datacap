@@ -1,7 +1,7 @@
 package io.edurt.datacap.plugin.scylladb
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.model.Configure
 import io.edurt.datacap.spi.model.Response
 import org.apache.commons.beanutils.BeanUtils.copyProperties
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ObjectUtils.isNotEmpty
 import org.slf4j.LoggerFactory.getLogger
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP"])
-class ScyllaDBPlugin : Plugin
+class ScyllaDBPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
 {
     private val log = getLogger(this.javaClass)
 

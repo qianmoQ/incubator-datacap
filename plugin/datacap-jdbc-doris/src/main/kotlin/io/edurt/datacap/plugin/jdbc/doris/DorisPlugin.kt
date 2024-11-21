@@ -1,7 +1,7 @@
 package io.edurt.datacap.plugin.jdbc.doris
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import io.edurt.datacap.spi.PluginType
 import io.edurt.datacap.spi.adapter.JdbcAdapter
 import io.edurt.datacap.spi.connection.JdbcConfigure
@@ -16,7 +16,7 @@ import kotlin.Exception
 import kotlin.String
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP"])
-class DorisPlugin : Plugin
+class DorisPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
 {
     private val log = getLogger(this.javaClass)
 

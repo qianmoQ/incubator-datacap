@@ -4,7 +4,7 @@ import com.google.inject.Guice.createInjector
 import com.google.inject.Injector
 import com.google.inject.Key
 import com.google.inject.TypeLiteral
-import io.edurt.datacap.spi.Plugin
+import io.edurt.datacap.spi.PluginService
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

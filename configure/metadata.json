@@ -1,31 +1,23 @@
-[
-  {
-    "key": "plugin",
-    "label": "common.plugin.list.name",
-    "description": "common.plugin.list.description",
-    "i18nFormat": true,
-    "children": [
-      {
-        "key": "MySQL",
-        "label": "MySQL",
-        "description": "Integrate MySQL data sources",
-        "i18nFormat": true,
-        "type": "JDBC",
-        "version": "2024.4.0",
-        "author": "datacap-community",
-        "logo": "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg",
-        "released": "2024-01-01",
-        "supportVersion": [
-          "8.0",
-          "5.7"
-        ]
-      }
-    ]
-  },
-  {
-    "key": "connector",
-    "label": "common.connector.list.name",
-    "description": "common.connector.list.description",
-    "i18nFormat": true
-  }
-]
+{
+  "key": "plugin",
+  "label": "common.plugin.list.name",
+  "description": "common.plugin.list.description",
+  "i18nFormat": true,
+  "children": [
+    {
+      "key": "MySQL",
+      "label": "MySQL",
+      "description": "Integrate MySQL data sources",
+      "i18nFormat": true,
+      "type": "JDBC",
+      "version": "2024.4.0",
+      "author": "datacap-community",
+      "logo": "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg",
+      "released": "2024-01-01",
+      "supportVersion": [
+        "8.0",
+        "5.7"
+      ]
+    }
+  ]
+}

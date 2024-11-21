@@ -1,7 +1,7 @@
 package io.edurt.datacap.plugin.jdbc.db2;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.adapter.JdbcAdapter;
 import io.edurt.datacap.spi.connection.JdbcConfigure;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.ObjectUtils;
 @Slf4j
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP"})
 public class Db2Plugin
-        implements Plugin
+        implements PluginService
 {
     private JdbcConfigure jdbcConfigure;
     private JdbcConnection connection;

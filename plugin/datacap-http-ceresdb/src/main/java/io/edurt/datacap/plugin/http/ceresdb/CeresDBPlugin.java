@@ -1,7 +1,7 @@
 package io.edurt.datacap.plugin.http.ceresdb;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.connection.HttpConfigure;
 import io.edurt.datacap.spi.connection.HttpConnection;
@@ -14,7 +14,7 @@ import org.apache.commons.lang3.ObjectUtils;
 @Slf4j
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP"})
 public class CeresDBPlugin
-        implements Plugin
+        implements PluginService
 {
     private HttpConfigure configure;
     private HttpConnection connection;

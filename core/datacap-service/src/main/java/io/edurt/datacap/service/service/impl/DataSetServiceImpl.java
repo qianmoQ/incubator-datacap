@@ -57,7 +57,7 @@ import io.edurt.datacap.service.repository.DataSetRepository;
 import io.edurt.datacap.service.repository.DatasetHistoryRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.DataSetService;
-import io.edurt.datacap.spi.Plugin;
+import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
@@ -246,11 +246,11 @@ public class DataSetServiceImpl
                     String sql = new SqlBuilder(body).getSql();
                     log.info("Execute SQL: {} for DataSet [ {} ]", sql, code);
 
-                    Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name());
+                    Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name());
                     if (!pluginOptional.isPresent()) {
                         throw new IllegalArgumentException(String.format("Plugin [ %s ] not found", initializerConfigure.getDataSetConfigure().getType()));
                     }
-                    Plugin plugin = pluginOptional.get();
+                    PluginService plugin = pluginOptional.get();
                     Configure targetConfigure = new Configure();
                     targetConfigure.setHost(initializerConfigure.getDataSetConfigure().getHost());
                     targetConfigure.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
@@ -402,11 +402,11 @@ public class DataSetServiceImpl
     private void createTable(DataSetEntity entity)
     {
         try {
-            Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name());
+            Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name());
             if (!pluginOptional.isPresent()) {
                 throw new IllegalArgumentException(String.format("Plugin [ %s ] not found", initializerConfigure.getDataSetConfigure().getType()));
             }
-            Plugin plugin = pluginOptional.get();
+            PluginService plugin = pluginOptional.get();
             String database = initializerConfigure.getDataSetConfigure().getDatabase();
             String originTableName = entity.getTableName();
             String tableDefaultEngine = initializerConfigure.getDataSetConfigure().getTableDefaultEngine();
@@ -489,7 +489,7 @@ public class DataSetServiceImpl
                 ColumnBuilder.Companion.COLUMNS(createColumns.stream().map(Column::toColumnVar).collect(Collectors.toList()));
                 ColumnBuilder.Companion.FORMAT_ENGINE(EngineType.CLICKHOUSE);
                 String sql = ColumnBuilder.Companion.SQL();
-                Plugin plugin = getOutputPlugin();
+                PluginService plugin = getOutputPlugin();
                 SourceEntity source = getOutputSource();
                 plugin.connect(source.toConfigure());
                 Response response = plugin.execute(sql);
@@ -508,7 +508,7 @@ public class DataSetServiceImpl
                 ColumnBuilder.Companion.FORMAT_ENGINE(EngineType.CLICKHOUSE);
                 String sql = ColumnBuilder.Companion.SQL();
                 log.info("Modify column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
-                Plugin plugin = getOutputPlugin();
+                PluginService plugin = getOutputPlugin();
                 SourceEntity source = getOutputSource();
                 plugin.connect(source.toConfigure());
                 Response response = plugin.execute(sql);
@@ -524,7 +524,7 @@ public class DataSetServiceImpl
                         TableBuilder.Companion.LIFECYCLE(String.format("`%s` + INTERVAL %s %s", item.getColumn().getName(), item.getColumn().getLength(), item.getColumn().getDefaultValue()));
                         String sql = TableBuilder.Companion.SQL();
                         log.info("Modify lifecycle sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
-                        Plugin plugin = getOutputPlugin();
+                        PluginService plugin = getOutputPlugin();
                         SourceEntity source = getOutputSource();
                         plugin.connect(source.toConfigure());
                         Response response = plugin.execute(sql);
@@ -552,7 +552,7 @@ public class DataSetServiceImpl
         DatasetHistoryEntity history = new DatasetHistoryEntity();
         try {
             SourceEntity source = entity.getSource();
-            Optional<Plugin> pluginOptional = PluginUtils.getPluginByNameAndType(injector, source.getType(), source.getProtocol());
+            Optional<PluginService> pluginOptional = PluginUtils.getPluginByNameAndType(injector, source.getType(), source.getProtocol());
             if (pluginOptional.isEmpty()) {
                 throw new IllegalArgumentException(String.format("Plugin [ %s ] not found", initializerConfigure.getDataSetConfigure().getType()));
             }
@@ -564,7 +564,7 @@ public class DataSetServiceImpl
             historyRepository.save(history);
 
             Executor executor = ExecutorUtils.findOne(this.injector, entity.getExecutor());
-            Plugin inputPlugin = pluginOptional.get();
+            PluginService inputPlugin = pluginOptional.get();
             Set<OriginColumn> originColumns = columnRepository.findAllByDataset(entity)
                     .stream()
                     .filter(item -> !item.isVirtualColumn())
@@ -582,7 +582,7 @@ public class DataSetServiceImpl
             ExecutorConfigure input = new ExecutorConfigure(source.getType(), inputProperties, inputOptions, RunProtocol.valueOf(source.getProtocol()),
                     inputPlugin, entity.getQuery(), database, entity.getTableName(), inputConfigure, originColumns);
 
-            Plugin outputPlugin = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name()).orElseGet(null);
+            PluginService outputPlugin = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name()).orElseGet(null);
             SourceEntity outputSource = new SourceEntity();
             outputSource.setType(initializerConfigure.getDataSetConfigure().getType());
             outputSource.setDatabase(initializerConfigure.getDataSetConfigure().getDatabase());
@@ -679,7 +679,7 @@ public class DataSetServiceImpl
     private void clearData(DataSetEntity entity, ExecutorService service)
     {
         try {
-            Plugin plugin = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name()).orElseGet(null);
+            PluginService plugin = PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name()).orElseGet(null);
             SourceEntity source = new SourceEntity();
             source.setType(initializerConfigure.getDataSetConfigure().getType());
             source.setDatabase(initializerConfigure.getDataSetConfigure().getDatabase());
@@ -717,7 +717,7 @@ public class DataSetServiceImpl
      * @param database the database name
      * @param configure the configuration settings
      */
-    private void flushTableMetadata(DataSetEntity entity, Plugin plugin, String database, Configure configure)
+    private void flushTableMetadata(DataSetEntity entity, PluginService plugin, String database, Configure configure)
     {
         // Get the total number of rows and the total size of the dataset
         log.info("Get the total number of rows and the total size of the dataset [ {} ]", entity.getName());
@@ -818,7 +818,7 @@ public class DataSetServiceImpl
     private boolean checkTableExists(DataSetEntity entity)
     {
         try {
-            Plugin plugin = getOutputPlugin();
+            PluginService plugin = getOutputPlugin();
             SourceEntity source = getOutputSource();
             Configure configure = source.toConfigure();
             configure.setInjector(injector);
@@ -840,7 +840,7 @@ public class DataSetServiceImpl
      *
      * @return an instance of the output plugin, or null if not found
      */
-    private Plugin getOutputPlugin()
+    private PluginService getOutputPlugin()
     {
         return PluginUtils.getPluginByNameAndType(injector, initializerConfigure.getDataSetConfigure().getType(), PluginType.JDBC.name()).orElseGet(null);
     }

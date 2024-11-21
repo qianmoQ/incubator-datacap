@@ -1,5 +1,6 @@
 package io.edurt.datacap.spi;
 
+import io.edurt.datacap.plugin.Service;
 import io.edurt.datacap.spi.adapter.Adapter;
 import io.edurt.datacap.spi.adapter.HttpAdapter;
 import io.edurt.datacap.spi.adapter.JdbcAdapter;
@@ -13,10 +14,11 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface Plugin
+public interface PluginService
+        extends Service
 {
     ThreadLocal<Connection> local = new ThreadLocal<>();
-    Logger log = LoggerFactory.getLogger(Plugin.class);
+    Logger log = LoggerFactory.getLogger(PluginService.class);
 
     default String validator()
     {
@@ -88,7 +90,14 @@ public interface Plugin
             response = adapter.handlerExecute(content);
             log.info("Execute [ {} ] plugin end", this.name());
         }
+        destroy();
         return response;
+    }
+
+    default Response execute(Configure configure, String content)
+    {
+        this.connect(configure);
+        return this.execute(content);
     }
 
     default void destroy()
