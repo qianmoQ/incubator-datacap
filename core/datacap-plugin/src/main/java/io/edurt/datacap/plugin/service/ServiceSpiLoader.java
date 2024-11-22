@@ -16,6 +16,75 @@ import java.util.Set;
 public class ServiceSpiLoader
 {
     /**
+     * 加载服务实现,同时支持SPI和注解方式
+     * Load service implementations, supporting both SPI and annotation methods
+     *
+     * @param serviceType 服务类型（必须继承自Service）
+     * @param serviceType service type (must extend Service)
+     * @param basePackage 扫描注解的基础包路径
+     * @param basePackage base package path for annotation scanning
+     * @param classLoader 类加载器
+     * @param classLoader class loader
+     * @return 服务绑定
+     * @return service bindings
+     */
+    public static ServiceBindings loadServices(Class<? extends Service> serviceType, String basePackage, ClassLoader classLoader)
+    {
+        ServiceBindings bindings = loadServices(serviceType, classLoader);
+
+        // 扫描注解
+        // Scan annotations
+        Set<Class<?>> annotatedServices = ServiceAnnotationScanner.scanServices(basePackage, classLoader);
+        log.info("Found {} annotated services", annotatedServices.size());
+        log.info("Scanned annotated services from package: {}", basePackage);
+        log.debug("Annotated services: {}", annotatedServices);
+        for (Class<?> serviceImpl : annotatedServices) {
+            InjectService annotation = serviceImpl.getAnnotation(InjectService.class);
+            if (annotation != null) {
+                Class<?>[] serviceInterfaces = annotation.value();
+                if (serviceInterfaces.length == 0) {
+                    // 如果没有指定接口,使用类实现的所有接口
+                    // If no interface is specified, use all interfaces implemented by the class
+                    addServiceBindings(bindings, (Class<? extends Service>) serviceImpl, serviceType);
+                }
+                else {
+                    // 添加指定的接口绑定
+                    // Add specified interface bindings
+                    for (Class<?> iface : serviceInterfaces) {
+                        if (Service.class.isAssignableFrom(iface) && serviceType.isAssignableFrom(iface)) {
+                            bindings.addBinding((Class<? extends Service>) iface, (Class<? extends Service>) serviceImpl);
+                            log.debug("Added annotated binding: {} -> {}", iface.getName(), serviceImpl.getName());
+                        }
+                    }
+                }
+            }
+        }
+
+        return bindings;
+    }
+
+    private static void addServiceBindings(ServiceBindings bindings, Class<? extends Service> serviceImpl, Class<? extends Service> serviceType)
+    {
+        // 添加直接绑定
+        // Add direct binding
+        if (serviceType.isAssignableFrom(serviceImpl)) {
+            bindings.addBinding(serviceType, serviceImpl);
+            log.debug("Added direct binding: {} -> {}", serviceType.getName(), serviceImpl.getName());
+        }
+
+        // 检查并添加接口绑定
+        // Check and add interface bindings
+        for (Class<?> iface : getAllInterfaces(serviceImpl)) {
+            if (serviceType.isAssignableFrom(iface)) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Service> serviceInterface = (Class<? extends Service>) iface;
+                bindings.addBinding(serviceInterface, serviceImpl);
+                log.debug("Added interface binding: {} -> {}", serviceInterface.getName(), serviceImpl.getName());
+            }
+        }
+    }
+
+    /**
      * 加载服务实现
      * Load service implementations
      *

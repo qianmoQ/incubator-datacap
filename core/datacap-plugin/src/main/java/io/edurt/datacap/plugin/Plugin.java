@@ -164,10 +164,27 @@ public abstract class Plugin
      * 配置服务
      * Configure services
      */
+    /**
+     * 配置服务
+     * Configure services
+     */
     private void configureServices()
     {
         getServiceTypes().forEach(serviceType -> {
-            ServiceBindings bindings = ServiceSpiLoader.loadServices(serviceType, Thread.currentThread().getContextClassLoader());
+            // 获取包路径,默认使用插件类所在包
+            // Get package path, default to the plugin's package
+            String basePackage = this.getClass().getPackage().getName();
+
+            // 同时使用SPI和注解两种方式加载服务
+            // Load services using both SPI and annotation methods
+            ServiceBindings bindings = null;
+            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            if (pluginClassLoader != null) {
+                bindings = ServiceSpiLoader.loadServices(serviceType, basePackage, pluginClassLoader);
+            }
+            else {
+                bindings = ServiceSpiLoader.loadServices(serviceType, basePackage, contextClassLoader);
+            }
 
             // 支持多个实现
             // Support multiple implementations
@@ -305,7 +322,7 @@ public abstract class Plugin
     }
 
     // 获取所有服务
-    // Get all services
+// Get all services
     public <T extends Service> Set<T> getAllServices(Class<T> serviceClass)
     {
         validateInjector();
@@ -316,8 +333,11 @@ public abstract class Plugin
             if (pluginClassLoader != null) {
                 return PluginContextManager.runWithClassLoader(pluginClassLoader, () -> {
                     Set<T> services = Sets.newHashSet();
+                    // 获取包路径,默认使用插件类所在包
+                    // Get package path, default to the plugin's package
+                    String basePackage = this.getClass().getPackage().getName();
                     ServiceBindings bindings = ServiceSpiLoader.loadServices(
-                            serviceClass, pluginClassLoader);
+                            serviceClass, basePackage, pluginClassLoader);
                     bindings.getBindings().get(serviceClass).forEach(impl -> {
                         String name = impl.getSimpleName();
                         services.add(getService(serviceClass, name));
@@ -327,8 +347,11 @@ public abstract class Plugin
             }
             else {
                 Set<T> services = Sets.newHashSet();
+                // 获取包路径,默认使用插件类所在包
+                // Get package path, default to the plugin's package
+                String basePackage = this.getClass().getPackage().getName();
                 ServiceBindings bindings = ServiceSpiLoader.loadServices(
-                        serviceClass, Thread.currentThread().getContextClassLoader());
+                        serviceClass, basePackage, Thread.currentThread().getContextClassLoader());
                 bindings.getBindings().get(serviceClass).forEach(impl -> {
                     String name = impl.getSimpleName();
                     services.add(getService(serviceClass, name));
