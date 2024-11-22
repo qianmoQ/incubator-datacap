@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.utils.JsonUtils;
+import io.edurt.datacap.plugin.Plugin;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.configure.IConfigure;
 import io.edurt.datacap.service.configure.IConfigureExecutor;
 import io.edurt.datacap.spi.model.Configure;
@@ -114,6 +116,9 @@ public class SourceEntity
     @Transient
     private List<IConfigureExecutor> pipelines;
 
+    @Transient
+    private String home;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIncludeProperties(value = {"id", "username"})
@@ -143,23 +148,32 @@ public class SourceEntity
         return configures;
     }
 
+    public Configure toConfigure(PluginManager pluginManager, Plugin plugin)
+    {
+        return toConfigure("JsonConvert", pluginManager, null);
+    }
+
     /**
      * Converts the current object to a Configure object.
      *
      * @return The Configure object created from the current object.
      */
-    public Configure toConfigure()
+    public Configure toConfigure(String format, PluginManager pluginManager, Plugin plugin)
     {
-        Configure configure = new Configure();
-        configure.setHost(this.getHost());
-        configure.setPort(this.getPort());
-        configure.setUsername(Optional.ofNullable(this.getUsername()));
-        configure.setPassword(Optional.ofNullable(this.getPassword()));
-        Optional<String> database = StringUtils.isNotEmpty(this.getDatabase()) ? Optional.ofNullable(this.getDatabase()) : Optional.empty();
-        configure.setDatabase(database);
-        configure.setSsl(Optional.ofNullable(this.getSsl()));
-        configure.setEnv(Optional.ofNullable(this.getConfigures()));
-        configure.setFormat("JsonConvert");
-        return configure;
+        return Configure.builder()
+                .host(this.getHost())
+                .port(this.getPort())
+                .username(Optional.ofNullable(this.getUsername()))
+                .password(Optional.ofNullable(this.getPassword()))
+                .database(StringUtils.isNotEmpty(this.getDatabase()) ? Optional.ofNullable(this.getDatabase()) : Optional.empty())
+                .ssl(Optional.ofNullable(this.getSsl()))
+                .env(Optional.ofNullable(this.getConfigures()))
+                .format(format)
+                .usedConfig(this.isUsedConfig())
+                .pluginManager(pluginManager)
+                .plugin(plugin)
+                .id(String.valueOf(this.getId()))
+                .home(this.getHome())
+                .build();
     }
 }

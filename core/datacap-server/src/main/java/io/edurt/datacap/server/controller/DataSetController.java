@@ -6,8 +6,11 @@ import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.body.adhoc.Adhoc;
 import io.edurt.datacap.service.entity.DataSetColumnEntity;
 import io.edurt.datacap.service.entity.DataSetEntity;
+import io.edurt.datacap.service.entity.DatasetHistoryEntity;
+import io.edurt.datacap.service.entity.PageEntity;
 import io.edurt.datacap.service.repository.DataSetRepository;
 import io.edurt.datacap.service.service.DataSetService;
+import io.edurt.datacap.spi.model.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController()
@@ -47,7 +51,7 @@ public class DataSetController
     }
 
     @GetMapping(value = "columns/{code}")
-    public CommonResponse<Set<DataSetColumnEntity>> getColumnsByCode(@PathVariable String code)
+    public CommonResponse<List<DataSetColumnEntity>> getColumnsByCode(@PathVariable String code)
     {
         return service.getColumnsByCode(code);
     }
@@ -65,14 +69,14 @@ public class DataSetController
     }
 
     @PostMapping(value = "adhoc/{code}")
-    public CommonResponse<Object> adhoc(@PathVariable String code,
+    public CommonResponse<Response> adhoc(@PathVariable String code,
             @RequestBody Adhoc configure)
     {
         return service.adhoc(code, configure);
     }
 
     @PostMapping(value = "history/{code}")
-    public CommonResponse<Object> history(@PathVariable String code,
+    public CommonResponse<PageEntity<DatasetHistoryEntity>> history(@PathVariable String code,
             @RequestBody FilterBody filter)
     {
         return this.service.getHistory(code, filter);

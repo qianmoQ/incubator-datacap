@@ -11,5 +11,5 @@ public interface DashboardService
 {
     CommonResponse<PageEntity<DashboardEntity>> getAll(FilterBody filter);
 
-    CommonResponse<DashboardEntity> saveOrUpdate(PagingAndSortingRepository repository, DashboardEntity configure);
+    CommonResponse<DashboardEntity> saveOrUpdate(PagingAndSortingRepository<DashboardEntity, Long> repository, DashboardEntity configure);
 }

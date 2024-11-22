@@ -18,18 +18,20 @@ import org.springframework.data.domain.Pageable;
 
 public interface BaseService<T extends BaseEntity>
 {
-    default CommonResponse<PageEntity<T>> getAll(BaseRepository repository, FilterBody filter)
+    default CommonResponse<PageEntity<T>> getAll(BaseRepository<T, Long> repository, FilterBody filter)
     {
         Pageable pageable = PageRequestAdapter.of(filter);
         return CommonResponse.success(PageEntity.build(repository.findAll(pageable)));
     }
 
-    default CommonResponse<T> getById(BaseRepository repository, Long id)
+    default CommonResponse<T> getById(BaseRepository<T, Long> repository, Long id)
     {
-        return CommonResponse.success(repository.findById(id));
+        return repository.findById(id)
+                .map(CommonResponse::success)
+                .orElse(CommonResponse.failure(String.format("Resource [ %s ] not found", id)));
     }
 
-    default CommonResponse<T> saveOrUpdate(BaseRepository repository, T configure)
+    default CommonResponse<T> saveOrUpdate(BaseRepository<T, Long> repository, T configure)
     {
         if (configure.getId() != null) {
             repository.findById(configure.getId())
@@ -44,25 +46,25 @@ public interface BaseService<T extends BaseEntity>
         return CommonResponse.success(repository.save(configure));
     }
 
-    default CommonResponse<Long> deleteById(BaseRepository repository, Long id)
+    default CommonResponse<Long> deleteById(BaseRepository<T, Long> repository, Long id)
     {
         repository.deleteById(id);
         return CommonResponse.success(id);
     }
 
-    default CommonResponse<T> getByCode(BaseRepository repository, String code)
+    default CommonResponse<T> getByCode(BaseRepository<T, Long> repository, String code)
     {
-        return (CommonResponse<T>) repository.findByCode(code)
-                .map(value -> validatorUser(value))
+        return repository.findByCode(code)
+                .map(this::validatorUser)
                 .orElseGet(() -> CommonResponse.failure(String.format("Resource [ %s ] not found", code)));
     }
 
-    default CommonResponse<T> validatorUser(Object value)
+    default <R> CommonResponse<R> validatorUser(R value)
     {
         if (ReflectionUtils.hasField(value, "user")) {
             UserEntity originalUser = (UserEntity) ReflectionUtils.getFieldValue(value, "user");
             UserEntity loginUser = UserDetailsService.getUser();
-            if (!originalUser.getId().equals(loginUser.getId())) {
+            if (originalUser != null && !originalUser.getId().equals(loginUser.getId())) {
                 return CommonResponse.failure(ServiceState.USER_UNAUTHORIZED);
             }
         }
@@ -74,7 +76,7 @@ public interface BaseService<T extends BaseEntity>
         if (ReflectionUtils.hasField(value, "user")) {
             UserEntity originalUser = (UserEntity) ReflectionUtils.getFieldValue(value, "user");
             UserEntity loginUser = UserDetailsService.getUser();
-            if (!originalUser.getId().equals(loginUser.getId())) {
+            if (originalUser != null && !originalUser.getId().equals(loginUser.getId())) {
                 throw new SelfException(String.format("Resource [ %s ] not found", value.getClass().getName()));
             }
         }

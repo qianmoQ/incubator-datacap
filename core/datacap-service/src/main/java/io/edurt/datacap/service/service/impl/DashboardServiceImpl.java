@@ -31,7 +31,7 @@ public class DashboardServiceImpl
     }
 
     @Override
-    public CommonResponse<DashboardEntity> saveOrUpdate(PagingAndSortingRepository repository, DashboardEntity configure)
+    public CommonResponse<DashboardEntity> saveOrUpdate(PagingAndSortingRepository<DashboardEntity, Long> repository, DashboardEntity configure)
     {
         configure.setUser(UserDetailsService.getUser());
         return CommonResponse.success(repository.save(configure));

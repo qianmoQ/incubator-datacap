@@ -12,6 +12,7 @@ import io.edurt.datacap.common.utils.NullAwareBeanUtils;
 import io.edurt.datacap.fs.FsRequest;
 import io.edurt.datacap.fs.FsResponse;
 import io.edurt.datacap.fs.FsService;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.adapter.PageRequestAdapter;
 import io.edurt.datacap.service.audit.AuditUserLog;
@@ -304,45 +305,83 @@ public class UserServiceImpl
     @Override
     public CommonResponse<FsResponse> uploadAvatar(MultipartFile file)
     {
+        if (file == null || file.isEmpty()) {
+            return CommonResponse.failure("Upload file cannot be empty");
+        }
 
         return pluginManager.getPlugin(initializerConfigure.getFsConfigure().getType())
-                .map(plugin -> {
-                    UserEntity user = UserDetailsService.getUser();
-                    try {
-                        String avatarPath = initializerConfigure.getAvatarPath();
-                        log.info("Upload avatar user [ {} ] home [ {} ]", user.getUsername(), avatarPath);
+                .map(plugin -> processAvatarUpload(plugin, file))
+                .map(response -> processUploadResult(response, file))
+                .orElse(CommonResponse.failure(String.format("Not found Fs [%s]",
+                        initializerConfigure.getFsConfigure().getType())));
+    }
 
-                        FsRequest fsRequest = FsRequest.builder()
-                                .access(initializerConfigure.getFsConfigure().getAccess())
-                                .secret(initializerConfigure.getFsConfigure().getSecret())
-                                .endpoint(avatarPath)
-                                .bucket(initializerConfigure.getFsConfigure().getBucket())
-                                .stream(file.getInputStream())
-                                .fileName(String.format("%s.png", user.getId()))
-                                .build();
+    private FsResponse processAvatarUpload(Plugin plugin, MultipartFile file)
+    {
+        UserEntity user = UserDetailsService.getUser();
+        try {
+            String avatarPath = initializerConfigure.getAvatarPath();
+            log.info("Upload avatar user [{}] home [{}]", user.getUsername(), avatarPath);
 
-                        FsService fsService = plugin.getService(FsService.class);
-                        FsResponse response = fsService.writer(fsRequest);
-                        UserEntity entity = userRepository.findById(user.getId()).get();
-                        Map<String, String> avatar = Maps.newConcurrentMap();
-                        avatar.put("fsType", initializerConfigure.getFsConfigure().getType());
-                        avatar.put("local", response.getRemote());
-                        if (initializerConfigure.getFsConfigure().getType().equals("Local")) {
-                            avatar.put("path", encodeImageToBase64(file.getInputStream()));
-                        }
-                        else {
-                            avatar.put("path", response.getRemote());
-                        }
-                        entity.setAvatarConfigure(avatar);
-                        userRepository.save(entity);
-                        return CommonResponse.success(response);
-                    }
-                    catch (IOException e) {
-                        log.warn("File upload exception on user [ {} ]", user.getUsername(), e);
-                        return CommonResponse.failure(e.getMessage());
-                    }
-                })
-                .orElseGet(() -> CommonResponse.failure(String.format("Not found Fs [ %s ]", initializerConfigure.getFsConfigure().getType())));
+            FsRequest fsRequest = buildFsRequest(user, avatarPath, file);
+            FsService fsService = plugin.getService(FsService.class);
+            return fsService.writer(fsRequest);
+        }
+        catch (IOException e) {
+            log.error("Failed to process avatar upload for user [{}]", user.getUsername(), e);
+            throw new IllegalStateException("Failed to process avatar upload", e);
+        }
+    }
+
+    private FsRequest buildFsRequest(UserEntity user, String avatarPath, MultipartFile file)
+            throws IOException
+    {
+        return FsRequest.builder()
+                .access(initializerConfigure.getFsConfigure().getAccess())
+                .secret(initializerConfigure.getFsConfigure().getSecret())
+                .endpoint(avatarPath)
+                .bucket(initializerConfigure.getFsConfigure().getBucket())
+                .stream(file.getInputStream())
+                .fileName(String.format("%s.png", user.getId()))
+                .build();
+    }
+
+    private CommonResponse<FsResponse> processUploadResult(FsResponse response, MultipartFile file)
+    {
+        try {
+            UserEntity user = UserDetailsService.getUser();
+            UserEntity entity = userRepository.findById(user.getId())
+                    .orElseThrow(() -> new IllegalStateException("User not found: " + user.getId()));
+
+            Map<String, String> avatar = createAvatarConfig(response, file);
+            entity.setAvatarConfigure(avatar);
+            userRepository.save(entity);
+
+            return CommonResponse.success(response);
+        }
+        catch (Exception e) {
+            log.error("Failed to process upload result", e);
+            return CommonResponse.failure("Failed to process upload result: " + e.getMessage());
+        }
+    }
+
+    private Map<String, String> createAvatarConfig(FsResponse response, MultipartFile file)
+            throws IOException
+    {
+        Map<String, String> avatar = Maps.newConcurrentMap();
+        String fsType = initializerConfigure.getFsConfigure().getType();
+
+        avatar.put("fsType", fsType);
+        avatar.put("local", response.getRemote());
+
+        if ("Local".equals(fsType)) {
+            avatar.put("path", encodeImageToBase64(file.getInputStream()));
+        }
+        else {
+            avatar.put("path", response.getRemote());
+        }
+
+        return avatar;
     }
 
     private String encodeImageToBase64(InputStream inputStream)

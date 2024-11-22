@@ -22,9 +22,9 @@ public class PageEntity<T>
     {
     }
 
-    public static PageEntity build(Page page)
+    public static <T> PageEntity<T> build(Page<T> page)
     {
-        PageEntity pageEntity = new PageEntity<>();
+        PageEntity<T> pageEntity = new PageEntity<>();
         pageEntity.setPage(page.getNumber() + 1);
         pageEntity.setSize(page.getSize());
         pageEntity.setTotal(page.getTotalElements());

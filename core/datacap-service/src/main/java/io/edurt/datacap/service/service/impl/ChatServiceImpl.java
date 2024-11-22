@@ -37,7 +37,7 @@ public class ChatServiceImpl
     }
 
     @Override
-    public CommonResponse<ChatEntity> saveOrUpdate(BaseRepository repository, ChatEntity configure)
+    public CommonResponse<ChatEntity> saveOrUpdate(BaseRepository<ChatEntity, Long> repository, ChatEntity configure)
     {
         configure.setUser(UserDetailsService.getUser());
         return CommonResponse.success(repository.save(configure));

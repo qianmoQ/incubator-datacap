@@ -4,6 +4,7 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.service.activity.HeatmapActivity;
 import io.edurt.datacap.service.entity.PluginAuditEntity;
 import io.edurt.datacap.service.itransient.ContributionRadar;
+import io.edurt.datacap.spi.model.Response;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface PluginAuditService
 
     CommonResponse<PluginAuditEntity> getById(Long id);
 
-    CommonResponse<Object> getData(String code);
+    CommonResponse<Response> getData(String code);
 }

@@ -1,5 +1,8 @@
 package io.edurt.datacap.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ServiceState
 {
     SOURCE_NOT_FOUND(1001, "Source does not exist"),
@@ -25,24 +28,15 @@ public enum ServiceState
     USER_PASSWORD_INCORRECT(4006, "The user password is incorrect"),
     USER_PASSWORD_DIFFERENT(4007, "Two passwords are different"),
     USER_NAME_EQUALS(4008, "Cannot be the same as the old user name"),
-    REQUEST_EXCEPTION(5000, "The request is abnormal");
+    REQUEST_EXCEPTION(5000, "The request is abnormal"),
+    INVALID_PARAMETER(5001, "Invalid parameter");
 
-    private Integer code;
-    private String value;
+    private final Integer code;
+    private final String value;
 
     ServiceState(Integer code, String value)
     {
         this.code = code;
         this.value = value;
-    }
-
-    public Integer getCode()
-    {
-        return code;
-    }
-
-    public String getValue()
-    {
-        return value;
     }
 }

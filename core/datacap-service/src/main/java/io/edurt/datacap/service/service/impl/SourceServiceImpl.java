@@ -148,27 +148,28 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<Object> testConnection(SourceEntity configure)
     {
-        return pluginManager.getPlugin(configure.getType())
-                .map(plugin -> {
-                    Configure _configure = new Configure();
-                    PluginService pluginService = plugin.getService(PluginService.class);
-                    _configure.setHost(configure.getHost());
-                    _configure.setPort(configure.getPort());
-                    _configure.setUsername(Optional.ofNullable(configure.getUsername()));
-                    _configure.setPassword(Optional.ofNullable(configure.getPassword()));
-                    Optional<String> _database = StringUtils.isNotEmpty(configure.getDatabase()) ? Optional.ofNullable(configure.getDatabase()) : Optional.empty();
-                    _configure.setDatabase(_database);
-                    _configure.setEnv(Optional.ofNullable(configure.getConfigures()));
-                    _configure.setSsl(Optional.ofNullable(configure.getSsl()));
-                    pluginService.connect(_configure);
-                    io.edurt.datacap.spi.model.Response response = pluginService.execute(pluginService.validator());
-                    pluginService.destroy();
-                    if (response.getIsSuccessful()) {
-                        return CommonResponse.success(response);
-                    }
-                    return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
-                })
-                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+//        return pluginManager.getPlugin(configure.getType())
+//                .map(plugin -> {
+//                    Configure _configure = new Configure();
+//                    PluginService pluginService = plugin.getService(PluginService.class);
+//                    _configure.setHost(configure.getHost());
+//                    _configure.setPort(configure.getPort());
+//                    _configure.setUsername(Optional.ofNullable(configure.getUsername()));
+//                    _configure.setPassword(Optional.ofNullable(configure.getPassword()));
+//                    Optional<String> _database = StringUtils.isNotEmpty(configure.getDatabase()) ? Optional.ofNullable(configure.getDatabase()) : Optional.empty();
+//                    _configure.setDatabase(_database);
+//                    _configure.setEnv(Optional.ofNullable(configure.getConfigures()));
+//                    _configure.setSsl(Optional.ofNullable(configure.getSsl()));
+//                    pluginService.connect(_configure);
+//                    io.edurt.datacap.spi.model.Response response = pluginService.execute(pluginService.validator());
+//                    pluginService.destroy();
+//                    if (response.getIsSuccessful()) {
+//                        return CommonResponse.success(response);
+//                    }
+//                    return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+//                })
+//                .orElse( CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+        return null;
     }
 
     @Override
@@ -246,120 +247,122 @@ public class SourceServiceImpl
     @Override
     public CommonResponse<Object> testConnectionV2(SourceBody configure)
     {
-        return pluginManager.getPlugin(configure.getName())
-                .map(plugin -> {
-                    // Check configure
-                    IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
-                    if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
-                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
-                    }
-
-                    // Filter required
-                    List<IConfigureField> requiredMismatchConfigures = configure.getConfigure().getConfigures().stream().filter(v -> v.isRequired()).filter(v -> ObjectUtils.isEmpty(v.getValue())).collect(Collectors.toList());
-                    if (requiredMismatchConfigures.size() > 0) {
-                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
-                    }
-
-                    PluginService pluginService = plugin.getService(PluginService.class);
-                    // The filter parameter value is null data
-                    List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
-                    Configure _configure = ConfigureUtils.preparedConfigure(applyConfigures);
-                    // Adapter file configure
-                    if (_configure.isUsedConfig()) {
-                        String cacheHome = environment.getProperty("datacap.cache.data");
-                        if (StringUtils.isEmpty(cacheHome)) {
-                            cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
-                        }
-                        _configure.setHome(cacheHome);
-                        _configure.setUsername(Optional.of(UserDetailsService.getUser().getUsername()));
-                    }
-                    _configure.setPluginManager(pluginManager);
-                    pluginService.connect(_configure);
-                    Response response = pluginService.execute(pluginService.validator());
-                    if (response.getIsSuccessful()) {
-                        pluginService.destroy();
-                        return CommonResponse.success(response);
-                    }
-                    return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
-                })
-                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+//        return pluginManager.getPlugin(configure.getName())
+//                .map(plugin -> {
+//                    // Check configure
+//                    IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
+//                    if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
+//                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
+//                    }
+//
+//                    // Filter required
+//                    List<IConfigureField> requiredMismatchConfigures = configure.getConfigure().getConfigures().stream().filter(v -> v.isRequired()).filter(v -> ObjectUtils.isEmpty(v.getValue())).collect(Collectors.toList());
+//                    if (requiredMismatchConfigures.size() > 0) {
+//                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
+//                    }
+//
+//                    PluginService pluginService = plugin.getService(PluginService.class);
+//                    // The filter parameter value is null data
+//                    List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
+//                    Configure _configure = ConfigureUtils.preparedConfigure(applyConfigures);
+//                    // Adapter file configure
+//                    if (_configure.isUsedConfig()) {
+//                        String cacheHome = environment.getProperty("datacap.cache.data");
+//                        if (StringUtils.isEmpty(cacheHome)) {
+//                            cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
+//                        }
+//                        _configure.setHome(cacheHome);
+//                        _configure.setUsername(Optional.of(UserDetailsService.getUser().getUsername()));
+//                    }
+//                    _configure.setPluginManager(pluginManager);
+//                    pluginService.connect(_configure);
+//                    Response response = pluginService.execute(pluginService.validator());
+//                    if (response.getIsSuccessful()) {
+//                        pluginService.destroy();
+//                        return CommonResponse.success(response);
+//                    }
+//                    return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+//                })
+//                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+        return null;
     }
 
     @Override
     public CommonResponse<SourceEntity> saveOrUpdateV2(SourceBody configure)
     {
-        return pluginManager.getPlugin(configure.getName())
-                .map(plugin -> {
-                    // Check configure
-                    IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
-                    if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
-                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
-                    }
-
-                    // Filter required
-                    List<IConfigureField> requiredMismatchConfigures = configure.getConfigure()
-                            .getConfigures()
-                            .stream()
-                            .filter(IConfigureField::isRequired)
-                            .filter(v -> ObjectUtils.isEmpty(v.getValue()))
-                            .collect(Collectors.toList());
-                    if (!requiredMismatchConfigures.isEmpty()) {
-                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
-                    }
-
-                    // The filter parameter value is null data
-                    List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
-                    SourceEntity source = ConfigureUtils.preparedSourceEntity(applyConfigures);
-                    source.setProtocol(configure.getType());
-                    source.setType(configure.getName());
-                    source.setUser(UserDetailsService.getUser());
-                    if (configure.getId() == null) {
-                        source.setCode(UUID.randomUUID().toString().replace("-", ""));
-                    }
-                    if (ObjectUtils.isNotEmpty(configure.getId()) && configure.getId() > 0) {
-                        source.setId(configure.getId());
-                        sourceRepository.findById(configure.getId())
-                                .ifPresent(item -> source.setCode(item.getCode()));
-                    }
-                    if (StringUtils.isNotEmpty(configure.getVersion())) {
-                        source.setVersion(configure.getVersion());
-                        source.setAvailable(true);
-                    }
-                    else {
-                        source.setAvailable(false);
-                    }
-                    this.sourceRepository.save(source);
-                    // Copy file to local data
-                    if (source.isUsedConfig()) {
-                        String cacheHome = environment.getProperty("datacap.cache.data");
-                        if (StringUtils.isEmpty(cacheHome)) {
-                            cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
-                        }
-                        String configHome = environment.getProperty("datacap.config.data");
-                        if (StringUtils.isEmpty(configHome)) {
-                            configHome = String.join(File.separator, System.getProperty("user.dir"), "config");
-                        }
-                        File sourceFile = new File(String.join(File.separator, cacheHome, source.getUser().getUsername(), source.getType()));
-                        String destination = String.join(File.separator, configHome, source.getUser().getUsername(), source.getType(), String.valueOf(source.getId()));
-                        File directory = new File(destination);
-                        try {
-                            if (!directory.exists()) {
-                                directory.mkdirs();
-                            }
-                            for (File file : sourceFile.listFiles()) {
-                                Files.copy(file, new File(String.join(File.separator, destination, file.getName())));
-                            }
-                            FileUtils.deleteDirectory(sourceFile);
-                        }
-                        catch (Exception e) {
-                            return CommonResponse.failure("Copy failed: " + e.getMessage());
-                        }
-                    }
-                    // Start sync metadata
-                    this.syncMetadata(source.getId());
-                    return CommonResponse.success(source);
-                })
-                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+//        return pluginManager.getPlugin(configure.getName())
+//                .map(plugin -> {
+//                    // Check configure
+//                    IConfigure iConfigure = PluginUtils.loadYamlConfigure(configure.getType(), configure.getName(), configure.getName(), environment);
+//                    if (ObjectUtils.isEmpty(iConfigure) || iConfigure.getConfigures().size() != configure.getConfigure().getConfigures().size()) {
+//                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_MISMATCH);
+//                    }
+//
+//                    // Filter required
+//                    List<IConfigureField> requiredMismatchConfigures = configure.getConfigure()
+//                            .getConfigures()
+//                            .stream()
+//                            .filter(IConfigureField::isRequired)
+//                            .filter(v -> ObjectUtils.isEmpty(v.getValue()))
+//                            .collect(Collectors.toList());
+//                    if (!requiredMismatchConfigures.isEmpty()) {
+//                        return CommonResponse.failure(ServiceState.PLUGIN_CONFIGURE_REQUIRED, ConfigureUtils.preparedMessage(requiredMismatchConfigures));
+//                    }
+//
+//                    // The filter parameter value is null data
+//                    List<IConfigureField> applyConfigures = ConfigureUtils.filterNotEmpty(configure.getConfigure().getConfigures());
+//                    SourceEntity source = ConfigureUtils.preparedSourceEntity(applyConfigures);
+//                    source.setProtocol(configure.getType());
+//                    source.setType(configure.getName());
+//                    source.setUser(UserDetailsService.getUser());
+//                    if (configure.getId() == null) {
+//                        source.setCode(UUID.randomUUID().toString().replace("-", ""));
+//                    }
+//                    if (ObjectUtils.isNotEmpty(configure.getId()) && configure.getId() > 0) {
+//                        source.setId(configure.getId());
+//                        sourceRepository.findById(configure.getId())
+//                                .ifPresent(item -> source.setCode(item.getCode()));
+//                    }
+//                    if (StringUtils.isNotEmpty(configure.getVersion())) {
+//                        source.setVersion(configure.getVersion());
+//                        source.setAvailable(true);
+//                    }
+//                    else {
+//                        source.setAvailable(false);
+//                    }
+//                    this.sourceRepository.save(source);
+//                    // Copy file to local data
+//                    if (source.isUsedConfig()) {
+//                        String cacheHome = environment.getProperty("datacap.cache.data");
+//                        if (StringUtils.isEmpty(cacheHome)) {
+//                            cacheHome = String.join(File.separator, System.getProperty("user.dir"), "cache");
+//                        }
+//                        String configHome = environment.getProperty("datacap.config.data");
+//                        if (StringUtils.isEmpty(configHome)) {
+//                            configHome = String.join(File.separator, System.getProperty("user.dir"), "config");
+//                        }
+//                        File sourceFile = new File(String.join(File.separator, cacheHome, source.getUser().getUsername(), source.getType()));
+//                        String destination = String.join(File.separator, configHome, source.getUser().getUsername(), source.getType(), String.valueOf(source.getId()));
+//                        File directory = new File(destination);
+//                        try {
+//                            if (!directory.exists()) {
+//                                directory.mkdirs();
+//                            }
+//                            for (File file : sourceFile.listFiles()) {
+//                                Files.copy(file, new File(String.join(File.separator, destination, file.getName())));
+//                            }
+//                            FileUtils.deleteDirectory(sourceFile);
+//                        }
+//                        catch (Exception e) {
+//                            return CommonResponse.failure("Copy failed: " + e.getMessage());
+//                        }
+//                    }
+//                    // Start sync metadata
+//                    this.syncMetadata(source.getId());
+//                    return CommonResponse.success(source);
+//                })
+//                .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+        return null;
     }
 
     @Override
@@ -404,7 +407,7 @@ public class SourceServiceImpl
                 .ifPresent(plugin -> {
                     try {
                         PluginService pluginService = plugin.getService(PluginService.class);
-                        Configure pConfigure = entity.toConfigure();
+                        Configure pConfigure = entity.toConfigure(pluginManager, plugin);
                         pConfigure.setPluginManager(pluginManager);
                         Response response = pluginService.execute(pConfigure, pluginService.validator());
                         if (!response.getIsSuccessful()) {
@@ -533,9 +536,9 @@ public class SourceServiceImpl
             log.warn("The source [ {} ] protocol [ {} ] template [ {} ] is not available, skip sync database", entity.getName(), entity.getProtocol(), templateName);
         }
         else {
-            Configure pConfigure = entity.toConfigure();
-            pConfigure.setPluginManager(pluginManager);
-            plugin.connect(pConfigure);
+//            Configure pConfigure = entity.toConfigure();
+//            pConfigure.setPluginManager(pluginManager);
+//            plugin.connect(pConfigure);
             Response response = plugin.execute(getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
                 log.error("The source [ {} ] protocol [ {} ] sync metadata  [ {} ] failed", entity.getName(), entity.getProtocol(), response.getMessage());
@@ -605,9 +608,9 @@ public class SourceServiceImpl
             log.warn("The source [ {} ] protocol [ {} ] template [ {} ] is not available, skip sync table", entity.getName(), entity.getProtocol(), templateName);
         }
         else {
-            Configure pConfigure = entity.toConfigure();
-            pConfigure.setPluginManager(pluginManager);
-            plugin.connect(pConfigure);
+//            Configure pConfigure = entity.toConfigure();
+//            pConfigure.setPluginManager(pluginManager);
+//            plugin.connect(pConfigure);
             Response response = plugin.execute(getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
                 log.error("The source [ {} ] protocol [ {} ] sync metadata tables  [ {} ] failed", entity.getName(), entity.getProtocol(), response.getMessage());
@@ -698,9 +701,9 @@ public class SourceServiceImpl
             log.warn("The source [ {} ] protocol [ {} ] template [ {} ] is not available, skip sync column", entity.getName(), entity.getProtocol(), templateName);
         }
         else {
-            Configure pConfigure = entity.toConfigure();
-            pConfigure.setPluginManager(pluginManager);
-            plugin.connect(pConfigure);
+//            Configure pConfigure = entity.toConfigure();
+//            pConfigure.setPluginManager(pluginManager);
+//            plugin.connect(pConfigure);
             Response response = plugin.execute(getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
                 log.error("The source [ {} ] protocol [ {} ] sync metadata columns  [ {} ] failed", entity.getName(), entity.getProtocol(), response.getMessage());

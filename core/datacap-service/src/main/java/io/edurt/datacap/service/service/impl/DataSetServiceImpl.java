@@ -124,20 +124,20 @@ public class DataSetServiceImpl
     @Override
     public CommonResponse<DataSetEntity> rebuild(Long id)
     {
-        Optional<DataSetEntity> entity = repository.findById(id);
-        if (!entity.isPresent()) {
-            return CommonResponse.failure(String.format("DataSet [ %s ] not found", id));
-        }
-        java.util.concurrent.ExecutorService service = Executors.newSingleThreadExecutor();
-        service.submit(() -> startBuild(entity.get(), false));
-        return CommonResponse.success(entity);
+        return repository.findById(id)
+                .map(entity -> {
+                    java.util.concurrent.ExecutorService service = Executors.newSingleThreadExecutor();
+                    service.submit(() -> startBuild(entity, false));
+                    return CommonResponse.success(entity);
+                })
+                .orElse(CommonResponse.failure(String.format("DataSet [ %s ] not found", id)));
     }
 
     @Override
-    public CommonResponse<Set<DataSetColumnEntity>> getColumnsByCode(String code)
+    public CommonResponse<List<DataSetColumnEntity>> getColumnsByCode(String code)
     {
-        Optional<DataSetEntity> entity = repository.findByCode(code);
-        return entity.map(item -> {
+        return repository.findByCode(code)
+                .map(item -> {
                     isSelf(item);
                     return CommonResponse.success(columnRepository.findAllByDatasetOrderByPositionAsc(item));
                 })
@@ -170,7 +170,7 @@ public class DataSetServiceImpl
     }
 
     @Override
-    public CommonResponse<Object> adhoc(String code, Adhoc configure)
+    public CommonResponse<Response> adhoc(String code, Adhoc configure)
     {
         return repository.findByCode(code)
                 .map(item -> {
@@ -244,16 +244,14 @@ public class DataSetServiceImpl
                     return pluginManager.getPlugin(initializerConfigure.getDataSetConfigure().getType())
                             .map(plugin -> {
                                 PluginService pluginService = plugin.getService(PluginService.class);
-                                Configure targetConfigure = new Configure();
-                                targetConfigure.setHost(initializerConfigure.getDataSetConfigure().getHost());
-                                targetConfigure.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
-                                targetConfigure.setUsername(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getUsername()));
-                                targetConfigure.setPassword(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getPassword()));
-                                targetConfigure.setDatabase(Optional.ofNullable(database));
-                                targetConfigure.setPluginManager(pluginManager);
-                                targetConfigure.setClassLoader(plugin.getClassLoader());
-                                targetConfigure.setPlugin(plugin);
-                                Response response = pluginService.execute(targetConfigure, sql);
+                                SourceEntity entity = SourceEntity.builder()
+                                        .host(initializerConfigure.getDataSetConfigure().getHost())
+                                        .port(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()))
+                                        .username(initializerConfigure.getDataSetConfigure().getUsername())
+                                        .password(initializerConfigure.getDataSetConfigure().getPassword())
+                                        .database(database)
+                                        .build();
+                                Response response = pluginService.execute(entity.toConfigure(pluginManager, plugin), sql);
                                 response.setContent(sql);
                                 return CommonResponse.success(response);
                             })
@@ -282,18 +280,18 @@ public class DataSetServiceImpl
     }
 
     @Override
-    public CommonResponse<Object> getHistory(String code, FilterBody filter)
+    public CommonResponse<PageEntity<DatasetHistoryEntity>> getHistory(String code, FilterBody filter)
     {
         return repository.findByCode(code)
                 .map(item -> {
                     Pageable pageable = PageRequestAdapter.of(filter);
                     return CommonResponse.success(PageEntity.build(historyRepository.findAllByDatasetOrderByCreateTimeDesc(item, pageable)));
                 })
-                .orElseGet(() -> CommonResponse.failure(String.format("DataSet [ %s ] not found", code)));
+                .orElse(CommonResponse.failure(String.format("DataSet [ %s ] not found", code)));
     }
 
     @Override
-    public CommonResponse<PageEntity<DataSetEntity>> getAll(BaseRepository pagingAndSortingRepository, FilterBody filter)
+    public CommonResponse<PageEntity<DataSetEntity>> getAll(BaseRepository<DataSetEntity, Long> pagingAndSortingRepository, FilterBody filter)
     {
         Pageable pageable = PageRequestAdapter.of(filter);
         return CommonResponse.success(PageEntity.build(repository.findAllByUser(UserDetailsService.getUser(), pageable)));
@@ -492,7 +490,7 @@ public class DataSetServiceImpl
                 String sql = ColumnBuilder.Companion.SQL();
                 PluginService plugin = getOutputPlugin();
                 SourceEntity source = getOutputSource();
-                plugin.connect(source.toConfigure());
+//                plugin.connect(source.toConfigure());
                 Response response = plugin.execute(sql);
                 Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
                 log.info("Create column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
@@ -511,7 +509,7 @@ public class DataSetServiceImpl
                 log.info("Modify column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
                 PluginService plugin = getOutputPlugin();
                 SourceEntity source = getOutputSource();
-                plugin.connect(source.toConfigure());
+//                plugin.connect(source.toConfigure());
                 Response response = plugin.execute(sql);
                 Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
             }
@@ -527,8 +525,8 @@ public class DataSetServiceImpl
                         log.info("Modify lifecycle sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
                         PluginService pluginService = getOutputPlugin();
                         SourceEntity source = getOutputSource();
-                        Response response = pluginService.execute(source.toConfigure(), sql);
-                        Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
+//                        Response response = pluginService.execute(source.toConfigure(), sql);
+//                        Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
                     });
 
             completeState(entity, DataSetState.TABLE_SUCCESS);
@@ -585,7 +583,8 @@ public class DataSetServiceImpl
                                             Properties inputProperties = ConfigureUtils.convertProperties(source, environment,
                                                     IConfigurePipelineType.INPUT, entity.getExecutor(), entity.getQuery(), inputFieldBody);
                                             Set<String> inputOptions = ConfigureUtils.convertOptions(source, environment, entity.getExecutor(), IConfigurePipelineType.INPUT);
-                                            Configure inputConfigure = source.toConfigure();
+//                                            Configure inputConfigure = source.toConfigure();
+                                            Configure inputConfigure = new Configure();
                                             inputConfigure.setPluginManager(pluginManager);
                                             ExecutorConfigure input = new ExecutorConfigure(source.getType(), inputProperties, inputOptions, RunProtocol.valueOf(source.getProtocol()),
                                                     inputPlugin, entity.getQuery(), database, entity.getTableName(), inputConfigure, originColumns);
@@ -620,10 +619,10 @@ public class DataSetServiceImpl
                                                         ExecutorRequest request = new ExecutorRequest(taskName, entity.getUser().getUsername(), input, output,
                                                                 environment.getProperty(String.format("datacap.executor.%s.home", entity.getExecutor().toLowerCase())),
                                                                 workHome, this.pluginManager, 600,
-                                                                RunWay.valueOf(environment.getProperty("datacap.executor.way")),
-                                                                RunMode.valueOf(environment.getProperty("datacap.executor.mode")),
+                                                                RunWay.valueOf(requireNonNull(environment.getProperty("datacap.executor.way"))),
+                                                                RunMode.valueOf(requireNonNull(environment.getProperty("datacap.executor.mode"))),
                                                                 environment.getProperty("datacap.executor.startScript"),
-                                                                RunEngine.valueOf(environment.getProperty("datacap.executor.engine")));
+                                                                RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine"))));
 
                                                         history.setState(RunState.RUNNING);
                                                         historyRepository.save(history);
@@ -702,14 +701,15 @@ public class DataSetServiceImpl
         try {
             pluginManager.getPlugin(initializerConfigure.getDataSetConfigure().getType())
                     .ifPresent(plugin -> {
-                        SourceEntity source = new SourceEntity();
-                        source.setType(initializerConfigure.getDataSetConfigure().getType());
-                        source.setDatabase(initializerConfigure.getDataSetConfigure().getDatabase());
-                        source.setHost(initializerConfigure.getDataSetConfigure().getHost());
-                        source.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
-                        source.setUsername(initializerConfigure.getDataSetConfigure().getUsername());
-                        source.setPassword(initializerConfigure.getDataSetConfigure().getPassword());
-                        source.setProtocol(PluginType.JDBC.name());
+                        SourceEntity source = SourceEntity.builder()
+                                .type(initializerConfigure.getDataSetConfigure().getType())
+                                .host(initializerConfigure.getDataSetConfigure().getHost())
+                                .port(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()))
+                                .database(initializerConfigure.getDataSetConfigure().getDatabase())
+                                .username(initializerConfigure.getDataSetConfigure().getUsername())
+                                .password(initializerConfigure.getDataSetConfigure().getPassword())
+                                .protocol(PluginType.JDBC.name())
+                                .build();
 
                         PluginService pluginService = plugin.getService(PluginService.class);
                         SqlBody body = SqlBody.builder()
@@ -719,9 +719,9 @@ public class DataSetServiceImpl
                                 .build();
                         String sql = new SqlBuilder(body).getSql();
                         log.info("Clear data for dataset [ {} ] id [ {} ] sql \n {}", entity.getName(), entity.getId(), sql);
-                        Response response = pluginService.execute(source.toConfigure(), sql);
+                        Response response = pluginService.execute(source.toConfigure(pluginManager, plugin), sql);
                         Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
-                        this.flushTableMetadata(entity, pluginService, initializerConfigure.getDataSetConfigure().getDatabase(), source.toConfigure());
+//                        this.flushTableMetadata(entity, pluginService, initializerConfigure.getDataSetConfigure().getDatabase(), source.toConfigure());
                     });
         }
         catch (Exception e) {
@@ -844,7 +844,7 @@ public class DataSetServiceImpl
                     try {
                         PluginService pluginService = plugin.getService(PluginService.class);
                         SourceEntity source = getOutputSource();
-                        Configure configure = source.toConfigure();
+                        Configure configure = source.toConfigure(pluginManager, plugin);
                         configure.setPluginManager(pluginManager);
                         String sql = String.format("SHOW CREATE TABLE `%s`.`%s`", initializerConfigure.getDataSetConfigure().getDatabase(), entity.getTableName());
                         log.info("Check table exists for dataset [ {} ] id [ {} ] sql \n {}", entity.getName(), entity.getId(), sql);
@@ -867,15 +867,15 @@ public class DataSetServiceImpl
      */
     private SourceEntity getOutputSource()
     {
-        SourceEntity source = new SourceEntity();
-        source.setType(initializerConfigure.getDataSetConfigure().getType());
-        source.setDatabase(initializerConfigure.getDataSetConfigure().getDatabase());
-        source.setHost(initializerConfigure.getDataSetConfigure().getHost());
-        source.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
-        source.setUsername(initializerConfigure.getDataSetConfigure().getUsername());
-        source.setPassword(initializerConfigure.getDataSetConfigure().getPassword());
-        source.setProtocol(PluginType.JDBC.name());
-        return source;
+        return SourceEntity.builder()
+                .type(initializerConfigure.getDataSetConfigure().getType())
+                .database(initializerConfigure.getDataSetConfigure().getDatabase())
+                .host(initializerConfigure.getDataSetConfigure().getHost())
+                .port(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()))
+                .username(initializerConfigure.getDataSetConfigure().getUsername())
+                .password(initializerConfigure.getDataSetConfigure().getPassword())
+                .protocol(PluginType.JDBC.name())
+                .build();
     }
 
     /**

@@ -42,7 +42,9 @@ public class FunctionServiceImpl
     @Override
     public CommonResponse<FunctionEntity> getById(Long id)
     {
-        return CommonResponse.success(this.functionsRepository.findById(id));
+        return this.functionsRepository.findById(id)
+                .map(CommonResponse::success)
+                .orElse(CommonResponse.failure(String.format("Function [ %s ] not found", id)));
     }
 
     @Override

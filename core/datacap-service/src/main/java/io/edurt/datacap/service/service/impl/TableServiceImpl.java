@@ -13,6 +13,7 @@ import io.edurt.datacap.common.utils.CSVUtils;
 import io.edurt.datacap.fs.FsRequest;
 import io.edurt.datacap.fs.FsResponse;
 import io.edurt.datacap.fs.FsService;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.body.ExportBody;
 import io.edurt.datacap.service.body.TableBody;
@@ -102,28 +103,28 @@ public class TableServiceImpl
                             .map(plugin -> {
                                 PluginService pluginService = plugin.getService(PluginService.class);
                                 if (configure.getType().equals(SqlType.SELECT)) {
-                                    return this.fetchSelect(pluginService, table, source, configure);
+                                    return this.fetchSelect(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.INSERT)) {
-                                    return this.fetchInsert(pluginService, table, source, configure);
+                                    return this.fetchInsert(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.UPDATE)) {
-                                    return this.fetchUpdate(pluginService, table, source, configure);
+                                    return this.fetchUpdate(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.DELETE)) {
-                                    return this.fetchDelete(pluginService, table, source, configure);
+                                    return this.fetchDelete(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.ALTER)) {
-                                    return this.fetchAlter(pluginService, table, source, configure);
+                                    return this.fetchAlter(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.SHOW)) {
-                                    return this.fetchShowCreateTable(pluginService, table, source, configure);
+                                    return this.fetchShowCreateTable(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.TRUNCATE)) {
-                                    return this.fetchTruncateTable(pluginService, table, source, configure);
+                                    return this.fetchTruncateTable(plugin, pluginService, table, source, configure);
                                 }
                                 else if (configure.getType().equals(SqlType.DROP)) {
-                                    return this.fetchDropTable(pluginService, table, source, configure);
+                                    return this.fetchDropTable(plugin, pluginService, table, source, configure);
                                 }
                                 return CommonResponse.failure(String.format("Not implemented yet [ %s ]", configure.getType()));
                             })
@@ -163,7 +164,7 @@ public class TableServiceImpl
                                         .type(SqlType.SELECT)
                                         .pagination(pagination)
                                         .build();
-                                CommonResponse<Object> tempResponse = this.fetchSelect(pluginService, table, source, tableFilter);
+                                CommonResponse<Object> tempResponse = this.fetchSelect(plugin, pluginService, table, source, tableFilter);
                                 if (tempResponse.getStatus()) {
                                     Response pluginResponse = (Response) tempResponse.getData();
                                     try {
@@ -234,7 +235,7 @@ public class TableServiceImpl
     }
 
     @Override
-    public CommonResponse<Object> createTable(Long databaseId, TableBody configure)
+    public CommonResponse<Response> createTable(Long databaseId, TableBody configure)
     {
         Optional<DatabaseEntity> optionalDatabase = this.databaseRepository.findById(databaseId);
         if (!optionalDatabase.isPresent()) {
@@ -251,7 +252,7 @@ public class TableServiceImpl
                     TableBuilder.Companion.COLUMNS(configure.getColumns().stream().map(item -> item.toColumnVar()).collect(Collectors.toList()));
                     String sql = TableBuilder.Companion.SQL();
                     log.info("Create table sql \n {} \n on database [ {} ]", sql, database.getName());
-                    Configure pConfigure = source.toConfigure();
+                    Configure pConfigure = source.toConfigure(pluginManager, plugin);
                     pConfigure.setPluginManager(pluginManager);
                     Response response = pluginService.execute(pConfigure, sql);
                     response.setContent(sql);
@@ -305,7 +306,7 @@ public class TableServiceImpl
                                             .build();
                                 }
                                 else {
-                                    Configure pConfigure = source.toConfigure();
+                                    Configure pConfigure = source.toConfigure(pluginManager, plugin);
                                     pConfigure.setPluginManager(pluginManager);
                                     PluginService pluginService = plugin.getService(PluginService.class);
                                     response = pluginService.execute(pConfigure, atomicReference.get());
@@ -328,15 +329,13 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the fetched data
      */
-    private CommonResponse<Object> fetchSelect(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchSelect(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
             List<SqlColumn> columns = Lists.newArrayList();
             int totalRows = Integer.parseInt(table.getRows());
-            Configure countConfigure = source.toConfigure();
+            Configure countConfigure = source.toConfigure(pluginManager, plugin);
             countConfigure.setFormat("None");
-            countConfigure.setPluginManager(pluginManager);
-            plugin.connect(countConfigure);
             SqlBody countBody = SqlBody.builder()
                     .type(SqlType.SELECT)
                     .database(table.getDatabase().getName())
@@ -351,8 +350,10 @@ public class TableServiceImpl
             }
             SqlBuilder countBuilder = new SqlBuilder(countBody);
             String countSql = countBuilder.getSql();
-            Response countResponse = plugin.execute(countSql);
-            plugin.destroy();
+            Response countResponse = pluginService.execute(
+                    countConfigure,
+                    countSql
+            );
             if (countResponse.getIsSuccessful() && !countResponse.getColumns().isEmpty()) {
                 List<Object> applyResponse = (ArrayList) countResponse.getColumns().get(0);
                 int applyTotal = Integer.parseInt(String.valueOf(applyResponse.get(0)));
@@ -407,12 +408,11 @@ public class TableServiceImpl
 
             SqlBuilder builder = new SqlBuilder(body);
             String sql = builder.getSql();
-            Configure pConfigure = source.toConfigure();
-            pConfigure.setPluginManager(pluginManager);
-            plugin.connect(pConfigure);
-            Response response = plugin.execute(sql);
-            response.setContent(sql);
-            plugin.destroy();
+            Configure pConfigure = source.toConfigure(pluginManager, plugin);
+            Response response = pluginService.execute(
+                    pConfigure,
+                    sql
+            );
             Pagination pagination = Pagination.newInstance(configure.getPagination().getPageSize(), configure.getPagination().getCurrentPage(), totalRows);
             response.setPagination(pagination);
             return CommonResponse.success(response);
@@ -431,13 +431,11 @@ public class TableServiceImpl
      * @param configure the table filter object
      * @return the common response object containing the result of the operation
      */
-    private CommonResponse<Object> fetchInsert(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchInsert(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure updateConfigure = source.toConfigure();
+            Configure updateConfigure = source.toConfigure(pluginManager, plugin);
             updateConfigure.setFormat("None");
-            updateConfigure.setPluginManager(pluginManager);
-            plugin.connect(updateConfigure);
             List<String> allSql = Lists.newArrayList();
             // Gets the auto-increment column for the current row
             List<String> autoIncrementColumns = table.getColumns()
@@ -473,7 +471,7 @@ public class TableServiceImpl
                 allSql.add(new SqlBuilder(body).getSql());
             });
             String sql = String.join("\n\n", allSql);
-            return CommonResponse.success(getResponse(configure, plugin, sql));
+            return CommonResponse.success(getResponse(configure, pluginService, sql, updateConfigure));
         }
         catch (Exception ex) {
             return CommonResponse.failure(ExceptionUtils.getMessage(ex));
@@ -489,13 +487,11 @@ public class TableServiceImpl
      * @param configure the table filter configuration for fetching and updating the data
      * @return the response containing the fetched and updated data
      */
-    private CommonResponse<Object> fetchUpdate(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchUpdate(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure updateConfigure = source.toConfigure();
+            Configure updateConfigure = source.toConfigure(pluginManager, plugin);
             updateConfigure.setFormat("None");
-            updateConfigure.setPluginManager(pluginManager);
-            plugin.connect(updateConfigure);
             List<String> allSql = Lists.newArrayList();
             configure.getColumns().forEach(v -> {
                 SqlBody body = SqlBody.builder()
@@ -511,7 +507,7 @@ public class TableServiceImpl
                 allSql.add(new SqlBuilder(body).getSql());
             });
             String sql = String.join("\n\n", allSql);
-            return CommonResponse.success(getResponse(configure, plugin, sql));
+            return CommonResponse.success(getResponse(configure, pluginService, sql, updateConfigure));
         }
         catch (Exception ex) {
             return CommonResponse.failure(ExceptionUtils.getMessage(ex));
@@ -527,13 +523,11 @@ public class TableServiceImpl
      * @param configure the table filter to use for filtering the data to be deleted
      * @return the response containing the result of the delete operation
      */
-    private CommonResponse<Object> fetchDelete(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchDelete(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure updateConfigure = source.toConfigure();
+            Configure updateConfigure = source.toConfigure(pluginManager, plugin);
             updateConfigure.setFormat("None");
-            updateConfigure.setPluginManager(pluginManager);
-            plugin.connect(updateConfigure);
             List<String> allSql = Lists.newArrayList();
             configure.getColumns().forEach(v -> {
                 SqlBody body = SqlBody.builder()
@@ -545,7 +539,7 @@ public class TableServiceImpl
                 allSql.add(new SqlBuilder(body).getSql());
             });
             String sql = String.join("\n\n", allSql);
-            return CommonResponse.success(getResponse(configure, plugin, sql));
+            return CommonResponse.success(getResponse(configure, pluginService, sql, updateConfigure));
         }
         catch (Exception ex) {
             return CommonResponse.failure(ExceptionUtils.getMessage(ex));
@@ -561,20 +555,18 @@ public class TableServiceImpl
      * @param configure the table filter to apply to the alter operation
      * @return a CommonResponse object containing the result of the alter operation
      */
-    private CommonResponse<Object> fetchAlter(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchAlter(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure alterConfigure = source.toConfigure();
+            Configure alterConfigure = source.toConfigure(pluginManager, plugin);
             alterConfigure.setFormat("None");
-            alterConfigure.setPluginManager(pluginManager);
-            plugin.connect(alterConfigure);
             SqlBody body = SqlBody.builder()
                     .type(SqlType.ALTER)
                     .database(table.getDatabase().getName())
                     .table(table.getName())
                     .value(configure.getValue())
                     .build();
-            return CommonResponse.success(getResponse(configure, plugin, new SqlBuilder(body).getSql()));
+            return CommonResponse.success(getResponse(configure, pluginService, new SqlBuilder(body).getSql(), alterConfigure));
         }
         catch (Exception ex) {
             return CommonResponse.failure(ExceptionUtils.getMessage(ex));
@@ -590,19 +582,17 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the result of the query
      */
-    private CommonResponse<Object> fetchShowCreateTable(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchShowCreateTable(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure alterConfigure = source.toConfigure();
+            Configure alterConfigure = source.toConfigure(pluginManager, plugin);
             alterConfigure.setFormat("None");
-            alterConfigure.setPluginManager(pluginManager);
-            plugin.connect(alterConfigure);
             SqlBody body = SqlBody.builder()
                     .type(SqlType.SHOW)
                     .database(table.getDatabase().getName())
                     .table(table.getName())
                     .build();
-            return CommonResponse.success(getResponse(configure, plugin, new SqlBuilder(body).getSql()));
+            return CommonResponse.success(getResponse(configure, pluginService, new SqlBuilder(body).getSql(), alterConfigure));
         }
         catch (Exception ex) {
             return CommonResponse.failure(ExceptionUtils.getMessage(ex));
@@ -618,19 +608,17 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the fetch and truncate result
      */
-    private CommonResponse<Object> fetchTruncateTable(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchTruncateTable(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure alterConfigure = source.toConfigure();
+            Configure alterConfigure = source.toConfigure(pluginManager, plugin);
             alterConfigure.setFormat("None");
-            alterConfigure.setPluginManager(pluginManager);
-            plugin.connect(alterConfigure);
             SqlBody body = SqlBody.builder()
                     .type(SqlType.TRUNCATE)
                     .database(table.getDatabase().getName())
                     .table(table.getName())
                     .build();
-            return CommonResponse.success(getResponse(configure, plugin, new SqlBuilder(body).getSql()));
+            return CommonResponse.success(getResponse(configure, pluginService, new SqlBuilder(body).getSql(), alterConfigure));
         }
         catch (Exception ex) {
             return CommonResponse.failure(ExceptionUtils.getMessage(ex));
@@ -646,20 +634,18 @@ public class TableServiceImpl
      * @param configure the table filter configuration
      * @return the common response object containing the fetched result
      */
-    private CommonResponse<Object> fetchDropTable(PluginService plugin, TableEntity table, SourceEntity source, TableFilter configure)
+    private CommonResponse<Object> fetchDropTable(Plugin plugin, PluginService pluginService, TableEntity table, SourceEntity source, TableFilter configure)
     {
         try {
-            Configure alterConfigure = source.toConfigure();
+            Configure alterConfigure = source.toConfigure(pluginManager, plugin);
             alterConfigure.setFormat("None");
-            alterConfigure.setPluginManager(pluginManager);
-            plugin.connect(alterConfigure);
             SqlBody body = SqlBody.builder()
                     .type(SqlType.DROP)
                     .database(table.getDatabase().getName())
                     .table(table.getName())
                     .value(configure.getValue())
                     .build();
-            Response response = getResponse(configure, plugin, new SqlBuilder(body).getSql());
+            Response response = getResponse(configure, pluginService, new SqlBuilder(body).getSql(), alterConfigure);
             if (!configure.isPreview() && response.getIsSuccessful()) {
                 repository.delete(table);
             }
@@ -713,10 +699,10 @@ public class TableServiceImpl
      * @param sql the SQL query to execute
      * @return the response containing the result of the SQL query
      */
-    private Response getResponse(TableFilter configure, PluginService plugin, String sql)
+    private Response getResponse(TableFilter filter, PluginService plugin, String sql, Configure configure)
     {
         Response response;
-        if (configure.isPreview()) {
+        if (filter.isPreview()) {
             response = Response.builder()
                     .isSuccessful(true)
                     .isConnected(true)
@@ -727,8 +713,7 @@ public class TableServiceImpl
                     .build();
         }
         else {
-            response = plugin.execute(sql);
-            plugin.destroy();
+            response = plugin.execute(configure, sql);
             response.setContent(sql);
         }
         return response;

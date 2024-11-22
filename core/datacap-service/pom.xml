@@ -117,6 +117,16 @@
             <artifactId>datacap-fs-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-scheduler-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-executor-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Sql Parser -->
         <dependency>
             <groupId>io.edurt.datacap</groupId>
@@ -127,26 +137,6 @@
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-parser-mysql</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Scheduler -->
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-scheduler-local</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Executor -->
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-executor-local</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-executor-seatunnel</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

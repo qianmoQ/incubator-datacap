@@ -95,11 +95,13 @@ public class PluginAuditServiceImpl
     @Override
     public CommonResponse<PluginAuditEntity> getById(Long id)
     {
-        return CommonResponse.success(this.pluginAuditRepository.findById(id));
+        return pluginAuditRepository.findById(id)
+                .map(CommonResponse::success)
+                .orElse(CommonResponse.failure(String.format("PluginAudit [ %s ] not found", id)));
     }
 
     @Override
-    public CommonResponse<Object> getData(String code)
+    public CommonResponse<Response> getData(String code)
     {
         return this.pluginAuditRepository.findByCode(code)
                 .map(value -> {

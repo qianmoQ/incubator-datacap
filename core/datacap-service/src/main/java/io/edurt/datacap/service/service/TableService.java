@@ -5,6 +5,7 @@ import io.edurt.datacap.service.body.ExportBody;
 import io.edurt.datacap.service.body.TableBody;
 import io.edurt.datacap.service.body.TableFilter;
 import io.edurt.datacap.service.entity.TableEntity;
+import io.edurt.datacap.spi.model.Response;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public interface TableService
 
     Object dataDownload(String username, String filename);
 
-    CommonResponse<Object> createTable(Long databaseId, TableBody configure);
+    CommonResponse<Response> createTable(Long databaseId, TableBody configure);
 
     CommonResponse<Object> manageColumn(String code, TableBody configure);
 }

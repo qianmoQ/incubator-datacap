@@ -31,7 +31,7 @@ public class ReportServiceImpl
     }
 
     @Override
-    public CommonResponse<ReportEntity> saveOrUpdate(PagingAndSortingRepository repository, ReportEntity configure)
+    public CommonResponse<ReportEntity> saveOrUpdate(PagingAndSortingRepository<ReportEntity, Long> repository, ReportEntity configure)
     {
         configure.setUser(UserDetailsService.getUser());
         return CommonResponse.success(repository.save(configure));

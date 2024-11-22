@@ -39,5 +39,4 @@ public class Configure
     private String home;
     private boolean usedConfig;
     private String id;
-    private String classLoader;
 }

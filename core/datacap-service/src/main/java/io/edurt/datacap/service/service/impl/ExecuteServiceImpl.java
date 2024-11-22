@@ -5,21 +5,22 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.sql.SqlBuilder;
 import io.edurt.datacap.common.sql.configure.SqlBody;
 import io.edurt.datacap.common.sql.configure.SqlType;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.audit.AuditPlugin;
 import io.edurt.datacap.service.body.ExecuteDslBody;
 import io.edurt.datacap.service.entity.ExecuteEntity;
+import io.edurt.datacap.service.entity.SourceEntity;
 import io.edurt.datacap.service.repository.SourceRepository;
 import io.edurt.datacap.service.service.ExecuteService;
 import io.edurt.datacap.spi.PluginService;
-import io.edurt.datacap.spi.model.Configure;
+import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -41,64 +42,110 @@ public class ExecuteServiceImpl
     @Override
     public CommonResponse<Object> execute(ExecuteEntity configure)
     {
-        return this.sourceRepository.findById(Long.valueOf(configure.getName()))
-                .map(entity -> {
-                    return pluginManager.getPlugin(entity.getType())
-                            .map(plugin -> {
-                                PluginService service = plugin.getService(PluginService.class);
-                                Configure _configure = Configure.builder()
-                                        .host(entity.getHost())
-                                        .port(entity.getPort())
-                                        .username(Optional.ofNullable(entity.getUsername()))
-                                        .password(Optional.ofNullable(entity.getPassword()))
-                                        .database(StringUtils.isNotEmpty(entity.getDatabase()) ? Optional.ofNullable(entity.getDatabase()) : Optional.empty())
-                                        .ssl(Optional.ofNullable(entity.getSsl()))
-                                        .env(Optional.ofNullable(entity.getConfigures()))
-                                        .format(configure.getFormat())
-                                        .usedConfig(entity.isUsedConfig())
-                                        .pluginManager(pluginManager)
-                                        .classLoader(plugin.getClassLoader())
-                                        .build();
-                                if (entity.isUsedConfig()) {
-                                    _configure.setUsername(Optional.of(entity.getUser().getUsername()));
-                                    String configHome = environment.getProperty("datacap.config.data");
-                                    if (StringUtils.isEmpty(configHome)) {
-                                        configHome = String.join(File.separator, System.getProperty("user.dir"), "config");
-                                    }
-                                    _configure.setHome(configHome);
-                                    _configure.setId(String.valueOf(entity.getId()));
-                                }
-//                                if (configure.getMode().equals(QueryMode.ADHOC)) {
-//                                    try {
-//                                        if (initializerConfigure.getAutoLimit()) {
-//                                            Optional<SqlParser> parserOptional = this.injector.getInstance(Key.get(new TypeLiteral<Set<SqlParser>>() {}))
-//                                                    .stream()
-//                                                    .filter(parser -> parser.name().equalsIgnoreCase(plugin.name()))
-//                                                    .findFirst();
-//                                            ParserResponse response = parserOptional.orElse(injector.getInstance(Key.get(new TypeLiteral<Set<SqlParser>>() {}))
-//                                                            .stream()
-//                                                            .filter(parser -> parser.name().equalsIgnoreCase(initializerConfigure.getSqlParserDefaultEngine())).findFirst().get())
-//                                                    .parse(configure.getContent());
-//
-//                                            if (response.isParser() && response.getType().equals(StatementType.SELECT) && response.getTable().getLimit() == null) {
-//                                                configure.setContent(String.format("%s%nLIMIT %s", configure.getContent(), configure.getLimit()));
-//                                            }
-//                                        }
-//                                    }
-//                                    catch (Exception exception) {
-//                                        log.warn("Ignore auto limit", exception);
-//                                    }
-//                                }
-                                io.edurt.datacap.spi.model.Response response = service.execute(_configure, configure.getContent());
-                                response.setContent(configure.getContent());
-                                if (response.getIsSuccessful()) {
-                                    return CommonResponse.success(response);
-                                }
-                                return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
-                            })
-                            .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
-                })
-                .orElse(CommonResponse.failure(ServiceState.SOURCE_NOT_FOUND));
+        try {
+            return sourceRepository.findById(Long.valueOf(configure.getName()))
+                    .map(entity -> handleSourceEntity(entity, configure.getContent()))
+                    .orElse(CommonResponse.failure(ServiceState.SOURCE_NOT_FOUND));
+        }
+        catch (NumberFormatException e) {
+            log.error("Invalid source id: {}", configure.getName(), e);
+            return CommonResponse.failure(ServiceState.INVALID_PARAMETER, "Invalid source id");
+        }
+    }
+
+    /**
+     * 处理源实体
+     * Handle source entity
+     *
+     * @param entity {@link SourceEntity} 源实体配置 / Source entity configuration
+     * @param content SQL语句 / SQL statement
+     * @return 插件执行结果 / Plugin execution result
+     */
+    private CommonResponse<Object> handleSourceEntity(SourceEntity entity, String content)
+    {
+        return pluginManager.getPlugin(entity.getType())
+                .map(plugin -> executeWithPlugin(entity, plugin, content))
+                .orElse(CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
+    }
+
+    /**
+     * 执行插件并获取响应
+     * Execute the plugin and get the RESPONSE
+     *
+     * @param entity {@link SourceEntity} 源实体配置 / Source entity configuration
+     * @param plugin {@link Plugin} 目标插件 / Target plugin
+     * @param content SQL语句 / SQL statement
+     * @return 插件执行结果 / Plugin execution result
+     */
+    private CommonResponse<Object> executeWithPlugin(SourceEntity entity, Plugin plugin, String content)
+    {
+        try {
+            PluginService service = plugin.getService(PluginService.class);
+            configureEntity(entity);
+
+            // 执行插件并获取响应
+            // Execute the plugin and get the response
+            Response response = executePlugin(service, entity, plugin, content);
+
+            if (response.getIsSuccessful()) {
+                return CommonResponse.success(response);
+            }
+            return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, response.getMessage());
+        }
+        catch (Exception e) {
+            log.error("Failed to execute plugin for entity: {}", entity.getId(), e);
+            return CommonResponse.failure(ServiceState.PLUGIN_EXECUTE_FAILED, "Plugin execution failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 设置用户自定义配置
+     * Set user-defined configuration
+     *
+     * @param entity {@link SourceEntity} 源实体配置 / Source entity configuration
+     */
+    private void configureEntity(SourceEntity entity)
+    {
+        if (entity.isUsedConfig()) {
+            entity.setUsername(entity.getUser().getUsername());
+            String configHome = getConfigHome();
+            entity.setHome(configHome);
+        }
+    }
+
+    /**
+     * 获取配置目录
+     * Get configuration directory
+     *
+     * @return 配置目录 / Configuration directory
+     */
+    private String getConfigHome()
+    {
+        String configHome = environment.getProperty("datacap.config.data");
+        if (StringUtils.isEmpty(configHome)) {
+            configHome = String.join(File.separator, System.getProperty("user.dir"), "config");
+        }
+        return configHome;
+    }
+
+    /**
+     * 向插件发布任务并执行操作
+     * Publish task to plugin and execute operation
+     *
+     * @param service {@link PluginService} 插件服务实例 / Plugin service instance
+     * @param entity {@link SourceEntity} 源实体配置 / Source entity configuration
+     * @param plugin {@link Plugin} 目标插件 / Target plugin
+     * @param content {@link String} 执行内容 / Execution content
+     * @return {@link Response} 插件执行结果 / Plugin execution result
+     */
+    private Response executePlugin(PluginService service, SourceEntity entity, Plugin plugin, String content)
+    {
+        Response response = service.execute(
+                entity.toConfigure(pluginManager, plugin),
+                content
+        );
+        response.setContent(content);
+        return response;
     }
 
     @Override

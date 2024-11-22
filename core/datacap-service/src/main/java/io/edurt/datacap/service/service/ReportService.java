@@ -11,5 +11,5 @@ public interface ReportService
 {
     CommonResponse<PageEntity<ReportEntity>> getAll(FilterBody filter);
 
-    CommonResponse<ReportEntity> saveOrUpdate(PagingAndSortingRepository repository, ReportEntity configure);
+    CommonResponse<ReportEntity> saveOrUpdate(PagingAndSortingRepository<ReportEntity, Long> repository, ReportEntity configure);
 }

@@ -7,6 +7,7 @@ import io.edurt.datacap.service.body.TableFilter;
 import io.edurt.datacap.service.entity.TableEntity;
 import io.edurt.datacap.service.repository.metadata.TableRepository;
 import io.edurt.datacap.service.service.TableService;
+import io.edurt.datacap.spi.model.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +58,7 @@ public class TableController
     }
 
     @PostMapping(value = "createTable/{id}")
-    public CommonResponse<Object> createTable(@PathVariable Long id, @RequestBody TableBody configure)
+    public CommonResponse<Response> createTable(@PathVariable Long id, @RequestBody TableBody configure)
     {
         return this.service.createTable(id, configure);
     }

@@ -75,6 +75,7 @@ public interface PluginService
     {
         Connection connection = local.get();
         Response response = new Response();
+        response.setContent(content);
         if (connection != null) {
             log.info("Execute [ {} ] plugin started", this.name());
             Adapter adapter;

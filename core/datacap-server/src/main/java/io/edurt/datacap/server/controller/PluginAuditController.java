@@ -4,6 +4,7 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.service.entity.PluginAuditEntity;
 import io.edurt.datacap.service.repository.PluginAuditRepository;
 import io.edurt.datacap.service.service.PluginAuditService;
+import io.edurt.datacap.spi.model.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ public class PluginAuditController
     }
 
     @GetMapping(value = "data/{code}")
-    public CommonResponse<Object> getData(@PathVariable String code)
+    public CommonResponse<Response> getData(@PathVariable String code)
     {
         return service.getData(code);
     }
