@@ -1,9 +1,14 @@
 package io.edurt.datacap.plugin.utils;
 
+import io.edurt.datacap.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -176,20 +181,91 @@ public class VersionUtils
                         .collect(Collectors.toList());
 
                 for (Path jarPath : jarFiles) {
-                    String version = readVersionFromJar(jarPath);
+                    String version = readVersionFromPluginJar(jarPath);
                     if (version != null) {
                         return version;
                     }
                 }
             }
             else if (pluginPath.toString().endsWith(".jar")) {
-                return readVersionFromJar(pluginPath);
+                return readVersionFromPluginJar(pluginPath);
             }
         }
         catch (IOException e) {
             log.debug("Failed to search for JAR files in {}", pluginPath, e);
         }
         return null;
+    }
+
+    /**
+     * Read version from a JAR file, but only if it contains a Plugin class
+     */
+    private static String readVersionFromPluginJar(Path jarPath)
+    {
+        try (JarFile jarFile = new JarFile(jarPath.toFile())) {
+            // 首先检查是否包含 Plugin 类的实现
+            // Check if the JAR contains a Plugin class
+            if (!containsPluginClass(jarFile)) {
+                return null;
+            }
+
+            // TODO: 如果是插件JAR，则从文件名中提取版本
+            // TODO: If the JAR is a plugin JAR, extract the version from the file name
+            String fileName = jarPath.getFileName().toString();
+
+            // 如果文件名中没有版本，尝试从 MANIFEST.MF 读取
+            // If the version is not in the file name, try to read it from the MANIFEST.MF
+            Manifest manifest = jarFile.getManifest();
+            if (manifest != null) {
+                String version = getVersionFromManifest(manifest);
+                if (version != null) {
+                    log.debug("Found version {} from plugin JAR manifest: {}", version, fileName);
+                    return version;
+                }
+            }
+        }
+        catch (IOException e) {
+            log.debug("Failed to read from JAR: {}", jarPath, e);
+        }
+        return null;
+    }
+
+    /**
+     * Check if JAR contains a Plugin class implementation
+     */
+    private static boolean containsPluginClass(JarFile jarFile)
+    {
+        try {
+            // 使用临时类加载器来加载和检查类
+            // Use a temporary class loader to load and check the class
+            try (URLClassLoader classLoader = new URLClassLoader(
+                    new URL[] {new File(jarFile.getName()).toURI().toURL()}, Plugin.class.getClassLoader())) {
+
+                return jarFile.stream()
+                        .filter(entry -> entry.getName().endsWith(".class"))
+                        .anyMatch(entry -> {
+                            String className = entry.getName()
+                                    .replace('/', '.')
+                                    .replace('\\', '.')
+                                    .replace(".class", "");
+                            try {
+                                Class<?> clazz = classLoader.loadClass(className);
+                                return Plugin.class.isAssignableFrom(clazz) &&
+                                        !Modifier.isAbstract(clazz.getModifiers()) &&
+                                        !clazz.equals(Plugin.class);
+                            }
+                            catch (ClassNotFoundException | NoClassDefFoundError e) {
+                                // 忽略加载失败的类
+                                // Ignore classes that fail to load
+                                return false;
+                            }
+                        });
+            }
+        }
+        catch (IOException e) {
+            log.debug("Failed to check for Plugin class in JAR: {}", jarFile.getName(), e);
+            return false;
+        }
     }
 
     /**

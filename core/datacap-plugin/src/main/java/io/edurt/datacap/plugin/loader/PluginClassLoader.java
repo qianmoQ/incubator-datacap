@@ -14,6 +14,8 @@ import java.net.URLClassLoader;
 public class PluginClassLoader
         extends URLClassLoader
 {
+    @Getter
+    private final String name;
 
     @Getter
     private final String pluginName;
@@ -26,6 +28,7 @@ public class PluginClassLoader
         super(urls, parent);
         this.pluginName = pluginName;
         this.pluginVersion = pluginVersion;
+        this.name = String.join("-", "loader", pluginName.toLowerCase(), pluginVersion.toLowerCase());
     }
 
     @Override

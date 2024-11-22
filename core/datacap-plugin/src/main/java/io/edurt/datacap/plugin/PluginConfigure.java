@@ -23,6 +23,10 @@ public class PluginConfigure
     // Auto cleanup, only effective when unloading
     public boolean autoCleanup;
 
+    // 同一目录下多个插件是否共享类加载器
+    // Whether multiple plugins in the same directory share the class loader
+    public boolean shareClassLoaderWhenSameDir;
+
     public static PluginConfigure defaultConfig()
     {
         return PluginConfigure.builder()

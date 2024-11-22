@@ -116,6 +116,10 @@
             <artifactId>datacap-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-convert-spi</artifactId>
+        </dependency>
         <!--        <dependency>-->
         <!--            <groupId>io.edurt.datacap</groupId>-->
         <!--            <artifactId>datacap-jdbc-clickhouse</artifactId>-->

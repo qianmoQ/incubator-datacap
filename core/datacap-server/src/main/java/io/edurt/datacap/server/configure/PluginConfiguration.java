@@ -33,7 +33,6 @@ public class PluginConfiguration
         Path projectRoot = PluginPathUtils.findProjectRoot();
         io.edurt.datacap.plugin.PluginConfigure config = io.edurt.datacap.plugin.PluginConfigure.builder()
                 .pluginsDir(PluginPathUtils.appendPath("plugins"))
-                .scanDepth(2)
                 .build();
 
         // 开发模式下生效

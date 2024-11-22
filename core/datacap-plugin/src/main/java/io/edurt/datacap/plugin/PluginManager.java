@@ -437,7 +437,7 @@ public class PluginManager
             else {
                 // 如果是目录则遍历加载
                 // Load plugins from directory
-                try (Stream<Path> paths = Files.walk(pluginsPath, config.getScanDepth())) {
+                try (Stream<Path> paths = Files.walk(pluginsPath, config.getScanDepth() == 0 ? 1 : config.getScanDepth())) {
                     paths.filter(Files::isDirectory)
                             .peek(path -> log.debug("Scanning plugin directory: {}", path))
                             .filter(path -> !path.equals(pluginsPath))
@@ -466,18 +466,47 @@ public class PluginManager
             String pluginVersion = VersionUtils.determinePluginVersion(pluginDir);
             log.debug("Found plugin version: {}", pluginVersion);
 
-            // 创建插件专用类加载器
-            // Create plugin-specific class loader
-            PluginClassLoader loader = PluginClassLoaderUtils.createClassLoader(
-                    pluginDir,
-                    pluginBaseName,
-                    pluginVersion
-            );
+            PluginClassLoader loader;
+            if (config.shareClassLoaderWhenSameDir) {
+                log.info("Use shared ClassLoader for plugin: {} at {}", pluginBaseName, pluginDir);
+                // 多个插件在同一目录下，使用同一个类加载器
+                // Multiple plugins in the same directory, use the same class loader
+                loader = pluginClassLoaders.computeIfAbsent(
+                        pluginDir.toString(),
+                        k -> {
+                            try {
+                                return PluginClassLoaderUtils.createClassLoader(pluginDir, pluginBaseName, pluginVersion);
+                            }
+                            catch (Exception e) {
+                                log.error("Failed to create ClassLoader for plugin: {} at {}", pluginBaseName, pluginDir, e);
+                                return null;
+                            }
+                        }
+                );
+            }
+            else {
+                log.info("Use independent ClassLoader for plugin: {} at {}", pluginBaseName, pluginDir);
+                // 创建插件专用类加载器
+                // Create plugin-specific class loader
+                loader = PluginClassLoaderUtils.createClassLoader(
+                        pluginDir,
+                        pluginBaseName,
+                        pluginVersion
+                );
+            }
+
+            if (loader == null) {
+                log.error("Failed to create ClassLoader for plugin: {} at {} skipped", pluginBaseName, pluginDir);
+                return;
+            }
 
             List<Plugin> modules = PluginContextManager.runWithClassLoader(loader, () -> PluginLoaderFactory.loadPlugins(pluginDir));
 
             for (Plugin module : modules) {
                 PluginContextManager.runWithClassLoader(loader, () -> {
+                    log.debug("Loader version: {}", loader.getPluginVersion());
+                    log.debug("Module loader version: {}", module.getPluginClassLoader().getPluginVersion());
+
                     // 为每个插件模块创建独立的注入器
                     // Create separate injector for each plugin module
                     Injector pluginInjector = Guice.createInjector(module);
@@ -486,7 +515,12 @@ public class PluginManager
                     String pluginName = module.getName();
                     // 保存类加载器信息
                     // Save class loader information
-                    pluginClassLoaders.put(pluginName, loader);
+                    if (config.shareClassLoaderWhenSameDir) {
+                        pluginClassLoaders.putIfAbsent(pluginName, loader);
+                    }
+                    else {
+                        pluginClassLoaders.put(pluginName, loader);
+                    }
 
                     PluginMetadata pluginMetadata = PluginMetadata.builder()
                             .name(pluginName)
@@ -510,8 +544,8 @@ public class PluginManager
 
                     plugins.put(pluginName, pluginMetadata);
 
-                    log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] loader [ {} ] from source [ {} ]",
-                            pluginName, module.getType().getName(), module.getVersion(), pluginMetadata.getLoaderName(), pluginDir);
+                    log.info("Install plugin: [ {} ] type [ {} ] version [ {} ] loader [ {} ] from source [ {} ] loader name [ {} ]",
+                            pluginName, module.getType().getName(), module.getVersion(), pluginMetadata.getLoaderName(), pluginDir, loader.getName());
 
                     return null;
                 });

@@ -25,6 +25,7 @@
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-convert-spi</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
