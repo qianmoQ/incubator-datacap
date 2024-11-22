@@ -427,6 +427,7 @@ public class PluginManager
             Path pluginsPath = config.getPluginsDir();
 
             if (Files.isRegularFile(pluginsPath)) {
+                log.debug("Loading plugin from file: {}", pluginsPath);
                 // 如果是文件直接加载
                 // Load plugin from file
                 loadPluginFromDirectory(pluginsPath);
@@ -455,10 +456,13 @@ public class PluginManager
             // 从目录名获取插件基本信息
             // Get plugin basic information from directory name
             String pluginBaseName = pluginDir.getFileName().toString();
+            log.debug("Found plugin directory: {}", pluginDir);
+            log.debug("Found plugin: {}", pluginBaseName);
 
             // 获取插件版本(可以从配置文件或清单文件中读取)
             // Get plugin version (can be read from config or manifest file)
             String pluginVersion = getPluginVersion(pluginDir);
+            log.debug("Found plugin version: {}", pluginVersion);
 
             // 创建插件专用类加载器
             // Create plugin-specific class loader

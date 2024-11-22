@@ -22,6 +22,7 @@ public class DataServiceTest
         Path projectRoot = PluginPathUtils.findProjectRoot();
         PluginConfigure config = PluginConfigure.builder()
                 .pluginsDir(projectRoot.resolve("test/datacap-test-plugin"))
+                .scanDepth(3)
                 .build();
 
         pluginManager = new PluginManager(config);

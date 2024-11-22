@@ -56,6 +56,10 @@ public class ServiceSpiLoader
             String servicePath = "META-INF/services/" + serviceType.getName();
             Enumeration<URL> resources = classLoader.getResources(servicePath);
 
+            // 添加一个 Set 来跟踪已处理的实现类
+            // Add a Set to track processed implementation classes
+            Set<String> processedImplementations = Sets.newHashSet();
+
             boolean found = false;
             while (resources.hasMoreElements()) {
                 found = true;
@@ -67,6 +71,15 @@ public class ServiceSpiLoader
                     while ((line = reader.readLine()) != null) {
                         if (!line.trim().isEmpty() && !line.startsWith("#")) {
                             line = line.trim();
+
+                            // 如果这个实现类已经处理过，跳过
+                            // Skip if this implementation class has already been processed
+                            if (processedImplementations.contains(line)) {
+                                log.debug("Skipping already processed implementation class: {}", line);
+                                continue;
+                            }
+                            processedImplementations.add(line);
+
                             log.debug("Service implementation defined in file: {}", line);
                             try {
                                 // 使用指定的类加载器加载实现类
@@ -81,10 +94,14 @@ public class ServiceSpiLoader
                                     // 添加直接绑定
                                     // Add direct binding
                                     if (serviceType.isAssignableFrom(serviceImpl)) {
-                                        if (!bindings.getBindings().containsKey(serviceType)) {
-                                            bindings.addBinding(serviceType, serviceImpl);
-                                            log.debug("Added direct binding: {} -> {}", serviceType.getName(), serviceImpl.getName());
-                                        }
+                                        // 导致无法进行多个实现类扫描
+                                        // Not causing multiple implementation scanning
+//                                        if (!bindings.getBindings().containsKey(serviceType)) {
+//                                            bindings.addBinding(serviceType, serviceImpl);
+//                                            log.debug("Added direct binding: {} -> {}", serviceType.getName(), serviceImpl.getName());
+//                                        }
+                                        bindings.addBinding(serviceType, serviceImpl);
+                                        log.debug("Added direct binding: {} -> {}", serviceType.getName(), serviceImpl.getName());
                                     }
 
                                     // 检查并添加接口绑定
@@ -93,10 +110,14 @@ public class ServiceSpiLoader
                                         if (serviceType.isAssignableFrom(iface)) {
                                             @SuppressWarnings("unchecked")
                                             Class<? extends Service> serviceInterface = (Class<? extends Service>) iface;
-                                            if (!bindings.getBindings().containsKey(serviceInterface)) {
-                                                bindings.addBinding(serviceInterface, serviceImpl);
-                                                log.debug("Added interface binding: {} -> {}", serviceInterface.getName(), serviceImpl.getName());
-                                            }
+                                            // 导致无法进行多个实现类扫描
+                                            // Not causing multiple implementation scanning
+//                                            if (!bindings.getBindings().containsKey(serviceInterface)) {
+//                                                bindings.addBinding(serviceInterface, serviceImpl);
+//                                                log.debug("Added interface binding: {} -> {}", serviceInterface.getName(), serviceImpl.getName());
+//                                            }
+                                            bindings.addBinding(serviceInterface, serviceImpl);
+                                            log.debug("Added interface binding: {} -> {}", serviceInterface.getName(), serviceImpl.getName());
                                         }
                                     }
                                 }
