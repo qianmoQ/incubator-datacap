@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 public class JdbcConnection
         extends io.edurt.datacap.spi.connection.Connection
 {
-    private JdbcConfigure configure;
-    private Response response;
-    private Connection connection;
+    private java.sql.Connection jdbcConnection;
 
     public JdbcConnection(JdbcConfigure configure, Response response)
     {
@@ -33,41 +31,42 @@ public class JdbcConnection
 
     protected String formatJdbcUrl()
     {
+        JdbcConfigure jdbcConfigure = getJdbcConfigure();
         StringBuilder buffer = new StringBuilder();
         buffer.append("jdbc:");
-        buffer.append(this.configure.getJdbcType());
-        if (configure.getJdbcType().equals("influxdb")) {
+        buffer.append(jdbcConfigure.getJdbcType());
+        if (jdbcConfigure.getJdbcType().equals("influxdb")) {
             buffer.append(":");
         }
         else {
             buffer.append("://");
         }
-        buffer.append(this.configure.getHost());
+        buffer.append(jdbcConfigure.getHost());
         buffer.append(":");
-        buffer.append(this.configure.getPort());
-        if (this.configure.getDatabase().isPresent()) {
-            if (configure.getJdbcType().equals("solr")) {
+        buffer.append(jdbcConfigure.getPort());
+        if (jdbcConfigure.getDatabase().isPresent()) {
+            if (jdbcConfigure.getJdbcType().equals("solr")) {
                 buffer.append("/?collection=");
             }
             else {
                 buffer.append("/");
             }
-            buffer.append(this.configure.getDatabase().get());
+            buffer.append(jdbcConfigure.getDatabase().get());
         }
-        if (this.configure.getSsl().isPresent()) {
-            buffer.append(String.format("?ssl=%s", this.configure.getSsl().get()));
+        if (jdbcConfigure.getSsl().isPresent()) {
+            buffer.append(String.format("?ssl=%s", jdbcConfigure.getSsl().get()));
         }
-        if (this.configure.getEnv().isPresent()) {
-            Map<String, Object> env = this.configure.getEnv().get();
+        if (jdbcConfigure.getEnv().isPresent()) {
+            Map<String, Object> env = jdbcConfigure.getEnv().get();
             List<String> flatEnv = env.entrySet()
                     .stream()
                     .map(value -> String.format("%s=%s", value.getKey(), value.getValue()))
                     .collect(Collectors.toList());
-            if (this.configure.getSsl().isEmpty()) {
+            if (jdbcConfigure.getSsl().isEmpty()) {
                 buffer.append("?");
             }
             else {
-                if (this.configure.getIsAppendChar()) {
+                if (jdbcConfigure.getIsAppendChar()) {
                     buffer.append("&");
                 }
             }
@@ -76,35 +75,40 @@ public class JdbcConnection
         return buffer.toString();
     }
 
-    protected Connection openConnection()
+    protected JdbcConfigure getJdbcConfigure()
     {
-        Preconditions.checkNotNull(configure.getPlugin(), "Plugin cannot be null");
+        return (JdbcConfigure) this.configure;
+    }
+
+    protected java.sql.Connection openConnection()
+    {
+        JdbcConfigure jdbcConfigure = getJdbcConfigure();
+        Preconditions.checkNotNull(jdbcConfigure.getPlugin(), "Plugin cannot be null");
 
         try {
-            this.configure = (JdbcConfigure) getConfigure();
-            this.response = getResponse();
-
-            // Manually loading and registering the driver
-            PluginClassLoader pluginClassLoader = configure.getPlugin().getPluginClassLoader();
+            PluginClassLoader pluginClassLoader = jdbcConfigure.getPlugin().getPluginClassLoader();
             PluginContextManager.runWithClassLoader(pluginClassLoader, () -> {
-                Class<?> driverClass = Class.forName(this.configure.getJdbcDriver(), true, pluginClassLoader);
+                Class<?> driverClass = Class.forName(jdbcConfigure.getJdbcDriver(), true, pluginClassLoader);
                 Driver driver = (Driver) driverClass.getDeclaredConstructor().newInstance();
                 DriverManager.registerDriver(new DriverShim(driver));
 
                 String url = formatJdbcUrl();
-                log.info("Connection driver {}", this.configure.getJdbcDriver());
+                log.info("Connection driver {}", jdbcConfigure.getJdbcDriver());
                 log.info("Connection url {}", url);
-                if (this.configure.getUsername().isPresent() && this.configure.getPassword().isPresent()) {
-                    log.info("Connection username with {} password with {}", this.configure.getUsername().get(), "***");
-                    this.connection = DriverManager.getConnection(url, this.configure.getUsername().get(), this.configure.getPassword().get());
+                if (jdbcConfigure.getUsername().isPresent() && jdbcConfigure.getPassword().isPresent()) {
+                    log.info("Connection username with {} password with {}",
+                            jdbcConfigure.getUsername().get(), "***");
+                    this.jdbcConnection = DriverManager.getConnection(url,
+                            jdbcConfigure.getUsername().get(),
+                            jdbcConfigure.getPassword().get());
                 }
                 else {
                     log.info("Connection username and password not present");
                     Properties properties = new Properties();
-                    if (configure.getUsername().isPresent()) {
-                        properties.put("user", configure.getUsername().get());
+                    if (jdbcConfigure.getUsername().isPresent()) {
+                        properties.put("user", jdbcConfigure.getUsername().get());
                     }
-                    this.connection = DriverManager.getConnection(url, properties);
+                    this.jdbcConnection = DriverManager.getConnection(url, properties);
                 }
                 response.setIsConnected(Boolean.TRUE);
 
@@ -116,14 +120,14 @@ public class JdbcConnection
             response.setIsConnected(Boolean.FALSE);
             response.setMessage(ex.getMessage());
         }
-        return this.connection;
+        return this.jdbcConnection;
     }
 
     public void destroy()
     {
-        if (ObjectUtils.isNotEmpty(this.connection)) {
+        if (ObjectUtils.isNotEmpty(this.jdbcConnection)) {
             try {
-                this.connection.close();
+                this.jdbcConnection.close();
             }
             catch (SQLException ex) {
                 log.error("Connection close failed ", ex);

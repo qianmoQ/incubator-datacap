@@ -10,9 +10,9 @@ import java.util.Date;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public abstract class Connection
 {
-    private final Configure configure;
-    private final Response response;
-    private Object connection;
+    protected final Configure configure;
+    protected final Response response;
+    protected Object connection;
 
     public Connection(Configure configure, Response response)
     {
