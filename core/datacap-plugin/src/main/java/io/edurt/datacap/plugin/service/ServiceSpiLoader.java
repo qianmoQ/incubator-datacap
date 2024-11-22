@@ -2,6 +2,8 @@ package io.edurt.datacap.plugin.service;
 
 import com.google.common.collect.Sets;
 import io.edurt.datacap.plugin.Service;
+import io.edurt.datacap.plugin.annotation.InjectService;
+import io.edurt.datacap.plugin.scanner.ServiceAnnotationScanner;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;

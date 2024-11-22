@@ -7,24 +7,22 @@ import io.edurt.datacap.common.utils.DateUtils;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
+import io.edurt.datacap.plugin.utils.VersionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -53,6 +51,10 @@ public class PluginManager
     // 临时目录前缀
     // Temporary directory prefix
     private static final String TEMP_DIR_PREFIX = "plugin_install_";
+
+    // 默认版本
+    // Default version
+    private static final String DEFAULT_VERSION = "1.0.0";
 
     public PluginManager(PluginConfigure config)
     {
@@ -461,7 +463,7 @@ public class PluginManager
 
             // 获取插件版本(可以从配置文件或清单文件中读取)
             // Get plugin version (can be read from config or manifest file)
-            String pluginVersion = getPluginVersion(pluginDir);
+            String pluginVersion = VersionUtils.determinePluginVersion(pluginDir);
             log.debug("Found plugin version: {}", pluginVersion);
 
             // 创建插件专用类加载器
@@ -488,10 +490,10 @@ public class PluginManager
 
                     PluginMetadata pluginMetadata = PluginMetadata.builder()
                             .name(pluginName)
-                            .version(module.getVersion())
+                            .version(Objects.equals(module.getVersion(), DEFAULT_VERSION) ? module.getPluginClassLoader().getPluginVersion() : module.getVersion())
                             .location(pluginDir)
                             .state(PluginState.CREATED)
-                            .classLoader(loader)
+                            .classLoader(module.getPluginClassLoader() == null ? loader : module.getPluginClassLoader())
                             .loaderName(module.getClassLoader())
                             .instance(module)
                             .type(module.getType())
@@ -518,79 +520,6 @@ public class PluginManager
         catch (Exception e) {
             log.error("Failed to load plugin from directory: {}", pluginDir, e);
         }
-    }
-
-    // 获取插件版本
-    // Get plugin version
-    private String getPluginVersion(Path pluginDir)
-    {
-        // 这里可以实现从配置文件或清单文件中读取版本号的逻辑
-        // Here you can implement logic to read version number from config or manifest file
-        try {
-            // 优先从 plugin.properties 读取
-            // Read from plugin.properties first
-            Path propertiesFile = pluginDir.resolve("plugin.properties");
-            if (Files.exists(propertiesFile)) {
-                // 读取属性文件实现
-                // Implement properties file reading
-                return readVersionFromProperties(propertiesFile);
-            }
-
-            // 其次从 MANIFEST.MF 读取
-            // Then read from MANIFEST.MF
-            Path manifestFile = pluginDir.resolve("META-INF/MANIFEST.MF");
-            if (Files.exists(manifestFile)) {
-                return readVersionFromManifest(manifestFile);
-            }
-
-            // 最后从 pom.xml 读取
-            // Finally read from pom.xml
-            Path pomFile = pluginDir.resolve("pom.xml");
-            if (Files.exists(pomFile)) {
-                return readVersionFromPom(pomFile);
-            }
-        }
-        catch (Exception e) {
-            log.warn("Failed to read plugin version from: {}", pluginDir, e);
-        }
-
-        // 如果都读取失败，返回默认版本
-        // Return default version if all reads fail
-        return "1.0.0";
-    }
-
-    private String readVersionFromProperties(Path propertiesFile)
-    {
-        // TODO: 实现从 properties 文件读取版本号
-        // Implement reading version from properties file
-        return "1.0.0";
-    }
-
-    private String readVersionFromManifest(Path manifestFile)
-            throws IOException
-    {
-        // TODO: 实现从 MANIFEST.MF 读取版本号
-        // Implement reading version from MANIFEST.MF
-        ClassLoader loader = getClass().getClassLoader();
-
-        Enumeration<URL> resources = loader.getResources("META-INF/MANIFEST.MF");
-        while (resources.hasMoreElements()) {
-            try (InputStream is = resources.nextElement().openStream()) {
-                Manifest manifest = new Manifest(is);
-                String version = manifest.getMainAttributes().getValue("Implementation-Version");
-                if (version != null) {
-                    return version;
-                }
-            }
-        }
-        return "1.0.0";
-    }
-
-    private String readVersionFromPom(Path pomFile)
-    {
-        // TODO: 实现从 pom.xml 读取版本号
-        // Implement reading version from pom.xml
-        return "1.0.0";
     }
 
     // 关闭插件类加载器

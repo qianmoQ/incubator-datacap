@@ -177,7 +177,7 @@ public abstract class Plugin
 
             // 同时使用SPI和注解两种方式加载服务
             // Load services using both SPI and annotation methods
-            ServiceBindings bindings = null;
+            ServiceBindings bindings;
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             if (pluginClassLoader != null) {
                 bindings = ServiceSpiLoader.loadServices(serviceType, basePackage, pluginClassLoader);

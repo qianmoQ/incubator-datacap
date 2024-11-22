@@ -1,4 +1,4 @@
-package io.edurt.datacap.plugin.service;
+package io.edurt.datacap.plugin.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -1,6 +1,6 @@
 package io.edurt.datacap.test;
 
-import io.edurt.datacap.plugin.service.InjectService;
+import io.edurt.datacap.plugin.annotation.InjectService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

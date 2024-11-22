@@ -6,7 +6,8 @@ public enum SpiType
     DIRECTORY("Directory"),
     POM("Pom"),
     PROPERTIES("Properties"),
-    SPI("Spi");
+    SPI("Spi"),
+    INJECT("Inject");
 
     private String name;
 
