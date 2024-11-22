@@ -102,6 +102,7 @@
         <module>convert/datacap-convert-csv</module>
         <module>convert/datacap-convert-xml</module>
         <module>test/datacap-test-plugin</module>
+        <module>test/datacap-test-convert</module>
     </modules>
 
     <name>datacap</name>
@@ -650,6 +651,7 @@
                 </configuration>
             </plugin>
         </plugins>
+
         <pluginManagement>
             <plugins>
                 <!-- Fixed Missing: no javadoc jar found in folder -->

@@ -150,7 +150,7 @@ public class SourceEntity
 
     public Configure toConfigure(PluginManager pluginManager, Plugin plugin)
     {
-        return toConfigure("JsonConvert", pluginManager, null);
+        return toConfigure("JsonConvert", pluginManager, plugin);
     }
 
     /**

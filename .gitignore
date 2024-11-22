@@ -76,3 +76,6 @@ core/datacap-ui/yarn.lock
 
 # Qshell #
 .qshell/*
+
+# Test #
+test/datacap-test-convert/*convertservice
