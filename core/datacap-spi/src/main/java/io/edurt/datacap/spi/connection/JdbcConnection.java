@@ -1,6 +1,5 @@
 package io.edurt.datacap.spi.connection;
 
-import com.google.common.base.Preconditions;
 import io.edurt.datacap.plugin.PluginContextManager;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.spi.model.Response;
@@ -83,7 +82,6 @@ public class JdbcConnection
     protected java.sql.Connection openConnection()
     {
         JdbcConfigure jdbcConfigure = getJdbcConfigure();
-        Preconditions.checkNotNull(jdbcConfigure.getPlugin(), "Plugin cannot be null");
 
         try {
             PluginClassLoader pluginClassLoader = jdbcConfigure.getPlugin().getPluginClassLoader();
@@ -140,7 +138,10 @@ public class JdbcConnection
     {
         private final Driver driver;
 
-        DriverShim(Driver d) {this.driver = d;}
+        DriverShim(Driver d)
+        {
+            this.driver = d;
+        }
 
         public Connection connect(String url, Properties info)
                 throws SQLException
@@ -160,11 +161,20 @@ public class JdbcConnection
             return driver.getPropertyInfo(url, info);
         }
 
-        public int getMajorVersion() {return driver.getMajorVersion();}
+        public int getMajorVersion()
+        {
+            return driver.getMajorVersion();
+        }
 
-        public int getMinorVersion() {return driver.getMinorVersion();}
+        public int getMinorVersion()
+        {
+            return driver.getMinorVersion();
+        }
 
-        public boolean jdbcCompliant() {return driver.jdbcCompliant();}
+        public boolean jdbcCompliant()
+        {
+            return driver.jdbcCompliant();
+        }
 
         @Override
         public Logger getParentLogger()

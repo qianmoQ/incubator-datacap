@@ -1,61 +1,47 @@
 package io.edurt.datacap.server.controller;
 
-import com.google.common.collect.Maps;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import io.edurt.datacap.common.response.CommonResponse;
-import io.edurt.datacap.executor.ExecutorService;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.PluginMetadata;
-import io.edurt.datacap.scheduler.SchedulerService;
+import lombok.Data;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/plugin")
 public class PluginController
 {
     private final PluginManager pluginManager;
-    private final Injector injector;
 
-    public PluginController(PluginManager pluginManager, Injector injector)
+    public PluginController(PluginManager pluginManager)
     {
         this.pluginManager = pluginManager;
-        this.injector = injector;
     }
 
     @GetMapping
-    public CommonResponse<Map<String, Set<String>>> getPlugins()
-    {
-        Map<String, Set<String>> plugins = Maps.newHashMap();
-        Set<String> executors = injector.getInstance(Key.get(new TypeLiteral<Set<ExecutorService>>() {}))
-                .stream()
-                .map(ExecutorService::name)
-                .collect(Collectors.toSet());
-        plugins.put("executor", executors);
-
-        Set<String> schedulers = injector.getInstance(Key.get(new TypeLiteral<Set<SchedulerService>>() {}))
-                .stream()
-                .map(SchedulerService::name)
-                .collect(Collectors.toSet());
-        plugins.put("scheduler", schedulers);
-        return CommonResponse.success(plugins);
-    }
-
-    @GetMapping(value = {"filter"})
-    public CommonResponse<List<PluginMetadata>> getPluginByType(@RequestParam String type)
+    public CommonResponse<List<PluginMetadata>> getPlugins()
     {
         return CommonResponse.success(pluginManager.getPluginInfos());
     }
 
-//    @PostMapping(value = "install")
+    @PostMapping(value = "install")
+    public CommonResponse<Boolean> installPlugin(@RequestBody PluginInstallRequest request)
+    {
+        return CommonResponse.success(pluginManager.installPlugin(Path.of(request.url), request.name));
+    }
+
+    @Data
+    public static class PluginInstallRequest
+    {
+        private String url;
+        // 插件名称，默认作为插件的安装目录
+        // Plugin name, default as the installation directory
+        private String name;
+    }
 }

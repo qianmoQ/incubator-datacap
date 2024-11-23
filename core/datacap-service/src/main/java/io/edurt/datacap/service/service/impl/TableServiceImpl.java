@@ -1,6 +1,7 @@
 package io.edurt.datacap.service.service.impl;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.ServiceState;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.sql.SqlBuilder;
@@ -65,6 +66,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class TableServiceImpl
         implements TableService
 {

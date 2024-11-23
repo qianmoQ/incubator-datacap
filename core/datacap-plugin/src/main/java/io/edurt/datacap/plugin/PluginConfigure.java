@@ -2,6 +2,7 @@ package io.edurt.datacap.plugin;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,6 +11,7 @@ import java.nio.file.Paths;
 @Builder
 public class PluginConfigure
 {
+    @Setter
     private Path pluginsDir;
     private boolean autoReload;
     private long scanInterval;

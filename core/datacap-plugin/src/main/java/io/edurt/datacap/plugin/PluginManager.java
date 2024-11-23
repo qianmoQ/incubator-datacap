@@ -7,6 +7,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.utils.DateUtils;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
+import io.edurt.datacap.plugin.loader.TarPluginLoader;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import io.edurt.datacap.plugin.utils.VersionUtils;
 import lombok.Getter;
@@ -33,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 @Slf4j
-@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "EI_EXPOSE_REP2"})
 public class PluginManager
 {
     // 插件配置
@@ -140,11 +141,13 @@ public class PluginManager
             throw new IllegalArgumentException("Source path and target directory cannot be null or empty");
         }
 
-        // 验证源路径是否存在
-        // Verify source path exists
-        if (!Files.exists(sourcePath)) {
-            log.error("Source plugin path does not exist: {}", sourcePath);
-            return false;
+        // 对于本地文件才验证存在性
+        // Only verify existence for local files
+        if (!sourcePath.toString().startsWith("http") && !sourcePath.toString().startsWith("https")) {
+            if (!Files.exists(sourcePath)) {
+                log.error("Source plugin path does not exist: {}", sourcePath);
+                return false;
+            }
         }
 
         // 验证目标目录名称合法性
@@ -217,6 +220,15 @@ public class PluginManager
         // 检测并处理插件类型
         // Detect and handle plugin type
         try {
+            // 检测并处理插件类型
+            // Detect and handle plugin type
+            if ("tar".equals(extension)
+                    || "tar.gz".equals(extension)
+                    || "tgz".equals(extension)
+                    || "gz".equals(extension)
+            ) {
+                installed.set(installTarPlugin(sourcePath, tempDir));
+            }
             // Properties 插件
             // Properties plugin
             if ("properties".equals(extension)) {
@@ -266,7 +278,7 @@ public class PluginManager
             throws IOException
     {
         if (Files.exists(pluginPath)) {
-            String timestamp = DateUtils.formatYMDHMSWithInterval();
+            String timestamp = DateUtils.formatYMDHMS();
             Path backupPath = pluginPath.getParent().resolve(pluginPath.getFileName() + ".backup." + timestamp);
 
             try {
@@ -439,6 +451,50 @@ public class PluginManager
     {
         copyDirectory(sourcePath, targetPath);
         return true;
+    }
+
+    // 安装 Tar 类型插件
+    // Install Tar type plugin
+    private boolean installTarPlugin(Path sourcePath, Path tempDir)
+            throws IOException
+    {
+        // 直接使用 TarPluginLoader 处理
+        // Directly use TarPluginLoader to handle
+        TarPluginLoader tarPluginLoader = new TarPluginLoader();
+        // 先加载插件到临时目录
+        // Load plugins to temporary directory
+        List<Plugin> plugins = tarPluginLoader.load(sourcePath, tempDir);
+        if (!plugins.isEmpty()) {
+            // 查找解压后的子目录
+            // Find extracted subdirectory
+            try (Stream<Path> paths = Files.list(tempDir)) {
+                Optional<Path> subDir = paths
+                        .filter(Files::isDirectory)
+                        .findFirst();
+
+                if (subDir.isPresent()) {
+                    // 如果存在子目录，将其内容移动到临时目录根目录
+                    // If subdirectory exists, move its contents to temp directory root
+                    Path source = subDir.get();
+                    try (Stream<Path> files = Files.list(source)) {
+                        files.forEach(file -> {
+                            try {
+                                Path target = tempDir.resolve(file.getFileName());
+                                Files.move(file, target);
+                            }
+                            catch (IOException e) {
+                                log.error("Failed to move file: {} to {}", file, tempDir, e);
+                            }
+                        });
+                    }
+                    // 删除空的子目录
+                    // Delete empty subdirectory
+                    Files.delete(source);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     // 复制目录

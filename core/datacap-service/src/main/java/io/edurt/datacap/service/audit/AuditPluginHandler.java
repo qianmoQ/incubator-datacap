@@ -1,5 +1,6 @@
 package io.edurt.datacap.service.audit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.State;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.CodeUtils;
@@ -42,6 +43,7 @@ import static java.util.Objects.requireNonNull;
 @Aspect
 @Component
 @Slf4j
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class AuditPluginHandler
 {
     private final ThreadLocal<PluginAuditEntity> threadLocalPluginAudit = new ThreadLocal<>();

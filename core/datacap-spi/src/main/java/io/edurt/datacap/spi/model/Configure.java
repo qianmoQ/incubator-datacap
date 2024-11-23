@@ -18,7 +18,8 @@ import java.util.Optional;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", "CT_CONSTRUCTOR_THROW",
+        "NP_NONNULL_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"})
 public class Configure
 {
     @NonNull

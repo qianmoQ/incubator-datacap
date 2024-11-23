@@ -75,6 +75,22 @@ public class TarPluginLoader
     @Override
     public List<Plugin> load(Path path)
     {
+        return load(path, null);
+    }
+
+    /**
+     * 加载插件到指定目录
+     * Load plugins to specified directory
+     *
+     * @param path 插件路径或 URL
+     * Plugin path or URL
+     * @param targetDir 目标解压目录，如果为null则使用临时目录
+     * Target extraction directory, use temporary directory if null
+     * @return 加载的插件列表
+     * List of loaded plugins
+     */
+    public List<Plugin> load(Path path, Path targetDir)
+    {
         try {
             // 如果是 URL 路径，先下载到本地
             // If it's a URL path, download it first
@@ -82,9 +98,9 @@ public class TarPluginLoader
                 path = downloadTarFile(path.toString().replace(":/", "://"));
             }
 
-            // 创建临时解压目录
-            // Create temporary directory for extraction
-            Path extractDir = createTempDirectory();
+            // 使用指定的目录或创建临时目录
+            // Use specified directory or create temporary directory
+            Path extractDir = targetDir != null ? targetDir : createTempDirectory();
 
             // 解压 tar 文件
             // Extract tar file
@@ -94,9 +110,11 @@ public class TarPluginLoader
             // Load plugins from extracted directory
             List<Plugin> plugins = loadPluginsFromDirectory(extractDir);
 
-            // 清理临时目录
-            // Cleanup temporary directory
-            cleanupTempDirectory(extractDir);
+            // 如果使用的是临时目录，则清理
+            // Clean up if using temporary directory
+            if (targetDir == null) {
+                cleanupTempDirectory(extractDir);
+            }
 
             return plugins;
         }

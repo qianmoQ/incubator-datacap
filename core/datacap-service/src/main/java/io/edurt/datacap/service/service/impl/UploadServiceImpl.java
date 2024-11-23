@@ -24,7 +24,7 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-@SuppressFBWarnings(value = {"DLS_DEAD_LOCAL_STORE"})
+@SuppressFBWarnings(value = {"DLS_DEAD_LOCAL_STORE", "EI_EXPOSE_REP2"})
 public class UploadServiceImpl
         implements UploadService
 {

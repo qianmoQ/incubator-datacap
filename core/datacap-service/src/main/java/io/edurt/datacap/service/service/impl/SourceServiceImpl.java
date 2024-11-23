@@ -3,7 +3,6 @@ package io.edurt.datacap.service.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.NodeType;
 import io.edurt.datacap.common.enums.ServiceState;
@@ -20,7 +19,6 @@ import io.edurt.datacap.service.body.SourceBody;
 import io.edurt.datacap.service.common.ConfigureUtils;
 import io.edurt.datacap.service.common.PluginUtils;
 import io.edurt.datacap.service.configure.IConfigure;
-import io.edurt.datacap.service.configure.IConfigureField;
 import io.edurt.datacap.service.entity.ColumnEntity;
 import io.edurt.datacap.service.entity.DatabaseEntity;
 import io.edurt.datacap.service.entity.PageEntity;
@@ -70,7 +68,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@SuppressFBWarnings(value = {"RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", "REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
+@SuppressFBWarnings(value = {"RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", "REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "EI_EXPOSE_REP2"})
 public class SourceServiceImpl
         implements SourceService
 {

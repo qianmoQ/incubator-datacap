@@ -40,23 +40,23 @@ public class ScheduleRunnerConfigure
     @Override
     public void run(String... args)
     {
-//        this.scheduledRepository.findAllByActiveIsTrueAndIsSystemIsTrue()
-//                .forEach(task -> {
-//                    log.info("Add new task [ {} ] to scheduler", task.getName());
-//                    switch (task.getType()) {
-//                        case SOURCE_SYNCHRONIZE:
-//                            SyncMetadataScheduledRunnable syncMetadataScheduledRunnable = new SyncMetadataScheduledRunnable(task.getName(), injector, sourceRepository, sourceService);
-//                            this.scheduledCronRegistrar.addCronTask(syncMetadataScheduledRunnable, task.getExpression());
-//                            executorService.submit(syncMetadataScheduledRunnable);
-//                            break;
-//                        case SOURCE_CHECK:
-//                            CheckScheduledRunnable checkScheduledRunnable = new CheckScheduledRunnable(task.getName(), this.injector, this.sourceRepository);
-//                            this.scheduledCronRegistrar.addCronTask(checkScheduledRunnable, task.getExpression());
-//                            executorService.submit(checkScheduledRunnable);
-//                            break;
-//                        default:
-//                            log.warn("Unsupported task type [ {} ]", task.getType());
-//                    }
-//                });
+        this.scheduledRepository.findAllByActiveIsTrueAndIsSystemIsTrue()
+                .forEach(task -> {
+                    log.info("Add new task [ {} ] to scheduler", task.getName());
+                    switch (task.getType()) {
+                        case SOURCE_SYNCHRONIZE:
+                            SyncMetadataScheduledRunnable syncMetadataScheduledRunnable = new SyncMetadataScheduledRunnable(task.getName(), injector, sourceRepository, sourceService);
+                            this.scheduledCronRegistrar.addCronTask(syncMetadataScheduledRunnable, task.getExpression());
+                            executorService.submit(syncMetadataScheduledRunnable);
+                            break;
+                        case SOURCE_CHECK:
+                            CheckScheduledRunnable checkScheduledRunnable = new CheckScheduledRunnable(task.getName(), this.injector, this.sourceRepository);
+                            this.scheduledCronRegistrar.addCronTask(checkScheduledRunnable, task.getExpression());
+                            executorService.submit(checkScheduledRunnable);
+                            break;
+                        default:
+                            log.warn("Unsupported task type [ {} ]", task.getType());
+                    }
+                });
     }
 }

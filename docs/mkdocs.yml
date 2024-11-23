@@ -131,6 +131,7 @@ plugins:
             NavDeploy: 安装部署
             ApiHome: 开放 API
             ApiUser: 用户 API
+            ApiPlugin: 插件 API
         - locale: en
           name: English
           build: true
@@ -152,6 +153,7 @@ plugins:
             NavDeploy: Install Deploy
             ApiHome: Open API
             ApiUser: User API
+            ApiPlugin: Plugin API
   - search
   - git-revision-date-localized:
       enable_creation_date: true
@@ -284,5 +286,8 @@ nav:
       - ApiUser:
         - api/user/register.md
         - api/user/login.md
+      - ApiPlugin:
+        - api/plugin/plugin.md
+        - api/plugin/install.md
   - useCases.md
   - partners.md

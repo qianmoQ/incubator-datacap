@@ -172,7 +172,7 @@ const loadMetadata = async () => {
     const data = await response.json()
     metadata.value = data
 
-    const installResponse = await PluginService.filterByType('plugin')
+    const installResponse = await PluginService.getPlugins()
     if (!installResponse.status) {
       // @ts-ignore
       proxy?.$Message.error({ content: response.message, showIcon: true })

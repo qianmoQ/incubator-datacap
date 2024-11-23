@@ -9,11 +9,6 @@ class PluginService
     {
         return new HttpUtils().get(`${ DEFAULT_PATH }`)
     }
-
-    filterByType(type: string): Promise<ResponseModel>
-    {
-        return new HttpUtils().get(`${ DEFAULT_PATH }/filter`, { type })
-    }
 }
 
 export default new PluginService()

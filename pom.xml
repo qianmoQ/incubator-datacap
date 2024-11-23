@@ -104,6 +104,7 @@
         <module>test/datacap-test-plugin</module>
         <module>test/datacap-test-convert</module>
         <module>test/datacap-test-core</module>
+        <module>test/datacap-test-lib</module>
     </modules>
 
     <name>datacap</name>

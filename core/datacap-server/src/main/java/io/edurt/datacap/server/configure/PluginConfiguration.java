@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import io.edurt.datacap.common.utils.EnvironmentUtils;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
-import io.edurt.datacap.spi.PluginLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,10 +36,10 @@ public class PluginConfiguration
 
         // 开发模式下生效
         // In development mode, it is effective
-        if (EnvironmentUtils.isIdeEnvironment()) {
-            log.info("Development mode is development mode");
-            config.setPluginsDir(projectRoot.resolve(Path.of(String.join("/", root, "plugins.properties"))));
-        }
+//        if (EnvironmentUtils.isIdeEnvironment()) {
+//            log.info("Development mode is development mode");
+//            config.setPluginsDir(projectRoot.resolve(Path.of(String.join("/", root, "plugins.properties"))));
+//        }
 
         log.info("Plugins directory: {}", config.getPluginsDir());
         PluginManager pluginManager = new PluginManager(config);
@@ -52,6 +51,6 @@ public class PluginConfiguration
     @Bean
     public Injector injector()
     {
-        return Guice.createInjector(new PluginLoader());
+        return Guice.createInjector();
     }
 }

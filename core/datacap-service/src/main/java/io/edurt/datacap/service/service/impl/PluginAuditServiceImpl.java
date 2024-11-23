@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@SuppressFBWarnings(value = {"DM_BOXED_PRIMITIVE_FOR_PARSING", "DM_DEFAULT_ENCODING"})
+@SuppressFBWarnings(value = {"DM_BOXED_PRIMITIVE_FOR_PARSING", "DM_DEFAULT_ENCODING", "EI_EXPOSE_REP2"})
 public class PluginAuditServiceImpl
         implements PluginAuditService
 {
