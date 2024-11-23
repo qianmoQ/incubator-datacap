@@ -23,11 +23,14 @@ public class PluginClassLoader
     @Getter
     private final String pluginVersion;
 
-    public PluginClassLoader(URL[] urls, ClassLoader parent, String pluginName, String pluginVersion)
+    private final boolean parentFirst;
+
+    public PluginClassLoader(URL[] urls, ClassLoader parent, String pluginName, String pluginVersion, boolean parentFirst)
     {
         super(urls, parent);
         this.pluginName = pluginName;
         this.pluginVersion = pluginVersion;
+        this.parentFirst = parentFirst;
         this.name = String.join("-", "loader", pluginName.toLowerCase(), pluginVersion.toLowerCase());
     }
 
@@ -53,7 +56,10 @@ public class PluginClassLoader
                 if (name.startsWith("java.") ||
                         name.startsWith("javax.") ||
                         name.startsWith("com.google.") ||
-                        name.startsWith("org.")) {
+                        name.startsWith("org.") ||
+                        // 添加 Plugin 相关的包到父优先加载列表
+                        // Add Plugin related packages to parent-first list
+                        (parentFirst && name.startsWith("io.edurt.datacap.plugin"))) {
                     return super.loadClass(name, resolve);
                 }
 

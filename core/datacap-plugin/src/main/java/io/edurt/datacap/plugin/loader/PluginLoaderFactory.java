@@ -24,6 +24,7 @@ public class PluginLoaderFactory
         registerLoader(new DirectoryPluginLoader());
         registerLoader(new PomPluginLoader());
         registerLoader(new SpiPluginLoader());
+        registerLoader(new TarPluginLoader());
     }
 
     /**
@@ -48,6 +49,18 @@ public class PluginLoaderFactory
         else {
             log.info("Registered plugin loader [ {} ] for type [ {} ]", loader.getClass().getName(), type);
         }
+    }
+
+    /**
+     * 移除插件加载器
+     * Remove a plugin loader by type
+     *
+     * @param type 要移除的加载器类型
+     * the type of the loader to remove
+     */
+    public static void unregisterLoader(String type)
+    {
+        loaderRegistry.remove(type);
     }
 
     /**

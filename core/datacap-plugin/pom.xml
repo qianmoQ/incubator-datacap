@@ -13,6 +13,11 @@
     <artifactId>datacap-plugin</artifactId>
     <description>DataCap - Plugin Core</description>
 
+    <properties>
+        <common-compress.version>1.26.0</common-compress.version>
+        <httpclient.version>4.5.14</httpclient.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,6 +39,16 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
             <version>${datacap.maven.model.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${common-compress.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
         </dependency>
     </dependencies>
 

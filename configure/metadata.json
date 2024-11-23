@@ -43,7 +43,7 @@
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/csv.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
@@ -73,7 +73,7 @@
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://www.vectorlogo.zone/logos/json/json-icon.svg",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/json.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
@@ -88,7 +88,7 @@
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://www.vectorlogo.zone/logos/w3c_xml/w3c_xml-icon.svg",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/xml.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
@@ -103,7 +103,7 @@
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/none.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"

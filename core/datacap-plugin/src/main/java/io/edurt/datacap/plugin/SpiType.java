@@ -7,7 +7,8 @@ public enum SpiType
     POM("Pom"),
     PROPERTIES("Properties"),
     SPI("Spi"),
-    INJECT("Inject");
+    INJECT("Inject"),
+    TAR("Tar");
 
     private String name;
 

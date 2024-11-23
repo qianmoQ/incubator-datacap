@@ -32,7 +32,7 @@ for file in "$HOME/dist"/*bin.tar.gz; do
   if [ -e "$file" ]; then
     filename=$(basename "$file")
     echo "Uploading binary: $filename"
-    qshell fput --overwrite "$BUCKET_NAME" "$DATACAP_HOME/$VERSION/$filename" "$file"
+    qshell fput --overwrite "$BUCKET_NAME" "$DATACAP_HOME/versions/$VERSION/$filename" "$file"
   fi
 done
 
