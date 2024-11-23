@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.SpiType;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class DirectoryPluginLoader
         implements PluginLoader
 {

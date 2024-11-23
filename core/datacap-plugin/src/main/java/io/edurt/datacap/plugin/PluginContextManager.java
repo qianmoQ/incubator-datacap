@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class PluginContextManager
 {
+    private PluginContextManager() {}
 
     // 使用WeakHashMap避免内存泄漏
     // Use WeakHashMap to avoid memory leaks

@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Set;
@@ -17,6 +18,8 @@ import java.util.Set;
 @Slf4j
 public class ServiceSpiLoader
 {
+    private ServiceSpiLoader() {}
+
     /**
      * 加载服务实现,同时支持SPI和注解方式
      * Load service implementations, supporting both SPI and annotation methods
@@ -143,7 +146,7 @@ public class ServiceSpiLoader
                 URL url = resources.nextElement();
                 log.debug("Found service file: {}", url);
 
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), Charset.defaultCharset()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if (!line.trim().isEmpty() && !line.startsWith("#")) {

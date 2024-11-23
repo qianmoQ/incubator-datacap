@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.utils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,8 +15,11 @@ import java.util.stream.Stream;
  * Plugin Class Loader Utility Class
  */
 @Slf4j
+@SuppressFBWarnings(value = {"DMI_COLLECTION_OF_URLS", "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"})
 public class PluginClassLoaderUtils
 {
+    private PluginClassLoaderUtils() {}
+
     public static PluginClassLoader createClassLoader(Path directory, String pluginName, String pluginVersion)
             throws Exception
     {

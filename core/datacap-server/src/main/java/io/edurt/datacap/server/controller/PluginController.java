@@ -8,9 +8,9 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.executor.ExecutorService;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.PluginMetadata;
-import io.edurt.datacap.plugin.PluginType;
 import io.edurt.datacap.scheduler.SchedulerService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,8 +52,10 @@ public class PluginController
     }
 
     @GetMapping(value = {"filter"})
-    public CommonResponse getPluginByType(@RequestParam String type)
+    public CommonResponse<List<PluginMetadata>> getPluginByType(@RequestParam String type)
     {
         return CommonResponse.success(pluginManager.getPluginInfos());
     }
+
+//    @PostMapping(value = "install")
 }

@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.SpiType;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
@@ -8,11 +9,13 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 
 import java.io.FileReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "OBL_UNSATISFIED_OBLIGATION"})
 public class PomPluginLoader
         implements PluginLoader
 {
@@ -34,7 +37,7 @@ public class PomPluginLoader
             // 读取 POM 信息
             // Read POM information
             MavenXpp3Reader reader = new MavenXpp3Reader();
-            Model model = reader.read(new FileReader(pomFile.toFile()));
+            Model model = reader.read(new FileReader(pomFile.toFile(), Charset.defaultCharset()));
 
             String mainClass = model.getProperties().getProperty("plugin.class");
             if (mainClass == null) {

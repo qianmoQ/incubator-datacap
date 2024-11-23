@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.SpiType;
 
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressFBWarnings(value = {"MS_OOI_PKGPROTECT"})
 public interface PluginLoader
 {
     Set<String> EXCLUDED_DIRS = new HashSet<>()

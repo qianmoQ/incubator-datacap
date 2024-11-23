@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginContextManager;
 import io.edurt.datacap.plugin.SpiType;
@@ -27,6 +28,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -41,6 +45,7 @@ import java.util.zip.GZIPInputStream;
  * Tar format plugin loader, supports loading plugins from local filesystem or network URL
  */
 @Slf4j
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class TarPluginLoader
         implements PluginLoader
 {
@@ -202,7 +207,6 @@ public class TarPluginLoader
             try (CloseableHttpClient httpClient = HttpClients.custom()
                     .setSSLSocketFactory(sslFactory)
                     .build()) {
-
                 // 创建 GET 请求
                 // Create GET request
                 HttpGet request = new HttpGet(url);
@@ -216,7 +220,6 @@ public class TarPluginLoader
                 try (CloseableHttpResponse response = httpClient.execute(request);
                         InputStream in = response.getEntity().getContent();
                         OutputStream out = Files.newOutputStream(tempFile)) {
-
                     int statusCode = response.getStatusLine().getStatusCode();
                     if (statusCode != 200) {
                         throw new IOException("HTTP request failed with status: " + statusCode);
@@ -232,7 +235,7 @@ public class TarPluginLoader
 
             return tempFile;
         }
-        catch (Exception e) {
+        catch (IOException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             try {
                 Files.deleteIfExists(tempFile);
             }
@@ -271,7 +274,6 @@ public class TarPluginLoader
                 BufferedInputStream buffIn = new BufferedInputStream(fileIn);
                 GZIPInputStream gzipIn = new GZIPInputStream(buffIn);
                 TarArchiveInputStream tarIn = new TarArchiveInputStream(gzipIn)) {
-
             TarArchiveEntry entry;
             while ((entry = tarIn.getNextEntry()) != null) {
                 if (entry.isDirectory()) {

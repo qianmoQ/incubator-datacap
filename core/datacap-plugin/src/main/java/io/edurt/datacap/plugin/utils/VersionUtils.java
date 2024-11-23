@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.utils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +24,11 @@ import java.util.stream.Stream;
  * Version utility for plugin system
  */
 @Slf4j
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class VersionUtils
 {
+    private VersionUtils() {}
+
     private static final String VERSION_PROPERTY_FILE = "plugin.properties";
     private static final String VERSION_PROPERTY_KEY = "plugin.version";
     private static final String DEFAULT_VERSION = "1.0.0";
@@ -179,7 +183,6 @@ public class VersionUtils
     {
         try {
             if (Files.isDirectory(pluginPath)) {
-
                 try (Stream<Path> pathStream = Files.walk(pluginPath)) {
                     List<Path> jarFiles = pathStream
                             .filter(p -> p.toString().endsWith(".jar"))
@@ -245,7 +248,6 @@ public class VersionUtils
             // Use a temporary class loader to load and check the class
             try (URLClassLoader classLoader = new URLClassLoader(
                     new URL[] {new File(jarFile.getName()).toURI().toURL()}, Plugin.class.getClassLoader())) {
-
                 return jarFile.stream()
                         .filter(entry -> entry.getName().endsWith(".class"))
                         .anyMatch(entry -> {

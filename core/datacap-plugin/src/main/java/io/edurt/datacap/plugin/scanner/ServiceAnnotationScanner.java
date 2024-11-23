@@ -12,6 +12,8 @@ import java.util.Set;
 @Slf4j
 public class ServiceAnnotationScanner
 {
+    private ServiceAnnotationScanner() {}
+
     /**
      * 扫描指定包下带有 @InjectService 注解的类
      * Scan classes with @InjectService annotation in the specified package

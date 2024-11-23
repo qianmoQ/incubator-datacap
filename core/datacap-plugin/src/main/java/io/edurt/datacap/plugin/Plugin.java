@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.service.ServiceBindings;
 import io.edurt.datacap.plugin.service.ServiceNotFoundException;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.jar.Manifest;
 
 @Slf4j
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public abstract class Plugin
         extends AbstractModule
 {

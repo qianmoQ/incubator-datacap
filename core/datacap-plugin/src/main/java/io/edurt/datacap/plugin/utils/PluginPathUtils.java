@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 @Slf4j
 public class PluginPathUtils
 {
+    private PluginPathUtils() {}
+
     // 项目根目录标志文件/目录
     // Project root markers
     private static final List<String> PROJECT_ROOT_MARKERS = Arrays.asList(

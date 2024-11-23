@@ -1,6 +1,7 @@
 package io.edurt.datacap.plugin;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.nio.file.Path;
 
 @Data
 @Builder
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class PluginMetadata
 {
     private String name;

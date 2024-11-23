@@ -3,6 +3,7 @@ package io.edurt.datacap.plugin;
 import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.utils.DateUtils;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
@@ -32,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 @Slf4j
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class PluginManager
 {
     // 插件配置

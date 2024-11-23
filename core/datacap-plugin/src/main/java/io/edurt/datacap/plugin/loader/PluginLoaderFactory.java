@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class PluginLoaderFactory
 {
+    private PluginLoaderFactory() {}
+
     // 用于缓存已注册的加载器
     // Cache for registered loaders
     private static final Map<String, PluginLoader> loaderRegistry = new ConcurrentHashMap<>();

@@ -1,12 +1,12 @@
 package io.edurt.datacap.plugin;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Data
+@Getter
 @Builder
 public class PluginConfigure
 {

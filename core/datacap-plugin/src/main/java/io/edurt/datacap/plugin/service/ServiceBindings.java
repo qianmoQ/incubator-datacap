@@ -2,8 +2,10 @@ package io.edurt.datacap.plugin.service;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Service;
 
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP"})
 public class ServiceBindings
 {
     // 限制绑定类型必须是 Service 的子类
