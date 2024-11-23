@@ -1,5 +1,6 @@
 package io.edurt.datacap.server.controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.PluginMetadata;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/plugin")
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class PluginController
 {
     private final PluginManager pluginManager;
