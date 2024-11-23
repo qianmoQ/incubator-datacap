@@ -49,6 +49,7 @@ public class PluginConfiguration
         return pluginManager;
     }
 
+    // TODO: Delete it
     @Bean
     public Injector injector()
     {
