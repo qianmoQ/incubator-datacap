@@ -8,20 +8,26 @@ import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
 import io.edurt.datacap.plugin.utils.VersionUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
+import javax.annotation.PreDestroy;
+
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
@@ -42,6 +48,7 @@ public class PluginManager
 
     // 运行状态标志
     // Running state flag
+    @Getter
     private volatile boolean running;
 
     // 插件安装锁
@@ -55,6 +62,14 @@ public class PluginManager
     // 默认版本
     // Default version
     private static final String DEFAULT_VERSION = "1.0.0";
+
+    // 插件监视器
+    // Plugin watcher
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r, "plugin-watcher-" + System.currentTimeMillis());
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public PluginManager(PluginConfigure config)
     {
@@ -284,10 +299,18 @@ public class PluginManager
     {
         try {
             if (Files.exists(directory)) {
-                Files.walk(directory)
-                        .sorted((a, b) -> b.compareTo(a))
-                        .map(Path::toFile)
-                        .forEach(File::delete);
+                try (Stream<Path> pathStream = Files.walk(directory)) {
+                    pathStream.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(file -> {
+                                if (!file.delete()) {
+                                    log.warn("Failed to delete file: {}", file.getAbsolutePath());
+                                    if (file.exists()) {
+                                        file.deleteOnExit();
+                                    }
+                                }
+                            });
+                }
             }
         }
         catch (IOException e) {
@@ -302,15 +325,29 @@ public class PluginManager
     {
         // 验证基本文件结构
         // Validate basic file structure
-        boolean isValid = Files.exists(pluginPath) &&
-                (Files.exists(pluginPath.resolve("pom.xml")) ||
-                        Files.exists(pluginPath.resolve("plugin.properties")) ||
-                        Files.exists(pluginPath.resolve("META-INF/services")) ||
-                        Files.list(pluginPath).anyMatch(path -> path.toString().endsWith(".class")) ||
-                        Files.list(pluginPath).anyMatch(path -> path.toString().endsWith(".jar")));
+        if (!Files.exists(pluginPath)) {
+            throw new IOException("Plugin path does not exist: " + pluginPath);
+        }
 
-        if (!isValid) {
-            throw new IOException("Invalid plugin structure in: " + pluginPath);
+        boolean hasRequiredFiles = Files.exists(pluginPath.resolve("pom.xml")) ||
+                Files.exists(pluginPath.resolve("plugin.properties")) ||
+                Files.exists(pluginPath.resolve("META-INF/services"));
+
+        if (hasRequiredFiles) {
+            return;
+        }
+
+        // 检查是否存在 class 或 jar 文件
+        // Check for class or jar files
+        try (Stream<Path> paths = Files.list(pluginPath)) {
+            boolean hasClassOrJar = paths.anyMatch(path -> {
+                String pathStr = path.toString();
+                return pathStr.endsWith(".class") || pathStr.endsWith(".jar");
+            });
+
+            if (!hasClassOrJar) {
+                throw new IOException("Invalid plugin structure in: " + pluginPath);
+            }
         }
     }
 
@@ -323,21 +360,25 @@ public class PluginManager
     }
 
     // 检查是否为 SPI 插件
-    // Check if it's a SPI plugin
+    // Check if it's SPI plugin
     private boolean isSpiPlugin(Path path)
     {
-        if (Files.isDirectory(path)) {
-            try {
-                Path servicesPath = path.resolve("META-INF/services");
-                return Files.exists(servicesPath) &&
-                        Files.list(servicesPath)
-                                .anyMatch(file -> file.toString().endsWith(Plugin.class.getName()));
-            }
-            catch (IOException e) {
-                return false;
-            }
+        if (!Files.isDirectory(path)) {
+            return false;
         }
-        return false;
+
+        Path servicesPath = path.resolve("META-INF/services");
+        if (!Files.exists(servicesPath)) {
+            return false;
+        }
+
+        try (Stream<Path> serviceFiles = Files.list(servicesPath)) {
+            return serviceFiles.anyMatch(file -> file.toString().endsWith(Plugin.class.getName()));
+        }
+        catch (IOException e) {
+            log.debug("Failed to check SPI plugin at path: {}", path, e);
+            return false;
+        }
     }
 
     // 安装 Properties 类型插件
@@ -475,7 +516,12 @@ public class PluginManager
                         pluginDir.toString(),
                         k -> {
                             try {
-                                return PluginClassLoaderUtils.createClassLoader(pluginDir, pluginBaseName, pluginVersion);
+                                return PluginClassLoaderUtils.createClassLoader(
+                                        pluginDir,
+                                        pluginBaseName,
+                                        pluginVersion,
+                                        true
+                                );
                             }
                             catch (Exception e) {
                                 log.error("Failed to create ClassLoader for plugin: {} at {}", pluginBaseName, pluginDir, e);
@@ -491,7 +537,8 @@ public class PluginManager
                 loader = PluginClassLoaderUtils.createClassLoader(
                         pluginDir,
                         pluginBaseName,
-                        pluginVersion
+                        pluginVersion,
+                        true
                 );
             }
 
@@ -587,20 +634,42 @@ public class PluginManager
     // Start plugin watcher thread
     private void startPluginWatcher()
     {
-        Thread watchThread = new Thread(() -> {
-            while (running) {
-                try {
-                    Thread.sleep(config.getScanInterval());
-                    loadPlugins();
-                }
-                catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
+        scheduler.scheduleWithFixedDelay(() -> {
+            try {
+                loadPlugins();
+            }
+            catch (Exception e) {
+                log.error("Failed to load plugins during watch cycle", e);
+            }
+        }, 0, config.getScanInterval(), TimeUnit.MILLISECONDS);
+
+        log.info("Started plugin watcher with scan interval: {}ms", config.getScanInterval());
+    }
+
+    // 停止插件监视器线程
+    // Stop plugin watcher thread
+    private void stopPluginWatcher()
+    {
+        try {
+            scheduler.shutdown();
+            if (!scheduler.awaitTermination(config.getScanInterval(), TimeUnit.MILLISECONDS)) {
+                scheduler.shutdownNow();
+                if (!scheduler.awaitTermination(1, TimeUnit.SECONDS)) {
+                    log.warn("Plugin watcher scheduler did not terminate");
                 }
             }
-        });
-        watchThread.setDaemon(true);
-        watchThread.start();
+        }
+        catch (InterruptedException e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
+            log.warn("Interrupted while shutting down plugin watcher", e);
+        }
+    }
+
+    @PreDestroy
+    public void destroy()
+    {
+        stopPluginWatcher();
     }
 
     // 获取指定名称的插件

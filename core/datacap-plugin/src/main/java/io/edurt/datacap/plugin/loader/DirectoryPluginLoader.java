@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class DirectoryPluginLoader
@@ -33,25 +34,28 @@ public class DirectoryPluginLoader
 
             // 创建插件专用类加载器
             // Create plugin-specific class loader
+            @SuppressWarnings("resource")
             PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
                     path,
                     pluginName,
-                    version
+                    version,
+                    true
             );
 
-            List<Plugin> plugins = Files.walk(path)
-                    .filter(p -> p.toString().endsWith(".class"))
-                    .filter(p -> !p.toString().contains("$"))
-                    .map(p -> loadClass(classLoader, p))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
+            try (Stream<Path> pathStream = Files.walk(path)) {
+                List<Plugin> plugins = pathStream.filter(p -> p.toString().endsWith(".class"))
+                        .filter(p -> !p.toString().contains("$"))
+                        .map(p -> loadClass(classLoader, p))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
 
-            // 设置插件的类加载器
-            // Set class loader for plugins
-            plugins.forEach(plugin -> plugin.setPluginClassLoader(classLoader));
+                // 设置插件的类加载器
+                // Set class loader for plugins
+                plugins.forEach(plugin -> plugin.setPluginClassLoader(classLoader));
 
-            return plugins;
+                return plugins;
+            }
         }
         catch (Exception e) {
             log.error("Failed to load plugins from directory: {}", path, e);

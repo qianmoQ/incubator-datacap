@@ -53,7 +53,7 @@ public abstract class Plugin
      * Set plugin class loader
      *
      * @param classLoader 插件类加载器
-     * @param classLoader Plugin class loader
+     * Plugin class loader
      */
     public void setPluginClassLoader(PluginClassLoader classLoader)
     {
@@ -66,9 +66,9 @@ public abstract class Plugin
      * Type-safe service binding method
      *
      * @param service 服务接口类型
-     * @param service service interface type
+     * service interface type
      * @param implementation 服务实现类型
-     * @param implementation service implementation type
+     * service implementation type
      */
     @SuppressWarnings("unchecked")
     private <T extends Service> void bindService(Class<? extends Service> service, Class<? extends Service> implementation, boolean multiple, String qualifier)
@@ -131,7 +131,7 @@ public abstract class Plugin
      * Get list of service types to load
      *
      * @return 服务类型列表
-     * @return list of service types
+     * list of service types
      */
     public Set<Class<? extends Service>> getServiceTypes()
     {
@@ -160,10 +160,6 @@ public abstract class Plugin
         }
     }
 
-    /**
-     * 配置服务
-     * Configure services
-     */
     /**
      * 配置服务
      * Configure services
@@ -258,9 +254,9 @@ public abstract class Plugin
      * Get service instance
      *
      * @param serviceClass 服务类型
-     * @param serviceClass service class type
+     * service class type
      * @return 服务实例
-     * @return service instance
+     * service instance
      */
     public <T extends Service> T getService(Class<T> serviceClass)
     {
@@ -288,11 +284,11 @@ public abstract class Plugin
      * Get named service instance
      *
      * @param serviceClass 服务接口类型
-     * @param serviceClass service interface type
+     * service interface type
      * @param name 服务名称
-     * @param name service name
+     * service name
      * @return 服务实例
-     * @return service instance
+     * service instance
      */
     public <T extends Service> T getService(Class<T> serviceClass, String name)
     {

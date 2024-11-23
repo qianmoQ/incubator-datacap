@@ -17,11 +17,11 @@ public class ServiceAnnotationScanner
      * Scan classes with @InjectService annotation in the specified package
      *
      * @param basePackage 基础包路径
-     * @param basePackage base package path
+     * base package path
      * @param classLoader 类加载器
-     * @param classLoader class loader
+     * class loader
      * @return 扫描到的服务类集合
-     * @return scanned service class collection
+     * scanned service class collection
      */
     public static Set<Class<?>> scanServices(String basePackage, ClassLoader classLoader)
     {

@@ -32,7 +32,7 @@ public class PluginLoaderFactory
      * Register a new plugin loader
      *
      * @param loader 要注册的加载器
-     * @param loader the loader to register
+     * the loader to register
      */
     public static void registerLoader(PluginLoader loader)
     {
@@ -68,9 +68,9 @@ public class PluginLoaderFactory
      * Get loader by type
      *
      * @param type 加载器类型
-     * @param type loader type
-     * @return 对应的加载器实例，如果未找到则返回null
-     * @return corresponding loader instance, or null if not found
+     * loader type
+     * @return 对应的加载器实例，如果未找到则返回 null
+     * corresponding loader instance, or null if not found
      */
     public static PluginLoader getLoader(String type)
     {
@@ -85,9 +85,9 @@ public class PluginLoaderFactory
      * Attempt to load plugins using all registered loaders
      *
      * @param pluginDir 插件目录
-     * @param pluginDir plugin directory
+     * plugin directory
      * @return 加载的插件模块列表
-     * @return list of loaded plugin modules
+     * list of loaded plugin modules
      */
     public static List<Plugin> loadPlugins(Path pluginDir)
     {
@@ -124,7 +124,7 @@ public class PluginLoaderFactory
      * Get all registered loader types
      *
      * @return 加载器类型列表
-     * @return list of loader types
+     * list of loader types
      */
     public static List<String> getRegisteredTypes()
     {

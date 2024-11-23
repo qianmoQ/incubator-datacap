@@ -43,7 +43,7 @@ public class PluginPathUtils
      * Find project root directory
      *
      * @return 项目根目录的Path对象
-     * @return Path object of project root directory
+     * Path object of project root directory
      */
     public static Path findProjectRoot()
     {
@@ -140,9 +140,9 @@ public class PluginPathUtils
      * Find project root directory from specified path
      *
      * @param startPath 开始搜索的路径
-     * @param startPath path to start search from
-     * @return 项目根目录路径，如果未找到返回null
-     * @return project root path, null if not found
+     * path to start search from
+     * @return 项目根目录路径，如果未找到返回 null
+     * project root path, null if not found
      */
     private static Path findRootFromPath(Path startPath)
     {

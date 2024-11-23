@@ -3,11 +3,8 @@ package io.edurt.datacap.plugin.loader;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.SpiType;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 
 import java.io.File;
-import java.io.FileReader;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -46,11 +43,6 @@ public class CompiledPomPluginLoader
                 log.debug("No pom.xml found in {}", path);
                 return List.of();
             }
-
-            // 读取POM文件
-            // Read POM file
-            MavenXpp3Reader reader = new MavenXpp3Reader();
-            Model model = reader.read(new FileReader(pomFile.toFile()));
 
             // 获取编译后的类路径
             // Get compiled classpath

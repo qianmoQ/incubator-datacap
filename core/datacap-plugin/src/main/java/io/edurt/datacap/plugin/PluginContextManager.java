@@ -24,12 +24,11 @@ public class PluginContextManager
      * Set the plugin class loader for the current thread
      *
      * @param classLoader 插件类加载器
-     * @param classLoader Plugin class loader
+     * Plugin class loader
      */
     public static void setPluginClassLoader(PluginClassLoader classLoader)
     {
-        log.debug("Setting plugin class loader: {} for plugin: {}",
-                classLoader, classLoader.getPluginName());
+        log.debug("Setting plugin class loader: {} for plugin: {}", classLoader, classLoader.getPluginName());
         synchronized (contextClassLoaders) {
             contextClassLoaders.put(Thread.currentThread(), classLoader);
         }
@@ -40,7 +39,7 @@ public class PluginContextManager
      * Get the plugin class loader for the current thread
      *
      * @return 插件类加载器
-     * @return Plugin class loader
+     * Plugin class loader
      */
     public static ClassLoader getPluginClassLoader()
     {

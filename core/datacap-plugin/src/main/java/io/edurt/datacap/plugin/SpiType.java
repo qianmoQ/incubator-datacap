@@ -1,5 +1,8 @@
 package io.edurt.datacap.plugin;
 
+import lombok.Getter;
+
+@Getter
 public enum SpiType
 {
     COMPILED_POM("CompiledPom"),
@@ -10,16 +13,11 @@ public enum SpiType
     INJECT("Inject"),
     TAR("Tar");
 
-    private String name;
+    private final String name;
 
     SpiType(String name)
     {
         this.name = name;
-    }
-
-    public String getName()
-    {
-        return this.name;
     }
 
     public static SpiType fromName(String name)

@@ -45,7 +45,8 @@ public class SpiPluginLoader
             PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
                     path,
                     pluginName,
-                    version
+                    version,
+                    true
             );
 
             return PluginContextManager.runWithClassLoader(classLoader, () -> {

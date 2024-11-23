@@ -15,9 +15,9 @@ public class ServiceBindings
      * Add service binding
      *
      * @param serviceType 服务类型（必须继承自Service）
-     * @param serviceType service type (must extend Service)
+     * service type (must extend Service)
      * @param implementationType 实现类型（必须继承自Service）
-     * @param implementationType implementation type (must extend Service)
+     * implementation type (must extend Service)
      */
     public void addBinding(Class<? extends Service> serviceType, Class<? extends Service> implementationType)
     {
@@ -29,7 +29,7 @@ public class ServiceBindings
      * Get all bindings
      *
      * @return 服务绑定映射
-     * @return service binding mapping
+     * service binding mapping
      */
     public Multimap<Class<? extends Service>, Class<? extends Service>> getBindings()
     {

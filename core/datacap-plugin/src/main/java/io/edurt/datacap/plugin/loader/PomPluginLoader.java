@@ -53,7 +53,8 @@ public class PomPluginLoader
             PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
                     path,
                     model.getArtifactId(),
-                    version
+                    version,
+                    true
             );
 
             Class<?> pluginClass = classLoader.loadClass(mainClass);

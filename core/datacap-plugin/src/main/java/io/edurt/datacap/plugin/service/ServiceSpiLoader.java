@@ -22,13 +22,13 @@ public class ServiceSpiLoader
      * Load service implementations, supporting both SPI and annotation methods
      *
      * @param serviceType 服务类型（必须继承自Service）
-     * @param serviceType service type (must extend Service)
+     * service type (must extend Service)
      * @param basePackage 扫描注解的基础包路径
-     * @param basePackage base package path for annotation scanning
+     * base package path for annotation scanning
      * @param classLoader 类加载器
-     * @param classLoader class loader
+     * class loader
      * @return 服务绑定
-     * @return service bindings
+     * service bindings
      */
     public static ServiceBindings loadServices(Class<? extends Service> serviceType, String basePackage, ClassLoader classLoader)
     {
@@ -47,14 +47,20 @@ public class ServiceSpiLoader
                 if (serviceInterfaces.length == 0) {
                     // 如果没有指定接口,使用类实现的所有接口
                     // If no interface is specified, use all interfaces implemented by the class
-                    addServiceBindings(bindings, (Class<? extends Service>) serviceImpl, serviceType);
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Service> impl = (Class<? extends Service>) serviceImpl;
+                    addServiceBindings(bindings, impl, serviceType);
                 }
                 else {
                     // 添加指定的接口绑定
                     // Add specified interface bindings
                     for (Class<?> iface : serviceInterfaces) {
                         if (Service.class.isAssignableFrom(iface) && serviceType.isAssignableFrom(iface)) {
-                            bindings.addBinding((Class<? extends Service>) iface, (Class<? extends Service>) serviceImpl);
+                            @SuppressWarnings("unchecked")
+                            Class<? extends Service> service = (Class<? extends Service>) iface;
+                            @SuppressWarnings("unchecked")
+                            Class<? extends Service> impl = (Class<? extends Service>) serviceImpl;
+                            bindings.addBinding(service, impl);
                             log.debug("Added annotated binding: {} -> {}", iface.getName(), serviceImpl.getName());
                         }
                     }
@@ -91,11 +97,11 @@ public class ServiceSpiLoader
      * Load service implementations
      *
      * @param serviceType 服务类型（必须继承自Service）
-     * @param serviceType service type (must extend Service)
+     * service type (must extend Service)
      * @return 服务绑定
-     * @return service bindings
+     * service bindings
      * @throws IllegalArgumentException 如果服务类型不是Service的子类
-     * @throws IllegalArgumentException if service type is not a Service subclass
+     * if service type is not a Service subclass
      */
     public static ServiceBindings loadServices(Class<? extends Service> serviceType)
     {
@@ -107,13 +113,13 @@ public class ServiceSpiLoader
      * Load service implementations
      *
      * @param serviceType 服务类型（必须继承自Service）
-     * @param serviceType service type (must extend Service)
+     * service type (must extend Service)
      * @param classLoader 类加载器
-     * @param classLoader class loader
+     * class loader
      * @return 服务绑定
-     * @return service bindings
+     * service bindings
      * @throws IllegalArgumentException 如果服务类型不是Service的子类
-     * @throws IllegalArgumentException if service type is not a Service subclass
+     * if service type is not a Service subclass
      */
     public static ServiceBindings loadServices(Class<? extends Service> serviceType, ClassLoader classLoader)
     {
@@ -206,7 +212,7 @@ public class ServiceSpiLoader
             }
         }
         catch (IOException e) {
-            log.error("Error loading services for type: " + serviceType.getName(), e);
+            log.error("Error loading services for type: {}", serviceType.getName(), e);
         }
 
         // 记录找到的所有绑定

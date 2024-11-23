@@ -1,5 +1,8 @@
 package io.edurt.datacap.plugin;
 
+import lombok.Getter;
+
+@Getter
 public enum PluginType
 {
     CONNECTOR("Connector"),
@@ -7,19 +10,9 @@ public enum PluginType
     SCHEDULER("Scheduler"),
     CONVERT("Convert");
 
-    private String name;
+    private final String name;
 
     PluginType(String name)
-    {
-        this.name = name;
-    }
-
-    public String getName()
-    {
-        return this.name;
-    }
-
-    public void setName(String name)
     {
         this.name = name;
     }

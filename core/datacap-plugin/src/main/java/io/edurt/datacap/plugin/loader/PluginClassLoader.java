@@ -3,8 +3,10 @@ package io.edurt.datacap.plugin.loader;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 
 /**
  * 插件专用类加载器
@@ -13,6 +15,7 @@ import java.net.URLClassLoader;
 @Slf4j
 public class PluginClassLoader
         extends URLClassLoader
+        implements AutoCloseable
 {
     @Getter
     private final String name;
@@ -32,6 +35,7 @@ public class PluginClassLoader
         this.pluginVersion = pluginVersion;
         this.parentFirst = parentFirst;
         this.name = String.join("-", "loader", pluginName.toLowerCase(), pluginVersion.toLowerCase());
+        log.debug("Created PluginClassLoader for {} with URLs: {}", pluginName, Arrays.toString(urls));
     }
 
     @Override
@@ -84,6 +88,20 @@ public class PluginClassLoader
                 }
                 throw e;
             }
+        }
+    }
+
+    @Override
+    public void close()
+            throws IOException
+    {
+        try {
+            super.close();
+            log.debug("Closed PluginClassLoader for plugin: {}", pluginName);
+        }
+        catch (IOException e) {
+            log.error("Error closing PluginClassLoader for plugin: {}", pluginName, e);
+            throw e;
         }
     }
 }

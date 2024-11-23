@@ -73,7 +73,8 @@ public class InjectPluginLoader
             PluginClassLoader classLoader = PluginClassLoaderUtils.createClassLoader(
                     path,
                     pluginName,
-                    version
+                    version,
+                    true
             );
 
             return PluginContextManager.runWithClassLoader(classLoader, () -> {

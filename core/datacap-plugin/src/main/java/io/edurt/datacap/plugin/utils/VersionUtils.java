@@ -17,6 +17,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Version utility for plugin system
@@ -146,18 +147,20 @@ public class VersionUtils
             // Look for pom.properties in META-INF/maven directory
             Path mavenDir = pluginPath.resolve("META-INF/maven");
             if (Files.exists(mavenDir)) {
-                List<Path> pomProperties = Files.walk(mavenDir)
-                        .filter(p -> p.getFileName().toString().equals("pom.properties"))
-                        .collect(Collectors.toList());
+                try (Stream<Path> pathStream = Files.walk(mavenDir)) {
+                    List<Path> pomProperties = pathStream
+                            .filter(p -> p.getFileName().toString().equals("pom.properties"))
+                            .collect(Collectors.toList());
 
-                for (Path propFile : pomProperties) {
-                    Properties props = new Properties();
-                    try (InputStream is = Files.newInputStream(propFile)) {
-                        props.load(is);
-                        String version = props.getProperty("version");
-                        if (isValidVersion(version)) {
-                            log.debug("Found version {} in pom.properties", version);
-                            return version;
+                    for (Path propFile : pomProperties) {
+                        Properties props = new Properties();
+                        try (InputStream is = Files.newInputStream(propFile)) {
+                            props.load(is);
+                            String version = props.getProperty("version");
+                            if (isValidVersion(version)) {
+                                log.debug("Found version {} in pom.properties", version);
+                                return version;
+                            }
                         }
                     }
                 }
@@ -176,14 +179,16 @@ public class VersionUtils
     {
         try {
             if (Files.isDirectory(pluginPath)) {
-                List<Path> jarFiles = Files.walk(pluginPath)
-                        .filter(path -> path.toString().endsWith(".jar"))
-                        .collect(Collectors.toList());
 
-                for (Path jarPath : jarFiles) {
-                    String version = readVersionFromPluginJar(jarPath);
-                    if (version != null) {
-                        return version;
+                try (Stream<Path> pathStream = Files.walk(pluginPath)) {
+                    List<Path> jarFiles = pathStream
+                            .filter(p -> p.toString().endsWith(".jar"))
+                            .collect(Collectors.toList());
+                    for (Path jarPath : jarFiles) {
+                        String version = readVersionFromPluginJar(jarPath);
+                        if (version != null) {
+                            return version;
+                        }
                     }
                 }
             }
