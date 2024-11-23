@@ -66,9 +66,27 @@ export class HttpUtils
             message: error.message,
             status: false
         }
-        if (error.code === 'ERR_NETWORK') {
-            router.push('/common/not_network?redirect=' + router.currentRoute.value.fullPath)
+
+        // 检查当前路由，避免重复重定向
+        // Current route path, avoid repeated redirection
+        const currentPath = router.currentRoute.value.path
+        const isAlreadyOnErrorPage = currentPath.startsWith('/common/not_network')
+
+        if (error.code === 'ERR_NETWORK' && !isAlreadyOnErrorPage) {
+            // 记录用户原始请求的页面路径
+            // Record the original page path of the user
+            const originalPath = router.currentRoute.value.fullPath
+            router.push({
+                path: '/common/not_network',
+                query: {
+                    redirect: originalPath
+                },
+                // 替换当前的历史记录，这样用户点击后退时不会陷入循环
+                // Replace the current history record, so that the user can not enter a loop
+                replace: true
+            })
         }
+
         return response
     }
 

@@ -15,6 +15,7 @@ public interface Adapter
 
     default List<Object> handlerFormatter(PluginManager pluginManager, String format, List<String> headers, List<Object> columns)
     {
+
         return ConvertFilter.filter(pluginManager, format)
                 .map(file -> {
                     ConvertRequest request = new ConvertRequest();
