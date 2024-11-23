@@ -5,10 +5,12 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.utils.DateUtils;
+import io.edurt.datacap.common.utils.EnvironmentUtils;
 import io.edurt.datacap.plugin.loader.PluginClassLoader;
 import io.edurt.datacap.plugin.loader.PluginLoaderFactory;
 import io.edurt.datacap.plugin.loader.TarPluginLoader;
 import io.edurt.datacap.plugin.utils.PluginClassLoaderUtils;
+import io.edurt.datacap.plugin.utils.PluginPathUtils;
 import io.edurt.datacap.plugin.utils.VersionUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -162,6 +164,12 @@ public class PluginManager
             boolean installed;
 
             try {
+                // 如果是IDE环境，或者插件目录是文件，则使用默认目录
+                // Use default directory for IDE environment or if plugins directory is a file
+                if (EnvironmentUtils.isIdeEnvironment() || Files.isRegularFile(config.getPluginsDir())) {
+                    config.setPluginsDir(PluginPathUtils.appendPath("plugins"));
+                }
+
                 // 创建临时目录
                 // Create temporary directory
                 tempDir = Files.createTempDirectory(config.getPluginsDir(), TEMP_DIR_PREFIX);
@@ -879,7 +887,11 @@ public class PluginManager
                 deleteDirectory(pluginLocation);
             }
             else {
-                Files.delete(pluginLocation);
+                // 如果非IDE环境，或者插件目录是文件，才进行删除
+                // Delete only if not in IDE environment, or if the plugin directory is a file
+                if (!EnvironmentUtils.isIdeEnvironment() || !Files.isRegularFile(config.getPluginsDir())) {
+                    Files.delete(pluginLocation);
+                }
             }
 
             // 删除备份文件

@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
-    <text x="40" y="50"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <text x="30" y="45"
           font-family="Arial, sans-serif"
           font-size="30"
           font-weight="bold"
           text-anchor="middle"
           fill="#000000">
-        None
+        Txt
     </text>
 </svg>
