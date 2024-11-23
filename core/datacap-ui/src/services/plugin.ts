@@ -9,6 +9,11 @@ class PluginService
     {
         return new HttpUtils().get(`${ DEFAULT_PATH }`)
     }
+
+    install(configure: { name: string, url: string }): Promise<ResponseModel>
+    {
+        return new HttpUtils().post(`${ DEFAULT_PATH }/install`, configure)
+    }
 }
 
 export default new PluginService()

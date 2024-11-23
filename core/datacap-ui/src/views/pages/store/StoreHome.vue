@@ -95,7 +95,7 @@
 
                   <!-- Action -->
                   <div class="flex items-center space-x-2">
-                    <ShadcnButton :type="child.installed ? 'danger' : 'primary'">
+                    <ShadcnButton :type="child.installed ? 'danger' : 'primary'" :loading="child.loading" @click="child.installed ? onUninstall(child) : onInstall(child)">
                       <template #icon>
                         <ShadcnIcon :icon="child.installed ? 'Trash' : 'Plus'" size="15"/>
                       </template>
@@ -134,6 +134,7 @@ interface MetadataItem
   installTime: string
   installVersion: string
   url: string
+  loading: boolean
 }
 
 interface Metadata
@@ -204,6 +205,33 @@ const loadMetadata = async () => {
   finally {
     loading.value = false
   }
+}
+
+// 安装插件
+// Install plugin
+const onInstall = async (item: MetadataItem) => {
+  try {
+    item.loading = true
+    const installResponse = await PluginService.install({ name: item.key, url: item.url })
+    if (installResponse.status) {
+      // @ts-ignore
+      proxy?.$Message.success({ content: proxy?.$t('common.installSuccess'), showIcon: true })
+    }
+    else {
+      // @ts-ignore
+      proxy?.$Message.error({ content: installResponse.message, showIcon: true })
+    }
+
+    await loadMetadata()
+  }
+  finally {
+    item.loading = false
+  }
+}
+
+// 卸载插件
+// Uninstall plugin
+const onUninstall = async (item: MetadataItem) => {
 }
 
 onBeforeMount(() => {

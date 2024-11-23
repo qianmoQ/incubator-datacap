@@ -36,10 +36,10 @@ public class PluginConfiguration
 
         // 开发模式下生效
         // In development mode, it is effective
-//        if (EnvironmentUtils.isIdeEnvironment()) {
-//            log.info("Development mode is development mode");
-//            config.setPluginsDir(projectRoot.resolve(Path.of(String.join("/", root, "plugins.properties"))));
-//        }
+        if (EnvironmentUtils.isIdeEnvironment()) {
+            log.info("Development mode is development mode");
+            config.setPluginsDir(projectRoot.resolve(Path.of(String.join("/", root, "plugins.properties"))));
+        }
 
         log.info("Plugins directory: {}", config.getPluginsDir());
         PluginManager pluginManager = new PluginManager(config);
