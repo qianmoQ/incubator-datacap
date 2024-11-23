@@ -289,5 +289,6 @@ nav:
       - ApiPlugin:
         - api/plugin/plugin.md
         - api/plugin/install.md
+        - api/plugin/uninstall.md
   - useCases.md
   - partners.md

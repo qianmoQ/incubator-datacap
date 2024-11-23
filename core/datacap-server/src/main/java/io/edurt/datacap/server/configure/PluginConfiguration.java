@@ -32,10 +32,11 @@ public class PluginConfiguration
         Path projectRoot = PluginPathUtils.findProjectRoot();
         io.edurt.datacap.plugin.PluginConfigure config = io.edurt.datacap.plugin.PluginConfigure.builder()
                 .pluginsDir(PluginPathUtils.appendPath("plugins"))
+                .autoCleanup(true)
                 .build();
 
-        // 开发模式下生效
-        // In development mode, it is effective
+        // 开发模式下生效，如果涉及到插件的安装卸载，请注释掉这部分代码
+        // In development mode, it is effective, if there is a plugin installation and uninstallation, please comment out this code
         if (EnvironmentUtils.isIdeEnvironment()) {
             log.info("Development mode is development mode");
             config.setPluginsDir(projectRoot.resolve(Path.of(String.join("/", root, "plugins.properties"))));

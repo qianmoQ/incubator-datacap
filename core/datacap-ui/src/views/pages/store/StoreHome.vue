@@ -232,6 +232,23 @@ const onInstall = async (item: MetadataItem) => {
 // 卸载插件
 // Uninstall plugin
 const onUninstall = async (item: MetadataItem) => {
+  try {
+    item.loading = true
+    const unInstallResponse = await PluginService.uninstall(item.label)
+    if (unInstallResponse.status) {
+      // @ts-ignore
+      proxy?.$Message.success({ content: proxy?.$t('common.uninstallSuccess'), showIcon: true })
+    }
+    else {
+      // @ts-ignore
+      proxy?.$Message.error({ content: unInstallResponse.message, showIcon: true })
+    }
+
+    await loadMetadata()
+  }
+  finally {
+    item.loading = false
+  }
 }
 
 onBeforeMount(() => {

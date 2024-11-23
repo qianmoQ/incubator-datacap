@@ -849,7 +849,7 @@ public class PluginManager
     private void createUnloadBackup(Path pluginLocation)
     {
         try {
-            String timestamp = DateUtils.formatYMDHMSWithInterval();
+            String timestamp = DateUtils.formatYMDHMS();
             Path backupPath = pluginLocation.getParent()
                     .resolve(pluginLocation.getFileName() + ".unload." + timestamp);
 
@@ -866,8 +866,6 @@ public class PluginManager
         }
     }
 
-    // 删除插件文件
-    // Delete plugin files
     private void deletePluginFiles(Path pluginLocation)
     {
         if (pluginLocation == null || !Files.exists(pluginLocation)) {
@@ -875,11 +873,40 @@ public class PluginManager
         }
 
         try {
+            // 删除插件目录或文件
+            // Delete plugin directory or file
             if (Files.isDirectory(pluginLocation)) {
                 deleteDirectory(pluginLocation);
             }
             else {
                 Files.delete(pluginLocation);
+            }
+
+            // 删除备份文件
+            // Delete backup files
+            Path parentDir = pluginLocation.getParent();
+            String baseName = pluginLocation.getFileName().toString();
+            try (Stream<Path> paths = Files.list(parentDir)) {
+                paths.filter(path -> {
+                            String fileName = path.getFileName().toString();
+                            // 匹配 .backup.* 和 .unload.* 格式的备份文件
+                            // Match backup files with .backup.* and .unload.* format
+                            return fileName.startsWith(baseName + ".backup.") || fileName.startsWith(baseName + ".unload.");
+                        })
+                        .forEach(backupPath -> {
+                            try {
+                                if (Files.isDirectory(backupPath)) {
+                                    deleteDirectory(backupPath);
+                                }
+                                else {
+                                    Files.delete(backupPath);
+                                }
+                                log.info("Deleted backup file: {}", backupPath);
+                            }
+                            catch (IOException e) {
+                                log.warn("Failed to delete backup file: {}", backupPath, e);
+                            }
+                        });
             }
             log.info("Deleted plugin files at: {}", pluginLocation);
         }

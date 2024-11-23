@@ -1,0 +1,33 @@
+---
+title: 卸载插件
+---
+
+请求地址：`/api/v1/plugin/ininstall/{PLUGIN_NAME}`
+
+请求方式：`DELETE`
+
+## Path
+
+=== "示例"
+    
+    ```json
+    /MySQL
+    ```
+
+=== "参数"
+
+    | 参数名 | 类型 | 是否必须 | 描述 |
+    | --- | --- | --- | --- |
+    | `{PLUGIN_NAME}` | string | 是 | 插件名称 |
+
+## Response
+
+=== "示例"
+
+    ```json
+    true
+    ```
+
+=== "参数"
+
+    如果返回 true 表示卸载成功，返回 false 表示卸载失败
