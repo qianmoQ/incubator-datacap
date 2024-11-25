@@ -79,7 +79,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        SnippetService.deleteById(Number(this.info.id))
+        SnippetService.deleteByCode(this.info.code!)
                       .then(response => {
                         if (response.status) {
                           this.$Message.success({
