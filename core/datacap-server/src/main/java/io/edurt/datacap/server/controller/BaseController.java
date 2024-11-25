@@ -67,15 +67,15 @@ public abstract class BaseController<T extends BaseEntity>
 
     @Deprecated
     @DeleteMapping
-    public CommonResponse<Long> delete(@RequestParam(value = "id") Long id)
+    public CommonResponse<String> delete(@RequestParam(value = "code") String code)
     {
-        return service.deleteById(repository, id);
+        return service.deleteByCode(repository, code);
     }
 
-    @DeleteMapping(value = "{id}")
-    public CommonResponse<Long> deleteForPath(@PathVariable(value = "id") Long id)
+    @DeleteMapping(value = "{code}")
+    public CommonResponse<String> deleteForPath(@PathVariable(value = "code") String code)
     {
-        return service.deleteById(repository, id);
+        return service.deleteByCode(repository, code);
     }
 
     /**
@@ -91,6 +91,7 @@ public abstract class BaseController<T extends BaseEntity>
     }
 
     @GetMapping(value = "info/{code}")
+    @JsonView(value = {EntityView.UserView.class})
     public CommonResponse<T> getByCode(@PathVariable(value = "code") String code)
     {
         return service.getByCode(repository, code);

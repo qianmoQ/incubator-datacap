@@ -108,7 +108,6 @@ import DashboardService from '@/services/dashboard'
 import { ReportModel } from '@/model/report.ts'
 import VisualView from '@/views/components/visual/VisualView.vue'
 import { DashboardModel, DashboardRequest } from '@/model/dashboard.ts'
-import { cloneDeep } from 'lodash'
 import CropperHome from '@/views/components/cropper/CropperHome.vue'
 import UploadService from '@/services/upload'
 import ChartContainer from '@/views/pages/admin/dashboard/components/ChartContainer.vue'
@@ -120,7 +119,8 @@ export default defineComponent({
   },
   props: {
     info: {
-      type: Object as () => DashboardModel | null
+      type: Object as PropType<DashboardModel | null>,
+      default: null
     }
   },
   data()
@@ -146,14 +146,21 @@ export default defineComponent({
     handleInitialize()
     {
       setTimeout(() => {
-        this.title = this.$t('dashboard.common.create')
-        if (this.info) {
-          this.title = this.$t('dashboard.common.modifyInfo').replace('$VALUE', String(this.info.name))
-          this.formState = cloneDeep(this.info)
-          this.layouts = JSON.parse(String(this.info?.configure))
+        if (!this.info) {
+          this.title = this.$t('dashboard.common.create')
+          this.formState = DashboardRequest.of()
         }
         else {
-          this.formState = DashboardRequest.of()
+          this.title = this.$t('dashboard.common.modifyInfo').replace('$VALUE', String(this.info.name))
+          this.formState = {
+            code: this.info.code,
+            name: this.info.name,
+            configure: this.info.configure,
+            version: this.info.version,
+            description: this.info.description,
+            reports: this.info.reports?.map(report => ({ code: report.code })) || []
+          }
+          this.layouts = JSON.parse(String(this.info.configure))
         }
       }, 300)
     },

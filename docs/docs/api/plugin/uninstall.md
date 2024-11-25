@@ -2,7 +2,7 @@
 title: 卸载插件
 ---
 
-请求地址：`/api/v1/plugin/ininstall/{PLUGIN_NAME}`
+请求地址：`/api/v1/plugin/ininstall/{pluginName}`
 
 请求方式：`DELETE`
 
@@ -18,7 +18,7 @@ title: 卸载插件
 
     | 参数名 | 类型 | 是否必须 | 描述 |
     | --- | --- | --- | --- |
-    | `{PLUGIN_NAME}` | string | 是 | 插件名称 |
+    | `pluginName` | string | 是 | 插件名称 |
 
 ## Response
 

@@ -296,5 +296,8 @@ nav:
       - ApiDashboard:
         - api/dashboard/list.md
         - api/dashboard/save.md
+        - api/dashboard/edit.md
+        - api/dashboard/get.md
+        - api/dashboard/delete.md
   - useCases.md
   - partners.md

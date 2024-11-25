@@ -66,8 +66,8 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
       view-shadcn-ui:
-        specifier: 2024.4.0-alpha.1731814030
-        version: 2024.4.0-alpha.1731814030(typescript@5.2.2)
+        specifier: 2024.5.0-alpha.1732521882
+        version: 2024.5.0-alpha.1732521882(typescript@5.2.2)
       vue:
         specifier: ^3.4.21
         version: 3.5.12(typescript@5.2.2)
@@ -1347,8 +1347,8 @@ packages:
   style-mod@4.1.2:
     resolution: {integrity: sha512-wnD1HyVqpJUI2+eKZ+eo1UwghftP6yuFheBqqe+bWCotBjC2K1YnteJILRMs3SM4V/0dLEW1SC27MWP5y+mwmw==}
 
-  tailwind-merge@2.5.4:
-    resolution: {integrity: sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==}
+  tailwind-merge@2.5.5:
+    resolution: {integrity: sha512-0LXunzzAZzo0tEPxV3I297ffKZPlKDrjj7NXphC8V5ak9yHC5zRmxnOe2m/Rd/7ivsOMJe3JZ2JVocoDdQTRBA==}
 
   tailwindcss-animate@1.0.7:
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
@@ -1403,8 +1403,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  view-shadcn-ui@2024.4.0-alpha.1731814030:
-    resolution: {integrity: sha512-o3kQaA/KDSXzft8TPOgtHqrn5aynxMv3GaqLTuEq9pdSO9AX6pgHacXj5pTjIcAZwHKJdsiFMvRiYmGs2TX/wA==}
+  view-shadcn-ui@2024.5.0-alpha.1732521882:
+    resolution: {integrity: sha512-9dj2YpUdNtNxWCG24ElmLX/EE2B6Xl7m9p7l2dLanz/8ZoJEe5Zq5PwWONFhgeMdQczldJiLOgSYp0xrcEE7IQ==}
 
   vite@5.4.10:
     resolution: {integrity: sha512-1hvaPshuPUtxeQ0hsVH3Mud0ZanOLwVTneA1EgbAM5LhaZEqyPWGRQ7BtaMvUrTDeEaC8pxtj6a6jku3x4z6SQ==}
@@ -3023,7 +3023,7 @@ snapshots:
 
   style-mod@4.1.2: {}
 
-  tailwind-merge@2.5.4: {}
+  tailwind-merge@2.5.5: {}
 
   tailwindcss-animate@1.0.7: {}
 
@@ -3061,13 +3061,13 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  view-shadcn-ui@2024.4.0-alpha.1731814030(typescript@5.2.2):
+  view-shadcn-ui@2024.5.0-alpha.1732521882(typescript@5.2.2):
     dependencies:
       clsx: 2.1.1
       highlight.js: 11.10.0
       lodash: 4.17.21
       lucide-vue-next: 0.360.0(vue@3.5.12(typescript@5.2.2))
-      tailwind-merge: 2.5.4
+      tailwind-merge: 2.5.5
       tailwindcss-animate: 1.0.7
       vue: 3.5.12(typescript@5.2.2)
     transitivePeerDependencies:

@@ -74,7 +74,7 @@ export default defineComponent({
     {
       if (this.data) {
         this.loading = true
-        DashboardService.deleteById(Number(this.data.id))
+        DashboardService.deleteById(this.data.code)
                         .then((response) => {
                           if (response.status) {
                             this.$Message.success({
@@ -83,6 +83,12 @@ export default defineComponent({
                             })
 
                             this.onCancel()
+                          }
+                          else {
+                            this.$Message.error({
+                              content: response.message,
+                              showIcon: true
+                            })
                           }
                         })
                         .finally(() => this.loading = false)

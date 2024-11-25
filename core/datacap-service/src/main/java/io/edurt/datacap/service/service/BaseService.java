@@ -52,6 +52,16 @@ public interface BaseService<T extends BaseEntity>
         return CommonResponse.success(id);
     }
 
+    default CommonResponse<String> deleteByCode(BaseRepository<T, Long> repository, String code)
+    {
+        return repository.findByCode(code)
+                .map(entity -> {
+                    repository.delete(entity);
+                    return CommonResponse.success(code);
+                })
+                .orElseGet(() -> CommonResponse.failure(String.format("Resource [ %s ] not found", code)));
+    }
+
     default CommonResponse<T> getByCode(BaseRepository<T, Long> repository, String code)
     {
         return repository.findByCode(code)

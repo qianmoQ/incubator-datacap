@@ -8,4 +8,6 @@ public interface BaseRepository<T, ID>
         extends PagingAndSortingRepository<T, ID>
 {
     Optional<T> findByCode(String code);
+
+    void deleteByCode(String code);
 }

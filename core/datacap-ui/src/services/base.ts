@@ -49,7 +49,7 @@ export abstract class BaseService
      */
     saveOrUpdate(configure: any): Promise<ResponseModel>
     {
-        if (configure['id'] > 0) {
+        if (configure['id'] > 0 || configure['code']) {
             return new HttpUtils().put(this.baseUrl, configure)
         }
         else {
