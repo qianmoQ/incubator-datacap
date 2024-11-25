@@ -52,6 +52,10 @@ public class DashboardEntity
     @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private AvatarEntity avatar;
 
+    @Column(name = "version")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
+    private String version;
+
     @ManyToOne
     @JoinTable(name = "datacap_dashboard_user_relation",
             joinColumns = @JoinColumn(name = "dashboard_id"),

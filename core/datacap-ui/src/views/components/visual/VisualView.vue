@@ -143,7 +143,7 @@ export default defineComponent({
       default: () => '400px'
     },
     original: {
-      type: Number
+      type: String
     }
   },
   data()

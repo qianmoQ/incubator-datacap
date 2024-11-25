@@ -1,7 +1,8 @@
 package io.edurt.datacap.service.entity;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.enums.ReportType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,39 +36,44 @@ public class ReportEntity
         extends BaseEntity
 {
     @Column(name = "configure")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String configure;
 
     @Column(name = "realtime")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private boolean realtime;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private ReportType type;
 
     @Column(name = "query")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String query;
 
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @ManyToOne
     @JoinTable(name = "datacap_report_user_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIncludeProperties(value = {"id", "name", "username", "code"})
+    @JsonView(value = {EntityView.AdminView.class})
     private UserEntity user;
 
     @ManyToOne
     @JoinTable(name = "datacap_report_source_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "source_id"))
-    @JsonIncludeProperties(value = {"id", "code", "name", "type"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private SourceEntity source;
 
     @ManyToOne
     @JoinTable(name = "datacap_report_dataset_relation",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "dataset_id"))
-    @JsonIncludeProperties(value = {"id", "code", "name", "query", "description"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private DataSetEntity dataset;
 }

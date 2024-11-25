@@ -37,7 +37,7 @@
                       :configuration="JSON.parse(item.node.configure)"
                       :type="item.original?.type"
                       :query="item.original.type === 'DATASET' ? JSON.parse(item.original.query as string) : item.original.query"
-                      :original="item?.original?.source?.id"/>
+                      :original="item?.original?.source?.code"/>
 
           <VisualView v-else
                       :width="calculateWidth(item)"

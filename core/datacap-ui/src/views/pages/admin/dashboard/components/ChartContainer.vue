@@ -12,7 +12,7 @@
         <ShadcnToggleGroup v-model="report" multiple>
           <ShadcnRow gutter="8">
             <ShadcnCol v-for="item of data" span="4">
-              <ShadcnToggle :key="item.id" class="px-1 py-1" :value="item.id">
+              <ShadcnToggle :key="item.code" class="px-1 py-1" :value="item.code">
                 <ShadcnCard :title="item.name">
                   <template #extra>
                     <ShadcnTooltip v-if="item.description" :content="item.description">
@@ -25,7 +25,7 @@
                               :configuration="JSON.parse(item.configure as string)"
                               :type="item.type"
                               :query="item.type === 'DATASET' ? JSON.parse(item.query as string) : item.query"
-                              :original="item?.source?.id"/>
+                              :original="item?.source?.code"/>
                 </ShadcnCard>
               </ShadcnToggle>
             </ShadcnCol>
@@ -71,7 +71,6 @@ import ReportService from '@/services/report.ts'
 import { FilterModel } from '@/model/filter.ts'
 import { ReportModel } from '@/model/report.ts'
 import VisualView from '@/views/components/visual/VisualView.vue'
-import { toNumber } from 'lodash'
 
 export default defineComponent({
   name: 'ChartContainer',
@@ -158,7 +157,7 @@ export default defineComponent({
     onSubmit()
     {
       const nodes = this.data.filter(item =>
-          this.report.some((reportId: number) => toNumber(item.id) === toNumber(reportId))
+          this.report.some((reportId: string) => item.code === reportId)
       )
       this.$emit('change', nodes)
 

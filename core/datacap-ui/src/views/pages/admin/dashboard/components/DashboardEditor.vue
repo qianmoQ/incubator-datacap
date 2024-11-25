@@ -49,7 +49,7 @@
                         :configuration="JSON.parse(item.node.configure)"
                         :type="item.original?.type"
                         :query="item.original.type === 'DATASET' ? JSON.parse(item.original.query as string) : item.original.query"
-                        :original="item?.original?.source?.id"/>
+                        :original="item?.original?.source?.code"/>
 
             <VisualView v-else
                         :width="calculateWidth(item)"
@@ -219,7 +219,7 @@ export default defineComponent({
           i: 'new-' + Date.now(),
           title: node.name,
           node: {
-            id: node.id,
+            id: node.code,
             configure: node.configure,
             code: node.dataset?.code,
             query: node?.query
@@ -233,9 +233,10 @@ export default defineComponent({
     {
       if (this.formState) {
         this.formState.configure = JSON.stringify(this.layouts)
-        this.layouts.forEach((item: { node: { id: any; }; }) => {
-          this.formState?.reports?.push({ id: item.node.id })
+        this.layouts.forEach((item: { original: { code: any; }; }) => {
+          this.formState?.reports?.push({ code: item.original.code })
         })
+        this.formState.version = '1.0'
         this.loading = true
         DashboardService.saveOrUpdate(this.formState)
                         .then(response => {

@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.Serializable;
@@ -42,12 +41,28 @@ public abstract class BaseController<T extends BaseEntity>
     }
 
     /**
-     * Save changes
+     * Create new resource
      */
-    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
-    public CommonResponse<T> saveAndUpdate(@RequestBody T configure)
+    @PostMapping
+    @JsonView(value = {EntityView.UserView.class})
+    public CommonResponse<T> create(@RequestBody T configure)
     {
         return service.saveOrUpdate(repository, configure);
+    }
+
+    /**
+     * Update existing resource
+     */
+    @PutMapping
+    @JsonView(value = {EntityView.UserView.class})
+    public CommonResponse<T> update(@RequestBody T configure)
+    {
+        return repository.findByCode(configure.getCode())
+                .map(entity -> {
+                    configure.setId(entity.getId());
+                    return service.saveOrUpdate(repository, configure);
+                })
+                .orElseGet(() -> CommonResponse.failure("Resource [ " + configure.getCode() + " ] not found"));
     }
 
     @Deprecated

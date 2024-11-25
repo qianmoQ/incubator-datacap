@@ -9,7 +9,4 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface DashboardService
         extends BaseService<DashboardEntity>
 {
-    CommonResponse<PageEntity<DashboardEntity>> getAll(FilterBody filter);
-
-    CommonResponse<DashboardEntity> saveOrUpdate(PagingAndSortingRepository<DashboardEntity, Long> repository, DashboardEntity configure);
 }

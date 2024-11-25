@@ -1,8 +1,10 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.DataSetState;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.converter.ListConverter;
 import io.edurt.datacap.service.enums.SyncMode;
 import lombok.AllArgsConstructor;
@@ -38,50 +40,65 @@ public class DataSetEntity
         extends BaseEntity
 {
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @Column(name = "query")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String query;
 
     @Column(name = "sync_mode")
     @Enumerated(EnumType.STRING)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private SyncMode syncMode = SyncMode.MANUAL;
 
     @Column(name = "expression")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String expression; // only for TIMING
 
     @Column(name = "state")
     @Convert(converter = ListConverter.class)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private List<DataSetState> state;
 
     @Column(name = "message")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String message;
 
     @Column(name = "table_name")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String tableName;
 
     @Column(name = "code")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String code;
 
     @Column(name = "scheduler")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String scheduler;
 
     @Column(name = "executor")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String executor;
 
     @Column(name = "total_rows")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String totalRows;
 
     @Column(name = "total_size")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String totalSize;
 
     @Column(name = "life_cycle")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String lifeCycle;
 
     @Column(name = "life_cycle_column")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String lifeCycleColumn;
 
     @Column(name = "life_cycle_type")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String lifeCycleType;
 
     @ManyToOne
@@ -89,6 +106,7 @@ public class DataSetEntity
             joinColumns = @JoinColumn(name = "dataset_id"),
             inverseJoinColumns = @JoinColumn(name = "source_id"))
     @JsonIgnoreProperties(value = {"user"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private SourceEntity source;
 
     @ManyToOne
@@ -96,6 +114,7 @@ public class DataSetEntity
             joinColumns = @JoinColumn(name = "dataset_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnoreProperties(value = {"roles", "thirdConfigure", "avatarConfigure"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private UserEntity user;
 
     @Transient

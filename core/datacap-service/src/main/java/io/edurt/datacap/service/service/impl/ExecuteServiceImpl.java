@@ -44,15 +44,9 @@ public class ExecuteServiceImpl
     @Override
     public CommonResponse<Object> execute(ExecuteEntity configure)
     {
-        try {
-            return sourceRepository.findById(Long.valueOf(configure.getName()))
-                    .map(entity -> handleSourceEntity(entity, configure.getContent()))
-                    .orElse(CommonResponse.failure(ServiceState.SOURCE_NOT_FOUND));
-        }
-        catch (NumberFormatException e) {
-            log.error("Invalid source id: {}", configure.getName(), e);
-            return CommonResponse.failure(ServiceState.INVALID_PARAMETER, "Invalid source id");
-        }
+        return sourceRepository.findByCode(configure.getName())
+                .map(entity -> handleSourceEntity(entity, configure.getContent()))
+                .orElse(CommonResponse.failure(ServiceState.SOURCE_NOT_FOUND));
     }
 
     /**

@@ -295,5 +295,6 @@ nav:
         - api/plugin/uninstall.md
       - ApiDashboard:
         - api/dashboard/list.md
+        - api/dashboard/save.md
   - useCases.md
   - partners.md

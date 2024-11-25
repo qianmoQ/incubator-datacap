@@ -2,7 +2,7 @@
   <div class="relative">
     <ShadcnSpin v-model="loading" fixed/>
 
-    <DashboardEditor v-if="dataInfo" :info="dataInfo"/>
+    <DashboardEditor :info="dataInfo"/>
   </div>
 </template>
 
@@ -21,7 +21,8 @@ export default defineComponent({
     return {
       loading: false,
       saving: false,
-      dataInfo: null as DashboardModel | null
+      dataInfo: null as DashboardModel | null,
+      version: '2'
     }
   },
   created()
@@ -40,6 +41,7 @@ export default defineComponent({
                         .then(response => {
                           if (response.status) {
                             this.dataInfo = response.data
+                            this.version = response.data.version
                           }
                           else {
                             this.$Message.error({
