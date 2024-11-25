@@ -1,8 +1,11 @@
 package io.edurt.datacap.server.controller.user;
 
+import com.google.common.collect.Sets;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.server.controller.BaseController;
 import io.edurt.datacap.service.annotation.DynamicJsonView;
+import io.edurt.datacap.service.body.user.UserRole;
+import io.edurt.datacap.service.entity.RoleEntity;
 import io.edurt.datacap.service.entity.UserEntity;
 import io.edurt.datacap.service.record.TreeRecord;
 import io.edurt.datacap.service.repository.RoleRepository;
@@ -12,10 +15,13 @@ import io.edurt.datacap.service.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -44,7 +50,7 @@ public class UserController
         return this.service.info(id);
     }
 
-//    @PutMapping(value = "changePassword")
+    //    @PutMapping(value = "changePassword")
 //    public CommonResponse<Long> changePassword(@Validated @RequestBody UserPasswordBody configure)
 //    {
 //        return this.service.changePassword(configure);
@@ -80,26 +86,20 @@ public class UserController
     {
         return this.service.getMenus();
     }
-//
-//    @PutMapping(value = "allocationRole")
-//    public CommonResponse<UserEntity> allocationRole(@RequestBody UserRole configure)
-//    {
-//        UserEntity user = new UserEntity();
-//        user.setId(configure.getUserId());
-//        Set<RoleEntity> roles = Sets.newHashSet();
-//        configure.getRoles()
-//                .forEach(id -> roleRepository.findById(id)
-//                        .ifPresent(roles::add));
-//        user.setRoles(roles);
-//        return this.service.saveOrUpdate(user);
-//    }
-//
-//    @PostMapping
-//    public CommonResponse<UserEntity> saveAndUpdate(@RequestBody UserEntity configure)
-//    {
-//        return this.service.saveOrUpdate(configure);
-//    }
-//
+
+    @PutMapping(value = "allocationRole")
+    public CommonResponse<UserEntity> allocationRole(@RequestBody UserRole configure)
+    {
+        UserEntity user = new UserEntity();
+        user.setId(configure.getUserId());
+        Set<RoleEntity> roles = Sets.newHashSet();
+        configure.getRoles()
+                .forEach(code -> roleRepository.findByCode(code)
+                        .ifPresent(roles::add));
+        user.setRoles(roles);
+        return this.service.saveOrUpdate(user);
+    }
+
 //    @PutMapping(value = "changeEditorConfigure")
 //    public CommonResponse<Long> changeEditorConfigure(@Validated @RequestBody UserEditorEntity configure)
 //    {

@@ -16,5 +16,5 @@ import java.util.List;
 public class UserRole
 {
     private Long userId;
-    private List<Long> roles;
+    private List<String> roles;
 }

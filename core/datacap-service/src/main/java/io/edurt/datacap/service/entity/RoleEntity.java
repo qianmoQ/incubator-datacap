@@ -17,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,12 +43,4 @@ public class RoleEntity
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private Set<MenuEntity> menus = new HashSet<>();
-
-    @Transient
-    private boolean isDefault;
-
-    public boolean isDefault()
-    {
-        return this.getCode().equals("ROLE_ADMIN") || this.getCode().equals("ROLE_USER");
-    }
 }

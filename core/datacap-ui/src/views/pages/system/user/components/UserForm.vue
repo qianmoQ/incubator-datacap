@@ -60,7 +60,7 @@ export default defineComponent({
     return {
       loading: false,
       formState: ref<UserModel>({
-        id: undefined,
+        code: undefined,
         username: undefined,
         password: undefined,
         confirmPassword: undefined
@@ -70,8 +70,11 @@ export default defineComponent({
   created()
   {
     if (this.info) {
-      this.formState.id = this.info.id
-      this.formState.username = this.info.username
+      const { code, username } = this.info as UserModel
+      this.formState = {
+        code,
+        username
+      }
     }
   },
   methods: {

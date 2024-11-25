@@ -92,7 +92,7 @@ public class UserEntity
     @JoinTable(name = "datacap_user_role_relation",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIncludeProperties(value = {"code", "description"})
+    @JsonIncludeProperties(value = {"name", "code", "description"})
     @JsonView(value = {EntityView.AdminView.class})
     private Set<RoleEntity> roles = new HashSet<>();
 

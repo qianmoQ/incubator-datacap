@@ -4,6 +4,7 @@ export interface UserModel
 {
     id?: number
     username?: string
+    code?: string
     chatConfigure?: UserChatModel
     system?: boolean
     editorConfigure?: string
@@ -44,7 +45,7 @@ export interface UserAvatarModel
 
 export interface UserRoleModel
 {
-    roles: number[]
+    roles: string[]
     userId: number
 }
 

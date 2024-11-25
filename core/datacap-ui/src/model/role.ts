@@ -3,6 +3,7 @@ export interface RoleModel
     id: number | undefined
     name: string | undefined
     description: string | undefined
+    code?: string
     createTime?: string
     updateTime?: string
 }

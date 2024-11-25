@@ -3,13 +3,14 @@
     <template #content>
       <div class="relative">
         <ShadcnSpin v-model="loading" fixed/>
+
         <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit" @on-error="onError">
           <ShadcnFormItem name="roles"
                           :rules="[
                               { required: true, message: 'Please check the role' },
                           ]">
             <ShadcnCheckboxGroup v-model="formState.roles" name="roles">
-              <ShadcnCheckbox v-for="item in data" :value="item.id">{{ item.name }}</ShadcnCheckbox>
+              <ShadcnCheckbox v-for="item in data" :value="item.code">{{ item.name }}</ShadcnCheckbox>
             </ShadcnCheckboxGroup>
           </ShadcnFormItem>
 
@@ -77,7 +78,7 @@ export default defineComponent({
       if (this.info) {
         this.title = `${ StringUtils.replace(this.$t('role.common.assignRole'), '$NAME', this.info.username as string) }`
         this.formState = {
-          roles: this.info.roles?.map(v => v.id) as number[],
+          roles: this.info.roles?.map(v => v.code) as string[],
           userId: this.info.id as number
         }
         this.loading = true
