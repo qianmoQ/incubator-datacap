@@ -1,7 +1,9 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.converter.AvatarConverter;
 import io.edurt.datacap.service.entity.convert.AvatarEntity;
 import lombok.AllArgsConstructor;
@@ -38,13 +40,16 @@ public class DashboardEntity
         extends BaseEntity
 {
     @Column(name = "configure")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String configure;
 
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @Column(name = "avatar")
     @Convert(converter = AvatarConverter.class)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private AvatarEntity avatar;
 
     @ManyToOne
@@ -52,11 +57,13 @@ public class DashboardEntity
             joinColumns = @JoinColumn(name = "dashboard_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIncludeProperties(value = {"name", "username", "code"})
+    @JsonView(value = {EntityView.AdminView.class})
     private UserEntity user;
 
     @ManyToMany
     @JoinTable(name = "datacap_dashboard_report_relation",
             joinColumns = @JoinColumn(name = "dashboard_id"),
             inverseJoinColumns = @JoinColumn(name = "report_id"))
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Set<ReportEntity> reports;
 }

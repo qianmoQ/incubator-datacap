@@ -132,6 +132,7 @@ plugins:
             ApiHome: 开放 API
             ApiUser: 用户 API
             ApiPlugin: 插件 API
+            ApiDashboard: 仪表盘 API
         - locale: en
           name: English
           build: true
@@ -154,6 +155,7 @@ plugins:
             ApiHome: Open API
             ApiUser: User API
             ApiPlugin: Plugin API
+            ApiDashboard: Dashboard API
   - search
   - git-revision-date-localized:
       enable_creation_date: true
@@ -283,6 +285,7 @@ nav:
           - developer/pipeline/home.md
   - ApiHome:
       - api/common/response.md
+      - api/common/page.md
       - ApiUser:
         - api/user/register.md
         - api/user/login.md
@@ -290,5 +293,7 @@ nav:
         - api/plugin/plugin.md
         - api/plugin/install.md
         - api/plugin/uninstall.md
+      - ApiDashboard:
+        - api/dashboard/list.md
   - useCases.md
   - partners.md
