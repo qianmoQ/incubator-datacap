@@ -133,6 +133,7 @@ plugins:
             ApiUser: 用户 API
             ApiPlugin: 插件 API
             ApiDashboard: 仪表盘 API
+            ApiMenu: 菜单 API
         - locale: en
           name: English
           build: true
@@ -156,6 +157,7 @@ plugins:
             ApiUser: User API
             ApiPlugin: Plugin API
             ApiDashboard: Dashboard API
+            ApiMenu: Menu API
   - search
   - git-revision-date-localized:
       enable_creation_date: true
@@ -289,6 +291,7 @@ nav:
       - ApiUser:
         - api/user/register.md
         - api/user/login.md
+        - api/user/list.md
       - ApiPlugin:
         - api/plugin/plugin.md
         - api/plugin/install.md
@@ -299,5 +302,7 @@ nav:
         - api/dashboard/edit.md
         - api/dashboard/get.md
         - api/dashboard/delete.md
+      - ApiMenu:
+        - api/menu/list.md
   - useCases.md
   - partners.md

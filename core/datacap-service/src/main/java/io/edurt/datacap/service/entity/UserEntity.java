@@ -93,6 +93,7 @@ public class UserEntity
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonIncludeProperties(value = {"code", "description"})
+    @JsonView(value = {EntityView.AdminView.class})
     private Set<RoleEntity> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

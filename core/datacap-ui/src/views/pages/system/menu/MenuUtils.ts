@@ -8,7 +8,6 @@ export function useHeaders()
     const headers = computed(() => [
             { key: 'id', label: t('common.id') },
             { key: 'name', label: t('common.name') },
-            { key: 'code', label: t('common.code') },
             { key: 'description', label: t('common.description') },
             { key: 'group', label: t('common.group') },
             { key: 'sorted', label: t('common.sorted') },

@@ -3,6 +3,7 @@ package io.edurt.datacap.server.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.view.EntityView;
+import io.edurt.datacap.service.annotation.DynamicJsonView;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.entity.BaseEntity;
 import io.edurt.datacap.service.entity.PageEntity;
@@ -34,7 +35,7 @@ public abstract class BaseController<T extends BaseEntity>
      * Get data based on pagination
      */
     @PostMapping(value = "list")
-    @JsonView(value = {EntityView.UserView.class})
+    @DynamicJsonView
     public CommonResponse<PageEntity<T>> list(@RequestBody FilterBody filter)
     {
         return service.getAll(repository, filter);

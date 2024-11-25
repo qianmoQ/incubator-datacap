@@ -102,7 +102,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { GridItem, GridLayout } from 'vue3-grid-layout-next'
 import DashboardService from '@/services/dashboard'
 import { ReportModel } from '@/model/report.ts'

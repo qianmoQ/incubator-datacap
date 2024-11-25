@@ -14,12 +14,8 @@
         </ShadcnCol>
 
         <ShadcnCol span="6">
-          <ShadcnFormItem name="code"
-                          :label="$t('common.code')"
-                          :rules="[
-                          { required: true, message: $t('common.code') }
-                      ]">
-            <ShadcnInput v-model="formState.code" name="code"/>
+          <ShadcnFormItem name="icon" :label="$t('menu.common.icon')">
+            <ShadcnInput v-model="formState.icon" name="icon"/>
           </ShadcnFormItem>
         </ShadcnCol>
       </ShadcnRow>
@@ -44,7 +40,7 @@
 
       <ShadcnRow class="space-x-2">
         <ShadcnCol span="6">
-          <ShadcnFormItem name="sorted" :label="$t('common.sorted')">
+          <ShadcnFormItem name="sorted" :label="$t('common.sorted')" :rules="[ { required: true, message: $t('common.sorted') } ]">
             <ShadcnNumber v-model="formState.sorted" name="sorted"/>
           </ShadcnFormItem>
         </ShadcnCol>
@@ -85,7 +81,7 @@
                         :placeholder="$t('menu.tip.selectRedirect')"
                         :label="$t('menu.common.redirect')">
             <template #options>
-              <ShadcnSelectOption v-for="menu in fullMenus" :label="menu.name as string" :value="menu.id as string"/>
+              <ShadcnSelectOption v-for="menu in fullMenus" :label="menu.name as string" :value="menu.id as string "/>
             </template>
           </ShadcnSelect>
         </ShadcnCol>
@@ -99,16 +95,8 @@
         </ShadcnCol>
 
         <ShadcnCol span="6">
-          <ShadcnFormItem name="i18nKey" :label="$t('menu.common.i18nKey')" :rules="[ { required: true, message: $t('common.sorted') } ]">
+          <ShadcnFormItem name="i18nKey" :label="$t('menu.common.i18nKey')" :rules="[ { required: true, message: $t('menu.common.i18nKey') } ]">
             <ShadcnInput v-model="formState.i18nKey" name="i18nKey"/>
-          </ShadcnFormItem>
-        </ShadcnCol>
-      </ShadcnRow>
-
-      <ShadcnRow class="space-x-2">
-        <ShadcnCol span="6">
-          <ShadcnFormItem name="icon" :label="$t('menu.common.icon')">
-            <ShadcnInput v-model="formState.icon" name="icon"/>
           </ShadcnFormItem>
         </ShadcnCol>
       </ShadcnRow>
