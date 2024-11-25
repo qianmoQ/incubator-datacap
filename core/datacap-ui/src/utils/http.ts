@@ -51,8 +51,18 @@ export class HttpUtils
 
         // If the authorization key does not match, clear the local token reload page
         if (response.code === 4003) {
-            router.push(`/common/403?redirect=${ router.currentRoute.value.fullPath }`)
+            const currentPath = router.currentRoute.value.path
+            router.push({
+                path: '/common/403',
+                query: {
+                    redirect: currentPath
+                },
+                // 替换当前的历史记录，这样用户点击后退时不会陷入循环
+                // Replace the current history record, so that the user can not enter a loop
+                replace: true
+            })
         }
+
         if (response.code === 5000) {
             this.handlerMessage(response.message)
         }

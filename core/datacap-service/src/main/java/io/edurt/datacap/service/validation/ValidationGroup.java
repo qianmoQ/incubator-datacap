@@ -9,23 +9,18 @@ public interface ValidationGroup
             extends ValidationGroup
     {
         interface Create
-                extends Crud
-        {}
+                extends Crud {}
 
         interface Update
-                extends Crud
-        {}
+                extends Crud {}
 
         interface Query
-                extends Crud
-        {}
+                extends Crud {}
 
         interface Delete
-                extends Crud
-        {}
+                extends Crud {}
 
         interface Auth
-                extends Crud
-        {}
+                extends Crud {}
     }
 }

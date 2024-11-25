@@ -1,7 +1,5 @@
 package io.edurt.datacap.server.configure;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import io.edurt.datacap.common.utils.EnvironmentUtils;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.utils.PluginPathUtils;
@@ -47,12 +45,5 @@ public class PluginConfiguration
         pluginManager.start();
 
         return pluginManager;
-    }
-
-    // TODO: Delete it
-    @Bean
-    public Injector injector()
-    {
-        return Guice.createInjector();
     }
 }

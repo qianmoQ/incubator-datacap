@@ -3,6 +3,7 @@ package io.edurt.datacap.server.controller;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.entity.BaseEntity;
+import io.edurt.datacap.service.entity.PageEntity;
 import io.edurt.datacap.service.repository.BaseRepository;
 import io.edurt.datacap.service.service.BaseService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,10 +20,10 @@ import java.io.Serializable;
 public abstract class BaseController<T extends BaseEntity>
         implements Serializable
 {
-    private final BaseRepository repository;
+    private final BaseRepository<T, Long> repository;
     private final BaseService<T> service;
 
-    protected BaseController(BaseRepository repository, BaseService<T> service)
+    protected BaseController(BaseRepository<T, Long> repository, BaseService<T> service)
     {
         this.repository = repository;
         this.service = service;
@@ -32,7 +33,7 @@ public abstract class BaseController<T extends BaseEntity>
      * Get data based on pagination
      */
     @PostMapping(value = "list")
-    public CommonResponse list(@RequestBody FilterBody filter)
+    public CommonResponse<PageEntity<T>> list(@RequestBody FilterBody filter)
     {
         return service.getAll(repository, filter);
     }
@@ -41,20 +42,20 @@ public abstract class BaseController<T extends BaseEntity>
      * Save changes
      */
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
-    public CommonResponse saveAndUpdate(@RequestBody T configure)
+    public CommonResponse<T> saveAndUpdate(@RequestBody T configure)
     {
         return service.saveOrUpdate(repository, configure);
     }
 
     @Deprecated
     @DeleteMapping
-    public CommonResponse delete(@RequestParam(value = "id") Long id)
+    public CommonResponse<Long> delete(@RequestParam(value = "id") Long id)
     {
         return service.deleteById(repository, id);
     }
 
     @DeleteMapping(value = "{id}")
-    public CommonResponse deleteForPath(@PathVariable(value = "id") Long id)
+    public CommonResponse<Long> deleteForPath(@PathVariable(value = "id") Long id)
     {
         return service.deleteById(repository, id);
     }

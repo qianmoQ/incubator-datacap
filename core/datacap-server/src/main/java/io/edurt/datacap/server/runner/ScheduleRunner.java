@@ -1,4 +1,4 @@
-package io.edurt.datacap.server.configure;
+package io.edurt.datacap.server.runner;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.PluginManager;
@@ -26,7 +26,7 @@ import java.util.function.Function;
 @Slf4j
 @Service
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
-public class ScheduleRunnerConfigure
+public class ScheduleRunner
         implements CommandLineRunner
 {
     private final PluginManager pluginManager;
@@ -37,7 +37,7 @@ public class ScheduleRunnerConfigure
     private final ExecutorService executorService;
     private final Map<ScheduledType, Function<String, Runnable>> taskFactories;
 
-    public ScheduleRunnerConfigure(PluginManager pluginManager,
+    public ScheduleRunner(PluginManager pluginManager,
             ScheduledRepository scheduledRepository,
             SourceRepository sourceRepository,
             SourceService sourceService,

@@ -11,6 +11,7 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.CodeUtils;
 import io.edurt.datacap.common.utils.JsonUtils;
 import io.edurt.datacap.executor.common.RunState;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.adapter.PageRequestAdapter;
 import io.edurt.datacap.service.body.FilterBody;
@@ -412,7 +413,24 @@ public class SourceServiceImpl
                             log.error("The source [ {} ] not available", entity.getName());
                         }
                         else {
-                            this.startSyncDatabase(entity, pluginService, databaseCache, databaseTableCache, tableCache, tableColumnCache, databaseAddedCount, databaseUpdatedCount, databaseRemovedCount, tableAddedCount, tableUpdatedCount, tableRemovedCount, columnAddedCount, columnUpdatedCount, columnRemovedCount);
+                            this.startSyncDatabase(
+                                    entity,
+                                    plugin,
+                                    pluginService,
+                                    databaseCache,
+                                    databaseTableCache,
+                                    tableCache,
+                                    tableColumnCache,
+                                    databaseAddedCount,
+                                    databaseUpdatedCount,
+                                    databaseRemovedCount,
+                                    tableAddedCount,
+                                    tableUpdatedCount,
+                                    tableRemovedCount,
+                                    columnAddedCount,
+                                    columnUpdatedCount,
+                                    columnRemovedCount
+                            );
                         }
                         scheduledHistory.setState(RunState.SUCCESS);
                     }
@@ -526,7 +544,7 @@ public class SourceServiceImpl
      * @param columnUpdatedCount the AtomicInteger object representing the count of updated columns
      * @param columnRemovedCount the AtomicInteger object representing the count of removed columns
      */
-    private void startSyncDatabase(SourceEntity entity, PluginService plugin, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger databaseAddedCount, AtomicInteger databaseUpdatedCount, AtomicInteger databaseRemovedCount, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
+    private void startSyncDatabase(SourceEntity entity, Plugin plugin, PluginService pluginService, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger databaseAddedCount, AtomicInteger databaseUpdatedCount, AtomicInteger databaseRemovedCount, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
     {
         String templateName = "SYSTEM_FOR_GET_ALL_DATABASES";
         TemplateEntity template = getTemplate(templateName, entity);
@@ -534,10 +552,7 @@ public class SourceServiceImpl
             log.warn("The source [ {} ] protocol [ {} ] template [ {} ] is not available, skip sync database", entity.getName(), entity.getProtocol(), templateName);
         }
         else {
-//            Configure pConfigure = entity.toConfigure();
-//            pConfigure.setPluginManager(pluginManager);
-//            plugin.connect(pConfigure);
-            Response response = plugin.execute(getSqlContext(template, null));
+            Response response = pluginService.execute(entity.toConfigure(pluginManager, plugin), getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
                 log.error("The source [ {} ] protocol [ {} ] sync metadata  [ {} ] failed", entity.getName(), entity.getProtocol(), response.getMessage());
             }
@@ -578,7 +593,21 @@ public class SourceServiceImpl
                 databaseHandler.deleteAll(deleteEntities);
                 databaseRemovedCount.addAndGet(deleteEntities.size());
             }
-            this.startSyncTable(entity, plugin, databaseCache, databaseTableCache, tableCache, tableColumnCache, tableAddedCount, tableUpdatedCount, tableRemovedCount, columnAddedCount, columnUpdatedCount, columnRemovedCount);
+            this.startSyncTable(
+                    entity,
+                    plugin,
+                    pluginService,
+                    databaseCache,
+                    databaseTableCache,
+                    tableCache,
+                    tableColumnCache,
+                    tableAddedCount,
+                    tableUpdatedCount,
+                    tableRemovedCount,
+                    columnAddedCount,
+                    columnUpdatedCount,
+                    columnRemovedCount
+            );
         }
     }
 
@@ -598,7 +627,7 @@ public class SourceServiceImpl
      * @param columnUpdatedCount the column updated count
      * @param columnRemovedCount the column removed count
      */
-    private void startSyncTable(SourceEntity entity, PluginService plugin, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
+    private void startSyncTable(SourceEntity entity, Plugin plugin, PluginService pluginService, Map<String, DatabaseEntity> databaseCache, Map<String, List<TableEntity>> databaseTableCache, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger tableAddedCount, AtomicInteger tableUpdatedCount, AtomicInteger tableRemovedCount, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
     {
         String templateName = "SYSTEM_FOR_GET_ALL_TABLES";
         TemplateEntity template = getTemplate(templateName, entity);
@@ -606,10 +635,7 @@ public class SourceServiceImpl
             log.warn("The source [ {} ] protocol [ {} ] template [ {} ] is not available, skip sync table", entity.getName(), entity.getProtocol(), templateName);
         }
         else {
-//            Configure pConfigure = entity.toConfigure();
-//            pConfigure.setPluginManager(pluginManager);
-//            plugin.connect(pConfigure);
-            Response response = plugin.execute(getSqlContext(template, null));
+            Response response = pluginService.execute(entity.toConfigure(pluginManager, plugin), getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
                 log.error("The source [ {} ] protocol [ {} ] sync metadata tables  [ {} ] failed", entity.getName(), entity.getProtocol(), response.getMessage());
             }
@@ -675,7 +701,16 @@ public class SourceServiceImpl
                     tableRemovedCount.addAndGet(deleteEntities.size());
                 });
 
-                this.startSyncColumn(entity, plugin, tableCache, tableColumnCache, columnAddedCount, columnUpdatedCount, columnRemovedCount);
+                this.startSyncColumn(
+                        entity,
+                        plugin,
+                        pluginService,
+                        tableCache,
+                        tableColumnCache,
+                        columnAddedCount,
+                        columnUpdatedCount,
+                        columnRemovedCount
+                );
             }
         }
     }
@@ -691,7 +726,7 @@ public class SourceServiceImpl
      * @param columnUpdatedCount an atomic counter for tracking the number of columns updated
      * @param columnRemovedCount an atomic counter for tracking the number of columns removed
      */
-    private void startSyncColumn(SourceEntity entity, PluginService plugin, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
+    private void startSyncColumn(SourceEntity entity, Plugin plugin, PluginService pluginService, Map<String, TableEntity> tableCache, Map<String, List<ColumnEntity>> tableColumnCache, AtomicInteger columnAddedCount, AtomicInteger columnUpdatedCount, AtomicInteger columnRemovedCount)
     {
         String templateName = "SYSTEM_FOR_GET_ALL_COLUMNS";
         TemplateEntity template = getTemplate(templateName, entity);
@@ -699,10 +734,7 @@ public class SourceServiceImpl
             log.warn("The source [ {} ] protocol [ {} ] template [ {} ] is not available, skip sync column", entity.getName(), entity.getProtocol(), templateName);
         }
         else {
-//            Configure pConfigure = entity.toConfigure();
-//            pConfigure.setPluginManager(pluginManager);
-//            plugin.connect(pConfigure);
-            Response response = plugin.execute(getSqlContext(template, null));
+            Response response = pluginService.execute(entity.toConfigure(pluginManager, plugin), getSqlContext(template, null));
             if (!response.getIsSuccessful()) {
                 log.error("The source [ {} ] protocol [ {} ] sync metadata columns  [ {} ] failed", entity.getName(), entity.getProtocol(), response.getMessage());
             }

@@ -1,5 +1,7 @@
 package io.edurt.datacap.service.source;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.schedule.ScheduledRunnable;
@@ -17,12 +19,13 @@ import java.util.Optional;
  * Scheduled task runner for checking data source health status
  *
  * <p>
- * 该类负责定期检查所有数据源的连接状态、版本信息等，并更新数据源状态
+ * 负责定期检查所有数据源的连接状态、版本信息等，并更新数据源状态
  * This class is responsible for periodically checking the connection status,
  * version information, etc. of all data sources and updating their status
  * </p>
  */
 @Slf4j
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class CheckScheduledRunnable
         extends ScheduledRunnable
 {
@@ -156,6 +159,9 @@ public class CheckScheduledRunnable
                 .map(version -> {
                     if (version instanceof ArrayList) {
                         return ((ArrayList<?>) version).get(0).toString();
+                    }
+                    else if (version instanceof JsonNode) {
+                        return ((JsonNode) version).get("version").asText();
                     }
                     return version.toString();
                 })

@@ -1,9 +1,7 @@
 package io.edurt.datacap.service.service.impl;
 
 import com.google.common.collect.Lists;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.BeanToPropertiesUtils;
 import io.edurt.datacap.executor.ExecutorService;
@@ -14,6 +12,7 @@ import io.edurt.datacap.executor.common.RunWay;
 import io.edurt.datacap.executor.configure.ExecutorConfigure;
 import io.edurt.datacap.executor.configure.ExecutorRequest;
 import io.edurt.datacap.executor.configure.ExecutorResponse;
+import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.adapter.PageRequestAdapter;
 import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.body.PipelineBody;
@@ -53,26 +52,27 @@ import java.util.concurrent.Executors;
 
 @Service
 @Slf4j
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class PipelineServiceImpl
         implements PipelineService
 {
     private final SourceRepository sourceRepository;
-    private final Injector injector;
     private final Environment environment;
     private final PipelineRepository repository;
     private final InitializerConfigure initializer;
+    private final PluginManager pluginManager;
 
-    public PipelineServiceImpl(SourceRepository sourceRepository, Injector injector, Environment environment, PipelineRepository repository, InitializerConfigure initializer)
+    public PipelineServiceImpl(SourceRepository sourceRepository, Environment environment, PipelineRepository repository, InitializerConfigure initializer, PluginManager pluginManager)
     {
         this.sourceRepository = sourceRepository;
-        this.injector = injector;
         this.environment = environment;
         this.repository = repository;
         this.initializer = initializer;
+        this.pluginManager = pluginManager;
     }
 
     @Override
-    public CommonResponse<PageEntity> getAll(BaseRepository repository1, FilterBody filter)
+    public CommonResponse<PageEntity<PipelineEntity>> getAll(BaseRepository<PipelineEntity, Long> repository1, FilterBody filter)
     {
         Pageable pageable = PageRequestAdapter.of(filter);
         return CommonResponse.success(PageEntity.build(repository.findAllByUser(UserDetailsService.getUser(), pageable)));
@@ -156,10 +156,12 @@ public class PipelineServiceImpl
             log.info("Pipeline containers is not full, submit to executor [ {} ]", pipelineName);
             pipelineEntity.setState(RunState.RUNNING);
             repository.save(pipelineEntity);
-            Optional<ExecutorService> executorOptional = injector.getInstance(Key.get(new TypeLiteral<Set<ExecutorService>>() {}))
-                    .stream()
-                    .filter(executorService -> executorService.name().equals(configure.getExecutor()))
-                    .findFirst();
+            // TODO: Refactor
+            Optional<ExecutorService> executorOptional = null;
+//                    injector.getInstance(Key.get(new TypeLiteral<Set<ExecutorService>>() {}))
+//                    .stream()
+//                    .filter(executorService -> executorService.name().equals(configure.getExecutor()))
+//                    .findFirst();
 
             try {
                 FileUtils.forceMkdir(new File(work));

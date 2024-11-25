@@ -30,7 +30,7 @@
         <div class="relative p-2 flex items-center">
           <ShadcnSpin v-if="localLoading" fixed/>
 
-          <div v-if="configuration">
+          <div v-if="configuration" @click.stop.prevent>
             <ShadcnToggleGroup v-model="configuration.type" @on-change="onChangeType">
               <ShadcnSpace class="items-center" wrap>
                 <ShadcnToggle :disabled="configuration.headers.length === 0" :value="Type.TABLE">
