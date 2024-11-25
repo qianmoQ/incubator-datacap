@@ -48,20 +48,8 @@ public class RoleEntity
     @Transient
     private boolean isDefault;
 
-    @Transient
-    private String code;
-
     public boolean isDefault()
     {
         return this.getCode().equals("ROLE_ADMIN") || this.getCode().equals("ROLE_USER");
-    }
-
-    public String getCode()
-    {
-        if (getName() == null) {
-            return this.code;
-        }
-
-        return String.format("ROLE_%s", this.getName().toUpperCase());
     }
 }

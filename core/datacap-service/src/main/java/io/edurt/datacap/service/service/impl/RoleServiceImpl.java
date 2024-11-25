@@ -35,7 +35,7 @@ public class RoleServiceImpl
     }
 
     @Override
-    public CommonResponse<Object> getMenusByRoleId(Long roleId)
+    public CommonResponse<List<TreeRecord>> getMenusByRoleId(Long roleId)
     {
         Optional<RoleEntity> optionalRole = repository.findById(roleId);
         if (!optionalRole.isPresent()) {
