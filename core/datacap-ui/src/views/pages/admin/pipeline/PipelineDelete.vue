@@ -33,7 +33,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import PipelineService from '@/services/pipeline'
-import { toNumber } from 'lodash'
 import { PipelineModel } from '@/model/pipeline.ts'
 
 export default defineComponent({
@@ -79,7 +78,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        PipelineService.deleteById(toNumber(this.info.id))
+        PipelineService.deleteByCode(this.info.code!)
                        .then(response => {
                          if (response.status) {
                            this.$Message.success({

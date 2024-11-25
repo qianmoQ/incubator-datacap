@@ -81,14 +81,14 @@ public class PipelineServiceImpl
     @Override
     public CommonResponse<Object> submit(PipelineBody configure)
     {
-        Optional<SourceEntity> fromSourceOptional = sourceRepository.findById(configure.getFrom().getId());
-        if (!fromSourceOptional.isPresent()) {
-            return CommonResponse.failure(String.format("From source [ %s ] not found", configure.getFrom().getId()));
+        Optional<SourceEntity> fromSourceOptional = sourceRepository.findByCode(configure.getFrom().getCode());
+        if (fromSourceOptional.isEmpty()) {
+            return CommonResponse.failure(String.format("From source [ %s ] not found", configure.getFrom().getCode()));
         }
 
-        Optional<SourceEntity> toSourceOptional = sourceRepository.findById(configure.getTo().getId());
-        if (!toSourceOptional.isPresent()) {
-            return CommonResponse.failure(String.format("To source [ %s ] not found", configure.getTo().getId()));
+        Optional<SourceEntity> toSourceOptional = sourceRepository.findByCode(configure.getTo().getCode());
+        if (toSourceOptional.isEmpty()) {
+            return CommonResponse.failure(String.format("To source [ %s ] not found", configure.getTo().getCode()));
         }
 
         // Input source
@@ -113,8 +113,8 @@ public class PipelineServiceImpl
         ExecutorConfigure toField = new ExecutorConfigure(toSource.getType(), toProperties, toOptions, configure.getTo().getProtocol());
 
         PipelineEntity pipelineEntity = new PipelineEntity();
-        if (ObjectUtils.isNotEmpty(configure.getId())) {
-            pipelineEntity = this.repository.findById(configure.getId()).get();
+        if (ObjectUtils.isNotEmpty(configure.getCode())) {
+            pipelineEntity = this.repository.findByCode(configure.getCode()).get();
         }
         else {
             String username = UserDetailsService.getUser().getUsername();
@@ -157,54 +157,58 @@ public class PipelineServiceImpl
             pipelineEntity.setState(RunState.RUNNING);
             repository.save(pipelineEntity);
             // TODO: Refactor
-            Optional<ExecutorService> executorOptional = null;
-//                    injector.getInstance(Key.get(new TypeLiteral<Set<ExecutorService>>() {}))
-//                    .stream()
-//                    .filter(executorService -> executorService.name().equals(configure.getExecutor()))
-//                    .findFirst();
+            PipelineEntity _finalPipelineEntity = pipelineEntity;
+            pluginManager.getPlugin(configure.getExecutor())
+                    .ifPresentOrElse(
+                            plugin -> {
+                                try {
+                                    FileUtils.forceMkdir(new File(work));
+                                }
+                                catch (Exception e) {
+                                    log.warn("Failed to create temporary directory", e);
+                                }
 
-            try {
-                FileUtils.forceMkdir(new File(work));
-            }
-            catch (Exception e) {
-                log.warn("Failed to create temporary directory", e);
-            }
+                                ExecutorRequest pipeline = new ExecutorRequest(work, environment.getProperty(String.format("datacap.executor.%s.home", configure.getExecutor().toLowerCase())),
+                                        pipelineName, UserDetailsService.getUser().getUsername(), fromField, toField,
+                                        RunMode.valueOf(environment.getProperty("datacap.executor.mode")),
+                                        RunWay.valueOf(environment.getProperty("datacap.executor.way")),
+                                        environment.getProperty("datacap.executor.startScript"),
+                                        RunEngine.valueOf(environment.getProperty("datacap.executor.engine")));
 
-            ExecutorRequest pipeline = new ExecutorRequest(work, environment.getProperty(String.format("datacap.executor.%s.home", configure.getExecutor().toLowerCase())),
-                    pipelineName, UserDetailsService.getUser().getUsername(), fromField, toField,
-                    RunMode.valueOf(environment.getProperty("datacap.executor.mode")),
-                    RunWay.valueOf(environment.getProperty("datacap.executor.way")),
-                    environment.getProperty("datacap.executor.startScript"),
-                    RunEngine.valueOf(environment.getProperty("datacap.executor.engine")));
+                                final java.util.concurrent.ExecutorService executorService = Executors.newCachedThreadPool();
+                                executorService.submit(() -> {
+                                    ExecutorService pluginService = plugin.getService(ExecutorService.class);
+                                    initializer.getTaskExecutors().put(pipelineName, executorService);
+                                    ExecutorResponse response = pluginService.start(pipeline);
+                                    log.info("Pipeline [ {} ] executed successfully", pipelineName);
+                                    _finalPipelineEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                                    _finalPipelineEntity.setState(response.getState());
+                                    _finalPipelineEntity.setMessage(response.getMessage());
+                                    _finalPipelineEntity.setElapsed(_finalPipelineEntity.getUpdateTime().getTime() - _finalPipelineEntity.getCreateTime().getTime());
+                                    repository.save(_finalPipelineEntity);
+                                    initializer.getTaskExecutors()
+                                            .remove(pipelineName);
+                                    executorService.shutdownNow();
+                                    log.info("Pipeline [ {} ] finished", pipelineName);
 
-            final java.util.concurrent.ExecutorService executorService = Executors.newCachedThreadPool();
-            PipelineEntity finalPipelineEntity = pipelineEntity;
-            executorService.submit(() -> {
-                initializer.getTaskExecutors()
-                        .put(pipelineName, executorService);
-                ExecutorResponse response = executorOptional.get()
-                        .start(pipeline);
-                log.info("Pipeline [ {} ] executed successfully", pipelineName);
-                finalPipelineEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                finalPipelineEntity.setState(response.getState());
-                finalPipelineEntity.setMessage(response.getMessage());
-                finalPipelineEntity.setElapsed(finalPipelineEntity.getUpdateTime().getTime() - finalPipelineEntity.getCreateTime().getTime());
-                repository.save(finalPipelineEntity);
-                initializer.getTaskExecutors()
-                        .remove(pipelineName);
-                executorService.shutdownNow();
-                log.info("Pipeline [ {} ] finished", pipelineName);
-
-                PipelineEntity entity = initializer.getTaskQueue()
-                        .poll();
-                if (ObjectUtils.isNotEmpty(entity)) {
-                    log.info("Extract tasks from the queue [ {} ] and start execution", entity.getName());
-                    this.submit(entity.entityToBody());
-                }
-                else {
-                    log.warn("The queue extraction task failed. Please check whether there are tasks in the queue. The current number of queue tasks: [ {} ]", initializer.getTaskQueue().size());
-                }
-            });
+                                    PipelineEntity entity = initializer.getTaskQueue().poll();
+                                    if (ObjectUtils.isNotEmpty(entity)) {
+                                        log.info("Extract tasks from the queue [ {} ] and start execution", entity.getName());
+                                        this.submit(entity.entityToBody());
+                                    }
+                                    else {
+                                        log.warn("The queue extraction task failed. Please check whether there are tasks in the queue. The current number of queue tasks: [ {} ]", initializer.getTaskQueue().size());
+                                    }
+                                });
+                            },
+                            () -> {
+                                _finalPipelineEntity.setState(RunState.FAILURE);
+                                _finalPipelineEntity.setMessage(String.format("Executor [ %s ] not found", configure.getExecutor()));
+                                repository.save(_finalPipelineEntity);
+                                log.error("Executor [ {} ] not found", configure.getExecutor());
+                                throw new RuntimeException(String.format("Executor [ %s ] not found", configure.getExecutor()));
+                            }
+                    );
         }
         return CommonResponse.success(pipelineEntity.getId());
     }
@@ -248,32 +252,30 @@ public class PipelineServiceImpl
     /**
      * Retrieves the log for a given pipeline ID.
      *
-     * @param id the ID of the pipeline
+     * @param code the ID of the pipeline
      * @return a response containing the log lines as a list of strings
      */
     @Override
-    public CommonResponse<List<String>> log(Long id)
+    public CommonResponse<List<String>> log(String code)
     {
-        Optional<PipelineEntity> pipelineOptional = this.repository.findById(id);
-        if (!pipelineOptional.isPresent()) {
-            return CommonResponse.failure(String.format("Pipeline [ %s ] not found", id));
-        }
+        return repository.findByCode(code)
+                .map(entity -> {
+                    if (entity.getState().equals(RunState.QUEUE)
+                            || entity.getState().equals(RunState.CREATED)) {
+                        return CommonResponse.<List<String>>failure(String.format("Pipeline [ %s ] is not running", entity.getName()));
+                    }
 
-        PipelineEntity entity = pipelineOptional.get();
-        if (entity.getState().equals(RunState.QUEUE)
-                || entity.getState().equals(RunState.CREATED)) {
-            return CommonResponse.failure(String.format("Pipeline [ %s ] is not running", entity.getName()));
-        }
-
-        List<String> lines = Lists.newArrayList();
-        try (FileInputStream stream = new FileInputStream(new File(String.format("%s/%s.log", entity.getWork(), entity.getName())))) {
-            IOUtils.readLines(stream, "UTF-8")
-                    .forEach(lines::add);
-        }
-        catch (IOException e) {
-            log.error("Failed to read pipeline [ {} ] log ", entity.getName(), e);
-        }
-        return CommonResponse.success(lines);
+                    List<String> lines = Lists.newArrayList();
+                    try (FileInputStream stream = new FileInputStream(new File(String.format("%s/%s.log", entity.getWork(), entity.getName())))) {
+                        lines.addAll(IOUtils.readLines(stream, "UTF-8"));
+                        return CommonResponse.success(lines);
+                    }
+                    catch (IOException e) {
+                        log.error("Failed to read pipeline [ {} ] log ", entity.getName(), e);
+                        return CommonResponse.<List<String>>failure("Failed to read log file");
+                    }
+                })
+                .orElse(CommonResponse.failure(String.format("Pipeline [ %s ] not found", code)));
     }
 
     @Override

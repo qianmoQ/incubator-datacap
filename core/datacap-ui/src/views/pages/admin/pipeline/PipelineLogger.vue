@@ -64,7 +64,7 @@ export default defineComponent({
       if (this.info) {
         this.title = `${ this.$t('pipeline.common.loggerInfo').replace('$VALUE', String(this.info.name)) }`
         this.loading = true
-        PipelineService.getLogger(Number(this.info.id))
+        PipelineService.getLogger(this.info.code)
                        .then(response => {
                          if (response.status) {
                            const ansi = new AnsiUp()

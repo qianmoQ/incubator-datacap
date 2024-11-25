@@ -13,14 +13,14 @@ class PipelineService
         super(DEFAULT_PATH)
     }
 
-    getLogger(id: number): Promise<ResponseModel>
+    getLogger(code: string): Promise<ResponseModel>
     {
-        return new HttpUtils().get(`${ DEFAULT_PATH }/log/${ id }`)
+        return new HttpUtils().get(`${ DEFAULT_PATH }/log/${ code }`)
     }
 
-    stop(id: number): Promise<ResponseModel>
+    stop(code: string): Promise<ResponseModel>
     {
-        return new HttpUtils().put(`${ DEFAULT_PATH }/stop/${ id }`)
+        return new HttpUtils().put(`${ DEFAULT_PATH }/stop/${ code }`)
     }
 
     submit(configure: PipelineModel): Promise<ResponseModel>

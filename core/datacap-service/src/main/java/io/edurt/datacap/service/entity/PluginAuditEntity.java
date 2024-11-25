@@ -1,8 +1,10 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.State;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.enums.QueryMode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,41 +30,52 @@ public class PluginAuditEntity
 {
     @Column(name = "state", unique = true)
     @Enumerated(EnumType.STRING)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private State state;
 
     @Column(name = "content", unique = true)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String content;
 
     @Column(name = "message", unique = true)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String message;
 
     @Column(name = "elapsed")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Long elapsed;
 
     @Column(name = "count")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private int count;
 
     @Column(name = "query_mode")
     @Enumerated(EnumType.STRING)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private QueryMode mode;
 
     @Column(name = "code")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String code;
 
     @Column(name = "home")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String home;
 
     @Column(name = "format")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String format;
 
     @ManyToOne
     @JoinColumn(name = "plugin_id")
-    @JsonIncludeProperties(value = {"id", "name", "type", "code"})
+    @JsonIncludeProperties(value = {"name", "type", "code"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private SourceEntity source;
 
     // Add from 1.1.0.20221115
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIncludeProperties(value = {"id", "username"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private UserEntity user;
 }

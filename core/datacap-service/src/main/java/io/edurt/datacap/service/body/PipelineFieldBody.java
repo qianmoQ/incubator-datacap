@@ -18,7 +18,7 @@ import java.util.Properties;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class PipelineFieldBody
 {
-    private Long id;
+    private String code;
     private Properties configures;
     private RunProtocol protocol;
 }

@@ -464,7 +464,7 @@ export default defineComponent({
       if (editorInstance && this.queryConfigure.configure) {
         const content = this.selectEditor.isSelection ? editorInstance.instance?.getSelectedText() : editorInstance.instance?.getValue()
         this.queryConfigure.configure.content = content as string
-        this.queryConfigure.configure.name = this.selectSource.id as string
+        this.queryConfigure.configure.name = this.selectSource.code as string
       }
 
       this.loading.running = true

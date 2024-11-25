@@ -1,7 +1,9 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.executor.common.RunState;
 import io.edurt.datacap.service.body.PipelineBody;
 import io.edurt.datacap.service.body.PipelineFieldBody;
@@ -33,49 +35,61 @@ public class PipelineEntity
         extends BaseEntity
 {
     @Column(name = "content", unique = true)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String content;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private RunState state;
 
     @Column(name = "message")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String message;
 
     @Column(name = "work")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String work;
 
     @Column(name = "elapsed")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Long elapsed;
 
     @Column(name = "executor")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String executor = "Seatunnel";
 
     @ManyToOne
     @JoinColumn(name = "from_id")
     @JsonIncludeProperties(value = {"id", "name", "type"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private SourceEntity from;
 
     @Column(name = "from_configures")
     @Convert(converter = PropertiesConverter.class)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Properties fromConfigures;
 
     @ManyToOne
     @JoinColumn(name = "to_id")
     @JsonIncludeProperties(value = {"id", "name", "type"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private SourceEntity to;
 
     @Column(name = "to_configures")
     @Convert(converter = PropertiesConverter.class)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Properties toConfigures;
 
     @Column(name = "flow_configure")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String flowConfigure;
 
     @ManyToOne
     @JoinTable(name = "datacap_pipeline_user_relation",
             joinColumns = @JoinColumn(name = "pipeline_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private UserEntity user;
 
     /**
@@ -86,15 +100,15 @@ public class PipelineEntity
     public PipelineBody entityToBody()
     {
         PipelineFieldBody from = PipelineFieldBody.builder()
-                .id(this.getFrom().getId())
+                .code(this.getFrom().getCode())
                 .configures(this.getFromConfigures())
                 .build();
         PipelineFieldBody to = PipelineFieldBody.builder()
-                .id(this.getTo().getId())
+                .code(this.getTo().getCode())
                 .configures(this.getToConfigures())
                 .build();
         return PipelineBody.builder()
-                .id(this.getId())
+                .code(this.getCode())
                 .content(this.getContent())
                 .from(from)
                 .to(to)

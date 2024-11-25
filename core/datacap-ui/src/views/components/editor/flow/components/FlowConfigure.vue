@@ -106,7 +106,7 @@ export default defineComponent({
     {
       if (this.data) {
         const configure = {
-          id: this.data.id,
+          code: this.data.code,
           protocol: this.data.protocol,
           configures: this.filterConfigure(this.formState.items),
           type: this.data.nodeType

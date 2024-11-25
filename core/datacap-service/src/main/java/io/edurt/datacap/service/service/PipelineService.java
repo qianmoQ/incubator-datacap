@@ -13,5 +13,5 @@ public interface PipelineService
 
     CommonResponse<Boolean> stop(Long id);
 
-    CommonResponse<List<String>> log(Long id);
+    CommonResponse<List<String>> log(String code);
 }

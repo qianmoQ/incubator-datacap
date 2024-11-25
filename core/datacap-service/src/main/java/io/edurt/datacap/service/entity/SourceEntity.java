@@ -51,6 +51,7 @@ public class SourceEntity
         extends BaseEntity
 {
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @Column(name = "_type", nullable = false)
@@ -59,30 +60,37 @@ public class SourceEntity
 
     @Column(name = "protocol", unique = true, nullable = false, columnDefinition = "varchar default 'HTTP'")
     @NotNull(message = "The passed protocol cannot by empty")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String protocol;
 
     @Column(name = "host", unique = true, nullable = false)
     @NotEmpty(message = "The passed host cannot by empty")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String host;
 
     @Column(name = "port", unique = true, nullable = false)
     @NotNull(message = "The passed port cannot by empty")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Integer port = 0;
 
     @Column(name = "username")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String username;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "_catalog")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String catalog;
 
     @Column(name = "_database")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String database;
 
     // Add from 1.1.0.20221115
     @Column(name = "_ssl", columnDefinition = "boolean default false")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Boolean ssl;
 
     @OneToMany(mappedBy = "source", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
@@ -96,35 +104,45 @@ public class SourceEntity
 
     @Column(name = "configure")
     @JsonProperty(value = "configure")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String configure;
 
     @Column(name = "used_config")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private boolean usedConfig;
 
     @Column(name = "version")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String version;
 
     @Column(name = "available")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Boolean available;
 
     @Column(name = "message")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String message;
 
     @Transient
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Map<String, Object> configures;
 
     @Transient
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private IConfigure schema;
 
     @Transient
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private List<IConfigureExecutor> pipelines;
 
     @Transient
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String home;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIncludeProperties(value = {"id", "username"})
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private UserEntity user;
 
     @OneToMany(mappedBy = "source", cascade = CascadeType.REMOVE)

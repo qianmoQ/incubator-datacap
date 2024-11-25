@@ -15,7 +15,7 @@ import lombok.ToString;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class PipelineBody
 {
-    private Long id;
+    private String code;
     private PipelineFieldBody from;
     private PipelineFieldBody to;
     private String content;

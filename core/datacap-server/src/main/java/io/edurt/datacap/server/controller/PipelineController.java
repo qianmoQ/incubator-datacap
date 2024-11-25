@@ -8,7 +8,6 @@ import io.edurt.datacap.service.service.PipelineService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,15 +35,9 @@ public class PipelineController
         return service.submit(configure);
     }
 
-    @PutMapping(value = "/stop/{id}")
-    public CommonResponse<Boolean> stop(@PathVariable Long id)
+    @GetMapping(value = "/log/{code}")
+    public CommonResponse<List<String>> log(@PathVariable String code)
     {
-        return service.stop(id);
-    }
-
-    @GetMapping(value = "/log/{id}")
-    public CommonResponse<List<String>> log(@PathVariable Long id)
-    {
-        return service.log(id);
+        return service.log(code);
     }
 }

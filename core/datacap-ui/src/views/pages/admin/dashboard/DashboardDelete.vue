@@ -74,7 +74,7 @@ export default defineComponent({
     {
       if (this.data) {
         this.loading = true
-        DashboardService.deleteById(this.data.code)
+        DashboardService.deleteByCode(this.data.code)
                         .then((response) => {
                           if (response.status) {
                             this.$Message.success({

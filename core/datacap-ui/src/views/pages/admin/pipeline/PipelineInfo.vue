@@ -46,7 +46,7 @@ export default defineComponent({
                      if (response.status && response.data) {
                        response.data.content.filter((item: any) => item.pipelines)
                                .flatMap((item: any) => item.pipelines.map((pipeline: any) => ({
-                                 id: item.id,
+                                 code: item.code,
                                  name: item.name,
                                  type: item.type,
                                  nodeType: pipeline.type === 'INPUT' ? 'input' : 'output',
@@ -54,6 +54,7 @@ export default defineComponent({
                                  protocol: item.protocol
                                })))
                                .forEach((configuration: Configuration) => this.contextData.push(configuration))
+                       console.log(response.data)
                      }
                    })
                    .finally(() => this.loading = false)
