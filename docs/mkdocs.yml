@@ -291,6 +291,8 @@ nav:
       - ApiUser:
         - api/user/register.md
         - api/user/login.md
+        - api/user/info.md
+        - api/user/menu.md
         - api/user/list.md
       - ApiPlugin:
         - api/plugin/plugin.md
@@ -304,5 +306,7 @@ nav:
         - api/dashboard/delete.md
       - ApiMenu:
         - api/menu/list.md
+        - api/menu/save.md
+        - api/menu/edit.md
   - useCases.md
   - partners.md

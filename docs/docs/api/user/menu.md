@@ -1,14 +1,10 @@
 ---
-title: 菜单列表 (管理员)
+title: 用户菜单
 ---
 
-请求地址: `/api/v1/menu/list`
+请求地址: `/api/v1/user/menus`
 
-请求方式: `POST`
-
-!!! note
-
-    该接口用于获取菜单列表，需要传递分页数据 `page` 和 `size` 作为参数，分页数据默认为 `1`，`size` 默认为 `10`。详细参考 [分页实体](../common/page.md)
+请求方式: `GET`
 
 ## Response
 

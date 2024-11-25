@@ -1,14 +1,10 @@
 ---
-title: 用户列表 (管理员)
+title: 用户信息
 ---
 
-请求地址: `/api/v1/user/list`
+请求地址: `/api/v1/user`
 
-请求方式: `POST`
-
-!!! note
-
-    该接口用于获取仪表盘列表，需要传递分页数据 `page` 和 `size` 作为参数，分页数据默认为 `1`，`size` 默认为 `12`。详细参考 [分页实体](../common/page.md)
+请求方式: `GET`
 
 ## Response
 

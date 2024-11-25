@@ -1,7 +1,9 @@
 package io.edurt.datacap.service.record;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.entity.MenuEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,18 +22,43 @@ import java.util.List;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TreeRecord
 {
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     List<TreeRecord> children;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Long id;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String title;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String url;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Integer sorted;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String code;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String i18nKey;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String icon;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private boolean isNew;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Boolean checked = false;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Boolean selected = false;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
+
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private Long parent;
 
     public static TreeRecord of(MenuEntity entity, boolean checked, boolean selected, List<TreeRecord> children)

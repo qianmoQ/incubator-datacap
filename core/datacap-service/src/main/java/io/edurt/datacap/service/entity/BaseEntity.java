@@ -12,8 +12,10 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +31,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
+@EntityListeners(value = AuditingEntityListener.class)
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"},
         justification = "I prefer to suppress these FindBugs warnings")
 public class BaseEntity
@@ -48,7 +51,7 @@ public class BaseEntity
     private String code;
 
     @Column(name = "active")
-    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
+    @JsonView(value = {EntityView.AdminView.class})
     private boolean active = true;
 
     @Column(name = "create_time")

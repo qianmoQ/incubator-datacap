@@ -1,6 +1,7 @@
 <template>
   <ShadcnDrawer v-model="visible" :title="title" width="40%">
     <ShadcnSpin v-if="loading" fixed/>
+
     <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
       <ShadcnRow class="space-x-2">
         <ShadcnCol span="6">

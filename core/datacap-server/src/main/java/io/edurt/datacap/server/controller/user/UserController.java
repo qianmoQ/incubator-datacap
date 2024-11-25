@@ -4,6 +4,7 @@ import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.server.controller.BaseController;
 import io.edurt.datacap.service.annotation.DynamicJsonView;
 import io.edurt.datacap.service.entity.UserEntity;
+import io.edurt.datacap.service.record.TreeRecord;
 import io.edurt.datacap.service.repository.RoleRepository;
 import io.edurt.datacap.service.repository.UserRepository;
 import io.edurt.datacap.service.service.UserLogService;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -40,7 +43,7 @@ public class UserController
     {
         return this.service.info(id);
     }
-//
+
 //    @PutMapping(value = "changePassword")
 //    public CommonResponse<Long> changePassword(@Validated @RequestBody UserPasswordBody configure)
 //    {
@@ -71,11 +74,12 @@ public class UserController
 //        return this.service.getSugs(id);
 //    }
 //
-//    @GetMapping(value = "menus")
-//    public CommonResponse<List<TreeRecord>> getMenus()
-//    {
-//        return this.service.getMenus();
-//    }
+    @GetMapping(value = "menus")
+    @DynamicJsonView
+    public CommonResponse<List<TreeRecord>> getMenus()
+    {
+        return this.service.getMenus();
+    }
 //
 //    @PutMapping(value = "allocationRole")
 //    public CommonResponse<UserEntity> allocationRole(@RequestBody UserRole configure)

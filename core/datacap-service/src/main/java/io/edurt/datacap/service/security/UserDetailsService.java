@@ -2,7 +2,9 @@ package io.edurt.datacap.service.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.service.entity.RoleEntity;
 import io.edurt.datacap.service.entity.UserEntity;
+import org.apache.commons.compress.utils.Sets;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
@@ -39,7 +42,7 @@ public class UserDetailsService
     public static UserDetailsService build(UserEntity user)
     {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(String.valueOf(role.getId())))
+                .map(role -> new SimpleGrantedAuthority(role.getCode()))
                 .collect(Collectors.toList());
         String avatar = null;
         if (user.getAvatarConfigure() != null) {
@@ -115,6 +118,15 @@ public class UserDetailsService
                 UserDetailsService loginPrincipalUserInfo = (UserDetailsService) principal;
                 userInfo.setUsername(loginPrincipalUserInfo.getUsername());
                 userInfo.setId(loginPrincipalUserInfo.getId());
+
+                Set<RoleEntity> roles = Sets.newHashSet();
+                loginPrincipalUserInfo.getAuthorities()
+                        .forEach(v -> {
+                            roles.add(RoleEntity.builder()
+                                    .code(v.getAuthority())
+                                    .build());
+                        });
+                userInfo.setRoles(roles);
             }
         }
         return userInfo;

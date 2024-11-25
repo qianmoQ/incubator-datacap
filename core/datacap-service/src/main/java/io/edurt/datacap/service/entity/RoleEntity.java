@@ -1,8 +1,11 @@
 package io.edurt.datacap.service.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -24,6 +27,7 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "datacap_role")
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", "EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC"},
@@ -32,6 +36,7 @@ public class RoleEntity
         extends BaseEntity
 {
     @Column(name = "description", columnDefinition = "varchar(1000)")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -48,11 +53,15 @@ public class RoleEntity
 
     public boolean isDefault()
     {
-        return this.getCode().equals("ROLE_ADMIN") || this.getCode().equals("ROLE_USER") ? true : false;
+        return this.getCode().equals("ROLE_ADMIN") || this.getCode().equals("ROLE_USER");
     }
 
     public String getCode()
     {
+        if (getName() == null) {
+            return this.code;
+        }
+
         return String.format("ROLE_%s", this.getName().toUpperCase());
     }
 }

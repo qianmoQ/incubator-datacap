@@ -18,7 +18,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Order(1)
 public class DynamicJsonViewAspect
 {
-
     @Around("@annotation(dynamicJsonView)")
     public Object around(ProceedingJoinPoint point, DynamicJsonView dynamicJsonView)
             throws Throwable

@@ -18,17 +18,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class DynamicJsonViewHttpMessageConverter
         implements ResponseBodyAdvice<Object>
 {
-
     private final ObjectMapper objectMapper;
 
     public DynamicJsonViewHttpMessageConverter(ObjectMapper objectMapper)
     {
         this.objectMapper = objectMapper;
-        log.info("DynamicJsonViewResponseBodyAdvice initialized");
+        log.info("DynamicJsonViewHttpMessageConverter initialized");
     }
 
     @Override
-    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType)
+    public boolean supports(@NotNull MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType)
     {
         return MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
