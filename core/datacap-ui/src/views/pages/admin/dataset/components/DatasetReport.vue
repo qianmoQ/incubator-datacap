@@ -42,7 +42,7 @@ const { proxy } = getCurrentInstance()!
 const props = defineProps<{
   visible: boolean,
   info?: { name: string, description: string, build: boolean }
-  id?: number
+  code?: string
   dimension?: any
   commitOptions?: any
   configure?: any
@@ -56,8 +56,8 @@ const onSubmit = () => {
   published.value = true
   const obj = props.dimension
   const configure = {
-    id: 0,
     name: formState.value.name,
+    code: props.code,
     realtime: true,
     type: 'DATASET',
     configure: JSON.stringify(props.commitOptions),
@@ -66,9 +66,6 @@ const onSubmit = () => {
     },
     query: JSON.stringify(props.configure),
     description: formState.value.description
-  }
-  if (props.id) {
-    configure.id = props.id
   }
   ReportService.saveOrUpdate(configure)
                .then(response => {

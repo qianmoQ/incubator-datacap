@@ -1,11 +1,8 @@
 package io.edurt.datacap.server.controller;
 
-import io.edurt.datacap.common.response.CommonResponse;
-import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.entity.ReportEntity;
 import io.edurt.datacap.service.repository.ReportRepository;
 import io.edurt.datacap.service.service.ReportService;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,11 +19,5 @@ public class ReportController
         super(repository, service);
         this.repository = repository;
         this.service = service;
-    }
-
-    @Override
-    public CommonResponse list(@RequestBody FilterBody filter)
-    {
-        return this.service.getAll(filter);
     }
 }

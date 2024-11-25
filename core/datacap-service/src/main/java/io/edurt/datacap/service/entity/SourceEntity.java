@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.utils.JsonUtils;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.configure.IConfigure;
@@ -52,6 +54,7 @@ public class SourceEntity
     private String description;
 
     @Column(name = "_type", nullable = false)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String type;
 
     @Column(name = "protocol", unique = true, nullable = false, columnDefinition = "varchar default 'HTTP'")

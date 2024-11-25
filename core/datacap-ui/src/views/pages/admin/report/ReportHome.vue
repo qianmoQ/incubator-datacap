@@ -38,7 +38,7 @@
               </template>
 
               <ShadcnDropdownItem :disabled="row.type === 'QUERY'">
-                <ShadcnLink :link="`/admin/dataset/adhoc/${row.dataset?.code}/${row.id}`" target="_blank">
+                <ShadcnLink :link="`/admin/dataset/adhoc/${row.dataset?.code}/${row.code}`" target="_blank">
                   <div class="flex items-center space-x-2">
                     <ShadcnIcon icon="Pencil" size="15"/>
                     <span>{{ $t('report.common.modify') }}</span>

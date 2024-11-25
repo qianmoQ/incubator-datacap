@@ -11,7 +11,7 @@
                     :type="info.type"
                     :configuration="JSON.parse(info.configure as string)"
                     :query="info.type === 'DATASET' ? JSON.parse(info.query as string) : info.query"
-                    :original="info?.source?.id"/>
+                    :original="info?.source?.code"/>
       </div>
     </div>
 

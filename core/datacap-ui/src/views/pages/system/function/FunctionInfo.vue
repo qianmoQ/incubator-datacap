@@ -60,7 +60,7 @@ import { defineComponent } from 'vue'
 import { useHeaders } from '@/views/pages/system/function/FunctionUtils'
 import { FunctionModel } from '@/model/function'
 import FunctionService from '@/services/function'
-import SourceService from '@/services/source'
+import PluginService from '@/services/plugin'
 import { cloneDeep, omit } from 'lodash'
 
 export default defineComponent({
@@ -128,17 +128,12 @@ export default defineComponent({
       }
 
       this.loading = true
-      SourceService.getPlugins()
+      PluginService.getPlugins()
                    .then(response => {
                      if (response.status) {
-                       const result = Array.from(
-                           new Set(
-                               (Object.values(response.data)
-                                      .reduce((acc: any, curr) => acc.concat(curr), []) as any[])
-                                   .map((value: { name: string }) => ({ label: value.name, value: value.name }))
-                           )
-                       )
-
+                       const result = response.data
+                                              .filter((value: { type: string }) => value.type === 'CONNECTOR')
+                                              .map((value: { name: string }) => ({ label: value.name, value: value.name }))
                        this.plugins = result
                      }
                    })

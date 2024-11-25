@@ -57,8 +57,8 @@ export abstract class BaseService
         }
     }
 
-    deleteById(id: number): Promise<ResponseModel>
+    deleteByCode(code: string): Promise<ResponseModel>
     {
-        return new HttpUtils().delete(`${ this.baseUrl }/${ id }`)
+        return new HttpUtils().delete(`${ this.baseUrl }/${ code }`)
     }
 }

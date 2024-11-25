@@ -216,7 +216,7 @@
 
   <DatasetReport v-if="publishVisible"
                  :info="dataInfo as any"
-                 :id="Number(id)"
+                 :code="reportCode"
                  :dimension="originalDimensions[0] as any"
                  :visible="publishVisible"
                  :commit-options="commitOptions as any"
@@ -264,7 +264,7 @@ export default defineComponent({
     return {
       loading: false,
       code: null as string | null,
-      id: null as number | null,
+      reportCode: null as string | null,
       originalMetrics: [],
       originalDimensions: [],
       originalData: [],
@@ -309,7 +309,7 @@ export default defineComponent({
         const code = this.$route.params.code as string
         this.code = code as string
         const id = this.$route.params.id
-        this.id = id as unknown as number
+        this.reportCode = id
         DatasetService.getColumnsByCode(this.code)
                       .then(response => {
                         if (response.status) {
@@ -317,7 +317,7 @@ export default defineComponent({
                           this.originalMetrics = response.data.filter((item: { mode: string; }) => item.mode === 'METRIC')
                           this.originalDimensions = response.data.filter((item: { mode: string; }) => item.mode === 'DIMENSION')
                           if (id) {
-                            ReportService.getById(this.id as number)
+                            ReportService.getByCode(id)
                                          .then(response => {
                                            if (response.status) {
                                              this.dataInfo.name = response.data.name

@@ -1,7 +1,9 @@
 package io.edurt.datacap.service.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.FunctionType;
+import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.validation.ValidationGroup;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +39,7 @@ public class FunctionEntity
             ValidationGroup.Crud.Update.class
     })
     @Column(name = "content")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String content;
 
     @NotBlank(groups = {
@@ -44,6 +47,7 @@ public class FunctionEntity
             ValidationGroup.Crud.Update.class
     })
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @NotNull(groups = {
@@ -52,6 +56,7 @@ public class FunctionEntity
     })
     @Size(min = 1)
     @Column(name = "plugin")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String plugin;
 
     @NotBlank(groups = {
@@ -59,10 +64,12 @@ public class FunctionEntity
             ValidationGroup.Crud.Update.class
     })
     @Column(name = "example")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String example;
 
     @Column(name = "type", unique = true)
     @Enumerated(EnumType.STRING)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private FunctionType type = FunctionType.KEYWORD;
 
     public List<String> getPlugin()
