@@ -1,6 +1,7 @@
 package io.edurt.datacap.service.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 @Slf4j
 @RestControllerAdvice
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class DynamicJsonViewHttpMessageConverter
         implements ResponseBodyAdvice<Object>
 {
