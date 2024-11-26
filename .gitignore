@@ -76,6 +76,8 @@ core/datacap-ui/yarn.lock
 
 # Qshell #
 .qshell/*
+.ossutilconfig
+.ossutil_checkpoint
 
 # Test #
 test/datacap-test-convert/*convertservice

@@ -7,7 +7,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.enums.ServiceState;
 import io.edurt.datacap.common.utils.BeanToPropertiesUtils;
 import io.edurt.datacap.common.utils.JsonUtils;
-import io.edurt.datacap.executor.common.RunProtocol;
 import io.edurt.datacap.service.body.PipelineFieldBody;
 import io.edurt.datacap.service.configure.FieldType;
 import io.edurt.datacap.service.configure.IConfigure;
@@ -276,9 +275,6 @@ public class ConfigureUtils
             if (!originProperties.containsKey("context") && query != null) {
                 originProperties.setProperty("context", query);
             }
-        }
-        if (fieldBody.getProtocol().equals(RunProtocol.JDBC)) {
-            originProperties.setProperty("url", String.format("jdbc:%s://%s:%s/%s", entity.getType().toLowerCase(), entity.getHost(), entity.getPort(), entity.getDatabase()));
         }
         return mergeProperties(entity, fields, originProperties);
     }
