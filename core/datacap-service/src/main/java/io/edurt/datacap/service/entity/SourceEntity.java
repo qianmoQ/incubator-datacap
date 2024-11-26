@@ -1,7 +1,6 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -43,7 +42,6 @@ import java.util.Optional;
 @SuperBuilder
 @Entity
 @Table(name = "datacap_source")
-@JsonIgnoreProperties(value = {"configure", "pluginAudits"})
 @EntityListeners(AuditingEntityListener.class)
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC", "EQ_DOESNT_OVERRIDE_EQUALS"},
         justification = "I prefer to suppress these FindBugs warnings")
@@ -78,6 +76,7 @@ public class SourceEntity
     private String username;
 
     @Column(name = "password")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String password;
 
     @Column(name = "_catalog")
@@ -103,9 +102,8 @@ public class SourceEntity
     private Boolean publish; // Public use or not
 
     @Column(name = "configure")
-    @JsonProperty(value = "configure")
     @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
-    private String configure;
+    private String originalConfigure;
 
     @Column(name = "used_config")
     @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
@@ -141,7 +139,7 @@ public class SourceEntity
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIncludeProperties(value = {"id", "username"})
+    @JsonIncludeProperties(value = {"id", "username", "code"})
     @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private UserEntity user;
 
@@ -153,18 +151,25 @@ public class SourceEntity
     @JsonIgnore
     private List<ScheduledHistoryEntity> historys;
 
-    public void setConfigure(String configure)
+    @Transient
+    private String name;
+
+    @Transient
+    @JsonProperty(value = "configure")
+    private IConfigure configure;
+
+    public void setOriginalConfigure(String configure)
     {
-        this.configure = configure;
+        this.originalConfigure = configure;
         if (StringUtils.isNotEmpty(configure)) {
-            this.setConfigures(JsonUtils.toMap(this.configure));
+            this.setConfigures(JsonUtils.toMap(this.originalConfigure));
         }
     }
 
     public Map<String, Object> getConfigures()
     {
-        if (StringUtils.isNotEmpty(this.configure)) {
-            this.setConfigures(JsonUtils.toMap(this.configure));
+        if (StringUtils.isNotEmpty(this.originalConfigure)) {
+            this.setConfigures(JsonUtils.toMap(this.originalConfigure));
         }
         return configures;
     }

@@ -2,6 +2,7 @@ package io.edurt.datacap.server.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.edurt.datacap.common.response.CommonResponse;
+import io.edurt.datacap.common.utils.CodeUtils;
 import io.edurt.datacap.common.view.EntityView;
 import io.edurt.datacap.service.annotation.DynamicJsonView;
 import io.edurt.datacap.service.body.FilterBody;
@@ -48,6 +49,7 @@ public abstract class BaseController<T extends BaseEntity>
     @JsonView(value = {EntityView.UserView.class})
     public CommonResponse<T> create(@RequestBody T configure)
     {
+        configure.setCode(CodeUtils.generateCode(false));
         return service.saveOrUpdate(repository, configure);
     }
 
@@ -61,6 +63,7 @@ public abstract class BaseController<T extends BaseEntity>
         return repository.findByCode(configure.getCode())
                 .map(entity -> {
                     configure.setId(entity.getId());
+                    configure.setCode(entity.getCode());
                     return service.saveOrUpdate(repository, configure);
                 })
                 .orElseGet(() -> CommonResponse.failure("Resource [ " + configure.getCode() + " ] not found"));

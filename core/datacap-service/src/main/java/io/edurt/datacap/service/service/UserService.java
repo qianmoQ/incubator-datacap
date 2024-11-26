@@ -21,7 +21,7 @@ public interface UserService
 
     CommonResponse<Object> authenticate(UserEntity configure);
 
-    CommonResponse<UserEntity> info(Long userId);
+    CommonResponse<UserEntity> info(String code);
 
     CommonResponse<Long> changePassword(UserPasswordBody configure);
 

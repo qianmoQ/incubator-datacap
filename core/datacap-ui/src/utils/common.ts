@@ -9,8 +9,8 @@ const userEditorConfigure = 'DataCapUserEditorConfigure'
  *
  * @return {number} The current user's ID.
  */
-const getCurrentUserId = (): number => {
-    return JSON.parse(localStorage.getItem(token) || '{}').id
+const getCurrentUserCode = (): number => {
+    return JSON.parse(localStorage.getItem(token) || '{}').code
 }
 
 /**
@@ -53,7 +53,7 @@ const fileToBase64 = (file: File): Promise<string> => {
 export default {
     token: token,
     menu: menu,
-    getCurrentUserId: getCurrentUserId,
+    getCurrentUserCode: getCurrentUserCode,
     userEditorConfigure: userEditorConfigure,
     getColor: getColor,
     fileToBase64: fileToBase64

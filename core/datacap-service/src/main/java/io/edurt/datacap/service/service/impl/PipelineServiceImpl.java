@@ -13,15 +13,12 @@ import io.edurt.datacap.executor.configure.ExecutorConfigure;
 import io.edurt.datacap.executor.configure.ExecutorRequest;
 import io.edurt.datacap.executor.configure.ExecutorResponse;
 import io.edurt.datacap.plugin.PluginManager;
-import io.edurt.datacap.service.adapter.PageRequestAdapter;
-import io.edurt.datacap.service.body.FilterBody;
 import io.edurt.datacap.service.body.PipelineBody;
 import io.edurt.datacap.service.common.ConfigureUtils;
 import io.edurt.datacap.service.common.FolderUtils;
 import io.edurt.datacap.service.configure.FieldType;
 import io.edurt.datacap.service.configure.IConfigureExecutorField;
 import io.edurt.datacap.service.configure.IConfigurePipelineType;
-import io.edurt.datacap.service.entity.PageEntity;
 import io.edurt.datacap.service.entity.PipelineEntity;
 import io.edurt.datacap.service.entity.SourceEntity;
 import io.edurt.datacap.service.initializer.InitializerConfigure;
@@ -37,7 +34,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -69,13 +65,6 @@ public class PipelineServiceImpl
         this.repository = repository;
         this.initializer = initializer;
         this.pluginManager = pluginManager;
-    }
-
-    @Override
-    public CommonResponse<PageEntity<PipelineEntity>> getAll(BaseRepository<PipelineEntity, Long> repository1, FilterBody filter)
-    {
-        Pageable pageable = PageRequestAdapter.of(filter);
-        return CommonResponse.success(PageEntity.build(repository.findAllByUser(UserDetailsService.getUser(), pageable)));
     }
 
     @Override

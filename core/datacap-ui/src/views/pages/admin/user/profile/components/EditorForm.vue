@@ -1,6 +1,7 @@
 <template>
   <div class="relative">
     <ShadcnSpin v-model="loading.default" fixed/>
+
     <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
       <ShadcnFormItem name="fontSize"
                       class="w-[40%]"
@@ -15,19 +16,19 @@
       <ShadcnFormItem name="theme"
                       :label="$t('user.common.theme')"
                       :description="$t('user.tip.theme')">
-        <ShadcnRadioGroup v-model="formState.theme">
-          <ShadcnRow>
+        <ShadcnToggleGroup v-model="formState.theme">
+          <ShadcnRow class="py-4 px-4">
             <ShadcnCol v-for="theme of themes" span="3" class="mb-2">
-              <ShadcnRadio :value="theme">
+              <ShadcnToggle class="w-full h-full p-1" :value="theme">
                 <VAceEditor lang="mysql"
                             :theme="theme"
                             :style="{height: '85px', width: '25vh'}"
                             :value="value"
                             :options="{readOnly: true}"/>
-              </ShadcnRadio>
+              </ShadcnToggle>
             </ShadcnCol>
           </ShadcnRow>
-        </ShadcnRadioGroup>
+        </ShadcnToggleGroup>
       </ShadcnFormItem>
 
       <ShadcnButton submit :loading="loading.submitting" :disabled="loading.submitting">
@@ -82,6 +83,7 @@ export default defineComponent({
     onSubmit()
     {
       this.loading.submitting = true
+      this.formState.theme = this.formState.theme[0] || 'github'
       UserService.changeEditor(this.formState as UserEditor)
                  .then((response) => {
                    if (response.status) {

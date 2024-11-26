@@ -147,16 +147,15 @@ public class UserServiceImpl
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        return CommonResponse.success(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles, userDetails.getAvatar()));
+        return CommonResponse.success(new JwtResponse(jwt, userDetails.getCode(), userDetails.getUsername(), roles, userDetails.getAvatar()));
     }
 
     @Override
-    public CommonResponse<UserEntity> info(Long userId)
+    public CommonResponse<UserEntity> info(String code)
     {
-        if (ObjectUtils.isEmpty(userId)) {
-            userId = UserDetailsService.getUser().getId();
-        }
-        return CommonResponse.success(this.userRepository.findById(userId).get());
+        return userRepository.findByCode(UserDetailsService.getUser().getCode())
+                .map(CommonResponse::success)
+                .orElseGet(() -> CommonResponse.failure(ServiceState.USER_NOT_FOUND));
     }
 
     @Override
@@ -233,7 +232,7 @@ public class UserServiceImpl
     public CommonResponse<List<TreeRecord>> getMenus()
     {
         Map<Long, TreeRecord> treeMap = new ConcurrentHashMap<>();
-        Optional<UserEntity> optionalUser = userRepository.findById(UserDetailsService.getUser().getId());
+        Optional<UserEntity> optionalUser = userRepository.findByCode(UserDetailsService.getUser().getCode());
         UserEntity user = optionalUser.get();
         List<TreeRecord> tree = new ArrayList<>();
         user.getRoles().forEach(role -> {

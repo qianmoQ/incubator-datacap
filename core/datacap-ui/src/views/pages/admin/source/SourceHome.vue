@@ -43,7 +43,7 @@
             <ShadcnTooltip :content="$t('source.common.modify').replace('$NAME', row.name)">
               <ShadcnButton circle
                             size="small"
-                            :disabled="loginUserId !== row.user.id"
+                            :disabled="loginUserCode !== row.user.code"
                             @click="visibleInfo(true, row)">
                 <ShadcnIcon icon="Pencil" :size="15"/>
               </ShadcnButton>
@@ -56,7 +56,7 @@
                 </ShadcnButton>
               </template>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available">
+              <ShadcnDropdownItem :disabled="(loginUserCode !== row.user.code) || !row.available">
                 <ShadcnLink :link="`/admin/source/${row?.code}`" target="_blank">
                   <div class="flex items-center space-x-2">
                     <ShadcnIcon icon="Cog" size="15"/>
@@ -65,21 +65,21 @@
                 </ShadcnLink>
               </ShadcnDropdownItem>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id)" @on-click="visibleHistory(true, row)">
+              <ShadcnDropdownItem :disabled="(loginUserCode !== row.user.code)" @on-click="visibleHistory(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="History" size="15"/>
                   <span>{{ $t('source.common.syncHistory') }}</span>
                 </div>
               </ShadcnDropdownItem>
 
-              <ShadcnDropdownItem :disabled="(loginUserId !== row.user.id) || !row.available" @on-click="visibleSyncMetadata(true, row)">
+              <ShadcnDropdownItem :disabled="(loginUserCode !== row.user.code) || !row.available" @on-click="visibleSyncMetadata(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="RefreshCcwDot" size="15"/>
                   <span>{{ $t('source.common.syncMetadata') }}</span>
                 </div>
               </ShadcnDropdownItem>
 
-              <ShadcnDropdownItem :disabled="loginUserId !== row.user.id" @on-click="visibleDelete(true, row)">
+              <ShadcnDropdownItem :disabled="loginUserCode !== row.user.code" @on-click="visibleDelete(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="Trash" size="15"/>
                   <span>{{ $t('common.deleteData') }}</span>
@@ -145,12 +145,12 @@ export default defineComponent({
   {
     const filter: FilterModel = new FilterModel()
     const { headers } = useHeaders()
-    const loginUserId = Common.getCurrentUserId()
+    const loginUserCode = Common.getCurrentUserCode()
 
     return {
       filter,
       headers,
-      loginUserId
+      loginUserCode
     }
   },
   data()

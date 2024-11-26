@@ -6,6 +6,7 @@ import io.edurt.datacap.common.enums.State;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.service.entity.UserLogEntity;
 import io.edurt.datacap.service.repository.UserLogRepository;
+import io.edurt.datacap.service.repository.UserRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -29,11 +30,13 @@ import java.sql.Timestamp;
         justification = "I prefer to suppress these FindBugs warnings")
 public class AuditUserLogHandler
 {
+    private final UserRepository userRepository;
     private final UserLogRepository userLogRepository;
     private UserLogEntity userLogEntity;
 
-    public AuditUserLogHandler(UserLogRepository userLogRepository)
+    public AuditUserLogHandler(UserRepository userRepository, UserLogRepository userLogRepository)
     {
+        this.userRepository = userRepository;
         this.userLogRepository = userLogRepository;
     }
 
@@ -60,7 +63,8 @@ public class AuditUserLogHandler
         try {
             if (jsonResult.getStatus()) {
                 userLogEntity.setState(State.SUCCESS);
-                userLogEntity.setUser(UserDetailsService.getUser());
+                userRepository.findByCode(UserDetailsService.getUser().getCode())
+                        .ifPresent(userLogEntity::setUser);
             }
             else {
                 userLogEntity.setMessage(jsonResult.getMessage().toString());

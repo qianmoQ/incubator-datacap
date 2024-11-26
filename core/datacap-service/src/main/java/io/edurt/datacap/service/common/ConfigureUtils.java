@@ -165,7 +165,7 @@ public class ConfigureUtils
                     configure.setSsl(ConfigureUtils.getBooleanValue(configures, IConfigureFieldName.ssl));
                     break;
                 case configures:
-                    configure.setConfigure(JsonUtils.toJSON(ConfigureUtils.getMapValue(configures, IConfigureFieldName.configures)));
+                    configure.setOriginalConfigure(JsonUtils.toJSON(ConfigureUtils.getMapValue(configures, IConfigureFieldName.configures)));
                     break;
                 case file:
                     configure.setUsedConfig(true);

@@ -20,8 +20,19 @@ public interface BaseService<T extends BaseEntity>
 {
     default CommonResponse<PageEntity<T>> getAll(BaseRepository<T, Long> repository, FilterBody filter)
     {
-        Pageable pageable = PageRequestAdapter.of(filter);
-        return CommonResponse.success(PageEntity.build(repository.findAll(pageable)));
+        try {
+            Pageable pageable = PageRequestAdapter.of(filter);
+
+            try {
+                return CommonResponse.success(PageEntity.build(repository.findAllByUser(UserDetailsService.getUser(), pageable)));
+            }
+            catch (UnsupportedOperationException e) {
+                return CommonResponse.success(PageEntity.build(repository.findAll(pageable)));
+            }
+        }
+        catch (Exception e) {
+            return CommonResponse.failure("Failed to fetch data: " + e.getMessage());
+        }
     }
 
     default CommonResponse<T> getById(BaseRepository<T, Long> repository, Long id)

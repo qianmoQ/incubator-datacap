@@ -82,7 +82,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        SourceService.deleteById(Number(this.info.id))
+        SourceService.deleteByCode(this.info.code!)
                      .then((response) => {
                        if (response.status) {
                          this.$Message.success({

@@ -97,7 +97,7 @@ public class AuditPluginHandler
                 pluginAudit.setContent(executeEntity.getContent());
                 pluginAudit.setMode(executeEntity.getMode());
                 pluginAudit.setFormat(executeEntity.getFormat());
-                this.sourceRepository.findById(Long.valueOf(executeEntity.getName()))
+                this.sourceRepository.findByCode(executeEntity.getName())
                         .ifPresent(pluginAudit::setSource);
             }
             UserEntity user = UserDetailsService.getUser();

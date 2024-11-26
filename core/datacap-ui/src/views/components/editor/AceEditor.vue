@@ -1,8 +1,8 @@
 <template>
   <VAceEditor lang="mysql"
               :value="internalValue as string"
-              :theme="configure.theme"
-              :style="{ height: height, fontSize: configure.fontSize + 'px' }"
+              :theme="configure?.theme || 'chrome'"
+              :style="{ height: height, fontSize: configure?.fontSize || 12 + 'px' }"
               :key="key"
               :options="{ enableSnippets: true, enableLiveAutocompletion: true, readOnly: readOnly }"
               @init="handlerEditorDidMount($event, 'mysql')"

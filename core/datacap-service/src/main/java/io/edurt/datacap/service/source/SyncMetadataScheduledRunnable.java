@@ -124,7 +124,7 @@ public class SyncMetadataScheduledRunnable
     {
         return CompletableFuture.runAsync(() ->
                 Optional.of(source)
-                        .map(SourceEntity::getId)
+                        .map(SourceEntity::getCode)
                         .ifPresent(this::syncSourceMetadata)
         );
     }
@@ -151,16 +151,16 @@ public class SyncMetadataScheduledRunnable
      * 同步单个数据源的元数据
      * Synchronize metadata for a single data source
      *
-     * @param sourceId 数据源ID Source ID
+     * @param code 数据源ID Source ID
      */
-    private void syncSourceMetadata(Long sourceId)
+    private void syncSourceMetadata(String code)
     {
-        Function<Long, String> getSourceName = id ->
-                sourceRepository.findById(id)
+        Function<String, String> getSourceName = id ->
+                sourceRepository.findByCode(id)
                         .map(SourceEntity::getName)
                         .orElse("Unknown");
 
-        Consumer<Long> syncOperation = id -> {
+        Consumer<String> syncOperation = id -> {
             String sourceName = getSourceName.apply(id);
             try {
                 log.debug("Starting metadata sync for source: {}", sourceName);
@@ -172,6 +172,6 @@ public class SyncMetadataScheduledRunnable
             }
         };
 
-        syncOperation.accept(sourceId);
+        syncOperation.accept(code);
     }
 }

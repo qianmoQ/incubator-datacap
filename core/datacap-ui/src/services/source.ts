@@ -5,7 +5,6 @@ import { SourceModel } from '@/model/source.ts'
 import { isEmpty } from 'lodash'
 import { FilterModel } from '@/model/filter.ts'
 
-const DEFAULT_PATH_V1 = '/api/v1/source'
 const DEFAULT_PATH_V2 = '/api/v2/source'
 
 class SourceService
@@ -18,7 +17,7 @@ class SourceService
 
     getPlugins(): Promise<ResponseModel>
     {
-        return new HttpUtils().get(`${ DEFAULT_PATH_V1 }/plugins`)
+        return new HttpUtils().get(`${ DEFAULT_PATH_V2 }/plugins`)
     }
 
     testConnection(configure: any)
@@ -34,7 +33,7 @@ class SourceService
     saveOrUpdate(configure: SourceModel): Promise<ResponseModel>
     {
         configure.protocol = isEmpty(configure.protocol) ? 'HTTP' : configure.protocol
-        if (configure.id && configure['id'] > 0) {
+        if (configure['id'] > 0 || configure['code']) {
             return new HttpUtils().put(DEFAULT_PATH_V2, JSON.stringify(configure))
         }
         else {
@@ -42,14 +41,14 @@ class SourceService
         }
     }
 
-    syncMetadata(id: number): Promise<ResponseModel>
+    syncMetadata(code: string): Promise<ResponseModel>
     {
-        return new HttpUtils().put(`${ DEFAULT_PATH_V2 }/syncMetadata/${ id }`)
+        return new HttpUtils().put(`${ DEFAULT_PATH_V2 }/syncMetadata/${ code }`)
     }
 
-    getHistory(id: number, configure: FilterModel): Promise<ResponseModel>
+    getHistory(code: string, configure: FilterModel): Promise<ResponseModel>
     {
-        return new HttpUtils().post(`${ DEFAULT_PATH_V2 }/getHistory/${ id }`, configure)
+        return new HttpUtils().post(`${ DEFAULT_PATH_V2 }/getHistory/${ code }`, configure)
     }
 }
 

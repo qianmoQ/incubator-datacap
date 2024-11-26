@@ -125,7 +125,7 @@ export default defineComponent({
     handleInitialize()
     {
       this.loading = true
-      SourceService.getHistory(this.info?.id as number, this.filter)
+      SourceService.getHistory(this.info?.code as string, this.filter)
                    .then((response) => {
                      if (response.status) {
                        this.data = response.data.content

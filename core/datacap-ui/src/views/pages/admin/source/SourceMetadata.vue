@@ -72,7 +72,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        SourceService.syncMetadata(Number(this.info.id))
+        SourceService.syncMetadata(this.info.code!)
                      .then((response) => {
                        if (response.status) {
                          this.$Message.success({

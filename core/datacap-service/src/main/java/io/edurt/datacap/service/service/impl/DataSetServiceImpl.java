@@ -47,7 +47,6 @@ import io.edurt.datacap.service.enums.SyncMode;
 import io.edurt.datacap.service.initializer.InitializerConfigure;
 import io.edurt.datacap.service.initializer.job.DatasetJob;
 import io.edurt.datacap.service.model.CreatedModel;
-import io.edurt.datacap.service.repository.BaseRepository;
 import io.edurt.datacap.service.repository.DataSetColumnRepository;
 import io.edurt.datacap.service.repository.DataSetRepository;
 import io.edurt.datacap.service.repository.DatasetHistoryRepository;
@@ -288,13 +287,6 @@ public class DataSetServiceImpl
                     return CommonResponse.success(PageEntity.build(historyRepository.findAllByDatasetOrderByCreateTimeDesc(item, pageable)));
                 })
                 .orElse(CommonResponse.failure(String.format("DataSet [ %s ] not found", code)));
-    }
-
-    @Override
-    public CommonResponse<PageEntity<DataSetEntity>> getAll(BaseRepository<DataSetEntity, Long> pagingAndSortingRepository, FilterBody filter)
-    {
-        Pageable pageable = PageRequestAdapter.of(filter);
-        return CommonResponse.success(PageEntity.build(repository.findAllByUser(UserDetailsService.getUser(), pageable)));
     }
 
     private void completeState(DataSetEntity entity, DataSetState state)

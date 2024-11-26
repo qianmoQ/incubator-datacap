@@ -14,15 +14,15 @@ public class JwtResponse
 {
     private String type = "Bearer";
     private String token;
-    private Long id;
+    private String code;
     private String username;
     private List<String> roles;
     private String avatar;
 
-    public JwtResponse(String accessToken, Long id, String username, List<String> roles, String avatar)
+    public JwtResponse(String accessToken, String code, String username, List<String> roles, String avatar)
     {
         this.token = accessToken;
-        this.id = id;
+        this.code = code;
         this.username = username;
         // Use an immutable list to ensure that the roles property cannot be modified externally
         this.roles = Collections.unmodifiableList(roles);

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.service.entity.RoleEntity;
 import io.edurt.datacap.service.entity.UserEntity;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.compress.utils.Sets;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,18 +23,23 @@ import java.util.stream.Collectors;
 public class UserDetailsService
         implements UserDetails
 {
+    @Getter
+    @Setter
+    @JsonIgnore
     private Long id;
-    private String username;
     @JsonIgnore
     private String password;
+    private String code;
+    private String username;
     private Collection<? extends GrantedAuthority> authorities;
     private String avatar;
 
-    public UserDetailsService(Long id, String username, String password,
+    public UserDetailsService(Long id, String code, String username, String password,
             Collection<? extends GrantedAuthority> authorities,
             String avatar)
     {
         this.id = id;
+        this.code = code;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -50,10 +57,12 @@ public class UserDetailsService
         }
         return new UserDetailsService(
                 user.getId(),
+                user.getCode(),
                 user.getUsername(),
                 user.getPassword(),
                 authorities,
-                avatar);
+                avatar
+        );
     }
 
     @Override
@@ -98,9 +107,9 @@ public class UserDetailsService
         return true;
     }
 
-    public Long getId()
+    public String getCode()
     {
-        return id;
+        return code;
     }
 
     public String getAvatar()
@@ -117,6 +126,7 @@ public class UserDetailsService
             if (Objects.nonNull(principal)) {
                 UserDetailsService loginPrincipalUserInfo = (UserDetailsService) principal;
                 userInfo.setUsername(loginPrincipalUserInfo.getUsername());
+                userInfo.setCode(loginPrincipalUserInfo.getCode());
                 userInfo.setId(loginPrincipalUserInfo.getId());
 
                 Set<RoleEntity> roles = Sets.newHashSet();

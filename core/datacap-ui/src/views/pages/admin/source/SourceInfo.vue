@@ -1,27 +1,24 @@
 <template>
   <ShadcnDrawer v-model="visible" :title="title" width="40%">
-    <div class="relative">
+    <div class="relative min-h-screen">
       <ShadcnSpin v-if="loading" fixed/>
 
       <ShadcnForm v-model="formState" v-if="formState" @on-submit="onSubmit">
 
         <ShadcnAlert v-if="testInfo.message" type="error" :title="testInfo.message" class="mb-3"/>
 
-        <ShadcnTab v-model="activeTab" :key="'tab-' + configureTabs.length" @on-change="onChangeTab">
+        <ShadcnTab v-model="activeTab" :key="`tab-${configureTabs.length}`" @on-change="onChangeTab">
           <ShadcnTabItem value="source" :label="$t('source.common.source')" :key="'source-tab'">
             <ShadcnFormItem name="type" :label="$t('source.common.type')" :rules="[{ required: true, message: $t('function.tip.selectPluginHolder') }]">
-              <div v-for="key in Object.keys(plugins)" :key="key">
-                <ShadcnRadioGroup v-model="formState.type" name="plugin" @on-change="onChangePlugin">
-                  <ShadcnDivider orientation="left" class="my-2">
-                    <span class="text-gray-300">{{ key }}</span>
-                  </ShadcnDivider>
-                  <ShadcnRadio v-for="plugin in plugins[key as any]" :key="plugin.name + '_' + plugin.type" :value="plugin.name + '_' + plugin.type">
-                    <ShadcnTooltip :content="plugin.description">
-                      <ShadcnAvatar square :src="'/static/images/plugin/' + plugin.name + '.png'" :alt="plugin.name"/>
-                    </ShadcnTooltip>
-                  </ShadcnRadio>
-                </ShadcnRadioGroup>
-              </div>
+              <ShadcnToggleGroup v-model="formState.type" class="space-x-2" name="plugin">
+                <ShadcnToggle v-for="plugin in plugins" class="p-1"
+                              :key="plugin.name"
+                              :value="plugin.name">
+                  <ShadcnTooltip :content="plugin.name" class="p-1">
+                    <img class="h-16 w-16 object-contain" :src="'/static/images/plugin/' + plugin.name + '.png'" :alt="plugin.name">
+                  </ShadcnTooltip>
+                </ShadcnToggle>
+              </ShadcnToggleGroup>
             </ShadcnFormItem>
           </ShadcnTabItem>
 
@@ -96,12 +93,14 @@
             <ShadcnButton type="error" @click="onCancel">
               {{ $t('common.cancel') }}
             </ShadcnButton>
+
             <ShadcnButton ghost
                           :loading="testing"
-                          :disabled="testing"
+                          :disabled="testing || !formState.type"
                           @click="onTest()">
               {{ $t('common.test') }}
             </ShadcnButton>
+
             <ShadcnButton submit :loading="saving" :disabled="!testInfo.connected || saving">
               {{ $t('common.save') }}
             </ShadcnButton>
@@ -115,7 +114,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { SourceModel, SourceRequest } from '@/model/source'
-import { cloneDeep, join } from 'lodash'
+import { cloneDeep, join, pick } from 'lodash'
 import SourceService from '@/services/source'
 import { TokenUtils } from '@/utils/token'
 import { ResponseModel } from '@/model/response'
@@ -133,10 +132,7 @@ export default defineComponent({
   setup()
   {
     const auth = TokenUtils.getAuthUser()
-
-    return {
-      auth
-    }
+    return { auth }
   },
   computed: {
     visible: {
@@ -172,70 +168,160 @@ export default defineComponent({
       plugins: [] as any[],
       pluginConfigure: null as unknown as any,
       pluginTabConfigure: null as unknown as any,
-      applyConfigure: null as unknown as any
+      applyConfigure: null as unknown as any,
+      originalSchema: null as unknown as any
     }
   },
   created()
   {
     this.handleInitialize()
   },
-  methods: {
-    handleInitialize()
-    {
-      this.loading = true
-      this.testInfo = { connected: false, percent: 0, successful: false }
-      this.title = `${ this.$t('source.common.create') }`
-      if (this.info) {
-        this.title = `${ this.$t('source.common.modify').replace('$NAME', this.info.name as string) }`
-        SourceService.getById(this.info.id as number)
-                     .then(response => {
-                       if (response.status) {
-                         this.formState = cloneDeep(response.data)
-                         this.formState.type = this.formState.type + '_' + this.formState.protocol
-                         this.applyConfigure = response.data?.schema
-                         this.pluginConfigure = this.applyConfigure?.configures
-                         if (this.pluginConfigure) {
-                           this.resetConfigureTab()
-                         }
-                       }
-                     })
-      }
-      else {
-        this.formState = SourceRequest.of()
-      }
+  watch: {
+    'formState.type': {
+      handler(newValue: any)
+      {
+        if (!newValue) {
+          return
+        }
 
-      SourceService.getPlugins()
-                   .then(response => {
-                     if (response.status) {
-                       this.plugins = response.data
-                     }
-                   })
-                   .finally(() => this.loading = false)
+        if (newValue instanceof Array) {
+          this.formState.type = newValue[0]
+        }
+
+        try {
+          this.activeTab = 'source'
+
+          // 找到匹配的插件
+          // Find matching plugin
+          const applyPlugin = this.plugins.find((plugin: { name: string }) =>
+              plugin.name === this.formState.type
+          ) as any
+
+          // 判断是否是修改模式且类型匹配
+          // Determine whether it is a modification mode and whether the type matches
+          const isEditingMatchingType = this.info && this.info.type === this.formState.type
+
+          if (isEditingMatchingType && this.originalSchema) {
+            // 如果是修改模式且类型匹配，使用修改数据的配置
+            // If it is a modification mode and the type matches, use the modified data's configuration
+            this.applyConfigure = cloneDeep(this.originalSchema)
+            this.pluginConfigure = this.applyConfigure?.configures
+          }
+          else {
+            // 如果是新建或者类型不匹配，使用当前插件的配置
+            // If it is a new one or the type does not match, use the current plugin's configuration
+            this.applyConfigure = cloneDeep(applyPlugin?.configure)
+            this.pluginConfigure = this.applyConfigure?.configures
+          }
+
+          // 重置配置标签页
+          // Reset configuration tab
+          this.$nextTick(() => {
+            this.resetConfigureTab()
+
+            if (this.configureTabs.length > 0) {
+              // 更新当前标签页的配置
+              // Update the configuration of the current tab
+              this.updatePluginTabConfigure('source')
+            }
+          })
+        }
+        catch (error) {
+          console.error('Plugin change error:', error)
+        }
+      },
+      immediate: false
+    }
+  },
+  methods: {
+    async handleInitialize()
+    {
+      try {
+        this.loading = true
+        this.testInfo = { connected: false, percent: 0, successful: false }
+        this.title = `${ this.$t('source.common.create') }`
+
+        // 获取插件列表的 Promise
+        // Get plugins promise
+        const getPluginsPromise = SourceService.getPlugins()
+
+        if (this.info) {
+          this.title = `${ this.$t('source.common.modify').replace('$NAME', String(this.info.name)) }`
+
+          // 同时执行获取插件列表和源代码信息的请求
+          // Simultaneously execute requests to get plugin list and source code
+          const [pluginsResponse, sourceResponse] = await Promise.all([
+            getPluginsPromise,
+            SourceService.getByCode(this.info.code)
+          ])
+
+          // 处理插件列表响应
+          // Handle plugin list response
+          if (pluginsResponse.status) {
+            this.plugins = pluginsResponse.data
+          }
+
+          // 处理源代码信息响应
+          // Handle source code response
+          if (sourceResponse.status) {
+            this.formState = cloneDeep(sourceResponse.data)
+            this.applyConfigure = sourceResponse.data?.schema
+            this.pluginConfigure = this.applyConfigure?.configures
+            this.originalSchema = cloneDeep(sourceResponse.data?.schema)
+
+            if (this.pluginConfigure) {
+              this.resetConfigureTab()
+
+              // 初始化时设置默认标签页的配置
+              // Set default tab config
+              this.updatePluginTabConfigure('source')
+            }
+          }
+        }
+        else {
+          // 如果没有 info，只需要获取插件列表
+          // If there is no info, only get plugin list
+          const pluginsResponse = await getPluginsPromise
+          if (pluginsResponse.status) {
+            this.plugins = pluginsResponse.data
+          }
+          this.formState = SourceRequest.of()
+        }
+      }
+      catch (error) {
+        console.error('Failed to initialize:', error)
+        this.$Message.error({
+          content: 'Failed to initialize the form',
+          showIcon: true
+        })
+      }
+      finally {
+        this.loading = false
+      }
     },
     onSubmit()
     {
       this.saving = true
-      const temp = (cloneDeep(this.formState.type) as string).split('_')
-      let type = temp[1]
-      let name = temp[0]
-      if (temp.length === 3) {
-        type = temp[2]
-        name = join([temp[0], temp[1]], ' ')
-      }
+      const { configures } = this.applyConfigure
       const configure = {
-        id: this.info?.id as number,
-        type: type,
-        name: name,
-        configure: this.applyConfigure,
+        code: this.formState.code,
+        name: this.formState.type,
+        configure: {
+          configures: configures.map((item: any) =>
+              pick(item, ['field', 'required', 'type', 'min', 'max', 'message', 'value']))
+        },
+        type: this.formState.type,
         version: this.formState.version
       }
-      SourceService.saveOrUpdate(configure)
+
+      SourceService.saveOrUpdate(configure as any)
                    .then((response) => {
                      if (response.status) {
                        this.$Message.success({
                          content: 'Create successful',
                          showIcon: true
                        })
+
                        this.onCancel()
                      }
                    })
@@ -248,10 +334,16 @@ export default defineComponent({
     onTest()
     {
       this.testing = true
-      const temp = (cloneDeep(this.formState.type) as string).split('_')
-      const type = temp[1]
-      const name = temp[0]
-      const configure = { type: type, name: name, configure: this.applyConfigure }
+
+      const { configures } = this.applyConfigure
+      const configure = {
+        type: this.formState.type,
+        configure: {
+          configures: configures.map((item: any) =>
+              pick(item, ['field', 'required', 'type', 'min', 'max', 'message', 'value']))
+        }
+      }
+
       SourceService.testConnection(configure)
                    .then((response) => {
                      this.testInfo.percent = 100
@@ -263,7 +355,9 @@ export default defineComponent({
                        this.testInfo.connected = true
                        this.testInfo.successful = true
                        this.testInfo.message = null
-                       this.formState.version = response.data?.columns[0]?.version ? response.data?.columns[0]?.version : response.data?.columns[0]?.result
+                       this.formState.version = response.data?.columns[0]?.version
+                           ? response.data?.columns[0]?.version
+                           : response.data?.columns[0]?.result
                      }
                      else {
                        this.testInfo.message = response.message
@@ -273,57 +367,35 @@ export default defineComponent({
                    })
                    .finally(() => this.testing = false)
     },
-    onChangePlugin(value: string)
+    updatePluginTabConfigure(tabValue: string)
     {
-      if (!value) {
-        return
-      }
-
-      const currentValue = this.formState.type
-
-      const pluginAndType = value.split('_')
-      if (!pluginAndType || pluginAndType.length < 2) {
-        return
-      }
-
-      this.activeTab = 'source'
-
-      try {
-        const applyPlugins: [] = this.plugins[pluginAndType[1] as any]
-        const applyPlugin = applyPlugins.filter(plugin => plugin['name'] === pluginAndType[0])[0] as any
-        this.applyConfigure = cloneDeep(applyPlugin?.configure)
-        this.pluginConfigure = this.applyConfigure?.configures
-
-        this.$nextTick(() => {
-          this.resetConfigureTab()
-          this.formState.type = value
-          this.$nextTick(() => {
-            this.activeTab = 'source'
-          })
-        })
-      }
-      catch (error) {
-        console.error('Plugin change error:', error)
-        this.formState.type = currentValue
+      if (tabValue !== 'source' && this.pluginConfigure) {
+        this.pluginTabConfigure = this.pluginConfigure.filter(
+            (field: { group: string }) => field.group === tabValue
+        )
       }
     },
     onChangeTab(value: any)
     {
-      if (value !== 'source') {
-        this.pluginTabConfigure = this.pluginConfigure.filter((field: { group: string }) => field.group === value)
-      }
+      this.updatePluginTabConfigure(value)
     },
     handlerUploadSuccess(response: ResponseModel)
     {
       if (response.status) {
-        const configure = this.applyConfigure.configures.filter((configure: { field: string }) => configure.field === 'file')
+        const configure = this.applyConfigure.configures.filter(
+            (configure: { field: string }) => configure.field === 'file'
+        )
         configure[0].value.push(response.data)
       }
     },
     handlerUploadRemove(file: any)
     {
-      const configure = this.applyConfigure.configures.filter((configure: { field: string }) => configure.field === 'file')
-      configure[0].value = configure[0].value.filter((value: string) => !value.endsWith(file.name))
+      const configure = this.applyConfigure.configures.filter(
+          (configure: { field: string }) => configure.field === 'file'
+      )
+      configure[0].value = configure[0].value.filter(
+          (value: string) => !value.endsWith(file.name)
+      )
     },
     onPlusConfigure(array: Array<any>)
     {

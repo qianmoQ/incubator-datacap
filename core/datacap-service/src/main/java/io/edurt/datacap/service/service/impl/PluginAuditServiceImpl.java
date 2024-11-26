@@ -11,20 +11,15 @@ import io.edurt.datacap.fs.FsResponse;
 import io.edurt.datacap.fs.FsService;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.service.activity.HeatmapActivity;
-import io.edurt.datacap.service.adapter.PageRequestAdapter;
-import io.edurt.datacap.service.body.FilterBody;
-import io.edurt.datacap.service.entity.PageEntity;
 import io.edurt.datacap.service.entity.PluginAuditEntity;
 import io.edurt.datacap.service.entity.UserEntity;
 import io.edurt.datacap.service.initializer.InitializerConfigure;
 import io.edurt.datacap.service.itransient.ContributionRadar;
-import io.edurt.datacap.service.repository.BaseRepository;
 import io.edurt.datacap.service.repository.PluginAuditRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.PluginAuditService;
 import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -50,13 +45,6 @@ public class PluginAuditServiceImpl
         this.pluginAuditRepository = pluginAuditRepository;
         this.initializer = initializer;
         this.pluginManager = pluginManager;
-    }
-
-    @Override
-    public CommonResponse<PageEntity<PluginAuditEntity>> getAll(BaseRepository repository, FilterBody filter)
-    {
-        Pageable pageable = PageRequestAdapter.of(filter);
-        return CommonResponse.success(PageEntity.build(this.pluginAuditRepository.findAllByUser(UserDetailsService.getUser(), pageable)));
     }
 
     @Override
