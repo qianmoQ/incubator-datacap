@@ -20,5 +20,5 @@ public class PipelineFieldBody
 {
     private String code;
     private Properties configures;
-    private RunProtocol protocol;
+    private String protocol;
 }

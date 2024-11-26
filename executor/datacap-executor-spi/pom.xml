@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>datacap-executor-spi</artifactId>
-    <description>DataCap - Executor spi</description>
+    <description>DataCap - Executor - Spi</description>
 
     <dependencies>
         <dependency>

@@ -286,7 +286,7 @@ public class ConfigureUtils
     public static PipelineFieldBody convertFieldBody(SourceEntity entity, String executor, IConfigurePipelineType pipelineType, Environment environment, Properties originProperties)
     {
         PipelineFieldBody body = new PipelineFieldBody();
-        body.setProtocol(RunProtocol.valueOf(entity.getProtocol()));
+        body.setProtocol(entity.getProtocol());
         IConfigure yamlConfigure = PluginUtils.loadYamlConfigure(entity.getProtocol(), entity.getType(), entity.getType(), environment);
         yamlConfigure.getPipelines()
                 .stream()

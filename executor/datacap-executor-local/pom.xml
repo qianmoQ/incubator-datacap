@@ -9,13 +9,14 @@
     </parent>
 
     <artifactId>datacap-executor-local</artifactId>
-    <description>DataCap - Executor for local</description>
+    <description>DataCap - Executor - Local</description>
 
     <dependencies>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-executor-spi</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

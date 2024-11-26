@@ -7,3 +7,7 @@ ALTER TABLE `datacap_dashboard`
 UPDATE `datacap_dashboard`
 SET `version` = '1.0'
 WHERE `version` IS NULL;
+
+UPDATE `datacap_dataset`
+SET `executor` = 'LocalExecutor'
+WHERE `executor` = 'Default';

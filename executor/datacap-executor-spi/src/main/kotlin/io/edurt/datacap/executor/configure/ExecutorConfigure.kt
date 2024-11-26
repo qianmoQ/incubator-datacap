@@ -11,8 +11,8 @@ data class ExecutorConfigure(
     var type: String?,
     var configure: Properties?,
     var supportOptions: Set<String> = mutableSetOf(),
-    var protocol: RunProtocol = RunProtocol.NONE,
-    var plugin: _root_ide_package_.io.edurt.datacap.spi.PluginService? = null,
+    var protocol: String?,
+    var plugin: PluginService? = null,
     var query: String? = null,
     var database: String? = null,
     var table: String? = null,
@@ -27,12 +27,12 @@ data class ExecutorConfigure(
         type: String?,
         configure: Properties?,
         supportOptions: Set<String> = mutableSetOf()
-    ) : this(type, configure, supportOptions, RunProtocol.NONE, null, null, null, null, null)
+    ) : this(type, configure, supportOptions, RunProtocol.NONE.name, null, null, null, null, null)
 
     constructor(
         type: String,
         configure: Properties,
         supportOptions: Set<String> = mutableSetOf(),
-        protocol: RunProtocol
+        protocol: String
     ) : this(type, configure, supportOptions, protocol, null, null, null, null, null)
 }

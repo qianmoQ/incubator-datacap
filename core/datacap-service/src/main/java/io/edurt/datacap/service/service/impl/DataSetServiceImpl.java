@@ -22,6 +22,7 @@ import io.edurt.datacap.executor.configure.ExecutorConfigure;
 import io.edurt.datacap.executor.configure.ExecutorRequest;
 import io.edurt.datacap.executor.configure.ExecutorResponse;
 import io.edurt.datacap.executor.configure.OriginColumn;
+import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.PluginManager;
 import io.edurt.datacap.plugin.PluginMetadata;
 import io.edurt.datacap.scheduler.SchedulerRequest;
@@ -318,16 +319,20 @@ public class DataSetServiceImpl
         }
     }
 
-    private Configure getConfigure(String database)
+    private Configure getConfigure(String database, Plugin plugin)
     {
-        Configure targetConfigure = new Configure();
-        targetConfigure.setHost(initializerConfigure.getDataSetConfigure().getHost());
-        targetConfigure.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
-        targetConfigure.setUsername(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getUsername()));
-        targetConfigure.setPassword(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getPassword()));
-        targetConfigure.setDatabase(Optional.ofNullable(database));
-        targetConfigure.setPluginManager(pluginManager);
-        return targetConfigure;
+        return Configure.builder()
+                .host(initializerConfigure.getDataSetConfigure().getHost())
+                .port(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()))
+                .username(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getUsername()))
+                .password(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getPassword()))
+                .database(Optional.ofNullable(database))
+                .pluginManager(pluginManager)
+                .format("JsonConvert")
+                .plugin(plugin)
+                .ssl(Optional.empty())
+                .env(Optional.empty())
+                .build();
     }
 
     private void startBuild(DataSetEntity entity, boolean rebuildColumn)
@@ -434,6 +439,8 @@ public class DataSetServiceImpl
                                 targetConfigure.setUsername(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getUsername()));
                                 targetConfigure.setPassword(Optional.ofNullable(initializerConfigure.getDataSetConfigure().getPassword()));
                                 targetConfigure.setDatabase(Optional.ofNullable(database));
+                                targetConfigure.setPlugin(plugin);
+                                targetConfigure.setPluginManager(pluginManager);
                                 Response response = pluginService.execute(targetConfigure, sql);
                                 if (response.getIsSuccessful()) {
                                     entity.setTableName(originTableName);
@@ -468,60 +475,67 @@ public class DataSetServiceImpl
     private void createAndModifyColumn(DataSetEntity entity, Set<CreatedModel> createdModels)
     {
         try {
-            String tableName = String.format("`%s`.`%s`", initializerConfigure.getDataSetConfigure().getDatabase(), entity.getTableName());
+            pluginManager.getPlugin(initializerConfigure.getDataSetConfigure().getType())
+                    .ifPresentOrElse(
+                            plugin -> {
+                                String tableName = String.format("`%s`.`%s`", initializerConfigure.getDataSetConfigure().getDatabase(), entity.getTableName());
 
-            List<Column> createColumns = createdModels.stream()
-                    .filter(item -> item.getMode().equals(CreatedMode.CREATE_COLUMN))
-                    .map(this::formatColumn)
-                    .collect(Collectors.toList());
-            if (!createColumns.isEmpty()) {
-                ColumnBuilder.Companion.BEGIN();
-                ColumnBuilder.Companion.CREATE_COLUMN(tableName);
-                ColumnBuilder.Companion.COLUMNS(createColumns.stream().map(Column::toColumnVar).collect(Collectors.toList()));
-                ColumnBuilder.Companion.FORMAT_ENGINE(EngineType.CLICKHOUSE);
-                String sql = ColumnBuilder.Companion.SQL();
-                PluginService plugin = getOutputPlugin();
-                SourceEntity source = getOutputSource();
-//                plugin.connect(source.toConfigure());
-                Response response = plugin.execute(sql);
-                Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
-                log.info("Create column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
-            }
+                                List<Column> createColumns = createdModels.stream()
+                                        .filter(item -> item.getMode().equals(CreatedMode.CREATE_COLUMN))
+                                        .map(this::formatColumn)
+                                        .collect(Collectors.toList());
+                                if (!createColumns.isEmpty()) {
+                                    ColumnBuilder.Companion.BEGIN();
+                                    ColumnBuilder.Companion.CREATE_COLUMN(tableName);
+                                    ColumnBuilder.Companion.COLUMNS(createColumns.stream().map(Column::toColumnVar).collect(Collectors.toList()));
+                                    ColumnBuilder.Companion.FORMAT_ENGINE(EngineType.CLICKHOUSE);
+                                    String sql = ColumnBuilder.Companion.SQL();
+                                    PluginService pluginService = getOutputPlugin();
+                                    SourceEntity source = getOutputSource();
+                                    Response response = pluginService.execute(source.toConfigure(pluginManager, plugin), sql);
+                                    Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
+                                    log.info("Create column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
+                                }
 
-            List<Column> modifyColumns = createdModels.stream()
-                    .filter(item -> item.getMode().equals(CreatedMode.MODIFY_COLUMN))
-                    .map(this::formatColumn)
-                    .collect(Collectors.toList());
-            if (!modifyColumns.isEmpty()) {
-                ColumnBuilder.Companion.BEGIN();
-                ColumnBuilder.Companion.MODIFY_COLUMN(tableName);
-                ColumnBuilder.Companion.COLUMNS(modifyColumns.stream().map(Column::toColumnVar).collect(Collectors.toList()));
-                ColumnBuilder.Companion.FORMAT_ENGINE(EngineType.CLICKHOUSE);
-                String sql = ColumnBuilder.Companion.SQL();
-                log.info("Modify column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
-                PluginService plugin = getOutputPlugin();
-                SourceEntity source = getOutputSource();
-//                plugin.connect(source.toConfigure());
-                Response response = plugin.execute(sql);
-                Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
-            }
+                                List<Column> modifyColumns = createdModels.stream()
+                                        .filter(item -> item.getMode().equals(CreatedMode.MODIFY_COLUMN))
+                                        .map(this::formatColumn)
+                                        .collect(Collectors.toList());
+                                if (!modifyColumns.isEmpty()) {
+                                    ColumnBuilder.Companion.BEGIN();
+                                    ColumnBuilder.Companion.MODIFY_COLUMN(tableName);
+                                    ColumnBuilder.Companion.COLUMNS(modifyColumns.stream().map(Column::toColumnVar).collect(Collectors.toList()));
+                                    ColumnBuilder.Companion.FORMAT_ENGINE(EngineType.CLICKHOUSE);
+                                    String sql = ColumnBuilder.Companion.SQL();
+                                    log.info("Modify column sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
+                                    PluginService pluginService = getOutputPlugin();
+                                    SourceEntity source = getOutputSource();
+                                    Response response = pluginService.execute(source.toConfigure(pluginManager, plugin), sql);
+                                    Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
+                                }
 
-            createdModels.stream()
-                    .filter(item -> item.getMode().equals(CreatedMode.MODIFY_LIFECYCLE))
-                    .findFirst()
-                    .ifPresent(item -> {
-                        TableBuilder.Companion.BEGIN();
-                        TableBuilder.Companion.MODIFY_LIFECYCLE(tableName);
-                        TableBuilder.Companion.LIFECYCLE(String.format("`%s` + INTERVAL %s %s", item.getColumn().getName(), item.getColumn().getLength(), item.getColumn().getDefaultValue()));
-                        String sql = TableBuilder.Companion.SQL();
-                        log.info("Modify lifecycle sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
-                        PluginService pluginService = getOutputPlugin();
-                        SourceEntity source = getOutputSource();
-//                        Response response = pluginService.execute(source.toConfigure(), sql);
-//                        Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
-                    });
+                                createdModels.stream()
+                                        .filter(item -> item.getMode().equals(CreatedMode.MODIFY_LIFECYCLE))
+                                        .findFirst()
+                                        .ifPresent(item -> {
+                                            TableBuilder.Companion.BEGIN();
+                                            TableBuilder.Companion.MODIFY_LIFECYCLE(tableName);
+                                            TableBuilder.Companion.LIFECYCLE(String.format("`%s` + INTERVAL %s %s", item.getColumn().getName(), item.getColumn().getLength(), item.getColumn().getDefaultValue()));
+                                            String sql = TableBuilder.Companion.SQL();
+                                            log.info("Modify lifecycle sql \n {} \n on dataset [ {} ] id [ {} ]", sql, entity.getName(), entity.getId());
+                                            PluginService pluginService = getOutputPlugin();
+                                            SourceEntity source = getOutputSource();
+                                            Response response = pluginService.execute(source.toConfigure(pluginManager, plugin), sql);
+                                            Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
+                                        });
 
-            completeState(entity, DataSetState.TABLE_SUCCESS);
+                                completeState(entity, DataSetState.TABLE_SUCCESS);
+                            },
+                            () -> {
+                                entity.setMessage(String.format("Plugin [ %s ] not found", initializerConfigure.getDataSetConfigure().getType()));
+                                completeState(entity, DataSetState.COMPLETE_FAILED);
+                            }
+                    );
         }
         catch (Exception e) {
             log.warn("Modify dataset [ {} ] id [ {} ] add column failed", entity.getName(), entity.getId(), e);
@@ -560,76 +574,163 @@ public class DataSetServiceImpl
 
                                 PluginService inputPlugin = plugin.getService(PluginService.class);
                                 pluginManager.getPlugin(entity.getExecutor())
-                                        .ifPresent(executor -> {
-                                            ExecutorService executorService = executor.getService(ExecutorService.class);
+                                        .ifPresentOrElse(
+                                                executor -> {
+                                                    ExecutorService executorService = executor.getService(ExecutorService.class);
 
-                                            Set<OriginColumn> originColumns = columnRepository.findAllByDataset(entity)
-                                                    .stream()
-                                                    .filter(item -> !item.isVirtualColumn())
-                                                    .map(item -> new OriginColumn(item.getName(), item.getOriginal()))
-                                                    .collect(Collectors.toSet());
-                                            String database = initializerConfigure.getDataSetConfigure().getDatabase();
-                                            Properties originInputProperties = new Properties();
-                                            originInputProperties.put("driver", inputPlugin.driver());
-                                            PipelineFieldBody inputFieldBody = ConfigureUtils.convertFieldBody(source, entity.getExecutor(), IConfigurePipelineType.INPUT, environment, originInputProperties);
-                                            Properties inputProperties = ConfigureUtils.convertProperties(source, environment,
-                                                    IConfigurePipelineType.INPUT, entity.getExecutor(), entity.getQuery(), inputFieldBody);
-                                            Set<String> inputOptions = ConfigureUtils.convertOptions(source, environment, entity.getExecutor(), IConfigurePipelineType.INPUT);
-//                                            Configure inputConfigure = source.toConfigure();
-                                            Configure inputConfigure = new Configure();
-                                            inputConfigure.setPluginManager(pluginManager);
-                                            ExecutorConfigure input = new ExecutorConfigure(source.getType(), inputProperties, inputOptions, RunProtocol.valueOf(source.getProtocol()),
-                                                    inputPlugin, entity.getQuery(), database, entity.getTableName(), inputConfigure, originColumns);
+                                                    Set<OriginColumn> originColumns = columnRepository.findAllByDataset(entity)
+                                                            .stream()
+                                                            .filter(item -> !item.isVirtualColumn())
+                                                            .map(item -> new OriginColumn(item.getName(), item.getOriginal()))
+                                                            .collect(Collectors.toSet());
+                                                    String database = initializerConfigure.getDataSetConfigure().getDatabase();
+                                                    Properties originInputProperties = new Properties();
+                                                    originInputProperties.put("driver", inputPlugin.driver());
 
-                                            pluginManager.getPlugin(initializerConfigure.getDataSetConfigure().getType())
-                                                    .ifPresent(_plugin -> {
-                                                        PluginService outputPlugin = _plugin.getService(PluginService.class);
-                                                        SourceEntity outputSource = new SourceEntity();
-                                                        outputSource.setType(initializerConfigure.getDataSetConfigure().getType());
-                                                        outputSource.setDatabase(initializerConfigure.getDataSetConfigure().getDatabase());
-                                                        outputSource.setHost(initializerConfigure.getDataSetConfigure().getHost());
-                                                        outputSource.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
-                                                        outputSource.setUsername(initializerConfigure.getDataSetConfigure().getUsername());
-                                                        outputSource.setPassword(initializerConfigure.getDataSetConfigure().getPassword());
-                                                        outputSource.setProtocol(PluginType.JDBC.name());
-                                                        Properties originOutputProperties = new Properties();
-                                                        List<String> fields = Lists.newArrayList();
-                                                        columnRepository.findAllByDataset(entity)
-                                                                .forEach(item -> fields.add(item.getName()));
-                                                        originOutputProperties.put("fields", String.join("\n", fields));
-                                                        originOutputProperties.put("database", database);
-                                                        originOutputProperties.put("table", entity.getTableName());
-                                                        PipelineFieldBody outputFieldBody = ConfigureUtils.convertFieldBody(outputSource, entity.getExecutor(), IConfigurePipelineType.OUTPUT, environment, originOutputProperties);
-                                                        Properties outputProperties = ConfigureUtils.convertProperties(outputSource, environment,
-                                                                IConfigurePipelineType.OUTPUT, entity.getExecutor(), entity.getQuery(), outputFieldBody);
-                                                        Set<String> outputOptions = ConfigureUtils.convertOptions(outputSource, environment, entity.getExecutor(), IConfigurePipelineType.OUTPUT);
-                                                        ExecutorConfigure output = new ExecutorConfigure(outputSource.getType(), outputProperties, outputOptions, RunProtocol.NONE,
-                                                                outputPlugin, null, null, null, getConfigure(database), Sets.newHashSet());
+                                                    PipelineFieldBody inputFieldBody = ConfigureUtils.convertFieldBody(
+                                                            source,
+                                                            entity.getExecutor(),
+                                                            IConfigurePipelineType.INPUT,
+                                                            environment,
+                                                            originInputProperties
+                                                    );
 
-                                                        String taskName = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS");
-                                                        String workHome = FolderUtils.getWorkHome(initializerConfigure.getDataHome(), entity.getUser().getUsername(), String.join(File.separator, "dataset", entity.getExecutor().toLowerCase(), taskName));
-                                                        ExecutorRequest request = new ExecutorRequest(taskName, entity.getUser().getUsername(), input, output,
-                                                                environment.getProperty(String.format("datacap.executor.%s.home", entity.getExecutor().toLowerCase())),
-                                                                workHome, this.pluginManager, 600,
-                                                                RunWay.valueOf(requireNonNull(environment.getProperty("datacap.executor.way"))),
-                                                                RunMode.valueOf(requireNonNull(environment.getProperty("datacap.executor.mode"))),
-                                                                environment.getProperty("datacap.executor.startScript"),
-                                                                RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine"))));
+                                                    Properties inputProperties = ConfigureUtils.convertProperties(
+                                                            source, environment,
+                                                            IConfigurePipelineType.INPUT,
+                                                            entity.getExecutor(),
+                                                            entity.getQuery(),
+                                                            inputFieldBody
+                                                    );
 
-                                                        history.setState(RunState.RUNNING);
-                                                        historyRepository.save(history);
+                                                    Set<String> inputOptions = ConfigureUtils.convertOptions(
+                                                            source,
+                                                            environment,
+                                                            entity.getExecutor(),
+                                                            IConfigurePipelineType.INPUT
+                                                    );
 
-                                                        ExecutorResponse response = executorService.start(request);
-                                                        history.setUpdateTime(new Date());
-                                                        history.setElapsed((history.getUpdateTime().getTime() - history.getCreateTime().getTime()) / 1000);
-                                                        history.setMode(QueryMode.SYNC);
-                                                        history.setCount(response.getCount());
-                                                        history.setState(response.getState());
-                                                        Preconditions.checkArgument(response.getSuccessful(), response.getMessage());
+                                                    Configure inputConfigure = source.toConfigure(pluginManager, plugin);
+                                                    inputConfigure.setPluginManager(pluginManager);
+                                                    ExecutorConfigure input = new ExecutorConfigure(
+                                                            source.getType(),
+                                                            inputProperties,
+                                                            inputOptions,
+                                                            source.getProtocol(),
+                                                            inputPlugin,
+                                                            entity.getQuery(),
+                                                            database,
+                                                            entity.getTableName(),
+                                                            inputConfigure,
+                                                            originColumns
+                                                    );
 
-                                                        this.flushTableMetadata(entity, outputPlugin, database, requireNonNull(output.getOriginConfigure()));
-                                                    });
-                                        });
+                                                    pluginManager.getPlugin(initializerConfigure.getDataSetConfigure().getType())
+                                                            .ifPresent(outPlugin -> {
+                                                                PluginService outputPlugin = outPlugin.getService(PluginService.class);
+                                                                SourceEntity outputSource = new SourceEntity();
+                                                                outputSource.setType(initializerConfigure.getDataSetConfigure().getType());
+                                                                outputSource.setDatabase(initializerConfigure.getDataSetConfigure().getDatabase());
+                                                                outputSource.setHost(initializerConfigure.getDataSetConfigure().getHost());
+                                                                outputSource.setPort(Integer.valueOf(initializerConfigure.getDataSetConfigure().getPort()));
+                                                                outputSource.setUsername(initializerConfigure.getDataSetConfigure().getUsername());
+                                                                outputSource.setPassword(initializerConfigure.getDataSetConfigure().getPassword());
+                                                                outputSource.setProtocol(PluginType.JDBC.name());
+
+                                                                Properties originOutputProperties = new Properties();
+                                                                List<String> fields = Lists.newArrayList();
+                                                                columnRepository.findAllByDataset(entity)
+                                                                        .forEach(item -> fields.add(item.getName()));
+                                                                originOutputProperties.put("fields", String.join("\n", fields));
+                                                                originOutputProperties.put("database", database);
+                                                                originOutputProperties.put("table", entity.getTableName());
+
+                                                                PipelineFieldBody outputFieldBody = ConfigureUtils.convertFieldBody(
+                                                                        outputSource,
+                                                                        entity.getExecutor(),
+                                                                        IConfigurePipelineType.OUTPUT,
+                                                                        environment,
+                                                                        originOutputProperties
+                                                                );
+
+                                                                Properties outputProperties = ConfigureUtils.convertProperties(
+                                                                        outputSource,
+                                                                        environment,
+                                                                        IConfigurePipelineType.OUTPUT,
+                                                                        entity.getExecutor(),
+                                                                        entity.getQuery(),
+                                                                        outputFieldBody
+                                                                );
+
+                                                                Set<String> outputOptions = ConfigureUtils.convertOptions(
+                                                                        outputSource,
+                                                                        environment,
+                                                                        entity.getExecutor(),
+                                                                        IConfigurePipelineType.OUTPUT
+                                                                );
+
+                                                                ExecutorConfigure output = new ExecutorConfigure(
+                                                                        outputSource.getType(),
+                                                                        outputProperties,
+                                                                        outputOptions,
+                                                                        RunProtocol.NONE.name(),
+                                                                        outputPlugin,
+                                                                        null,
+                                                                        null,
+                                                                        null,
+                                                                        getConfigure(database, outPlugin),
+                                                                        Sets.newHashSet()
+                                                                );
+
+                                                                String taskName = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS");
+                                                                String workHome = FolderUtils.getWorkHome(
+                                                                        initializerConfigure.getDataHome(),
+                                                                        entity.getUser().getUsername(),
+                                                                        String.join(File.separator, "dataset", entity.getExecutor().toLowerCase(), taskName)
+                                                                );
+
+                                                                ExecutorRequest request = new ExecutorRequest(
+                                                                        taskName,
+                                                                        entity.getUser().getUsername(),
+                                                                        input,
+                                                                        output,
+                                                                        environment.getProperty(String.format("datacap.executor.%s.home", entity.getExecutor().toLowerCase())),
+                                                                        workHome,
+                                                                        this.pluginManager,
+                                                                        600,
+                                                                        RunWay.valueOf(requireNonNull(environment.getProperty("datacap.executor.way"))),
+                                                                        RunMode.valueOf(requireNonNull(environment.getProperty("datacap.executor.mode"))),
+                                                                        environment.getProperty("datacap.executor.startScript"),
+                                                                        RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine")))
+                                                                );
+
+                                                                history.setState(RunState.RUNNING);
+                                                                historyRepository.save(history);
+
+                                                                ExecutorResponse response = executorService.start(request);
+                                                                history.setUpdateTime(new Date());
+                                                                history.setElapsed((history.getUpdateTime().getTime() - history.getCreateTime().getTime()) / 1000);
+                                                                history.setMode(QueryMode.SYNC);
+                                                                history.setCount(response.getCount());
+                                                                history.setState(response.getState());
+                                                                Preconditions.checkArgument(response.getSuccessful(), response.getMessage());
+
+                                                                this.flushTableMetadata(
+                                                                        entity,
+                                                                        outputPlugin,
+                                                                        database,
+                                                                        requireNonNull(output.getOriginConfigure()),
+                                                                        outPlugin
+                                                                );
+                                                            });
+                                                },
+                                                () -> {
+                                                    log.warn("Executor [ {} ] not found", entity.getExecutor());
+                                                    history.setMessage(String.format("Executor [ %s ] not found", entity.getExecutor()));
+                                                    history.setState(RunState.FAILURE);
+                                                    historyRepository.save(history);
+                                                }
+                                        );
                             },
                             () -> {
                                 throw new IllegalArgumentException(String.format("Plugin [ %s ] not found", initializerConfigure.getDataSetConfigure().getType()));
@@ -713,7 +814,13 @@ public class DataSetServiceImpl
                         log.info("Clear data for dataset [ {} ] id [ {} ] sql \n {}", entity.getName(), entity.getId(), sql);
                         Response response = pluginService.execute(source.toConfigure(pluginManager, plugin), sql);
                         Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
-//                        this.flushTableMetadata(entity, pluginService, initializerConfigure.getDataSetConfigure().getDatabase(), source.toConfigure());
+                        this.flushTableMetadata(
+                                entity,
+                                pluginService,
+                                initializerConfigure.getDataSetConfigure().getDatabase(),
+                                source.toConfigure(pluginManager, plugin),
+                                plugin
+                        );
                     });
         }
         catch (Exception e) {
@@ -732,7 +839,7 @@ public class DataSetServiceImpl
      * @param database the database name
      * @param configure the configuration settings
      */
-    private void flushTableMetadata(DataSetEntity entity, PluginService pluginService, String database, Configure configure)
+    private void flushTableMetadata(DataSetEntity entity, PluginService pluginService, String database, Configure configure, Plugin plugin)
     {
         // Get the total number of rows and the total size of the dataset
         log.info("Get the total number of rows and the total size of the dataset [ {} ]", entity.getName());
@@ -740,15 +847,24 @@ public class DataSetServiceImpl
                 .type(SqlType.SELECT)
                 .database("system")
                 .table("parts")
-                .columns(Lists.newArrayList(SqlColumn.builder().column("SUM(rows) AS totalCount").build(),
-                        SqlColumn.builder().column("formatReadableSize(SUM(data_compressed_bytes)) AS totalSize").build()))
-                .where(Lists.newArrayList(SqlColumn.builder().column("database").operator(SqlOperator.EQ).value(database).build(),
-                        SqlColumn.builder().column("table").operator(SqlOperator.EQ).value(entity.getTableName()).build(),
-                        SqlColumn.builder().column("active").operator(SqlOperator.EQ).value("1").build()))
+                .columns(
+                        Lists.newArrayList(
+                                SqlColumn.builder().column("SUM(rows) AS totalCount").build(),
+                                SqlColumn.builder().column("formatReadableSize(SUM(data_compressed_bytes)) AS totalSize").build()
+                        )
+                )
+                .where(
+                        Lists.newArrayList(
+                                SqlColumn.builder().column("database").operator(SqlOperator.EQ).value(database).build(),
+                                SqlColumn.builder().column("table").operator(SqlOperator.EQ).value(entity.getTableName()).build(),
+                                SqlColumn.builder().column("active").operator(SqlOperator.EQ).value("1").build()
+                        )
+                )
                 .condition(" AND ")
                 .build());
-        configure.setFormat("None");
+        configure.setFormat("NoneConvert");
         configure.setPluginManager(pluginManager);
+        configure.setPlugin(plugin);
         Response outputResponse = pluginService.execute(configure, builder.getSql());
         if (outputResponse.getIsSuccessful()) {
             Object columnData = outputResponse.getColumns().get(0);
@@ -836,11 +952,9 @@ public class DataSetServiceImpl
                     try {
                         PluginService pluginService = plugin.getService(PluginService.class);
                         SourceEntity source = getOutputSource();
-                        Configure configure = source.toConfigure(pluginManager, plugin);
-                        configure.setPluginManager(pluginManager);
                         String sql = String.format("SHOW CREATE TABLE `%s`.`%s`", initializerConfigure.getDataSetConfigure().getDatabase(), entity.getTableName());
                         log.info("Check table exists for dataset [ {} ] id [ {} ] sql \n {}", entity.getName(), entity.getId(), sql);
-                        Response response = pluginService.execute(configure, sql);
+                        Response response = pluginService.execute(source.toConfigure(pluginManager, plugin), sql);
                         Preconditions.checkArgument(response.getIsSuccessful(), response.getMessage());
                         return true;
                     }

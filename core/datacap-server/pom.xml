@@ -508,12 +508,6 @@
         </dependency>
         <!--        <dependency>-->
         <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-executor-local</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
         <!--            <artifactId>datacap-executor-seatunnel</artifactId>-->
         <!--            <version>${project.version}</version>-->
         <!--            <scope>provided</scope>-->
@@ -531,10 +525,6 @@
         <!--            <scope>provided</scope>-->
         <!--        </dependency>-->
         <!-- Convert -->
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-convert-spi</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

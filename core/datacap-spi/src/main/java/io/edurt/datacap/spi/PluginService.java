@@ -71,6 +71,7 @@ public interface PluginService
         }
     }
 
+    @Deprecated
     default Response execute(String content)
     {
         Connection connection = local.get();
