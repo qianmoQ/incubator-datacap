@@ -263,7 +263,8 @@ public class TableServiceImpl
     }
 
     @Override
-    public CommonResponse<Response> manageColumn(String code, TableBody configure) {
+    public CommonResponse<Response> manageColumn(String code, TableBody configure)
+    {
         return repository.findByCode(code)
                 .map(table -> {
                     SourceEntity source = table.getDatabase().getSource();

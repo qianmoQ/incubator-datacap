@@ -30,7 +30,9 @@ public class DashboardServiceImpl
                 .forEach(entity -> reportRepository.findByCode(entity.getCode())
                         .ifPresentOrElse(
                                 report -> entity.setId(report.getId()),
-                                () -> {throw new RuntimeException("Report [ " + entity.getCode() + " ] not found");}
+                                () -> {
+                                    throw new RuntimeException("Report [ " + entity.getCode() + " ] not found");
+                                }
                         ));
         return CommonResponse.success(repository.save(configure));
     }

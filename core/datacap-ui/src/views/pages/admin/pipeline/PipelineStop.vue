@@ -81,7 +81,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        PipelineService.stop(Number(this.info.id))
+        PipelineService.stop(this.info.code!)
                        .then(response => {
                          if (response.status) {
                            this.$Message.success({

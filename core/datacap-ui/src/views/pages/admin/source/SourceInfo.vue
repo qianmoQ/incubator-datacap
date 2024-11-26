@@ -114,7 +114,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { SourceModel, SourceRequest } from '@/model/source'
-import { cloneDeep, join, pick } from 'lodash'
+import { cloneDeep, pick } from 'lodash'
 import SourceService from '@/services/source'
 import { TokenUtils } from '@/utils/token'
 import { ResponseModel } from '@/model/response'

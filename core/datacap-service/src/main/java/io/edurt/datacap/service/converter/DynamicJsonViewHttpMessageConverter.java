@@ -2,7 +2,6 @@ package io.edurt.datacap.service.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -27,18 +26,18 @@ public class DynamicJsonViewHttpMessageConverter
     }
 
     @Override
-    public boolean supports(@NotNull MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType)
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType)
     {
         return MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
 
     @Override
     public Object beforeBodyWrite(Object body,
-            @NotNull MethodParameter returnType,
-            @NotNull MediaType selectedContentType,
-            @NotNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
-            @NotNull ServerHttpRequest request,
-            @NotNull ServerHttpResponse response)
+            MethodParameter returnType,
+            MediaType selectedContentType,
+            Class<? extends HttpMessageConverter<?>> selectedConverterType,
+            ServerHttpRequest request,
+            ServerHttpResponse response)
     {
         try {
             if (request instanceof ServletServerHttpRequest) {

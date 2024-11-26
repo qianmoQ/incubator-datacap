@@ -450,9 +450,9 @@ export default defineComponent({
     {
       const configure: ExecuteModel = {
         content: this.value,
-        name: this.sourceInfo?.id as unknown as string,
+        name: this.sourceInfo?.code as unknown as string,
         mode: 'DATASET',
-        format: 'Json'
+        format: 'JsonConvert'
       }
       this.running = true
       ExecuteService.execute(configure, null)
