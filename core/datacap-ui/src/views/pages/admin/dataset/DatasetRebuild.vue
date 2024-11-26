@@ -49,7 +49,7 @@ export default defineComponent({
     {
       if (this.data) {
         this.loading = true
-        DatasetService.rebuild(this.data.id)
+        DatasetService.rebuild(this.data.code)
                       .then((response) => {
                         if (response.status) {
                           this.$Message.success({
@@ -58,6 +58,12 @@ export default defineComponent({
                           })
 
                           this.onCancel()
+                        }
+                        else {
+                          this.$Message.error({
+                            content: response.message,
+                            showIcon: true
+                          })
                         }
                       })
                       .finally(() => this.loading = false)

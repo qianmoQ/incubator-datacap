@@ -109,6 +109,21 @@
         "ALL"
       ],
       "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-none-bin.tar.gz"
+    },
+    {
+      "key": "datacap-executor-local",
+      "label": "LocalExecutor",
+      "description": "A local execution plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Executor",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/executor/local.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-local-bin.tar.gz"
     }
   ]
 }

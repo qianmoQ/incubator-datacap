@@ -53,7 +53,7 @@ export default defineComponent({
     {
       if (this.info) {
         this.loading = true
-        DatasetService.syncData(this.info.id)
+        DatasetService.syncData(this.info.code)
                       .then(response => {
                         if (response.status) {
                           this.$Message.success({

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -38,16 +37,10 @@ public class DataSetController
         this.service = service;
     }
 
-    @RequestMapping(value = "create", method = {RequestMethod.POST, RequestMethod.PUT})
-    public CommonResponse save(@RequestBody DataSetEntity configure)
+    @PutMapping(value = "rebuild/{code}")
+    public CommonResponse rebuild(@PathVariable String code)
     {
-        return service.saveOrUpdate(configure);
-    }
-
-    @PutMapping(value = "rebuild/{id}")
-    public CommonResponse rebuild(@PathVariable Long id)
-    {
-        return service.rebuild(id);
+        return service.rebuild(code);
     }
 
     @GetMapping(value = "columns/{code}")
@@ -56,10 +49,10 @@ public class DataSetController
         return service.getColumnsByCode(code);
     }
 
-    @PutMapping(value = "syncData/{id}")
-    public CommonResponse<Boolean> syncData(@PathVariable Long id)
+    @PutMapping(value = "syncData/{code}")
+    public CommonResponse<Boolean> syncData(@PathVariable String code)
     {
-        return service.syncData(id);
+        return service.syncData(code);
     }
 
     @PutMapping(value = "clearData/{code}")

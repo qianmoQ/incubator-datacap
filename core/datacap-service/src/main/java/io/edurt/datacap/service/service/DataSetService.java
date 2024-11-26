@@ -16,13 +16,11 @@ import java.util.Set;
 public interface DataSetService
         extends BaseService<DataSetEntity>
 {
-    CommonResponse<DataSetEntity> saveOrUpdate(DataSetEntity configure);
-
-    CommonResponse<DataSetEntity> rebuild(Long id);
+    CommonResponse<DataSetEntity> rebuild(String code);
 
     CommonResponse<List<DataSetColumnEntity>> getColumnsByCode(String code);
 
-    CommonResponse<Boolean> syncData(Long id);
+    CommonResponse<Boolean> syncData(String code);
 
     CommonResponse<Boolean> clearData(String code);
 

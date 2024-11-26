@@ -1,7 +1,6 @@
 package io.edurt.datacap.service.body;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.edurt.datacap.executor.common.RunProtocol;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -192,7 +192,7 @@
               <ShadcnFormItem name="executor" :label="$t('common.executor')">
                 <ShadcnSelect v-model="formState.executor" name="executor">
                   <template #options>
-                    <ShadcnSelectOption v-for="item in executors" :label="item" :value="item"/>
+                    <ShadcnSelectOption v-for="item in executors" :label="item.name" :value="item.name"/>
                   </template>
                 </ShadcnSelect>
               </ShadcnFormItem>
@@ -335,10 +335,10 @@ export default defineComponent({
         query: null as string | null,
         syncMode: 'MANUAL',
         columns: [] as any[],
-        source: { id: null },
+        source: { code: null },
         expression: null as string | null,
         scheduler: 'Default',
-        executor: 'Default',
+        executor: 'LocalExecutor',
         lifeCycle: null as number | null,
         lifeCycleColumn: null as string | null,
         lifeCycleType: null as string | null
@@ -361,8 +361,8 @@ export default defineComponent({
         PluginService.getPlugins()
                      .then(response => {
                        if (response.status) {
-                         this.schedulers = response.data['scheduler']
-                         this.executors = response.data['executor']
+                         this.schedulers = response.data.filter((v: { type: string }) => v.type === 'SCHEDULER')
+                         this.executors = response.data.filter((v: { type: string }) => v.type === 'EXECUTOR')
                        }
                      })
         const code = this.$route.params.code
@@ -376,7 +376,7 @@ export default defineComponent({
                .then(axios.spread((info, column) => {
                  if (info.status) {
                    this.formState = info.data
-                   this.formState.source.id = info.data.source.id
+                   this.formState.source.code = info.data.source.code
                    this.sourceInfo = info.data.source
                    this.value = info.data.query
                    this.onRun()
@@ -394,7 +394,7 @@ export default defineComponent({
                        .then(response => {
                          if (response.status) {
                            this.sourceInfo = response.data
-                           this.formState.source.id = response.data.id
+                           this.formState.source.code = response.data.code
                          }
                        })
                        .finally(() => this.loading = false)

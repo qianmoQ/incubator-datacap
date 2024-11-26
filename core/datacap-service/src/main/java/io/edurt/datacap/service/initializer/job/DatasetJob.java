@@ -25,8 +25,8 @@ public class DatasetJob
     @Override
     protected void executeInternal(JobExecutionContext context)
     {
-        Long id = Long.valueOf(context.getJobDetail().getJobDataMap().get("id").toString());
-        log.info("Job [ {} ] run time [ {} ]", id, context.getFireTime().getTime());
-        this.service.syncData(id);
+        String code = context.getJobDetail().getJobDataMap().get("code").toString();
+        log.info("Job [ {} ] run time [ {} ]", code, context.getFireTime().getTime());
+        this.service.syncData(code);
     }
 }

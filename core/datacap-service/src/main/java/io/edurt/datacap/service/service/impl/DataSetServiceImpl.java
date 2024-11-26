@@ -48,9 +48,11 @@ import io.edurt.datacap.service.enums.SyncMode;
 import io.edurt.datacap.service.initializer.InitializerConfigure;
 import io.edurt.datacap.service.initializer.job.DatasetJob;
 import io.edurt.datacap.service.model.CreatedModel;
+import io.edurt.datacap.service.repository.BaseRepository;
 import io.edurt.datacap.service.repository.DataSetColumnRepository;
 import io.edurt.datacap.service.repository.DataSetRepository;
 import io.edurt.datacap.service.repository.DatasetHistoryRepository;
+import io.edurt.datacap.service.repository.SourceRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.DataSetService;
 import io.edurt.datacap.spi.PluginService;
@@ -96,8 +98,9 @@ public class DataSetServiceImpl
     private final InitializerConfigure initializerConfigure;
     private final org.quartz.Scheduler scheduler;
     private final Environment environment;
+    private final SourceRepository sourceRepository;
 
-    public DataSetServiceImpl(DataSetRepository repository, DataSetColumnRepository columnRepository, DatasetHistoryRepository historyRepository, PluginManager pluginManager, InitializerConfigure initializerConfigure, org.quartz.Scheduler scheduler, Environment environment)
+    public DataSetServiceImpl(DataSetRepository repository, DataSetColumnRepository columnRepository, DatasetHistoryRepository historyRepository, PluginManager pluginManager, InitializerConfigure initializerConfigure, org.quartz.Scheduler scheduler, Environment environment, SourceRepository sourceRepository)
     {
         this.repository = repository;
         this.columnRepository = columnRepository;
@@ -106,10 +109,12 @@ public class DataSetServiceImpl
         this.initializerConfigure = initializerConfigure;
         this.scheduler = scheduler;
         this.environment = environment;
+        this.sourceRepository = sourceRepository;
     }
 
     @Transactional
-    public CommonResponse<DataSetEntity> saveOrUpdate(DataSetEntity configure)
+    @Override
+    public CommonResponse<DataSetEntity> saveOrUpdate(BaseRepository<DataSetEntity, Long> repository, DataSetEntity configure)
     {
         UserEntity user = UserDetailsService.getUser();
         java.util.concurrent.ExecutorService service = Executors.newSingleThreadExecutor();
@@ -122,15 +127,15 @@ public class DataSetServiceImpl
     }
 
     @Override
-    public CommonResponse<DataSetEntity> rebuild(Long id)
+    public CommonResponse<DataSetEntity> rebuild(String code)
     {
-        return repository.findById(id)
+        return repository.findByCode(code)
                 .map(entity -> {
                     java.util.concurrent.ExecutorService service = Executors.newSingleThreadExecutor();
                     service.submit(() -> startBuild(entity, false));
                     return CommonResponse.success(entity);
                 })
-                .orElse(CommonResponse.failure(String.format("DataSet [ %s ] not found", id)));
+                .orElse(CommonResponse.failure(String.format("DataSet [ %s ] not found", code)));
     }
 
     @Override
@@ -145,16 +150,15 @@ public class DataSetServiceImpl
     }
 
     @Override
-    public CommonResponse<Boolean> syncData(Long id)
+    public CommonResponse<Boolean> syncData(String code)
     {
-        Optional<DataSetEntity> entityOptional = repository.findById(id);
-        if (!entityOptional.isPresent()) {
-            return CommonResponse.failure(String.format("DataSet [ %s ] not found", id));
-        }
-        java.util.concurrent.ExecutorService service = Executors.newSingleThreadExecutor();
-        DataSetEntity entity = entityOptional.get();
-        service.submit(() -> syncData(entity, service));
-        return CommonResponse.success(true);
+        return repository.findByCode(code)
+                .map(entity -> {
+                    java.util.concurrent.ExecutorService service = Executors.newSingleThreadExecutor();
+                    service.submit(() -> syncData(entity, service));
+                    return CommonResponse.success(true);
+                })
+                .orElseGet(() -> CommonResponse.failure(String.format("DataSet [ %s ] not found", code)));
     }
 
     @Override
@@ -337,14 +341,25 @@ public class DataSetServiceImpl
 
     private void startBuild(DataSetEntity entity, boolean rebuildColumn)
     {
-        if (entity.getId() == null) {
-            entity.setCode(UUID.randomUUID().toString());
-            String tablePrefix = initializerConfigure.getDataSetConfigure().getTablePrefix();
-            String tableName = String.format("%s%s", tablePrefix, UUID.randomUUID().toString().replace("-", ""));
-            entity.setTableName(tableName);
-        }
-        log.info("Start build metadata for dataset [ {} ] id [ {} ]", entity.getName(), entity.getId());
-        createMetadata(entity, rebuildColumn);
+        sourceRepository.findByCode(entity.getSource().getCode())
+                .ifPresentOrElse(
+                        source -> {
+                            if (entity.getId() == null) {
+                                entity.setCode(UUID.randomUUID().toString());
+                                String tablePrefix = initializerConfigure.getDataSetConfigure().getTablePrefix();
+                                String tableName = String.format("%s%s", tablePrefix, UUID.randomUUID().toString().replace("-", ""));
+                                entity.setTableName(tableName);
+                            }
+                            log.info("Start build metadata for dataset [ {} ] id [ {} ]", entity.getName(), entity.getId());
+                            entity.setSource(source);
+                            createMetadata(entity, rebuildColumn);
+                        },
+                        () -> {
+                            entity.setMessage("Source [ %s ] not found");
+                            entity.setState(Lists.newArrayList(DataSetState.METADATA_FAILED));
+                            repository.save(entity);
+                        }
+                );
     }
 
     private void createMetadata(DataSetEntity entity, boolean rebuildColumn)
@@ -759,10 +774,10 @@ public class DataSetServiceImpl
             pluginManager.getPlugin(entity.getScheduler())
                     .ifPresent(scheduler -> {
                         SchedulerRequest request = new SchedulerRequest();
-                        request.setName(entity.getId().toString());
+                        request.setName(entity.getCode());
                         request.setGroup("datacap");
                         request.setExpression(entity.getExpression());
-                        request.setJobId(String.valueOf(entity.getId()));
+                        request.setJobId(entity.getCode());
                         request.setCreateBeforeDelete(true);
 
                         SchedulerService schedulerService = scheduler.getService(SchedulerService.class);
@@ -777,7 +792,7 @@ public class DataSetServiceImpl
             pluginManager.getPlugin(entity.getScheduler())
                     .ifPresent(scheduler -> {
                         SchedulerRequest request = new SchedulerRequest();
-                        request.setName(entity.getId().toString());
+                        request.setName(entity.getCode());
                         request.setGroup("datacap");
 
                         SchedulerService schedulerService = scheduler.getService(SchedulerService.class);

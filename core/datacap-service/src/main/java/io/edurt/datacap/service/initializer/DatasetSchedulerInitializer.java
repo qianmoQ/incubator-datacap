@@ -43,10 +43,10 @@ public class DatasetSchedulerInitializer
                     pluginManager.getPlugin(item.getScheduler())
                             .ifPresent(scheduler -> {
                                 SchedulerRequest request = new SchedulerRequest();
-                                request.setName(item.getId().toString());
+                                request.setName(item.getCode());
                                 request.setGroup("datacap");
                                 request.setExpression(item.getExpression());
-                                request.setJobId(String.valueOf(item.getId()));
+                                request.setJobId(item.getCode());
                                 request.setCreateBeforeDelete(true);
 
                                 SchedulerService schedulerService = scheduler.getService(SchedulerService.class);

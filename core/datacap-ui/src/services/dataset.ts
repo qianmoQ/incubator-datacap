@@ -2,7 +2,6 @@ import { ResponseModel } from '@/model/response'
 import { BaseService } from '@/services/base'
 import { HttpUtils } from '@/utils/http'
 import { FilterModel } from '@/model/filter'
-import { DatasetModel } from '@/model/dataset'
 
 const DEFAULT_PATH = '/api/v1/dataset'
 
@@ -12,18 +11,6 @@ export class DatasetService
     constructor()
     {
         super(DEFAULT_PATH)
-    }
-
-    saveOrUpdate(configure: DatasetModel): Promise<ResponseModel>
-    {
-        const url = `${ DEFAULT_PATH }/create`
-        // @ts-ignore
-        if (configure['id'] > 0) {
-            return new HttpUtils().put(url, configure)
-        }
-        else {
-            return new HttpUtils().post(url, configure)
-        }
     }
 
     /**
@@ -52,12 +39,12 @@ export class DatasetService
     /**
      * Rebuilds the specified item identified by the given ID.
      *
-     * @param {number} id - the ID of the item to be rebuilt
+     * @param {string} code - the ID of the item to be rebuilt
      * @return {Promise<ResponseModel>} a Promise that resolves with the response from the rebuild request
      */
-    rebuild(id: number): Promise<ResponseModel>
+    rebuild(code: string): Promise<ResponseModel>
     {
-        return new HttpUtils().put(`${ DEFAULT_PATH }/rebuild/${ id }`)
+        return new HttpUtils().put(`${ DEFAULT_PATH }/rebuild/${ code }`)
     }
 
     /**
@@ -75,12 +62,12 @@ export class DatasetService
     /**
      * Sync data with the server using the provided id.
      *
-     * @param {number} id - The id of the data to sync
+     * @param {string} code - The id of the data to sync
      * @return {Promise<ResponseModel>} A promise that resolves with the response from the server
      */
-    syncData(id: number): Promise<ResponseModel>
+    syncData(code: string): Promise<ResponseModel>
     {
-        return new HttpUtils().put(`${ DEFAULT_PATH }/syncData/${ id }`)
+        return new HttpUtils().put(`${ DEFAULT_PATH }/syncData/${ code }`)
     }
 
     /**
