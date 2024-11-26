@@ -77,7 +77,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
       - run: chmod 755 ./mvnw
-      - run: ./mvnw clean install package test -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -Dskip.pnpm
+      - run: ./mvnw clean test -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -Dskip.pnpm -DskipAssembly=true
 
   before_checker_package:
     runs-on: ubuntu-latest

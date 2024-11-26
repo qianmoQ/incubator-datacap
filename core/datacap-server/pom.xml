@@ -122,12 +122,6 @@
         </dependency>
         <!--        <dependency>-->
         <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-jdbc-clickhouse</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
         <!--            <artifactId>datacap-jdbc-presto</artifactId>-->
         <!--            <version>${project.version}</version>-->
         <!--            <scope>provided</scope>-->
@@ -541,30 +535,6 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-convert-spi</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-convert-csv</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-convert-xml</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-convert-txt</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-convert-none</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -617,6 +587,7 @@
                     <descriptors>
                         <descriptor>../../configure/assembly/server.xml</descriptor>
                     </descriptors>
+                    <skipAssembly>false</skipAssembly>
                 </configuration>
                 <executions>
                     <execution>
@@ -638,6 +609,7 @@
                 </configuration>
             </plugin>
         </plugins>
+
         <resources>
             <resource>
                 <directory>../datacap-ui/dist</directory>
