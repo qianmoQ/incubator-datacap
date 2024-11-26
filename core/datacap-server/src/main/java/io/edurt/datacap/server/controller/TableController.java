@@ -64,7 +64,7 @@ public class TableController
     }
 
     @PostMapping(value = "manageColumn/{code}")
-    public CommonResponse<Object> manageColumn(@PathVariable String code, @RequestBody TableBody configure)
+    public CommonResponse<Response> manageColumn(@PathVariable String code, @RequestBody TableBody configure)
     {
         return this.service.manageColumn(code, configure);
     }

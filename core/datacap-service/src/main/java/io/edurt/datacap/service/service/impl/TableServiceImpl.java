@@ -101,7 +101,7 @@ public class TableServiceImpl
         return repository.findByCode(code)
                 .map(table -> {
                     SourceEntity source = table.getDatabase().getSource();
-                    pluginManager.getPlugin(source.getType())
+                    return pluginManager.getPlugin(source.getType())
                             .map(plugin -> {
                                 PluginService pluginService = plugin.getService(PluginService.class);
                                 if (configure.getType().equals(SqlType.SELECT)) {
@@ -131,7 +131,6 @@ public class TableServiceImpl
                                 return CommonResponse.failure(String.format("Not implemented yet [ %s ]", configure.getType()));
                             })
                             .orElseGet(() -> CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
-                    return CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND);
                 })
                 .orElse(CommonResponse.failure(String.format("Table [ %s ] not found", code)));
     }
@@ -264,38 +263,51 @@ public class TableServiceImpl
     }
 
     @Override
-    public CommonResponse<Object> manageColumn(String code, TableBody configure)
-    {
+    public CommonResponse<Response> manageColumn(String code, TableBody configure) {
         return repository.findByCode(code)
                 .map(table -> {
                     SourceEntity source = table.getDatabase().getSource();
-                    pluginManager.getPlugin(source.getType())
+                    return pluginManager.getPlugin(source.getType())
                             .map(plugin -> {
                                 AtomicReference<String> atomicReference = new AtomicReference<>(null);
+
+                                // 根据操作类型构建 SQL
                                 if (configure.getType().equals(SqlType.CREATE)) {
                                     ColumnBuilder.Companion.BEGIN();
-                                    ColumnBuilder.Companion.CREATE_COLUMN(String.format("`%s`.`%s`", table.getDatabase().getName(), table.getName()));
-                                    ColumnBuilder.Companion.COLUMNS(configure.getColumns().stream().map(Column::toColumnVar).collect(Collectors.toList()));
+                                    ColumnBuilder.Companion.CREATE_COLUMN(String.format("`%s`.`%s`",
+                                            table.getDatabase().getName(), table.getName()));
+                                    ColumnBuilder.Companion.COLUMNS(configure.getColumns().stream()
+                                            .map(Column::toColumnVar)
+                                            .collect(Collectors.toList()));
                                     atomicReference.set(ColumnBuilder.Companion.SQL());
-                                    log.info("Create column sql \n {} \n on table [ {} ]", atomicReference.get(), table.getName());
+                                    log.info("Create column sql \n {} \n on table [ {} ]",
+                                            atomicReference.get(), table.getName());
                                 }
                                 else if (configure.getType().equals(SqlType.DROP)) {
                                     columnRepository.findById(configure.getColumnId())
                                             .ifPresent(column -> {
                                                 ColumnBuilder.Companion.BEGIN();
-                                                ColumnBuilder.Companion.DROP_COLUMN(String.format("`%s`.`%s`", table.getDatabase().getName(), table.getName()));
+                                                ColumnBuilder.Companion.DROP_COLUMN(String.format("`%s`.`%s`",
+                                                        table.getDatabase().getName(), table.getName()));
                                                 ColumnBuilder.Companion.COLUMNS(Lists.newArrayList(column.getName()));
                                                 atomicReference.set(ColumnBuilder.Companion.SQL());
                                             });
-                                    log.info("Drop column sql \n {} \n on table [ {} ]", atomicReference.get(), table.getName());
+                                    log.info("Drop column sql \n {} \n on table [ {} ]",
+                                            atomicReference.get(), table.getName());
                                 }
                                 else if (configure.getType().equals(SqlType.MODIFY)) {
                                     ColumnBuilder.Companion.BEGIN();
-                                    ColumnBuilder.Companion.MODIFY_COLUMN(String.format("`%s`.`%s`", table.getDatabase().getName(), table.getName()));
-                                    ColumnBuilder.Companion.COLUMNS(configure.getColumns().stream().map(Column::toColumnVar).collect(Collectors.toList()));
+                                    ColumnBuilder.Companion.MODIFY_COLUMN(String.format("`%s`.`%s`",
+                                            table.getDatabase().getName(), table.getName()));
+                                    ColumnBuilder.Companion.COLUMNS(configure.getColumns().stream()
+                                            .map(Column::toColumnVar)
+                                            .collect(Collectors.toList()));
                                     atomicReference.set(ColumnBuilder.Companion.SQL());
-                                    log.info("Modify column sql \n {} \n on table [ {} ]", atomicReference.get(), table.getName());
+                                    log.info("Modify column sql \n {} \n on table [ {} ]",
+                                            atomicReference.get(), table.getName());
                                 }
+
+                                // 处理 SQL 执行或预览
                                 Response response;
                                 if (configure.isPreview()) {
                                     response = Response.builder()
@@ -316,8 +328,7 @@ public class TableServiceImpl
                                 }
                                 return CommonResponse.success(response);
                             })
-                            .orElseGet(() -> CommonResponse.failure(""));
-                    return CommonResponse.failure("");
+                            .orElse(CommonResponse.failure(ServiceState.PLUGIN_NOT_FOUND));
                 })
                 .orElse(CommonResponse.failure(String.format("Table [ %s ] not found", code)));
     }
@@ -337,7 +348,7 @@ public class TableServiceImpl
             List<SqlColumn> columns = Lists.newArrayList();
             int totalRows = Integer.parseInt(table.getRows());
             Configure countConfigure = source.toConfigure(pluginManager, plugin);
-            countConfigure.setFormat("None");
+            countConfigure.setFormat("NoneConvert");
             SqlBody countBody = SqlBody.builder()
                     .type(SqlType.SELECT)
                     .database(table.getDatabase().getName())
@@ -437,7 +448,7 @@ public class TableServiceImpl
     {
         try {
             Configure updateConfigure = source.toConfigure(pluginManager, plugin);
-            updateConfigure.setFormat("None");
+            updateConfigure.setFormat("NoneConvert");
             List<String> allSql = Lists.newArrayList();
             // Gets the auto-increment column for the current row
             List<String> autoIncrementColumns = table.getColumns()
@@ -493,7 +504,7 @@ public class TableServiceImpl
     {
         try {
             Configure updateConfigure = source.toConfigure(pluginManager, plugin);
-            updateConfigure.setFormat("None");
+            updateConfigure.setFormat("NoneConvert");
             List<String> allSql = Lists.newArrayList();
             configure.getColumns().forEach(v -> {
                 SqlBody body = SqlBody.builder()
@@ -529,7 +540,7 @@ public class TableServiceImpl
     {
         try {
             Configure updateConfigure = source.toConfigure(pluginManager, plugin);
-            updateConfigure.setFormat("None");
+            updateConfigure.setFormat("NoneConvert");
             List<String> allSql = Lists.newArrayList();
             configure.getColumns().forEach(v -> {
                 SqlBody body = SqlBody.builder()
@@ -561,7 +572,7 @@ public class TableServiceImpl
     {
         try {
             Configure alterConfigure = source.toConfigure(pluginManager, plugin);
-            alterConfigure.setFormat("None");
+            alterConfigure.setFormat("NoneConvert");
             SqlBody body = SqlBody.builder()
                     .type(SqlType.ALTER)
                     .database(table.getDatabase().getName())
@@ -588,7 +599,7 @@ public class TableServiceImpl
     {
         try {
             Configure alterConfigure = source.toConfigure(pluginManager, plugin);
-            alterConfigure.setFormat("None");
+            alterConfigure.setFormat("NoneConvert");
             SqlBody body = SqlBody.builder()
                     .type(SqlType.SHOW)
                     .database(table.getDatabase().getName())
@@ -614,7 +625,7 @@ public class TableServiceImpl
     {
         try {
             Configure alterConfigure = source.toConfigure(pluginManager, plugin);
-            alterConfigure.setFormat("None");
+            alterConfigure.setFormat("NoneConvert");
             SqlBody body = SqlBody.builder()
                     .type(SqlType.TRUNCATE)
                     .database(table.getDatabase().getName())
@@ -640,7 +651,7 @@ public class TableServiceImpl
     {
         try {
             Configure alterConfigure = source.toConfigure(pluginManager, plugin);
-            alterConfigure.setFormat("None");
+            alterConfigure.setFormat("NoneConvert");
             SqlBody body = SqlBody.builder()
                     .type(SqlType.DROP)
                     .database(table.getDatabase().getName())

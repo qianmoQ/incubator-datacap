@@ -1,6 +1,8 @@
 package io.edurt.datacap.service.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,39 +35,51 @@ public class ColumnEntity
         extends BaseEntity
 {
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @Column(name = "type")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String type;
 
     @Column(name = "comment")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String comment;
 
     @Column(name = "default_value")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String defaultValue;
 
     @Column(name = "position")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String position;
 
     @Column(name = "is_nullable")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String isNullable;
 
     @Column(name = "maximum_length")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String maximumLength;
 
     @Column(name = "collation")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String collation;
 
     @Column(name = "is_key")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String isKey;
 
     @Column(name = "privileges")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String privileges;
 
     @Column(name = "data_type")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String dataType;
 
     @Column(name = "extra")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String extra;
 
     @ManyToOne
@@ -73,6 +87,7 @@ public class ColumnEntity
             joinColumns = @JoinColumn(name = "column_id"),
             inverseJoinColumns = @JoinColumn(name = "table_id"))
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private TableEntity table;
 
     public ColumnEntity(Long id, String name, Date createTime)

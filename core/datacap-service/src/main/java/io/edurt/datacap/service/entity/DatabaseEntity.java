@@ -1,7 +1,9 @@
 package io.edurt.datacap.service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.edurt.datacap.common.view.EntityView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,9 +36,11 @@ public class DatabaseEntity
         extends BaseEntity
 {
     @Column(name = "description")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String description;
 
     @Column(name = "catalog")
+    @JsonView(value = {EntityView.UserView.class, EntityView.AdminView.class})
     private String catalog;
 
     @ManyToOne

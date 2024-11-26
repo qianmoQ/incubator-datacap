@@ -42,5 +42,5 @@ public interface TableService
 
     CommonResponse<Response> createTable(Long databaseId, TableBody configure);
 
-    CommonResponse<Object> manageColumn(String code, TableBody configure);
+    CommonResponse<Response> manageColumn(String code, TableBody configure);
 }
