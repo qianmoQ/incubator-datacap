@@ -6,7 +6,7 @@ import org.quartz.Job
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP2"])
 data class SchedulerRequest(
     var name: String? = null,
-    var group: String = "DataCap-Schedule-Group",
+    var group: String = "DataCap-Scheduler-Group",
     var expression: String? = null,
     var jobId: String? = null,
     var job: Job? = null,
@@ -23,7 +23,44 @@ data class SchedulerRequest(
 
     private fun deepCopy(scheduler: org.quartz.Scheduler): org.quartz.Scheduler
     {
-        // Implement the deep copy logic of the Scheduler object. The specific implementation depends on the type and structure of the Scheduler.
         return scheduler
+    }
+
+    companion object
+    {
+        @JvmStatic
+        fun builder(): Builder
+        {
+            return Builder()
+        }
+    }
+
+    class Builder
+    {
+        private var name: String? = null
+        private var group: String = "DataCap-Schedule-Group"
+        private var expression: String? = null
+        private var jobId: String? = null
+        private var job: Job? = null
+        private var scheduler: org.quartz.Scheduler? = null
+        private var createBeforeDelete: Boolean = false
+
+        fun name(name: String?) = apply { this.name = name }
+        fun group(group: String) = apply { this.group = group }
+        fun expression(expression: String?) = apply { this.expression = expression }
+        fun jobId(jobId: String?) = apply { this.jobId = jobId }
+        fun job(job: Job?) = apply { this.job = job }
+        fun scheduler(scheduler: org.quartz.Scheduler?) = apply { this.scheduler = scheduler }
+        fun createBeforeDelete(createBeforeDelete: Boolean) = apply { this.createBeforeDelete = createBeforeDelete }
+
+        fun build() = SchedulerRequest(
+            name = name,
+            group = group,
+            expression = expression,
+            jobId = jobId,
+            job = job,
+            _scheduler = scheduler,
+            createBeforeDelete = createBeforeDelete
+        )
     }
 }

@@ -772,16 +772,17 @@ public class DataSetServiceImpl
         log.info("Start schedule for dataset [ {} ] id [ {} ]", entity.getName(), entity.getId());
         if (entity.getSyncMode().equals(SyncMode.TIMING)) {
             pluginManager.getPlugin(entity.getScheduler())
-                    .ifPresent(scheduler -> {
-                        SchedulerRequest request = new SchedulerRequest();
-                        request.setName(entity.getCode());
-                        request.setGroup("datacap");
-                        request.setExpression(entity.getExpression());
-                        request.setJobId(entity.getCode());
-                        request.setCreateBeforeDelete(true);
+                    .ifPresent(plugin -> {
+                        SchedulerRequest request = SchedulerRequest.builder()
+                                .name(entity.getCode())
+                                .group("datacap")
+                                .expression(entity.getExpression())
+                                .jobId(entity.getCode())
+                                .createBeforeDelete(true)
+                                .build();
 
-                        SchedulerService schedulerService = scheduler.getService(SchedulerService.class);
-                        if (schedulerService.name().equals("Default")) {
+                        SchedulerService schedulerService = plugin.getService(SchedulerService.class);
+                        if (entity.getScheduler().equalsIgnoreCase("LocalScheduler")) {
                             request.setJob(new DatasetJob());
                             request.setScheduler(this.scheduler);
                         }
@@ -790,13 +791,14 @@ public class DataSetServiceImpl
         }
         else {
             pluginManager.getPlugin(entity.getScheduler())
-                    .ifPresent(scheduler -> {
-                        SchedulerRequest request = new SchedulerRequest();
-                        request.setName(entity.getCode());
-                        request.setGroup("datacap");
+                    .ifPresent(plugin -> {
+                        SchedulerRequest request = SchedulerRequest.builder()
+                                .name(entity.getCode())
+                                .group("datacap")
+                                .build();
 
-                        SchedulerService schedulerService = scheduler.getService(SchedulerService.class);
-                        if (schedulerService.name().equals("Default")) {
+                        SchedulerService schedulerService = plugin.getService(SchedulerService.class);
+                        if (entity.getScheduler().equalsIgnoreCase("LocalScheduler")) {
                             request.setScheduler(this.scheduler);
                         }
                         schedulerService.stop(request);

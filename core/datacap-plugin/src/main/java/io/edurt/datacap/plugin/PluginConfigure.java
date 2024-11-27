@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Getter
 @Builder
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class PluginConfigure
 {
     private static final Set<String> LOADER_PACKAGES = Set.of(

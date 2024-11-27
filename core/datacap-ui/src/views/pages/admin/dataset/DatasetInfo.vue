@@ -220,7 +220,7 @@
               <ShadcnFormItem name="scheduler" :label="$t('common.scheduler')">
                 <ShadcnSelect v-model="formState.scheduler" name="scheduler">
                   <template #options>
-                    <ShadcnSelectOption v-for="item in schedulers" :label="item" :value="item"/>
+                    <ShadcnSelectOption v-for="item in schedulers" :label="item.name" :value="item.name"/>
                   </template>
                 </ShadcnSelect>
               </ShadcnFormItem>

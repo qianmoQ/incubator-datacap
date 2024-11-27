@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.loader;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +15,7 @@ import java.util.Set;
  * Plugin-specific ClassLoader
  */
 @Slf4j
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class PluginClassLoader
         extends URLClassLoader
         implements AutoCloseable

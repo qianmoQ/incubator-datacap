@@ -500,7 +500,6 @@
         <!--            <version>${project.version}</version>-->
         <!--            <scope>provided</scope>-->
         <!--        </dependency>-->
-        <!-- Executor -->
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-executor-spi</artifactId>
@@ -511,13 +510,6 @@
             <artifactId>datacap-scheduler-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-scheduler-local</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!-- Convert -->
     </dependencies>
 
     <build>

@@ -11,10 +11,6 @@
     <artifactId>datacap-scheduler-spi</artifactId>
     <description>DataCap - Scheduler - Spi</description>
 
-    <properties>
-        <quartz.version>2.3.2</quartz.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>

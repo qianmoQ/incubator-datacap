@@ -92,7 +92,7 @@
         <!--        <module>parser/datacap-parser-trino</module>-->
         <!--        <module>parser/datacap-parser-mysql</module>-->
         <module>scheduler/datacap-scheduler-spi</module>
-        <!--        <module>scheduler/datacap-scheduler-local</module>-->
+        <module>scheduler/datacap-scheduler-local</module>
         <module>notify/datacap-notify-spi</module>
         <!--        <module>notify/datacap-notify-dingtalk</module>-->
         <module>convert/datacap-convert-spi</module>
@@ -106,6 +106,7 @@
         <module>test/datacap-test-core</module>
         <module>test/datacap-test-lib</module>
         <module>test/datacap-test-executor</module>
+        <module>test/datacap-test-scheduler</module>
     </modules>
 
     <name>datacap</name>
@@ -194,6 +195,7 @@
         <useragent.version>1.21</useragent.version>
         <openai.version>2024.01.3</openai.version>
         <testcontainers.version>1.20.1</testcontainers.version>
+        <quartz.version>2.3.2</quartz.version>
         <assembly-plugin.version>3.6.0</assembly-plugin.version>
         <dep.reflections.version>0.10.2</dep.reflections.version>
         <!-- datacap plugin dependency -->
