@@ -34,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,9 +74,9 @@ public class TarPluginLoader
      * List of loaded plugins
      */
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
-        return load(path, null);
+        return load(path, null, parentClassLoaderPackages);
     }
 
     /**
@@ -89,7 +90,7 @@ public class TarPluginLoader
      * @return 加载的插件列表
      * List of loaded plugins
      */
-    public List<Plugin> load(Path path, Path targetDir)
+    public List<Plugin> load(Path path, Path targetDir, Set<String> parentClassLoaderPackages)
     {
         try {
             // 如果是 URL 路径，先下载到本地
@@ -108,7 +109,7 @@ public class TarPluginLoader
 
             // 从解压目录加载插件
             // Load plugins from extracted directory
-            List<Plugin> plugins = loadPluginsFromDirectory(extractDir);
+            List<Plugin> plugins = loadPluginsFromDirectory(extractDir, parentClassLoaderPackages);
 
             // 如果使用的是临时目录，则清理
             // Clean up if using temporary directory
@@ -133,7 +134,7 @@ public class TarPluginLoader
      * @return 加载的插件列表
      * List of loaded plugins
      */
-    private List<Plugin> loadPluginsFromDirectory(Path directory)
+    private List<Plugin> loadPluginsFromDirectory(Path directory, Set<String> parentClassLoaderPackages)
             throws Exception
     {
         List<Plugin> allPlugins = new ArrayList<>();
@@ -156,7 +157,8 @@ public class TarPluginLoader
                                     pluginDir,
                                     pluginName,
                                     version,
-                                    true
+                                    true,
+                                    parentClassLoaderPackages
                             );
 
                             // 在插件类加载器上下文中加载插件

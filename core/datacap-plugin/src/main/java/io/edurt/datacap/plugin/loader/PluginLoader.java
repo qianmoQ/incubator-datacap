@@ -85,5 +85,5 @@ public interface PluginLoader
 
     // 加载插件
     // Load plugins
-    List<Plugin> load(Path path);
+    List<Plugin> load(Path path, Set<String> parentClassLoaderPackages);
 }

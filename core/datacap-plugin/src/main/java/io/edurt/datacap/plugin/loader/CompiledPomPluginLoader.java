@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class CompiledPomPluginLoader
     }
 
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
         try {
             // 处理传入的是pom.xml文件的情况

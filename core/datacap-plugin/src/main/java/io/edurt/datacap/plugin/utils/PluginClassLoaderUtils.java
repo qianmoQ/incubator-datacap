@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -19,12 +20,6 @@ import java.util.stream.Stream;
 public class PluginClassLoaderUtils
 {
     private PluginClassLoaderUtils() {}
-
-    public static PluginClassLoader createClassLoader(Path directory, String pluginName, String pluginVersion)
-            throws Exception
-    {
-        return createClassLoader(directory, pluginName, pluginVersion, false);
-    }
 
     /**
      * 创建一个新的插件类加载器
@@ -43,7 +38,7 @@ public class PluginClassLoaderUtils
      * @throws Exception 创建类加载器时发生异常
      * Exception occurred when creating the class loader
      */
-    public static PluginClassLoader createClassLoader(Path directory, String pluginName, String pluginVersion, boolean parentFirst)
+    public static PluginClassLoader createClassLoader(Path directory, String pluginName, String pluginVersion, boolean parentFirst, Set<String> parentClassLoaders)
             throws Exception
     {
         log.debug("Creating new class loader for plugin: {} version: {} directory: {}",
@@ -76,7 +71,8 @@ public class PluginClassLoaderUtils
                 systemClassLoader,
                 pluginName,
                 pluginVersion,
-                parentFirst
+                parentFirst,
+                parentClassLoaders
         );
     }
 

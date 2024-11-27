@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 @Slf4j
 @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "OBL_UNSATISFIED_OBLIGATION"})
@@ -25,7 +26,7 @@ public class PropertiesPluginLoader
     }
 
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
         List<Plugin> plugins = new ArrayList<>();
         try {
@@ -69,12 +70,12 @@ public class PropertiesPluginLoader
                     // 使用 SpiPluginLoader 加载
                     // Use SpiPluginLoader to load
                     SpiPluginLoader compiledLoader = new SpiPluginLoader();
-                    List<Plugin> loadedPlugins = compiledLoader.load(resolvedPath);
+                    List<Plugin> loadedPlugins = compiledLoader.load(resolvedPath, parentClassLoaderPackages);
                     if (!loadedPlugins.isEmpty()) {
                         plugins.addAll(loadedPlugins);
                     }
                     else {
-                        loadedPlugins = PluginLoaderFactory.loadPlugins(resolvedPath);
+                        loadedPlugins = PluginLoaderFactory.loadPlugins(resolvedPath, parentClassLoaderPackages);
                         plugins.addAll(loadedPlugins);
                     }
                 }

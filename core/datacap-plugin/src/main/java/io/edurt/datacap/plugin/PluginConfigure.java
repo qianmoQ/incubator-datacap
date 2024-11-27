@@ -6,11 +6,22 @@ import lombok.Setter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Builder
 public class PluginConfigure
 {
+    private static final Set<String> LOADER_PACKAGES = Set.of(
+            "java.",
+            "javax.",
+            "com.google.",
+            "org.",
+            "ch.qos.logback.",
+            "org.slf4j."
+    );
+
     @Setter
     private Path pluginsDir;
     private boolean autoReload;
@@ -23,11 +34,27 @@ public class PluginConfigure
 
     // 自动清理, 只有卸载时才会生效
     // Auto cleanup, only effective when unloading
-    public boolean autoCleanup;
+    private boolean autoCleanup;
 
     // 同一目录下多个插件是否共享类加载器
     // Whether multiple plugins in the same directory share the class loader
-    public boolean shareClassLoaderWhenSameDir;
+    private boolean shareClassLoaderWhenSameDir;
+
+    // 优先使用父类加载器包列表
+    // List of parent class loader packages to be prioritized
+    @Builder.Default
+    private Set<String> parentClassLoaderPackages = new HashSet<>(LOADER_PACKAGES);
+
+    /**
+     * 添加父类加载器包
+     * Add parent class loader packages
+     *
+     * @param packageNames 父类加载器包名称 Parent class loader package name
+     */
+    public void addParentClassLoaderPackage(Set<String> packageNames)
+    {
+        this.parentClassLoaderPackages.addAll(packageNames);
+    }
 
     public static PluginConfigure defaultConfig()
     {

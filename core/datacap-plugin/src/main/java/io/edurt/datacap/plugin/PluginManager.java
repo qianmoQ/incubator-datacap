@@ -471,7 +471,7 @@ public class PluginManager
         TarPluginLoader tarPluginLoader = new TarPluginLoader();
         // 先加载插件到临时目录
         // Load plugins to temporary directory
-        List<Plugin> plugins = tarPluginLoader.load(sourcePath, tempDir);
+        List<Plugin> plugins = tarPluginLoader.load(sourcePath, tempDir, config.getParentClassLoaderPackages());
         if (!plugins.isEmpty()) {
             // 查找解压后的子目录
             // Find extracted subdirectory
@@ -574,7 +574,7 @@ public class PluginManager
             log.debug("Found plugin version: {}", pluginVersion);
 
             PluginClassLoader loader;
-            if (config.shareClassLoaderWhenSameDir) {
+            if (config.isShareClassLoaderWhenSameDir()) {
                 log.info("Use shared ClassLoader for plugin: {} at {}", pluginBaseName, pluginDir);
                 // 多个插件在同一目录下，使用同一个类加载器
                 // Multiple plugins in the same directory, use the same class loader
@@ -586,7 +586,8 @@ public class PluginManager
                                         pluginDir,
                                         pluginBaseName,
                                         pluginVersion,
-                                        true
+                                        true,
+                                        config.getParentClassLoaderPackages()
                                 );
                             }
                             catch (Exception e) {
@@ -604,7 +605,8 @@ public class PluginManager
                         pluginDir,
                         pluginBaseName,
                         pluginVersion,
-                        true
+                        true,
+                        config.getParentClassLoaderPackages()
                 );
             }
 
@@ -613,7 +615,7 @@ public class PluginManager
                 return;
             }
 
-            List<Plugin> modules = PluginContextManager.runWithClassLoader(loader, () -> PluginLoaderFactory.loadPlugins(pluginDir));
+            List<Plugin> modules = PluginContextManager.runWithClassLoader(loader, () -> PluginLoaderFactory.loadPlugins(pluginDir, config.getParentClassLoaderPackages()));
 
             for (Plugin module : modules) {
                 PluginContextManager.runWithClassLoader(loader, () -> {
@@ -628,7 +630,7 @@ public class PluginManager
                     String pluginName = module.getName();
                     // 保存类加载器信息
                     // Save class loader information
-                    if (config.shareClassLoaderWhenSameDir) {
+                    if (config.isShareClassLoaderWhenSameDir()) {
                         pluginClassLoaders.putIfAbsent(pluginName, loader);
                     }
                     else {

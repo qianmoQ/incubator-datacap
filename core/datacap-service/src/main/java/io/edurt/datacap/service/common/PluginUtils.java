@@ -83,12 +83,13 @@ public class PluginUtils
         else {
             log.info("Load plugin {} type {} resource {} configure file path {}", plugin, type, resource, path);
         }
-        yamlFactory.findAndRegisterModules();
+
         IConfigure configure = null;
         try {
+            yamlFactory.findAndRegisterModules();
             configure = yamlFactory.readValue(file, IConfigure.class);
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             log.error("Format configuration file, it may be a bug, please submit issues to solve it. plugin {} type {} resource {} configure file path {} message ", plugin, type, resource, path, e);
             Preconditions.checkArgument(StringUtils.isNotEmpty(path), "Format configuration file, it may be a bug, please submit issues to solve it.");
         }

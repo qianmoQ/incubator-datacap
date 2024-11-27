@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +27,7 @@ public class DirectoryPluginLoader
     }
 
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
         try {
             // 获取目录名作为插件名
@@ -41,7 +42,8 @@ public class DirectoryPluginLoader
                     path,
                     pluginName,
                     version,
-                    true
+                    true,
+                    parentClassLoaderPackages
             );
 
             try (Stream<Path> pathStream = Files.walk(path)) {

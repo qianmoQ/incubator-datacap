@@ -12,6 +12,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,7 +28,7 @@ public class SpiPluginLoader
     }
 
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
         try {
             // 检查路径是否有效
@@ -48,7 +49,8 @@ public class SpiPluginLoader
                     path,
                     pluginName,
                     version,
-                    true
+                    true,
+                    parentClassLoaderPackages
             );
 
             return PluginContextManager.runWithClassLoader(classLoader, () -> {

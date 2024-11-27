@@ -124,6 +124,21 @@
         "ALL"
       ],
       "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-local-bin.tar.gz"
+    },
+    {
+      "key": "datacap-executor-seatunnel",
+      "label": "SeatunnelExecutor",
+      "description": "A Seatunnel execution plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "Executor",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/executor/seatunnel.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-seatunnel-bin.tar.gz"
     }
   ]
 }

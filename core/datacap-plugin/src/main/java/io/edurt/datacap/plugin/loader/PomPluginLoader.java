@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "OBL_UNSATISFIED_OBLIGATION"})
@@ -26,7 +27,7 @@ public class PomPluginLoader
     }
 
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
         try {
             Path pomFile = path.resolve("pom.xml");
@@ -57,7 +58,8 @@ public class PomPluginLoader
                     path,
                     model.getArtifactId(),
                     version,
-                    true
+                    true,
+                    parentClassLoaderPackages
             );
 
             Class<?> pluginClass = classLoader.loadClass(mainClass);

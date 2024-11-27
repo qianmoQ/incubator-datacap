@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
@@ -50,7 +51,7 @@ public class InjectPluginLoader
     }
 
     @Override
-    public List<Plugin> load(Path path)
+    public List<Plugin> load(Path path, Set<String> parentClassLoaderPackages)
     {
         try {
             if (isExcludedPath(path)) {
@@ -76,7 +77,8 @@ public class InjectPluginLoader
                     path,
                     pluginName,
                     version,
-                    true
+                    true,
+                    parentClassLoaderPackages
             );
 
             return PluginContextManager.runWithClassLoader(classLoader, () -> {

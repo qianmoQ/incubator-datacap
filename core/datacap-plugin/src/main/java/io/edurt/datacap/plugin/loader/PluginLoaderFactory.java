@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -88,10 +89,12 @@ public class PluginLoaderFactory
      *
      * @param pluginDir 插件目录
      * plugin directory
+     * @param parentClassLoaderPackages 父类加载器包名集合
+     * parent class loader package names
      * @return 加载的插件模块列表
      * list of loaded plugin modules
      */
-    public static List<Plugin> loadPlugins(Path pluginDir)
+    public static List<Plugin> loadPlugins(Path pluginDir, Set<String> parentClassLoaderPackages)
     {
         if (pluginDir == null) {
             log.warn("Plugin directory is null");
@@ -105,7 +108,7 @@ public class PluginLoaderFactory
             PluginLoader loader = entry.getValue();
 
             try {
-                List<Plugin> modules = loader.load(pluginDir);
+                List<Plugin> modules = loader.load(pluginDir, parentClassLoaderPackages);
                 if (modules != null && !modules.isEmpty()) {
                     log.info("Successfully loaded [ {} ] plugin(s) using loader type [ {} ]", modules.size(), type);
                     modules.forEach(v -> v.setClassLoader(loader.getClass().getName()));

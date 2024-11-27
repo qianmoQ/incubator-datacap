@@ -18,6 +18,7 @@ import io.edurt.datacap.service.configure.IConfigureFieldType;
 import io.edurt.datacap.service.configure.IConfigurePipelineType;
 import io.edurt.datacap.service.entity.SourceEntity;
 import io.edurt.datacap.spi.model.Configure;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@Slf4j
 @SuppressFBWarnings(value = {"SF_SWITCH_NO_DEFAULT", "SF_SWITCH_FALLTHROUGH"})
 public class ConfigureUtils
 {
@@ -281,18 +283,28 @@ public class ConfigureUtils
 
     public static PipelineFieldBody convertFieldBody(SourceEntity entity, String executor, IConfigurePipelineType pipelineType, Environment environment, Properties originProperties)
     {
-        PipelineFieldBody body = new PipelineFieldBody();
-        body.setProtocol(entity.getProtocol());
-        IConfigure yamlConfigure = PluginUtils.loadYamlConfigure(entity.getProtocol(), entity.getType(), entity.getType(), environment);
-        yamlConfigure.getPipelines()
-                .stream()
-                .filter(v -> v.getExecutor().equals(executor) && v.getType().equals(pipelineType))
-                .findFirst()
-                .ifPresent(iConfigureExecutor -> body.setConfigures(mergeProperties(entity, iConfigureExecutor.getFields(), originProperties)));
-        if (body.getConfigures() == null) {
-            body.setConfigures(new Properties());
+        try {
+            PipelineFieldBody body = new PipelineFieldBody();
+            body.setProtocol(entity.getProtocol());
+            IConfigure yamlConfigure = PluginUtils.loadYamlConfigure(entity.getProtocol(), entity.getType(), entity.getType(), environment);
+            if (yamlConfigure == null) {
+                throw new IllegalArgumentException("Failed to load YAML configuration");
+            }
+
+            yamlConfigure.getPipelines()
+                    .stream()
+                    .filter(v -> v.getExecutor().equals(executor) && v.getType().equals(pipelineType))
+                    .findFirst()
+                    .ifPresent(iConfigureExecutor -> body.setConfigures(mergeProperties(entity, iConfigureExecutor.getFields(), originProperties)));
+            if (body.getConfigures() == null) {
+                body.setConfigures(new Properties());
+            }
+            return body;
         }
-        return body;
+        catch (Throwable e) {
+            log.error("Failed to convert field body: {}", e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to convert field body: " + e.getMessage(), e);
+        }
     }
 
     /**
