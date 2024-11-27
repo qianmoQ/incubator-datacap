@@ -1,5 +1,6 @@
 package io.edurt.datacap.plugin.influxdb
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.plugin.PluginConfigure
 import io.edurt.datacap.plugin.PluginManager
 import io.edurt.datacap.plugin.utils.PluginPathUtils
@@ -15,6 +16,7 @@ import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@SuppressFBWarnings(value = ["RV_RETURN_VALUE_IGNORED_INFERRED", "SA_LOCAL_SELF_ASSIGNMENT"])
 class InfluxdbServiceTest
 {
     private val log = getLogger(this.javaClass)
