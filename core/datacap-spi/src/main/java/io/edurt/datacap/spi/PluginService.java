@@ -6,13 +6,16 @@ import io.edurt.datacap.spi.adapter.HttpAdapter;
 import io.edurt.datacap.spi.adapter.JdbcAdapter;
 import io.edurt.datacap.spi.adapter.NativeAdapter;
 import io.edurt.datacap.spi.connection.Connection;
-import io.edurt.datacap.spi.connection.JdbcConfigure;
 import io.edurt.datacap.spi.connection.JdbcConnection;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public interface PluginService
         extends Service
@@ -54,21 +57,62 @@ public interface PluginService
     {
         Response response = new Response();
         try {
-            JdbcConfigure jdbcConfigure = new JdbcConfigure();
-            if (jdbcConfigure.getJdbcDriver() == null) {
-                jdbcConfigure.setJdbcDriver(this.driver());
-            }
-            if (jdbcConfigure.getJdbcType() == null) {
-                jdbcConfigure.setJdbcType(this.connectType());
-            }
-            BeanUtils.copyProperties(jdbcConfigure, configure);
-            local.set(new JdbcConnection(jdbcConfigure, response));
+            configure.setDriver(this.driver());
+            configure.setType(this.connectType());
+            configure.setUrl(Optional.of(url(configure)));
+            local.set(new JdbcConnection(configure, response));
         }
         catch (Exception ex) {
             response.setIsConnected(Boolean.FALSE);
             response.setMessage(ex.getMessage());
-            log.error("Error connecting : {}", ex);
+            log.error("Error connecting :", ex);
         }
+    }
+
+    /**
+     * 构建驱动路径
+     * Build the driver path
+     *
+     * @param configure 配置信息 | Configuration information
+     * @return 驱动路径 | Driver path
+     */
+    default String url(Configure configure)
+    {
+        if (configure.getUrl().isPresent()) {
+            return configure.getUrl().get();
+        }
+
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("jdbc:");
+        buffer.append(configure.getType());
+        buffer.append("://");
+        buffer.append(configure.getHost());
+        buffer.append(":");
+        buffer.append(configure.getPort());
+        if (configure.getDatabase().isPresent()) {
+            buffer.append("/");
+            buffer.append(configure.getDatabase().get());
+        }
+        if (configure.getSsl().isPresent()) {
+            buffer.append(String.format("?ssl=%s", configure.getSsl().get()));
+        }
+        if (configure.getEnv().isPresent()) {
+            Map<String, Object> env = configure.getEnv().get();
+            List<String> flatEnv = env.entrySet()
+                    .stream()
+                    .map(value -> String.format("%s=%s", value.getKey(), value.getValue()))
+                    .collect(Collectors.toList());
+            if (configure.getSsl().isEmpty()) {
+                buffer.append("?");
+            }
+            else {
+                if (configure.getIsAppendChar()) {
+                    buffer.append("&");
+                }
+            }
+            buffer.append(String.join("&", flatEnv));
+        }
+        return buffer.toString();
     }
 
     @Deprecated

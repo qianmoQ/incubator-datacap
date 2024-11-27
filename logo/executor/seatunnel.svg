@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
     <!-- 背景圆 -->
     <!-- Background circle -->
-    <circle cx="100" cy="100" r="90" fill="#f0f8ff" />
+    <circle cx="100" cy="100" r="100" fill="#f0f8ff" />
 
     <!-- 外部圆环 -->
     <!-- Outer ring -->
-    <circle cx="100" cy="100" r="80" fill="none" stroke="#1E90FF" stroke-width="8" />
+    <circle cx="100" cy="100" r="96" fill="none" stroke="#1E90FF" stroke-width="8" />
 
     <!-- Created with Inkscape (http://www.inkscape.org/) -->
     <svg version="1.1"

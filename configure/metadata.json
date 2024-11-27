@@ -36,6 +36,21 @@
       "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-clickhouse-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-influxdb",
+      "label": "InfluxDB",
+      "description": "InfluxDB is a time series database that stores and retrieves data points. It is a distributed database with a focus on performance, scalability, and ease of use.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/plugin/influxdb.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-influxdb-bin.tar.gz"
+    },
+    {
       "key": "datacap-convert-csv",
       "label": "CsvConvert",
       "description": "A CSV file conversion plugin for DataCap.",

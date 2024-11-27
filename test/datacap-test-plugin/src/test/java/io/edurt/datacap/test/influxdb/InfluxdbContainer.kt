@@ -4,7 +4,7 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.DockerImageName.parse
 
-class InfluxDBContainer : GenericContainer<InfluxDBContainer>
+class InfluxdbContainer : GenericContainer<InfluxdbContainer>
 {
     constructor() : super(parse(DEFAULT_IMAGE_NAME))
     {

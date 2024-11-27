@@ -15,7 +15,7 @@
                               :key="plugin.name"
                               :value="plugin.name">
                   <ShadcnTooltip :content="plugin.name" class="p-1">
-                    <img class="h-16 w-16 object-contain" :src="'/static/images/plugin/' + plugin.name + '.png'" :alt="plugin.name">
+                    <img class="h-16 w-16 object-contain" :src="'/static/images/plugin/' + plugin.name.toLowerCase() + '.png'" :alt="plugin.name">
                   </ShadcnTooltip>
                 </ShadcnToggle>
               </ShadcnToggleGroup>

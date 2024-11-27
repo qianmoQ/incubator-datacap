@@ -11,11 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>datacap-plugin-influxdb</artifactId>
-    <description>DataCap - InfluxDB</description>
-
-    <properties>
-        <plugin.name>datacap-influxdb</plugin.name>
-    </properties>
+    <description>DataCap - Plugin - InfluxDB</description>
 
     <dependencies>
         <dependency>
@@ -31,11 +27,6 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.suteren.jdbc.influxdb</groupId>
@@ -70,7 +61,24 @@
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

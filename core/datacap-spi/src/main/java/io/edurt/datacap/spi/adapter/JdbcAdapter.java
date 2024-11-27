@@ -3,8 +3,8 @@ package io.edurt.datacap.spi.adapter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.column.Column;
 import io.edurt.datacap.spi.column.JdbcColumn;
-import io.edurt.datacap.spi.connection.JdbcConfigure;
 import io.edurt.datacap.spi.connection.JdbcConnection;
+import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import io.edurt.datacap.spi.model.Time;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class JdbcAdapter
         processorTime.setStart(new Date().getTime());
         Response response = jdbcConnection.getResponse();
         Connection connection = (Connection) jdbcConnection.getConnection();
-        JdbcConfigure configure = (JdbcConfigure) jdbcConnection.getConfigure();
+        Configure configure = jdbcConnection.getConfigure();
         if (response.getIsConnected()) {
             try (Statement statement = connection.createStatement()) {
                 List<String> headers = new ArrayList<>();

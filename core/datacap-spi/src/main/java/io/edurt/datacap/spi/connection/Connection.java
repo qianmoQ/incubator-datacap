@@ -25,8 +25,6 @@ public abstract class Connection
         this.response.setConnection(connectionTime);
     }
 
-    protected abstract String formatJdbcUrl();
-
     protected abstract java.sql.Connection openConnection();
 
     public Object getConnection()

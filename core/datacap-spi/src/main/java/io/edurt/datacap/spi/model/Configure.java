@@ -27,12 +27,26 @@ public class Configure
     private PluginManager pluginManager;
     private String host;
     private Integer port;
+
+    @Builder.Default
     private Optional<String> username = Optional.empty();
+
+    @Builder.Default
     private Optional<String> password = Optional.empty();
+
+    @Builder.Default
     private Optional<String> database = Optional.empty();
+
+    @Builder.Default
     private Optional<String> version = Optional.empty();
+
+    @Builder.Default
     private Optional<Map<String, Object>> env = Optional.empty();
+
+    @Builder.Default
     private Optional<Boolean> ssl = Optional.empty();
+
+    @Builder.Default
     private String format = "JsonConvert";
     // if `to`: skip
     private Optional<String> query = Optional.empty();
@@ -40,4 +54,15 @@ public class Configure
     private String home;
     private boolean usedConfig;
     private String id;
+
+    // 自定义 url
+    // Custom url
+    @Builder.Default
+    private Optional<String> url = Optional.empty();
+
+    private String driver;
+    private String type;
+
+    @Builder.Default
+    private Boolean isAppendChar = Boolean.TRUE;
 }
