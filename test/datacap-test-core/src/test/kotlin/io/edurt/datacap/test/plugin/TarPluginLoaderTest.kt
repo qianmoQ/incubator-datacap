@@ -15,7 +15,7 @@ class TarPluginLoaderTest
     {
         val loader = TarPluginLoader()
 
-        val plugins: List<Plugin> = loader.load(Path.of(tarUrl))
+        val plugins: List<Plugin> = loader.load(Path.of(tarUrl), setOf("io.edurt.datacap.plugin"))
         assertTrue(plugins.isNotEmpty())
     }
 }

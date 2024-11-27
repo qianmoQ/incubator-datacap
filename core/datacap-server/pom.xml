@@ -506,13 +506,6 @@
             <artifactId>datacap-executor-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>io.edurt.datacap</groupId>-->
-        <!--            <artifactId>datacap-executor-seatunnel</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!-- Scheduler -->
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-scheduler-spi</artifactId>
