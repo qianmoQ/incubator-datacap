@@ -11,13 +11,7 @@
     </parent>
 
     <artifactId>datacap-service</artifactId>
-    <description>DataCap - server</description>
-
-    <properties>
-        <snakeyaml.version>1.33</snakeyaml.version>
-        <useragent.version>1.21</useragent.version>
-        <openai.version>2024.01.3</openai.version>
-    </properties>
+    <description>DataCap - Core - Service</description>
 
     <dependencies>
         <dependency>

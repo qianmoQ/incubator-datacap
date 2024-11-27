@@ -9,13 +9,14 @@
     </parent>
 
     <artifactId>datacap-scheduler-local</artifactId>
-    <description>DataCap - Schedule for local</description>
+    <description>DataCap - Schedule - Local</description>
 
     <dependencies>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-scheduler-spi</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
