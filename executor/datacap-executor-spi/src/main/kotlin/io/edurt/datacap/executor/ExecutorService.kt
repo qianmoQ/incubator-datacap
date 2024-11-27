@@ -6,13 +6,6 @@ import io.edurt.datacap.plugin.Service
 
 interface ExecutorService : Service
 {
-    fun name(): String
-    {
-        return this.javaClass
-            .simpleName
-            .removeSuffix("Executor")
-    }
-
     fun start(request: ExecutorRequest): ExecutorResponse
 
     fun stop(request: ExecutorRequest): ExecutorResponse

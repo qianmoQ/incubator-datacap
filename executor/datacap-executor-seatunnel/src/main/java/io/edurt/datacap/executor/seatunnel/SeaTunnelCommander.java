@@ -41,7 +41,7 @@ public class SeaTunnelCommander
 
     public String toCommand()
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(this.bin);
         buffer.append("/");
         buffer.append(startScript);

@@ -11,13 +11,14 @@
     </parent>
 
     <artifactId>datacap-executor-seatunnel</artifactId>
-    <description>DataCap - Executor seatunnel</description>
+    <description>DataCap - Executor - Seatunnel</description>
 
     <dependencies>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-executor-spi</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.edurt.datacap</groupId>

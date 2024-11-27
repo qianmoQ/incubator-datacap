@@ -5,8 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.edurt.datacap.executor.Executor;
-import io.edurt.datacap.executor.common.RunProtocol;
+import io.edurt.datacap.executor.ExecutorService;
 import io.edurt.datacap.executor.common.RunState;
 import io.edurt.datacap.executor.configure.ExecutorConfigure;
 import io.edurt.datacap.executor.configure.ExecutorRequest;
@@ -30,17 +29,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"})
 @Slf4j
-public class SeatunnelExecutor
-        implements Executor
+public class SeatunnelExecutorService
+        implements ExecutorService
 {
-    @Override
-    public String name()
-    {
-        return "Seatunnel";
-    }
-
     @Override
     public ExecutorResponse start(ExecutorRequest request)
     {
@@ -104,7 +99,7 @@ public class SeatunnelExecutor
         jsonGenerator.writeFieldName(type);
         if (ObjectUtils.isNotEmpty(configure)) {
             String protocol = configure.getType();
-            if (configure.getProtocol().equals(RunProtocol.JDBC)) {
+            if (requireNonNull(configure.getProtocol()).equalsIgnoreCase("jdbc")) {
                 protocol = "Jdbc";
             }
             Connector factory = ConnectorFactory.createFormatter(ConnectorType.valueOf(protocol), configure);

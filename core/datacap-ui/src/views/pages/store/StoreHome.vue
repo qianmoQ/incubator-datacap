@@ -21,7 +21,10 @@
                   <div class="flex items-center space-x-4 justify-between">
                     <!-- Logo and Name -->
                     <div class="flex flex-col items-center space-y-2 justify-between">
-                      <ShadcnAvatar class="bg-transparent border p-1.5" :src="child.logo" :alt="child.i18nFormat ? $t(child.label) : child.label"/>
+                      <ShadcnAvatar class="bg-transparent"
+                                    size="large"
+                                    :src="child.logo"
+                                    :alt="child.i18nFormat ? $t(child.label) : child.label"/>
 
                       <ShadcnText type="h6">
                         {{ child.i18nFormat ? $t(child.label) : child.label }}

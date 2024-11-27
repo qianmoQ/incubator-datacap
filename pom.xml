@@ -78,7 +78,7 @@
         <!--        <module>plugin/datacap-plugin-influxdb</module>-->
         <module>executor/datacap-executor-spi</module>
         <module>executor/datacap-executor-local</module>
-        <!--        <module>executor/datacap-executor-seatunnel</module>-->
+        <module>executor/datacap-executor-seatunnel</module>
         <!--        <module>shaded/datacap-shaded-ydb</module>-->
         <!--        <module>shaded/datacap-shaded-pinot</module>-->
         <module>fs/datacap-fs-spi</module>

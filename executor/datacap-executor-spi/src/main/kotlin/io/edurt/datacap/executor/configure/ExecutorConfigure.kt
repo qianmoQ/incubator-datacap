@@ -27,12 +27,32 @@ data class ExecutorConfigure(
         type: String?,
         configure: Properties?,
         supportOptions: Set<String> = mutableSetOf()
-    ) : this(type, configure, supportOptions, RunProtocol.NONE.name, null, null, null, null, null)
+    ) : this(
+        type,
+        configure,
+        supportOptions,
+        RunProtocol.NONE.name,
+        null,
+        null,
+        null,
+        null,
+        null
+    )
 
     constructor(
         type: String,
         configure: Properties,
         supportOptions: Set<String> = mutableSetOf(),
         protocol: String
-    ) : this(type, configure, supportOptions, protocol, null, null, null, null, null)
+    ) : this(
+        type,
+        configure,
+        supportOptions,
+        protocol,
+        null,
+        null,
+        null,
+        null,
+        null
+    )
 }
