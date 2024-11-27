@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.executor.configure.ExecutorConfigure;
+import io.edurt.datacap.spi.model.Configure;
 
 import java.util.Map;
 import java.util.Properties;
@@ -53,5 +54,10 @@ public abstract class Connector
                     .forEach(entry -> properties.put(entry.getKey(), entry.getValue()));
         }
         return properties;
+    }
+
+    protected Properties formatToProperties(Configure originalConfigure)
+    {
+        return new Properties();
     }
 }

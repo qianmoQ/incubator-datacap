@@ -29,8 +29,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.util.Objects.requireNonNull;
-
 @SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"})
 @Slf4j
 public class SeatunnelExecutorService
@@ -99,9 +97,14 @@ public class SeatunnelExecutorService
         jsonGenerator.writeFieldName(type);
         if (ObjectUtils.isNotEmpty(configure)) {
             String protocol = configure.getType();
-            if (requireNonNull(configure.getProtocol()).equalsIgnoreCase("jdbc")) {
+
+            try {
+                ConnectorType.valueOf(protocol);
+            }
+            catch (IllegalArgumentException e) {
                 protocol = "Jdbc";
             }
+
             Connector factory = ConnectorFactory.createFormatter(ConnectorType.valueOf(protocol), configure);
             for (Map.Entry<String, Object> entry : factory.formatToMap().entrySet()) {
                 jsonGenerator.writeStartObject();
