@@ -1,3 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
-    <path d="M7.208 31.416L.643 22.933H7.85l3.017 4.927 2.96-4.927h6.817l-6.398 8.533 7.124 9.6h-7.403l-3.408-5.41-3.52 5.41H0zm15.326-8.483h8.744l2.85 10.667h.056l2.85-10.667h8.744v18.134h-5.81V29.435h-.056l-3.464 11.632h-4.582L28.4 29.435h-.056v11.632h-5.81zm26.492 0h6.146V36.42H64v4.648H49.026z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+    <!-- 背景圆形 -->
+    <!-- Background circle -->
+    <circle cx="100" cy="100" r="90" fill="#4A90E2" />
+
+    <!-- XML 标签符号 -->
+    <!-- XML tag symbols -->
+    <g fill="white" transform="translate(0, -15)">
+        <!-- 左箭头 < -->
+        <!-- Left arrow < -->
+        <path d="M60 70 L80 50 L80 60 L100 60 L100 80 L80 80 L80 90 Z" />
+
+        <!-- 右箭头 > -->
+        <!-- Right arrow > -->
+        <path d="M140 130 L120 110 L120 120 L100 120 L100 140 L120 140 L120 150 Z" />
+
+        <!-- 中间转换箭头 -->
+        <!-- Middle conversion arrow -->
+        <path d="M85 95 L115 95 L115 85 L135 100 L115 115 L115 105 L85 105 Z" />
+
+        <!-- XML 文本 -->
+        <!-- XML text -->
+        <text x="100" y="170" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24">XML</text>
+    </g>
+
+    <!-- 装饰性圆环 -->
+    <!-- Decorative ring -->
+    <circle cx="100" cy="100" r="85" fill="none" stroke="white" stroke-width="2" stroke-dasharray="10,5" />
 </svg>

@@ -12,7 +12,7 @@
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/plugin/mysql.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "8.0",
@@ -28,7 +28,7 @@
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://vectorwiki.com/images/D9eMt__clickhouse.svg",
+      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/plugin/clickhouse.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
