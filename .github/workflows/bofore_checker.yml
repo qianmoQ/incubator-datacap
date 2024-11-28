@@ -63,32 +63,32 @@ jobs:
       - name: Run SpotBugs for server
         run: ./mvnw clean install spotbugs:spotbugs -Dcheckstyle.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true -f core/datacap-server/pom.xml
 
-before_checker_test:
-  runs-on: ubuntu-latest
-  needs:
-    - before_checker_style
-    - before_checker_bugs
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+  before_checker_test:
+    runs-on: ubuntu-latest
+    needs:
+      - before_checker_style
+      - before_checker_bugs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Maven Checker Style
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
+      - name: Maven Checker Style
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
-    - run: chmod 755 ./mvnw
+      - run: chmod 755 ./mvnw
 
-    - name: Run Tests
-      env:
-        ACCESS: ${{ secrets.QINIU_ACCESS }}
-        SECRET: ${{ secrets.QINIU_SECRET }}
-        BUCKET: ${{ secrets.QINIU_BUCKET }}
-        ENDPOINT: ${{ secrets.QINIU_ENDPOINT }}
-      run: |
-        ./mvnw clean test -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -Dskip.pnpm \
-          -Dqiniu.access="$ACCESS" -Dqiniu.secret="$SECRET" -Dqiniu.bucket="$BUCKET" -Dqiniu.endpoint="$ENDPOINT"
+      - name: Run Tests
+        env:
+          ACCESS: ${{ secrets.QINIU_ACCESS }}
+          SECRET: ${{ secrets.QINIU_SECRET }}
+          BUCKET: ${{ secrets.QINIU_BUCKET }}
+          ENDPOINT: ${{ secrets.QINIU_ENDPOINT }}
+        run: |
+          ./mvnw clean test -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -Dskip.pnpm \
+            -Dqiniu.access="$ACCESS" -Dqiniu.secret="$SECRET" -Dqiniu.bucket="$BUCKET" -Dqiniu.endpoint="$ENDPOINT"
 
   before_checker_package:
     runs-on: ubuntu-latest
