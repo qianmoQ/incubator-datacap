@@ -93,31 +93,37 @@ public class TarPluginLoader
     public List<Plugin> load(Path path, Path targetDir, Set<String> parentClassLoaderPackages)
     {
         try {
-            // 如果是 URL 路径，先下载到本地
-            // If it's a URL path, download it first
-            if (path.toString().startsWith("http") || path.toString().startsWith("https")) {
-                path = downloadTarFile(path.toString().replace(":/", "://"));
+            if (isValidTarPath(path)) {
+                // 如果是 URL 路径，先下载到本地
+                // If it's a URL path, download it first
+                if (path.toString().startsWith("http") || path.toString().startsWith("https")) {
+                    path = downloadTarFile(path.toString().replace(":/", "://"));
+                }
+
+                if (isValidTarFile(path)) {
+                    // 使用指定的目录或创建临时目录
+                    // Use specified directory or create temporary directory
+                    Path extractDir = targetDir != null ? targetDir : createTempDirectory();
+
+                    // 解压 tar 文件
+                    // Extract tar file
+                    extractTarFile(path, extractDir);
+
+                    // 从解压目录加载插件
+                    // Load plugins from extracted directory
+                    List<Plugin> plugins = loadPluginsFromDirectory(extractDir, parentClassLoaderPackages);
+
+                    // 如果使用的是临时目录，则清理
+                    // Clean up if using temporary directory
+                    if (targetDir == null) {
+                        cleanupTempDirectory(extractDir);
+                    }
+
+                    return plugins;
+                }
             }
 
-            // 使用指定的目录或创建临时目录
-            // Use specified directory or create temporary directory
-            Path extractDir = targetDir != null ? targetDir : createTempDirectory();
-
-            // 解压 tar 文件
-            // Extract tar file
-            extractTarFile(path, extractDir);
-
-            // 从解压目录加载插件
-            // Load plugins from extracted directory
-            List<Plugin> plugins = loadPluginsFromDirectory(extractDir, parentClassLoaderPackages);
-
-            // 如果使用的是临时目录，则清理
-            // Clean up if using temporary directory
-            if (targetDir == null) {
-                cleanupTempDirectory(extractDir);
-            }
-
-            return plugins;
+            return List.of();
         }
         catch (Exception e) {
             log.error("Failed to load plugins from tar file: {}", path, e);
@@ -325,6 +331,41 @@ public class TarPluginLoader
         }
         catch (IOException e) {
             log.warn("Failed to cleanup temporary directory: {}", directory, e);
+        }
+    }
+
+    /**
+     * 检查是否为合法 Tar 文件路径
+     * Check if it's a valid Tar file path
+     *
+     * @param path file path
+     * @return true if it's a valid Tar file
+     */
+    private boolean isValidTarPath(Path path)
+    {
+        String pathStr = path.toString();
+        return (pathStr.startsWith("http") || pathStr.startsWith("https"))
+                && (pathStr.endsWith("tar.gz") || pathStr.endsWith("tar") || pathStr.endsWith("tgz"));
+    }
+
+    /**
+     * 检查是否合法的 Tar 文件，通过解压文件头检查
+     * Check if it's a valid Tar file, by checking the file header
+     *
+     * @param path file path
+     * @return true if it's a valid Tar file
+     */
+    private boolean isValidTarFile(Path path)
+    {
+        try (InputStream fileIn = Files.newInputStream(path);
+                BufferedInputStream buffIn = new BufferedInputStream(fileIn);
+                GZIPInputStream gzipIn = new GZIPInputStream(buffIn)) {
+            log.debug("Validating tar file: {}", path);
+            log.debug("Tar file header: {}", gzipIn.readNBytes(512));
+            return true;
+        }
+        catch (IOException e) {
+            return false;
         }
     }
 }
