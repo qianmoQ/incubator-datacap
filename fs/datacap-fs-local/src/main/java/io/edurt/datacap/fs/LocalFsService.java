@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 
 @Slf4j
-public class LocalFs
-        implements Fs
+public class LocalFsService
+        implements FsService
 {
     @Override
     public FsResponse writer(FsRequest request)

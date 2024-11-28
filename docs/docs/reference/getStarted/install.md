@@ -14,10 +14,10 @@ DataCap 是支持用户将服务部署到自主机中。通过本文档用户可
 
     如果有不支持的系统，请使用源码编译方法主动编译二进制文件。
 
-| 系统    | 版本        |
-|-------|-----------|
-| JDK   | `>=11`    |
-| MySQL | `>=5.6.x` |
+| 系统    | 版本    |
+|-------|-------|
+| JDK   | `11`  |
+| MySQL | `8.x` |
 
 ### 准备安装包
 
@@ -30,12 +30,15 @@ DataCap 是支持用户将服务部署到自主机中。通过本文档用户可
 1.[下载最新发布版本](../../download.md)
 
 2.将二进制文件下载到本地后运行以下命令
+
 ```bash
-tar -xvzf datacap-release.tar.gz
+tar -xvzf datacap-<VERSION>-bin.tar.gz
 ```
+
 3. 进入软件根目录
+
 ```bash
-cd datacap
+cd datacap-<VERSION>
 ```
 
 ### 软件配置
@@ -46,7 +49,7 @@ cd datacap
 
 !!! danger
 
-    如果您是通过其他版本升级，请执行 `schema/VERSION/schema.sql`
+    如果您是通过其他版本升级，请执行 `schema/<VERSION>/schema.sql`
 
 datacap 软件中的所有配置均在 `configure/application.properties` 文件中。
 
@@ -57,23 +60,20 @@ datacap 软件中的所有配置均在 `configure/application.properties` 文件
 ```properties
 server.port=9096
 server.address=localhost
-# Fixed serialized data missing for 8 hours
 spring.jackson.time-zone=GMT+8
 spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
-# datacap security management configuration
 datacap.security.secret=DataCapSecretKey
 datacap.security.expiration=86400000
-# datacap editor configuration
 datacap.editor.sugs.maxSize=1000
 ```
 
-- `server.port`: 用于配置服务在服务器中启动监听的端口
-- `server.address`: 用于配置服务在本地的监听地址
-- `spring.jackson.time-zone`: 用于配置时区
-- `spring.jackson.date-format`: 用于配置日期格式
-- `datacap.security.secret`: 用于配置数据安全管理的密钥
-- `datacap.security.expiration`: 用于配置数据安全管理的过期时间
-- `datacap.editor.sugs.maxSize`: 用于配置数据编辑器的最大行数
+- `server.port`: 用于配置服务在服务器中启动监听的端口，默认为 `9096`
+- `server.address`: 用于配置服务在本地的监听地址，如果需要使用 `IP+端口` 方便外部机器访问，请不要设置为 `localhost`，建议设置为 `0.0.0.0`
+- `spring.jackson.time-zone`: 用于配置时区，默认为 `GMT+8`
+- `spring.jackson.date-format`: 用于配置日期格式，默认为 `yyyy-MM-dd HH:mm:ss`
+- `datacap.security.secret`: 用于配置数据安全管理的密钥，默认为 `DataCapSecretKey`
+- `datacap.security.expiration`: 用于配置数据安全管理的过期时间，单位为毫秒，默认为 `86400000`
+- `datacap.editor.sugs.maxSize`: 用于配置数据编辑器的最大行数，默认为 `1000` 已经失效不在使用
 
 #### Web 服务配置
 
@@ -111,15 +111,55 @@ spring.datasource.password=12345678
 
 ```properties
 datacap.executor.data=
-datacap.executor.way=local
-datacap.executor.mode=client
+datacap.executor.way=LOCAL
+datacap.executor.mode=CLIENT
+datacap.executor.engine=SPARK
+datacap.executor.startScript=start-seatunnel-spark-connector-v2.sh
 datacap.executor.seatunnel.home=/opt/lib/seatunnel
 ```
 
 - `datacap.executor.data`: 用于配置执行器的数据缓冲路径
 - `datacap.executor.way`: 用于配置执行器的执行方式，不同的执行器拥有不同的执行方式
 - `datacap.executor.mode`: 用于配置执行器的执行模式，不同的执行器拥有不同的执行模式
+- `datacap.executor.engine`: 用于配置执行器的执行引擎
+- `datacap.executor.startScript`: 用于配置执行器的启动脚本
 - `datacap.executor.seatunnel.home`: 用于配置执行器的 Apache Seatunnel 主目录
+
+##### Apache Seatunnel
+
+=== "Spark 引擎配置"
+
+    ```properties
+    datacap.executor.data=
+    datacap.executor.way=LOCAL
+    datacap.executor.mode=CLIENT
+    datacap.executor.engine=SPARK
+    datacap.executor.startScript=start-seatunnel-spark-connector-v2.sh
+    datacap.executor.seatunnel.home=/opt/lib/seatunnel
+    ```
+
+=== "Flink 引擎配置"
+    
+    ```properties
+     datacap.executor.data=
+     datacap.executor.way=LOCAL
+     datacap.executor.mode=CLIENT
+     datacap.executor.engine=FLINK
+     datacap.executor.startScript=start-seatunnel-flink-13-connector-v2.sh
+     datacap.executor.seatunnel.home=/opt/lib/seatunnel
+    ```
+
+=== "Seatunnel 引擎配置"
+
+    ```properties
+     datacap.executor.data=
+    # Only support LOCAL
+     datacap.executor.way=LOCAL
+     datacap.executor.mode=CLIENT
+     datacap.executor.engine=SEATUNNEL
+     datacap.executor.startScript=seatunnel.sh
+     datacap.executor.seatunnel.home=/opt/lib/seatunnel
+    ```
 
 #### 上传配置
 
@@ -143,7 +183,7 @@ datacap.openai.timeout=30
 - `datacap.openai.backend`: 用于配置 OpenAI 的后端地址
 - `datacap.openai.token`: 用于配置 OpenAI 的 token
 - `datacap.openai.model`: 用于配置 OpenAI 的模型
-- `datacap.openai.timeout`: 用于配置 OpenAI 的超时时间
+- `datacap.openai.timeout`: 用于配置 OpenAI 的超时时间，单位为秒
 
 #### 主系统配置
 
@@ -158,7 +198,7 @@ datacap.audit.sql.print=false
 - `datacap.registration.enable`: 用于配置是否开启注册
 - `datacap.captcha.enable`: 用于配置是否开启验证码
 - `datacap.cache.maximum`: 用于配置缓存最大值
-- `datacap.cache.expiration`: 用于配置缓存过期时间
+- `datacap.cache.expiration`: 用于配置缓存过期时间，单位为分钟
 - `datacap.audit.sql.print`: 用于配置是否打印 SQL
 
 #### 流水线配置
@@ -177,11 +217,7 @@ datacap.pipeline.reset=STOPPED
 
 ---
 
-存储目前支持
-
-- `Local`: 本地存储
-- `AliOss`: 阿里云 OSS
-- `Qiniu`: 七牛云
+支持的存储类型详见 https://github.com/devlive-community/datacap/tree/dev/fs
 
 ##### 本地存储配置
 
@@ -247,11 +283,19 @@ datacap.experimental.avatarPath={username}/avatar/
 
     如果您需要定制化 JVM 配置，只需修改 `configure/jvm.conf` 配置文件即可
 
+### 插件管理器配置
+
+```properties
+plugin.manager.extend.packages=com.fasterxml.jackson
+```
+
+- `plugin.manager.extend.packages`: 用于配置插件扩展包，配置后将优先加载父类加载器中的依赖
+
 ### 软件启动
 
 ---
 
-> 启动服务前请安装系统需要的各种插件，执行命令 `./bin/install-plugin.sh`
+> 启动服务前请安装系统需要的各种插件，执行命令 `./bin/install-plugin.sh`，也可以到服务商店中进行安装。
 
 #### 启动服务
 

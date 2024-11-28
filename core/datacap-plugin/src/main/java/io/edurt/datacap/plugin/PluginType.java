@@ -8,7 +8,8 @@ public enum PluginType
     CONNECTOR("Connector"),
     EXECUTOR("Executor"),
     SCHEDULER("Scheduler"),
-    CONVERT("Convert");
+    CONVERT("Convert"),
+    FILESYSTEM("FileSystem");
 
     private final String name;
 

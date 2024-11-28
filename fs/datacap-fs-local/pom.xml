@@ -9,13 +9,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>datacap-fs-local</artifactId>
-    <description>DataCap - File system for local</description>
+    <description>DataCap - File System - Local</description>
 
     <dependencies>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-fs-spi</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.edurt.datacap</groupId>

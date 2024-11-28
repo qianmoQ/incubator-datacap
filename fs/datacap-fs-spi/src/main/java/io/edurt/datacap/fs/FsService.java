@@ -5,18 +5,6 @@ import io.edurt.datacap.plugin.Service;
 public interface FsService
         extends Service
 {
-    default String name()
-    {
-        return this.getClass()
-                .getSimpleName()
-                .replace("Fs", "");
-    }
-
-    default String description()
-    {
-        return String.format("Integrate %s file system", this.name());
-    }
-
     FsResponse writer(FsRequest request);
 
     FsResponse reader(FsRequest request);
