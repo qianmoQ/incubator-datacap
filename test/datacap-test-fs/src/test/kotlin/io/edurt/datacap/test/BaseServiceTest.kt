@@ -11,7 +11,8 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.slf4j.LoggerFactory
-import java.io.File
+import java.io.FileInputStream
+import java.nio.file.Paths
 import java.util.*
 import kotlin.test.assertTrue
 
@@ -29,7 +30,6 @@ abstract class BaseServiceTest(
 
     init
     {
-        System.err.println("=== TEST STARTING ===")
         val projectRoot = PluginPathUtils.findProjectRoot()
         val config = PluginConfigure.builder()
             .pluginsDir(projectRoot.resolve(pluginHome))
@@ -37,17 +37,18 @@ abstract class BaseServiceTest(
 
         pluginManager = PluginManager(config).apply { start() }
 
+        val localPath = Paths.get(
+            System.getProperty("user.dir"),
+            "src", "test", "kotlin", "io", "edurt", "datacap", "test", "BaseServiceTest.kt"
+        ).toString()
+
+        log.info("local path [ {} ]", localPath)
         request = FsRequest.builder()
             .access(System.getProperty("$pluginPrefix.access"))
             .secret(System.getProperty("$pluginPrefix.secret"))
             .bucket(System.getProperty("$pluginPrefix.bucket"))
             .endpoint(System.getProperty("$pluginPrefix.endpoint"))
-            .localPath(
-                listOf(
-                    System.getProperty("user.dir"),
-                    "src/test/kotlin/io/edurt/datacap/test/BaseServiceTest.kt"
-                ).joinToString(File.separator)
-            )
+            .stream(FileInputStream(localPath))
             .fileName(fileName)
             .build()
     }
