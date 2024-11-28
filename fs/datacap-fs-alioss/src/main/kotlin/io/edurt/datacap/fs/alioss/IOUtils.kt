@@ -57,7 +57,13 @@ class IOUtils
             val client = OSSClientBuilder().build(request.endpoint, request.access, request.secret)
             try
             {
-                client.deleteObject(request.bucket, request.fileName)
+                var fileName = request.fileName
+                if (fileName.startsWith("/"))
+                {
+                    fileName = fileName.substring(1)
+                }
+
+                client.deleteObject(request.bucket, fileName)
                 return true
             }
             catch (e: Exception)

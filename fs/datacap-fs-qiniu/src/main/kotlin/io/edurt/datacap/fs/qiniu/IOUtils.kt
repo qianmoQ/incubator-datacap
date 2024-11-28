@@ -9,9 +9,12 @@ import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.URL
 
-class IOUtils {
-    companion object {
-        private fun getRemoteUrlAsStream(urlString: String): InputStream {
+class IOUtils
+{
+    companion object
+    {
+        private fun getRemoteUrlAsStream(urlString: String): InputStream
+        {
             val url = URL(urlString)
             val connection = url.openConnection()
             connection.connectTimeout = 5000
@@ -20,8 +23,10 @@ class IOUtils {
         }
 
         @JvmStatic
-        fun copy(request: FsRequest, stream: InputStream, fileName: String): String? {
-            try {
+        fun copy(request: FsRequest, stream: InputStream, fileName: String): String?
+        {
+            try
+            {
                 val conf = Configuration(Region.autoRegion())
                 conf.resumableUploadAPIVersion = Configuration.ResumableUploadAPIVersion.V2
                 val manager = UploadManager(conf)
@@ -32,28 +37,39 @@ class IOUtils {
                 val putRet = JsonUtils.toObject(response.bodyString(), DefaultPutRet::class.java)
                 return putRet.key
             }
-            catch (e: Exception) {
+            catch (e: Exception)
+            {
                 throw RuntimeException(e)
             }
         }
 
         @JvmStatic
-        fun reader(request: FsRequest): InputStream {
+        fun reader(request: FsRequest): InputStream
+        {
             val downloadUrl = DownloadUrl(request.endpoint, false, request.fileName)
             return getRemoteUrlAsStream(downloadUrl.buildURL())
         }
 
         @JvmStatic
-        fun delete(request: FsRequest): Boolean {
-            try {
+        fun delete(request: FsRequest): Boolean
+        {
+            try
+            {
+                var fileName = request.fileName
+                if (fileName.startsWith("/"))
+                {
+                    fileName = fileName.substring(1)
+                }
+
                 val conf = Configuration(Region.autoRegion())
                 val auth = Auth.create(request.access, request.secret)
 
                 val manager = BucketManager(auth, conf)
-                manager.delete(request.bucket, request.fileName)
+                manager.delete(request.bucket, fileName)
                 return true
             }
-            catch (e: Exception) {
+            catch (e: Exception)
+            {
                 throw RuntimeException(e)
             }
         }
