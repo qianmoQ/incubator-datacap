@@ -137,7 +137,7 @@ public class AuditPluginHandler
                                                     .fileName("result.csv")
                                                     .build();
                                             // If it is OSS third-party storage, rebuild the default directory
-                                            if (!initializer.getFsConfigure().getType().equals("Local")) {
+                                            if (!initializer.getFsConfigure().getType().equals("LocalFs")) {
                                                 fsRequest.setEndpoint(initializer.getFsConfigure().getEndpoint());
                                                 fsRequest.setFileName(String.join(File.separator, user.getUsername(), DateUtils.formatYMD(), String.join(File.separator, "adhoc", uniqueId), "result.csv"));
                                             }

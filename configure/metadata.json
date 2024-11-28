@@ -12,13 +12,13 @@
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/plugin/mysql.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/mysql.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "8.0",
         "5.7"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-mysql-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-mysql-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-clickhouse",
@@ -28,147 +28,162 @@
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/plugin/clickhouse.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/clickhouse.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-clickhouse-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-clickhouse-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-influxdb",
-      "label": "InfluxDB",
+      "label": "Influxdb",
       "description": "InfluxDB is a time series database that stores and retrieves data points. It is a distributed database with a focus on performance, scalability, and ease of use.",
       "i18nFormat": true,
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/plugin/influxdb.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/influxdb.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-influxdb-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-influxdb-bin.tar.gz"
     },
     {
       "key": "datacap-convert-csv",
-      "label": "CsvConvert",
+      "label": "Csv Convert",
       "description": "A CSV file conversion plugin for DataCap.",
       "i18nFormat": true,
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/csv.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/csv.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-csv-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-csv-bin.tar.gz"
     },
     {
       "key": "datacap-convert-txt",
-      "label": "TxtConvert",
+      "label": "Txt Convert",
       "description": "A TXT file conversion plugin for DataCap.",
       "i18nFormat": true,
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/txt.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/txt.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-txt-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-txt-bin.tar.gz"
     },
     {
       "key": "datacap-convert-json",
-      "label": "JsonConvert",
+      "label": "Json Convert",
       "description": "A JSON file conversion plugin for DataCap.",
       "i18nFormat": true,
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/json.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/json.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-json-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-json-bin.tar.gz"
     },
     {
       "key": "datacap-convert-xml",
-      "label": "XmlConvert",
+      "label": "Xml Convert",
       "description": "A XML file conversion plugin for DataCap.",
       "i18nFormat": true,
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/xml.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/xml.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-xml-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-xml-bin.tar.gz"
     },
     {
       "key": "datacap-convert-none",
-      "label": "NoneConvert",
+      "label": "None Convert",
       "description": "A multidimensional arrays file conversion plugin for DataCap.",
       "i18nFormat": true,
       "type": "Converter",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/convert/none.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/none.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-none-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/convert/datacap-convert-none-bin.tar.gz"
     },
     {
       "key": "datacap-executor-local",
-      "label": "LocalExecutor",
+      "label": "Local Executor",
       "description": "A local execution plugin for DataCap.",
       "i18nFormat": true,
       "type": "Executor",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/executor/local.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/executor/local.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-local-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-local-bin.tar.gz"
     },
     {
       "key": "datacap-executor-seatunnel",
-      "label": "SeatunnelExecutor",
+      "label": "Seatunnel Executor",
       "description": "A Seatunnel execution plugin for DataCap.",
       "i18nFormat": true,
       "type": "Executor",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/executor/seatunnel.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/executor/seatunnel.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-seatunnel-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/executor/datacap-executor-seatunnel-bin.tar.gz"
     },
     {
       "key": "datacap-scheduler-local",
-      "label": "LocalScheduler",
+      "label": "Local Scheduler",
       "description": "A local scheduling plugin for DataCap.",
       "i18nFormat": true,
       "type": "Scheduler",
       "version": "2024.4.0-SNAPSHOT",
       "author": "datacap-community",
-      "logo": "https://cdn.north.devlive.org/applications/datacap/resources/logo/scheduler/local.svg",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/scheduler/local.svg",
       "released": "2024-11-21 23:11:15",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://cdn.north.devlive.org/applications/datacap/plugins/2024.4.0-SNAPSHOT/scheduler/datacap-scheduler-local-bin.tar.gz"
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/scheduler/datacap-scheduler-local-bin.tar.gz"
+    },
+    {
+      "key": "datacap-fs-local",
+      "label": "Local FileSystem",
+      "description": "A local file system plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "FileSystem",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/local.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/fs/datacap-fs-local-bin.tar.gz"
     }
   ]
 }

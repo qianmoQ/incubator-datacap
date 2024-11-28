@@ -126,11 +126,6 @@ class JsonConvertService : ConvertService
             val factory = JsonFactory()
             factory.createGenerator(file, JsonEncoding.UTF8)
                 .use { generator ->
-                    // 创建一个新的 ObjectMapper 实例并设置给 generator
-                    // Create a new ObjectMapper instance and set it to generator
-                    val objectMapper = ObjectMapper()
-                    generator.codec = objectMapper.findAndRegisterModules()
-
                     generator.writeStartArray()
                     request.columns
                         .forEach { column ->
@@ -142,11 +137,9 @@ class JsonConvertService : ConvertService
                                     is List<*> -> generator.writeObjectField(request.headers[headerIndex] as String, column[headerIndex])
                                     is ObjectNode ->
                                     {
+                                        generator.codec = ObjectMapper()
                                         val header = request.headers[headerIndex] as String
-                                        // 将 ObjectNode 转换为 Map 再写入
-                                        // Convert ObjectNode to Map before writing
-                                        val value = objectMapper.convertValue(column.get(header), Map::class.java)
-                                        generator.writeObjectField(header, value)
+                                        generator.writeObjectField(header, column.get(header))
                                     }
 
                                     else -> generator.writeObjectField(request.headers[headerIndex] as String, column)

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>datacap-test-plugin</artifactId>
-    <description>DataCap - Test plugin</description>
+    <description>DataCap - Test - Plugin</description>
 
     <dependencies>
         <dependency>

@@ -19,13 +19,19 @@ if [ ! -d "$PLUGIN_DIR" ]; then
   exit 1
 fi
 
+LOGO_DIR="${HOME}/logo"
+if [ ! -d "$LOGO_DIR" ]; then
+  echo "The directory $LOGO_DIR does not exist, please check the path."
+  exit 1
+fi
+
 echo "OSS Bucket Name: $BUCKET_NAME"
 echo "OSS Endpoint: $OSS_ENDPOINT"
 echo "Work Home: $PLUGIN_HOME"
 echo "Datacap Home: $DATACAP_HOME"
 echo "Metadata Home: $METADATA_HOME"
+echo "Resource Home: $RESOURCE_HOME"
 
-# 确保 ossutil 已配置
 if ! command -v ossutil > /dev/null; then
   echo "Error: ossutil is not installed. Please install it first."
   echo "You can download it from: https://help.aliyun.com/document_detail/120075.html"
@@ -51,6 +57,20 @@ if [ -f "$METADATA_FILE" ]; then
   echo "Uploading metadata file"
   ossutil cp "$METADATA_FILE" "oss://$BUCKET_NAME/$METADATA_HOME/metadata.json" -f
 fi
+
+# Handle logo files
+echo "Processing logo files..."
+for type in convert executor fs plugin scheduler; do
+  if [ -d "$LOGO_DIR/$type" ]; then
+    for logo in "$LOGO_DIR/$type"/*.svg; do
+      if [ -f "$logo" ]; then
+        filename=$(basename "$logo")
+        echo "Uploading logo: $type/$filename"
+        ossutil cp "$logo" "oss://$BUCKET_NAME/$RESOURCE_HOME/logo/$type/$filename" -f
+      fi
+    done
+  fi
+done
 
 # Original plugin upload logic
 for file in "$PLUGIN_DIR"/*.tar.gz; do
