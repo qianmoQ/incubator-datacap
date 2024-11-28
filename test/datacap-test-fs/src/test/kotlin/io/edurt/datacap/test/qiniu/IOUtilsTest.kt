@@ -1,7 +1,7 @@
-package io.edurt.datacap.fs.qiniu
+package io.edurt.datacap.test.qiniu
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.fs.FsRequest
+import io.edurt.datacap.fs.qiniu.IOUtils
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -10,12 +10,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import java.io.FileInputStream
 
-@SuppressFBWarnings(value = ["OBL_UNSATISFIED_OBLIGATION"])
 class IOUtilsTest
 {
     private val log: Logger = getLogger(this::class.java)
     private val request = FsRequest()
-    private val fileName = "QiniuFsTest.kt"
+    private val fileName = "QiniuFsPluginTest.kt"
 
     @Before
     fun before()
@@ -30,11 +29,12 @@ class IOUtilsTest
     @Test
     fun step1_copy()
     {
-        val stream = FileInputStream("src/test/kotlin/io/edurt/datacap/test/qiniu/QiniuFsTest.kt")
-        val response = IOUtils.copy(request, stream, fileName)
-        assertNotNull(response)
+        FileInputStream("src/test/kotlin/io/edurt/datacap/test/qiniu/QiniuFsPluginTest.kt").use { stream ->
+            val response = IOUtils.copy(request, stream, fileName)
+            assertNotNull(response)
 
-        log.info("Copy response [ {} ]", response)
+            log.info("Copy response [ {} ]", response)
+        }
     }
 
     @Test
