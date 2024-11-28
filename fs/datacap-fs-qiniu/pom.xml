@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>datacap-fs-qiniu</artifactId>
-    <description>DataCap - File system for qiniu</description>
+    <description>DataCap - File System - Qiniu</description>
 
     <dependencies>
         <dependency>
