@@ -1,16 +1,16 @@
 package io.edurt.datacap.fs.alioss
 
-import io.edurt.datacap.fs.Fs
 import io.edurt.datacap.fs.FsRequest
 import io.edurt.datacap.fs.FsResponse
+import io.edurt.datacap.fs.FsService
 import io.edurt.datacap.fs.alioss.IOUtils.Companion.copy
 import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 import java.lang.String.join
 
-class AliOssFs : Fs
+class AliOssFsService : FsService
 {
-    private val log = getLogger(AliOssFs::class.java)
+    private val log = getLogger(AliOssFsService::class.java)
 
     override fun writer(request: FsRequest?): FsResponse
     {

@@ -82,13 +82,18 @@ jobs:
 
       - name: Run Tests
         env:
-          ACCESS: ${{ secrets.QINIU_ACCESS }}
-          SECRET: ${{ secrets.QINIU_SECRET }}
-          BUCKET: ${{ secrets.QINIU_BUCKET }}
-          ENDPOINT: ${{ secrets.QINIU_ENDPOINT }}
+          QINIU_ACCESS: ${{ secrets.QINIU_ACCESS }}
+          QINIU_SECRET: ${{ secrets.QINIU_SECRET }}
+          QINIU_BUCKET: ${{ secrets.QINIU_BUCKET }}
+          QINIU_ENDPOINT: ${{ secrets.QINIU_ENDPOINT }}
+          ALIOSS_ACCESS: ${{ secrets.ALIOSS_ACCESS }}
+          ALIOSS_SECRET: ${{ secrets.ALIOSS_SECRET }}
+          ALIOSS_BUCKET: ${{ secrets.ALIOSS_BUCKET }}
+          ALIOSS_ENDPOINT: ${{ secrets.ALIOSS_ENDPOINT }}
         run: |
           ./mvnw clean test -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -Dskip.pnpm \
-            -Dqiniu.access="$ACCESS" -Dqiniu.secret="$SECRET" -Dqiniu.bucket="$BUCKET" -Dqiniu.endpoint="$ENDPOINT"
+            -Dqiniu.access="$QINIU_ACCESS" -Dqiniu.secret="$QINIU_SECRET" -Dqiniu.bucket="$QINIU_BUCKET" -Dqiniu.endpoint="$QINIU_ENDPOINT" \
+            -Dalioss.access="$ALIOSS_ACCESS" -Dalioss.secret="$ALIOSS_SECRET" -Dalioss.bucket="$ALIOSS_BUCKET" -Dalioss.endpoint="$ALIOSS_ENDPOINT"
 
   before_checker_package:
     runs-on: ubuntu-latest

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>datacap-fs-alioss</artifactId>
-    <description>DataCap - File system for aliyun oss</description>
+    <description>DataCap - File System - AliOSS</description>
 
     <dependencies>
         <dependency>
@@ -70,5 +70,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

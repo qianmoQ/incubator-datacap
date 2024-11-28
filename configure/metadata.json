@@ -199,6 +199,21 @@
         "ALL"
       ],
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/fs/datacap-fs-qiniu-bin.tar.gz"
+    },
+    {
+      "key": "datacap-fs-alioss",
+      "label": "AliYun OSS FileSystem",
+      "description": "A Ali OSS file system plugin for DataCap.",
+      "i18nFormat": true,
+      "type": "FileSystem",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/alioss.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/fs/datacap-fs-alioss-bin.tar.gz"
     }
   ]
 }

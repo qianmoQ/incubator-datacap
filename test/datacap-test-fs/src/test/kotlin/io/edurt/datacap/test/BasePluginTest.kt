@@ -1,4 +1,4 @@
-package io.edurt.datacap.test.qiniu
+package io.edurt.datacap.test
 
 import io.edurt.datacap.plugin.PluginConfigure
 import io.edurt.datacap.plugin.PluginManager
@@ -6,16 +6,18 @@ import io.edurt.datacap.plugin.utils.PluginPathUtils
 import org.junit.Test
 import kotlin.test.assertNotNull
 
-class QiniuFsPluginTest
+abstract class BasePluginTest(
+    private val pluginName: String,
+    pluginHome: String
+)
 {
     private val pluginManager: PluginManager
-    private val pluginName = "QiniuFs"
 
     init
     {
         val projectRoot = PluginPathUtils.findProjectRoot()
         val config = PluginConfigure.builder()
-            .pluginsDir(projectRoot.resolve("fs/datacap-fs-qiniu"))
+            .pluginsDir(projectRoot.resolve(pluginHome))
             .build()
 
         pluginManager = PluginManager(config).apply { start() }
