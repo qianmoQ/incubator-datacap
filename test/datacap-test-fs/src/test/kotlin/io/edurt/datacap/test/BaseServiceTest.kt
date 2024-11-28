@@ -1,5 +1,6 @@
 package io.edurt.datacap.test
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.fs.FsRequest
 import io.edurt.datacap.fs.FsService
 import io.edurt.datacap.plugin.Plugin
@@ -17,6 +18,7 @@ import java.util.*
 import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@SuppressFBWarnings(value = ["OBL_UNSATISFIED_OBLIGATION"])
 abstract class BaseServiceTest(
     private val pluginName: String,
     pluginHome: String,
