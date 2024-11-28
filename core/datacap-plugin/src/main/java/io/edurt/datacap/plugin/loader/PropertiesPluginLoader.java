@@ -7,6 +7,7 @@ import io.edurt.datacap.plugin.utils.PluginPathUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class PropertiesPluginLoader
                 }
             }
         }
-        catch (Exception e) {
+        catch (IOException e) {
             log.error("Failed to load plugins from properties file: {}", path, e);
         }
         return plugins;
