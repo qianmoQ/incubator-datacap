@@ -11,13 +11,9 @@
     </parent>
 
     <artifactId>datacap-fs-minio</artifactId>
-    <description>DataCap - File system for MinIO</description>
+    <description>DataCap - File System - MinIO</description>
 
     <dependencies>
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-common</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-fs-spi</artifactId>
@@ -64,5 +60,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
