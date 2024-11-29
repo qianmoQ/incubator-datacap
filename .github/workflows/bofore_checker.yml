@@ -80,6 +80,16 @@ jobs:
 
       - run: chmod 755 ./mvnw
 
+      - name: Debug Environment Variables
+        env:
+          QINIU_ACCESS: ${{ secrets.QINIU_ACCESS }}
+          QINIU_SECRET: ${{ secrets.QINIU_SECRET }}
+          QINIU_BUCKET: ${{ secrets.QINIU_BUCKET }}
+          QINIU_ENDPOINT: ${{ secrets.QINIU_ENDPOINT }}
+        run: |
+          echo "QINIU_ENDPOINT is set: ${{ secrets.QINIU_ENDPOINT != '' }}"
+          echo "QINIU_ENDPOINT length: ${#QINIU_ENDPOINT}"
+
       - name: Run Tests
         env:
           QINIU_ACCESS: ${{ secrets.QINIU_ACCESS }}
