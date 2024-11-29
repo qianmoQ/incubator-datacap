@@ -85,7 +85,7 @@
         <module>fs/datacap-fs-local</module>
         <module>fs/datacap-fs-qiniu</module>
         <module>fs/datacap-fs-alioss</module>
-        <!--        <module>fs/datacap-fs-tencent-cos</module>-->
+        <module>fs/datacap-fs-tencent-cos</module>
         <!--        <module>fs/datacap-fs-amazon-s3</module>-->
         <!--        <module>fs/datacap-fs-minio</module>-->
         <module>parser/datacap-parser-spi</module>

@@ -91,6 +91,7 @@ jobs:
           echo "QINIU_ENDPOINT length: ${#QINIU_ENDPOINT}"
 
       - name: Run Tests
+        if: ${{ env.QINIU_ENDPOINT != '' }}
         env:
           QINIU_ACCESS: ${{ secrets.QINIU_ACCESS }}
           QINIU_SECRET: ${{ secrets.QINIU_SECRET }}
@@ -100,10 +101,15 @@ jobs:
           ALIOSS_SECRET: ${{ secrets.ALIOSS_SECRET }}
           ALIOSS_BUCKET: ${{ secrets.ALIOSS_BUCKET }}
           ALIOSS_ENDPOINT: ${{ secrets.ALIOSS_ENDPOINT }}
+          COS_ACCESS: ${{ secrets.COS_ACCESS }}
+          COS_SECRET: ${{ secrets.COS_SECRET }}
+          COS_BUCKET: ${{ secrets.COS_BUCKET }}
+          COS_ENDPOINT: ${{ secrets.COS_ENDPOINT }}
         run: |
           ./mvnw clean test -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -Dskip.pnpm \
             -Dqiniu.access="$QINIU_ACCESS" -Dqiniu.secret="$QINIU_SECRET" -Dqiniu.bucket="$QINIU_BUCKET" -Dqiniu.endpoint="$QINIU_ENDPOINT" \
-            -Dalioss.access="$ALIOSS_ACCESS" -Dalioss.secret="$ALIOSS_SECRET" -Dalioss.bucket="$ALIOSS_BUCKET" -Dalioss.endpoint="$ALIOSS_ENDPOINT"
+            -Dalioss.access="$ALIOSS_ACCESS" -Dalioss.secret="$ALIOSS_SECRET" -Dalioss.bucket="$ALIOSS_BUCKET" -Dalioss.endpoint="$ALIOSS_ENDPOINT" \
+            -Dcos.access="$COS_ACCESS" -Dcos.secret="$COS_SECRET" -Dcos.bucket="$COS_BUCKET" -Dcos.endpoint="$COS_ENDPOINT"
 
   before_checker_package:
     runs-on: ubuntu-latest

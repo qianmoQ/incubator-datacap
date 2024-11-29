@@ -10,7 +10,6 @@ import com.qcloud.cos.region.Region
 import io.edurt.datacap.fs.FsRequest
 import java.io.InputStream
 
-
 class TencentCosUtils
 {
     companion object

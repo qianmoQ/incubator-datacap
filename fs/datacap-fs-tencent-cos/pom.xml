@@ -11,13 +11,9 @@
     </parent>
 
     <artifactId>datacap-fs-tencent-cos</artifactId>
-    <description>DataCap - File system for tencent cos</description>
+    <description>DataCap - File System - Tencent Cos</description>
 
     <dependencies>
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-common</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-fs-spi</artifactId>
@@ -64,5 +60,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

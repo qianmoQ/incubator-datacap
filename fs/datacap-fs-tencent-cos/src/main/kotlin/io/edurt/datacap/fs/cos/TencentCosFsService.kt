@@ -1,16 +1,16 @@
 package io.edurt.datacap.fs.cos
 
-import io.edurt.datacap.fs.Fs
 import io.edurt.datacap.fs.FsRequest
 import io.edurt.datacap.fs.FsResponse
+import io.edurt.datacap.fs.FsService
 import io.edurt.datacap.fs.cos.TencentCosUtils.Companion.copy
 import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 import java.lang.String.join
 
-class TencentCosFs : Fs
+class TencentCosFsService : FsService
 {
-    private val log = getLogger(TencentCosFs::class.java)
+    private val log = getLogger(TencentCosFsService::class.java)
 
     override fun writer(request: FsRequest?): FsResponse
     {
