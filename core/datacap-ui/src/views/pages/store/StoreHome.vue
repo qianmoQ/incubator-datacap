@@ -7,6 +7,24 @@
     </ShadcnAlert>
 
     <ShadcnTab v-model="activeTab" v-show="!loading">
+      <template #extra>
+        <ShadcnHoverCard :arrow="false" position="bottom">
+          <ShadcnButton circle size="small">
+            <ShadcnIcon icon="Cog" :size="15"/>
+          </ShadcnButton>
+
+          <template #content>
+            <div class="p-2 space-y-2 flex flex-col">
+              <ShadcnFormItem :label="$t('common.plugin.metadata.url')" :description="$t('common.plugin.metadata.description')">
+                <ShadcnInput v-model="applyMetadataUrl"/>
+              </ShadcnFormItem>
+
+              <ShadcnButton type="info" @click="onSave">{{ $t('common.save') }}</ShadcnButton>
+            </div>
+          </template>
+        </ShadcnHoverCard>
+      </template>
+
       <ShadcnTabItem v-if="metadata" :label="metadata.i18nFormat ? $t(metadata.label) : metadata.label" :value="metadata.key">
         <div class="relative">
           <ShadcnSpace wrap size="15">
@@ -15,22 +33,24 @@
             </ShadcnAlert>
 
             <ShadcnCard v-for="child in metadata.children" class="w-full">
-              <div class="p-3 px-6">
-                <div class="flex items-center justify-between">
+              <ShadcnRow class="p-3 px-6 items-center">
+                <ShadcnCol span="2">
+                  <!-- Logo and Name -->
+                  <div class="flex flex-col items-center space-y-2 justify-between">
+                    <ShadcnAvatar class="bg-transparent"
+                                  size="large"
+                                  :src="child.logo"
+                                  :alt="child.i18nFormat ? $t(child.label) : child.label"/>
+
+                    <ShadcnText type="h6">
+                      {{ child.i18nFormat ? $t(child.label) : child.label }}
+                    </ShadcnText>
+                  </div>
+                </ShadcnCol>
+
+                <ShadcnCol span="9">
                   <!-- Plugin -->
                   <div class="flex items-center space-x-4 justify-between">
-                    <!-- Logo and Name -->
-                    <div class="flex flex-col items-center space-y-2 justify-between">
-                      <ShadcnAvatar class="bg-transparent"
-                                    size="large"
-                                    :src="child.logo"
-                                    :alt="child.i18nFormat ? $t(child.label) : child.label"/>
-
-                      <ShadcnText type="h6">
-                        {{ child.i18nFormat ? $t(child.label) : child.label }}
-                      </ShadcnText>
-                    </div>
-
                     <ShadcnSpace class="pl-8" wrap :size="[20, 40]">
                       <!-- Description -->
                       <div class="flex flex-col space-y-4">
@@ -95,18 +115,18 @@
                       </div>
                     </ShadcnSpace>
                   </div>
+                </ShadcnCol>
 
+                <ShadcnCol span="1">
                   <!-- Action -->
-                  <div class="flex items-center space-x-2">
                     <ShadcnButton :type="child.installed ? 'danger' : 'primary'" :loading="child.loading" @click="child.installed ? onUninstall(child) : onInstall(child)">
                       <template #icon>
                         <ShadcnIcon :icon="child.installed ? 'Trash' : 'Plus'" size="15"/>
                       </template>
                       {{ child.installed ? $t('common.uninstall') : $t('common.install') }}
                     </ShadcnButton>
-                  </div>
-                </div>
-              </div>
+                </ShadcnCol>
+              </ShadcnRow>
             </ShadcnCard>
           </ShadcnSpace>
         </div>
@@ -116,7 +136,7 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, onBeforeMount, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onBeforeMount, ref, watch } from 'vue'
 import { useI18nHandler } from '@/i18n/I18n'
 import { PackageUtils } from '@/utils/package.ts'
 import PluginService from '@/services/plugin.ts'
@@ -149,7 +169,19 @@ interface Metadata
   children: MetadataItem[]
 }
 
-const metadataUrl = ref('https://cdn.north.devlive.org/applications/datacap/metadata/metadata.json')
+const DEFAULT_METADATA_URL = 'https://cdn.north.devlive.org/applications/datacap/metadata/metadata.json'
+
+// URL validation helper
+const isValidUrl = (urlString: string): boolean => {
+  try {
+    new URL(urlString)
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
 const { proxy } = getCurrentInstance()!
 // @ts-ignore
 const { loadingState } = useI18nHandler()
@@ -157,6 +189,23 @@ const loading = ref(false)
 const metadata = ref<Metadata>(null)
 const activeTab = ref('plugin')
 const version = ref(PackageUtils.get('version'))
+
+const metadataUrl = computed({
+  get: () => {
+    const savedUrl = localStorage.getItem('metadataUrl')
+    return savedUrl && isValidUrl(savedUrl) ? savedUrl : DEFAULT_METADATA_URL
+  },
+  set: (value: string) => {
+    const trimmedUrl = value?.trim()
+    if (trimmedUrl && isValidUrl(trimmedUrl)) {
+      localStorage.setItem('metadataUrl', trimmedUrl)
+    }
+    else {
+      localStorage.removeItem('metadataUrl')
+    }
+  }
+})
+const applyMetadataUrl = ref(metadataUrl.value)
 
 watch(loadingState, async (newVal) => {
   if (!newVal && !metadata.value) {
@@ -167,8 +216,12 @@ watch(loadingState, async (newVal) => {
 const loadMetadata = async () => {
   loading.value = true
   try {
-    const response = await fetch(metadataUrl.value)
+    const url = metadataUrl.value
+    if (!isValidUrl(url)) {
+      throw new Error('Invalid metadata URL')
+    }
 
+    const response = await fetch(url)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${ response.status }`)
     }
@@ -186,8 +239,8 @@ const loadMetadata = async () => {
     // 绑定安装信息
     // Bind installation information
     metadata.value.children.map(item => {
-      installResponse.data.some((installedPlugin: { name: string, loadTime: string, version: string }) => {
-        if (installedPlugin.name === item.label) {
+      installResponse.data.some((installedPlugin: { key: string, loadTime: string, version: string }) => {
+        if (installedPlugin.key === item.key) {
           item.installed = true
           item.installTime = installedPlugin.loadTime
           item.installVersion = installedPlugin.version
@@ -204,6 +257,12 @@ const loadMetadata = async () => {
       // @ts-ignore
       proxy?.$Message.error({ content: `${ proxy?.$t('common.pageNotFoundTip') }: ${ error.message }`, showIcon: true })
     }
+
+    // Reset to default URL if current URL is invalid
+    if (!isValidUrl(metadataUrl.value)) {
+      metadataUrl.value = DEFAULT_METADATA_URL
+      await loadMetadata()
+    }
   }
   finally {
     loading.value = false
@@ -213,6 +272,9 @@ const loadMetadata = async () => {
 // 安装插件
 // Install plugin
 const onInstall = async (item: MetadataItem) => {
+  if (item.loading) {
+    return
+  }
   try {
     item.loading = true
     const installResponse = await PluginService.install({ name: item.key, url: item.url })
@@ -235,6 +297,9 @@ const onInstall = async (item: MetadataItem) => {
 // 卸载插件
 // Uninstall plugin
 const onUninstall = async (item: MetadataItem) => {
+  if (item.loading) {
+    return
+  }
   try {
     item.loading = true
     const unInstallResponse = await PluginService.uninstall(item.label)
@@ -251,6 +316,36 @@ const onUninstall = async (item: MetadataItem) => {
   }
   finally {
     item.loading = false
+  }
+}
+
+const onSave = async () => {
+  try {
+    const url = applyMetadataUrl.value.trim()
+    if (!isValidUrl(url)) {
+      // @ts-ignore
+      proxy?.$Message.error({
+        content: 'Invalid Url',
+        showIcon: true
+      })
+      return
+    }
+
+    metadataUrl.value = url
+    // @ts-ignore
+    proxy?.$Message.success({
+      content: proxy?.$t('common.successfully'),
+      showIcon: true
+    })
+
+    await loadMetadata()
+  }
+  catch (error) {
+    // @ts-ignore
+    proxy?.$Message.error({
+      content: proxy?.$t('common.error'),
+      showIcon: true
+    })
   }
 }
 

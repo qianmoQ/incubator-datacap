@@ -19,6 +19,7 @@ public class PluginMetadata
     private String loadTime;
     private PluginType type;
     private String loaderName;
+    private String key;
 
     @JsonIgnore
     private ClassLoader classLoader;

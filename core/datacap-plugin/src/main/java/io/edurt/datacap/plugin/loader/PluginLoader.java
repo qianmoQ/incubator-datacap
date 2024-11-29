@@ -3,6 +3,7 @@ package io.edurt.datacap.plugin.loader;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.plugin.Plugin;
 import io.edurt.datacap.plugin.SpiType;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -14,6 +15,8 @@ import java.util.Set;
 @SuppressFBWarnings(value = {"MS_OOI_PKGPROTECT"})
 public interface PluginLoader
 {
+    Logger log = org.slf4j.LoggerFactory.getLogger(PluginLoader.class);
+
     Set<String> EXCLUDED_DIRS = new HashSet<>()
     {{
         // Maven 相关目录
@@ -77,6 +80,46 @@ public interface PluginLoader
         return Files.exists(path) &&
                 Files.isDirectory(path) &&
                 !isExcludedPath(path);
+    }
+
+    default String extractPluginName(Path path)
+    {
+        try {
+            // 如果路径以target结尾，获取父目录名称作为插件名
+            // If the path ends with target, use the parent directory name as the plugin name
+            String fileName = path.getFileName().toString();
+            if (fileName.equals("target")) {
+                return path.getParent().getFileName().toString();
+            }
+
+            // 如果是在plugins目录下，直接使用目录名
+            // If it's in the plugins directory, use the directory name
+            Path parent = path.getParent();
+            if (parent != null && parent.getFileName() != null &&
+                    parent.getFileName().toString().equals("plugins")) {
+                return fileName;
+            }
+
+            // 尝试从完整路径中找到正确的插件目录名
+            // 通常是最后一个非target的目录名
+            // Try to find the correct plugin directory name from the full path
+            // Usually the last non-target directory name
+            Path current = path;
+            while (current.getParent() != null) {
+                String name = current.getFileName().toString();
+                if (!name.equals("target") && !name.equals("plugins")) {
+                    return name;
+                }
+                current = current.getParent();
+            }
+
+            // 如果上述都没找到，返回原始文件名
+            return fileName;
+        }
+        catch (Exception e) {
+            log.warn("Error extracting plugin name from path: {}, using fallback", path, e);
+            return path.getFileName().toString();
+        }
     }
 
     // 获取加载器类型

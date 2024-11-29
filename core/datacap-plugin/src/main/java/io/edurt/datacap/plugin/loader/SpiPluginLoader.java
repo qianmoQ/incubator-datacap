@@ -63,6 +63,10 @@ public class SpiPluginLoader
                             Path classPath = Path.of(className.replace('.', File.separatorChar) + ".class");
                             return !isExcludedPath(classPath);
                         })
+                        .map(plugin -> {
+                            plugin.setKey(extractPluginName(path));
+                            return plugin;
+                        })
                         .collect(Collectors.toList());
 
                 // 设置插件的类加载器

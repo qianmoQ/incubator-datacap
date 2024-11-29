@@ -53,6 +53,7 @@ abstract class BaseIOUtilsTest(
     {
         val readerMethod = ioUtils.getMethod("reader", FsRequest::class.java)
         val result = readerMethod.invoke(null, request)
+        log.info("Reader result [ {} ]", result)
         assertNotNull(result)
         val inputStream = result as InputStream
         assertNotNull(inputStream.readBytes())

@@ -50,6 +50,12 @@ public abstract class Plugin
     @Getter
     private PluginClassLoader pluginClassLoader;
 
+    // 插件唯一标记
+    // Plugin unique key
+    @Getter
+    @Setter
+    private String key;
+
     /**
      * 设置插件类加载器
      * Set plugin class loader

@@ -179,11 +179,13 @@ public class TarPluginLoader
                                             Path classPath = Path.of(className.replace('.', File.separatorChar) + ".class");
                                             return !isExcludedPath(classPath);
                                         })
-                                        .peek(plugin -> {
+                                        .map(plugin -> {
                                             // 设置插件的类加载器
                                             // Set class loader for plugins
                                             plugin.setPluginClassLoader(classLoader);
+                                            plugin.setKey(extractPluginName(pluginDir));
                                             log.debug("Loaded TAR plugin: {} (version: {})", plugin.getClass().getName(), version);
+                                            return plugin;
                                         })
                                         .collect(Collectors.toList());
                             });

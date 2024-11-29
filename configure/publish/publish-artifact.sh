@@ -5,7 +5,7 @@ VERSION=$(./mvnw -Dexec.executable='echo' -Dexec.args='${project.version}' --non
 
 echo "Publish artifact, usage version is ${VERSION}"
 
-CONF_FILE="${HOME}/configure/cloud.conf"
+CONF_FILE="${HOME}/configure/cloud-qiniu.conf"
 if [ -f "$CONF_FILE" ]; then
   . "$CONF_FILE"
 else
