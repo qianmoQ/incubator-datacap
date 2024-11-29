@@ -13,6 +13,7 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.slf4j.LoggerFactory
 import java.io.FileInputStream
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.test.assertTrue
@@ -43,13 +44,21 @@ abstract class BaseServiceTest(
             System.getProperty("user.dir"),
             "src", "test", "kotlin", "io", "edurt", "datacap", "test", "BaseServiceTest.kt"
         ).toString()
-
         log.info("local path [ {} ]", localPath)
+
+        var endpoint = System.getProperty("$pluginPrefix.endpoint")
+        if (endpoint == null)
+        {
+            val tempDir: Path = Paths.get(System.getProperty("user.dir"), "data")
+            endpoint = tempDir.toString()
+        }
+        log.info("endpoint [ {} ]", endpoint)
+
         request = FsRequest.builder()
             .access(System.getProperty("$pluginPrefix.access"))
             .secret(System.getProperty("$pluginPrefix.secret"))
             .bucket(System.getProperty("$pluginPrefix.bucket"))
-            .endpoint(System.getProperty("$pluginPrefix.endpoint"))
+            .endpoint(endpoint)
             .stream(FileInputStream(localPath))
             .fileName(fileName)
             .build()
@@ -76,6 +85,7 @@ abstract class BaseServiceTest(
         plugin.ifPresent {
             val service = it.getService(FsService::class.java)
             val response = service.writer(request)
+            log.info("Writer response [ {} ]", response)
             assertTrue(response.isSuccessful)
         }
     }

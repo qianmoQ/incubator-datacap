@@ -1,9 +1,8 @@
 package io.edurt.datacap.fs;
 
-import io.edurt.datacap.common.utils.UrlUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 @Slf4j
 public class LocalFsService
@@ -13,7 +12,12 @@ public class LocalFsService
     public FsResponse writer(FsRequest request)
     {
         log.info("LocalFs writer origin path [ {} ]", request.getLocalPath());
-        String targetPath = UrlUtils.fixUrl(String.join(File.separator, request.getEndpoint(), request.getBucket(), request.getFileName()));
+        String targetPath = Paths.get(
+                request.getEndpoint() != null ? request.getEndpoint() : "",
+                request.getBucket() != null ? request.getBucket() : "",
+                request.getFileName()
+        ).toString();
+
         FsResponse response = FsResponse.builder()
                 .origin(request.getLocalPath())
                 .remote(targetPath)
@@ -40,7 +44,11 @@ public class LocalFsService
     @Override
     public FsResponse reader(FsRequest request)
     {
-        String targetPath = String.join(File.separator, request.getEndpoint(), request.getBucket(), request.getFileName());
+        String targetPath = Paths.get(
+                request.getEndpoint() != null ? request.getEndpoint() : "",
+                request.getBucket() != null ? request.getBucket() : "",
+                request.getFileName()
+        ).toString();
         log.info("LocalFs reader origin path [ {} ]", targetPath);
         FsResponse response = FsResponse.builder()
                 .remote(targetPath)
@@ -61,7 +69,11 @@ public class LocalFsService
     @Override
     public FsResponse delete(FsRequest request)
     {
-        String targetPath = String.join(File.separator, request.getEndpoint(), request.getBucket(), request.getFileName());
+        String targetPath = Paths.get(
+                request.getEndpoint() != null ? request.getEndpoint() : "",
+                request.getBucket() != null ? request.getBucket() : "",
+                request.getFileName()
+        ).toString();
         log.info("LocalFs delete origin path [ {} ]", targetPath);
         try {
             boolean status = IOUtils.delete(targetPath);
