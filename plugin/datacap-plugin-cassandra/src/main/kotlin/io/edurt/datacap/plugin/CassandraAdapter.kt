@@ -1,4 +1,4 @@
-package io.edurt.datacap.plugin.cassandra
+package io.edurt.datacap.plugin
 
 import com.datastax.oss.driver.api.core.cql.ResultSet
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
@@ -15,19 +15,10 @@ import kotlin.Exception
 import kotlin.String
 import kotlin.toString
 
-@SuppressFBWarnings(
-    value = ["RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"], justification = "I prefer to suppress these FindBugs warnings"
-)
-class CassandraAdapter : Adapter
+@SuppressFBWarnings(value = ["RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"])
+class CassandraAdapter(private var connection: CassandraConnection?) : Adapter
 {
     private val log: Logger = getLogger(CassandraAdapter::class.java)
-
-    private var connection: CassandraConnection? = null
-
-    constructor(connection: CassandraConnection?) : super()
-    {
-        this.connection = connection
-    }
 
     override fun handlerExecute(content: String?): Response
     {
@@ -71,7 +62,7 @@ class CassandraAdapter : Adapter
             {
                 response.headers = headers
                 response.types = types
-                response.columns = handlerFormatter(configure.injector, configure.format, headers, columns)
+                response.columns = handlerFormatter(configure.pluginManager, configure.format, headers, columns)
             }
         }
         processorTime.end = Date().time

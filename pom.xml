@@ -41,7 +41,7 @@
         <module>plugin/datacap-plugin-druid</module>
         <module>plugin/datacap-plugin-duckdb</module>
         <module>plugin/datacap-plugin-pinot</module>
-        <!--        <module>plugin/datacap-plugin-cassandra</module>-->
+        <module>plugin/datacap-plugin-cassandra</module>
         <!--        <module>plugin/datacap-plugin-matrixone</module>-->
         <!--        <module>plugin/datacap-plugin-scylladb</module>-->
         <!--        <module>plugin/datacap-plugin-paradedb</module>-->

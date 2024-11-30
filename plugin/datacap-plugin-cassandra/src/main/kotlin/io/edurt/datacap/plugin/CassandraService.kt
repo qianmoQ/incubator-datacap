@@ -1,4 +1,4 @@
-package io.edurt.datacap.plugin.cassandra
+package io.edurt.datacap.plugin
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.spi.PluginService
@@ -9,9 +9,9 @@ import org.apache.commons.lang3.ObjectUtils.isNotEmpty
 import org.slf4j.LoggerFactory.getLogger
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP"])
-class CassandraPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
+class CassandraService : PluginService
 {
-    private val log = getLogger(CassandraPlugin::class.java)
+    private val log = getLogger(CassandraService::class.java)
 
     private var configure: Configure? = null
     private var connection: CassandraConnection? = null
@@ -50,6 +50,12 @@ class CassandraPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
         }
         destroy()
         return response !!
+    }
+
+    override fun execute(configure: Configure?, content: String?): Response
+    {
+        connect(configure)
+        return execute(content)
     }
 
     override fun destroy()
