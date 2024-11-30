@@ -52,8 +52,8 @@
     },
     {
       "key": "datacap-plugin-solr",
-      "label": "Solr",
-      "description": "Solr is an open source platform for building and managing distributed search engines. It is a distributed database with a focus on performance, scalability, and ease of use.",
+      "label": "Apache Solr",
+      "description": "Solr is highly reliable, scalable and fault tolerant, providing distributed indexing, replication and load-balanced querying, automated failover and recovery, centralized configuration and more. Solr powers the search and navigation features of many of the world's largest internet sites.",
       "i18nFormat": true,
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
@@ -68,7 +68,7 @@
     {
       "key": "datacap-plugin-cratedb",
       "label": "CrateDB",
-      "description": "CrateDB is a distributed column-oriented database. It is a distributed database with a focus on performance, scalability, and ease of use.",
+      "description": "CrateDB is a hyper-fast database for real-time analytics and hybrid search. It handles multiple types of data and combines the simplicity of SQL with the scalability of a distributed architecture.",
       "i18nFormat": true,
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
@@ -82,7 +82,7 @@
     },
     {
       "key": "datacap-plugin-zookeeper",
-      "label": "Zookeeper",
+      "label": "Apache Zookeeper",
       "description": "Zookeeper is a distributed, distributed configuration service. It is a distributed database with a focus on performance, scalability, and ease of use.",
       "i18nFormat": true,
       "type": "Connector",
@@ -97,8 +97,8 @@
     },
     {
       "key": "datacap-plugin-kafka",
-      "label": "Kafka",
-      "description": "Kafka is a distributed, distributed configuration service. It is a distributed database with a focus on performance, scalability, and ease of use.",
+      "label": "Apache Kafka",
+      "description": "Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.",
       "i18nFormat": true,
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
@@ -113,7 +113,7 @@
     {
       "key": "datacap-plugin-redis",
       "label": "Redis",
-      "description": "Redis is a distributed, distributed configuration service. It is a distributed database with a focus on performance, scalability, and ease of use.",
+      "description": "Redis is an in-memory data store used by millions of developers as a cache, vector database, document database, streaming engine, and message broker. Redis has built-in replication and different levels of on-disk persistence. It supports complex data types (for example, strings, hashes, lists, sets, sorted sets, and JSON), with atomic operations defined on those data types.",
       "i18nFormat": true,
       "type": "Connector",
       "version": "2024.4.0-SNAPSHOT",
@@ -124,6 +124,21 @@
         "ALL"
       ],
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-redis-bin.tar.gz"
+    },
+    {
+      "key": "datacap-plugin-h2",
+      "label": "H2",
+      "description": "H2 is a small, fast, and easy-to-use in-memory database.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/h2.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-h2-bin.tar.gz"
     },
     {
       "key": "datacap-convert-csv",

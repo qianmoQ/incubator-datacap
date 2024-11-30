@@ -1,11 +1,11 @@
 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <!-- 背景圆形 -->
     <!-- Background circle -->
-    <circle cx="100" cy="100" r="90" fill="#F5F8FA"/>
+    <circle cx="100" cy="100" r="100" fill="#F5F8FA"/>
 
     <!-- 外圈装饰 -->
     <!-- Outer decoration -->
-    <circle cx="100" cy="100" r="85" fill="none" stroke="#E1E8ED" stroke-width="2"/>
+    <circle cx="100" cy="100" r="95" fill="none" stroke="#E1E8ED" stroke-width="2"/>
 
     <!-- 黄色柱状图组 -->
     <!-- Yellow columns -->

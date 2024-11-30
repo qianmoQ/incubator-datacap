@@ -1,8 +1,10 @@
 package io.edurt.datacap.plugin
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 
+@SuppressFBWarnings(value = ["CT_CONSTRUCTOR_THROW", "EQ_DOESNT_OVERRIDE_EQUALS"])
 open class BaseContainer<SELF : BaseContainer<SELF>> : GenericContainer<SELF>
 {
     private val containerPorts: MutableMap<String, Int> = mutableMapOf()

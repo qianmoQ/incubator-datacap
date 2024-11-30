@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
     <!-- 背景圆形 -->
     <!-- Background circle -->
-    <circle cx="100" cy="100" r="90" fill="#00758F" />
+    <circle cx="100" cy="100" r="100" fill="#00758F" />
 
     <!-- MySQL 符号组 -->
     <!-- MySQL symbol group -->

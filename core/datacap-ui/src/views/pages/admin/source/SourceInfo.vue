@@ -10,7 +10,7 @@
         <ShadcnTab v-model="activeTab" :key="`tab-${configureTabs.length}`" @on-change="onChangeTab">
           <ShadcnTabItem value="source" :label="$t('source.common.source')" :key="'source-tab'">
             <ShadcnFormItem name="type" :label="$t('source.common.type')" :rules="[{ required: true, message: $t('function.tip.selectPluginHolder') }]">
-              <ShadcnToggleGroup v-model="formState.type" class="space-x-2" name="plugin">
+              <ShadcnToggleGroup v-model="formState.type" class="flex flex-wrap gap-2" name="plugin">
                 <ShadcnToggle v-for="plugin in plugins" class="p-1"
                               :key="plugin.name"
                               :value="plugin.name">

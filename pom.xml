@@ -33,7 +33,7 @@
         <module>plugin/datacap-plugin-zookeeper</module>
         <module>plugin/datacap-plugin-kafka</module>
         <module>plugin/datacap-plugin-redis</module>
-        <!--        <module>plugin/datacap-native-h2</module>-->
+        <module>plugin/datacap-plugin-h2</module>
         <!--        <module>plugin/datacap-native-hdfs</module>-->
         <!--        <module>plugin/datacap-http-cratedb</module>-->
         <!--        <module>plugin/datacap-http-clickhouse</module>-->

@@ -16,7 +16,7 @@ import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
-@SuppressFBWarnings(value = ["RV_RETURN_VALUE_IGNORED_INFERRED", "SA_LOCAL_SELF_COMPARISON"])
+@SuppressFBWarnings(value = ["RV_RETURN_VALUE_IGNORED_INFERRED", "SA_LOCAL_SELF_COMPARISON", "EI_EXPOSE_REP2", "NP_NONNULL_RETURN_VIOLATION"])
 abstract class BaseServiceTest<T : BaseContainer<T>>(
     private val pluginName: String,
     protected val container: T,
