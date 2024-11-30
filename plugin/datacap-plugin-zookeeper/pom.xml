@@ -35,6 +35,7 @@
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-parser</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

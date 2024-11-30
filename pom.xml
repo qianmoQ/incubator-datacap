@@ -31,8 +31,8 @@
         <module>plugin/datacap-plugin-cratedb</module>
         <module>plugin/datacap-plugin-alioss</module>
         <module>plugin/datacap-plugin-zookeeper</module>
+        <module>plugin/datacap-plugin-kafka</module>
         <!--        <module>plugin/datacap-native-redis</module>-->
-        <!--        <module>plugin/datacap-native-kafka</module>-->
         <!--        <module>plugin/datacap-native-h2</module>-->
         <!--        <module>plugin/datacap-native-hdfs</module>-->
         <!--        <module>plugin/datacap-http-cratedb</module>-->

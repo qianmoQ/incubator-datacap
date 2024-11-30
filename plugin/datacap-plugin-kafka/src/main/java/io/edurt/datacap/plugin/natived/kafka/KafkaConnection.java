@@ -26,18 +26,11 @@ public class KafkaConnection
     }
 
     @Override
-    protected String formatJdbcUrl()
-    {
-        return null;
-    }
-
-    @Override
     protected java.sql.Connection openConnection()
     {
         try {
             this.configure = getConfigure();
             this.response = getResponse();
-            log.info("Connection url {}", formatJdbcUrl());
             Properties properties = new Properties();
             properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, configure.getHost());
             this.client = AdminClient.create(properties);
