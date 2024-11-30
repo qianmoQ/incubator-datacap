@@ -38,8 +38,8 @@
         <module>plugin/datacap-plugin-db2</module>
         <module>plugin/datacap-plugin-dm</module>
         <module>plugin/datacap-plugin-dremio</module>
-        <!--        <module>plugin/datacap-jdbc-druid</module>-->
-        <!--        <module>plugin/datacap-jdbc-duckdb</module>-->
+        <module>plugin/datacap-plugin-druid</module>
+        <module>plugin/datacap-plugin-duckdb</module>
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
         <!--        <module>plugin/datacap-jdbc-h2</module>-->
         <!--        <module>plugin/datacap-jdbc-hive</module>-->
