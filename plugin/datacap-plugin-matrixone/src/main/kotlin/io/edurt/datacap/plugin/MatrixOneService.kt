@@ -1,8 +1,8 @@
-package io.edurt.datacap.matrixone
+package io.edurt.datacap.plugin
 
 import io.edurt.datacap.spi.PluginService
 
-class MatrixOnePlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
+class MatrixOneService : PluginService
 {
     override fun driver(): String {
         return "com.mysql.cj.jdbc.Driver"
