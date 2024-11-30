@@ -10,12 +10,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>datacap-native-alioss</artifactId>
-    <description>DataCap - Aliyun OSS</description>
-
-    <properties>
-        <plugin.name>datacap-native-alioss</plugin.name>
-    </properties>
+    <artifactId>datacap-plugin-alioss</artifactId>
+    <description>DataCap - Plugin - AliYun OSS</description>
 
     <dependencies>
         <dependency>
@@ -66,7 +62,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

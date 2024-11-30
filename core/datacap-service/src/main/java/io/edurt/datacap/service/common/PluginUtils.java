@@ -73,7 +73,7 @@ public class PluginUtils
         if (!resource.endsWith(".yaml")) {
             resource = resource + ".yaml";
         }
-        String path = root + String.format("plugins/%s/%s", "jdbc", resource.toLowerCase());
+        String path = root + String.format("plugins/%s", resource.toLowerCase());
         log.info("Load plugin {} type {} resource {} configure file path {}", plugin, type, resource, path);
         File file = new File(path);
         if (!file.exists()) {

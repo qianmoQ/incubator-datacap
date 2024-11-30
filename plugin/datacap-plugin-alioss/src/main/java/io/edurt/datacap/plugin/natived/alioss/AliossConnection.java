@@ -26,18 +26,11 @@ public class AliossConnection
     }
 
     @Override
-    protected String formatJdbcUrl()
-    {
-        return null;
-    }
-
-    @Override
     protected java.sql.Connection openConnection()
     {
         try {
             this.configure = getConfigure();
             this.response = getResponse();
-            log.info("Connection url {}", formatJdbcUrl());
             this.ossClient = new OSSClientBuilder()
                     .build(configure.getHost(), configure.getUsername().get(), configure.getPassword().get());
             response.setIsConnected(Boolean.TRUE);

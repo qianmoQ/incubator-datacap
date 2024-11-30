@@ -72,7 +72,7 @@ public class AliossAdapter
             finally {
                 response.setHeaders(headers);
                 response.setTypes(types);
-                response.setColumns(handlerFormatter(configure.getInjector(), configure.getFormat(), headers, columns));
+                response.setColumns(handlerFormatter(configure.getPluginManager(), configure.getFormat(), headers, columns));
             }
         }
         processorTime.setEnd(new Date().getTime());
