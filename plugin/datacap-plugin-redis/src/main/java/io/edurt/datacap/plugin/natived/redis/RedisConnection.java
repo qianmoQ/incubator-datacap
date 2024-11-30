@@ -23,18 +23,11 @@ public class RedisConnection
     }
 
     @Override
-    protected String formatJdbcUrl()
-    {
-        return null;
-    }
-
-    @Override
     protected java.sql.Connection openConnection()
     {
         try {
             this.configure = getConfigure();
             this.response = getResponse();
-            log.info("Connection url {}", formatJdbcUrl());
             this.jedis = new Jedis(this.configure.getHost(), this.configure.getPort());
             if (OptionalUtils.isNotEmpty(this.configure.getUsername()) && OptionalUtils.isNotEmpty(this.configure.getPassword())) {
                 this.jedis.auth(this.configure.getUsername().get(), this.configure.getPassword().get());

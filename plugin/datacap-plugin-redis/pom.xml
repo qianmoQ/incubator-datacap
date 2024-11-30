@@ -10,12 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-native-redis</artifactId>
-    <description>DataCap - Redis</description>
-
-    <properties>
-        <plugin.name>native-redis</plugin.name>
-    </properties>
+    <artifactId>datacap-plugin-redis</artifactId>
+    <description>DataCap - Plugin - Redis</description>
 
     <dependencies>
         <dependency>
@@ -26,10 +22,6 @@
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
@@ -57,6 +49,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

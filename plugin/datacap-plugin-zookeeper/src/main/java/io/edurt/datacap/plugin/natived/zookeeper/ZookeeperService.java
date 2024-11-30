@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 
 @Slf4j
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "IL_INFINITE_RECURSIVE_LOOP"})
 public class ZookeeperService
         implements PluginService
 {
