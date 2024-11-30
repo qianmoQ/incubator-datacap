@@ -8,7 +8,7 @@
       <div v-for="node in inputs" :key="node.id" class="dndflow p-1">
         <div class="nodes">
           <div :class="'flex items-center space-x-1 vue-flow__node-' + node.nodeType" :draggable="true" @dragstart="onDragStart($event, node.nodeType, node)">
-            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + (node.type as string).split(' ')[0] + '.png'"/>
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + (node.type as string).toLowerCase().split(' ')[0] + '.png'"/>
             <span>{{ node.name }}</span>
           </div>
         </div>
@@ -23,7 +23,7 @@
       <div v-for="node in outputs" :key="node.id" class="dndflow p-1">
         <div class="nodes">
           <div :class="'flex items-center space-x-1 vue-flow__node-' + node.nodeType" :draggable="true" @dragstart="onDragStart($event, node.nodeType, node)">
-            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + (node.type as string).split(' ')[0] + '.png'"/>
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + (node.type as string).toLowerCase().split(' ')[0] + '.png'"/>
             <span>{{ node.name }}</span>
           </div>
         </div>

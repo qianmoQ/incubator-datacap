@@ -14,7 +14,7 @@
 
         <template #source="{ row }">
           <ShadcnTooltip v-if="row.source" :content="row.source?.type">
-            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.source?.type + '.png'" :alt="row.source?.type"/>
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.source?.type.toLowerCase() + '.png'" :alt="row.source?.type"/>
           </ShadcnTooltip>
 
           <ShadcnTooltip v-else :content="row.dataset?.name">

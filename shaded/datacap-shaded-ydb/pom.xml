@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>datacap-shaded-ydb</artifactId>
-    <description>DataCap - Shaded for YDB</description>
+    <description>DataCap - Shaded - YDB</description>
     <packaging>jar</packaging>
 
     <properties>
@@ -126,15 +126,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.sonatype.plugins</groupId>-->
-<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                <version>${plugin.maven.nexus.version}</version>-->
-<!--                <extensions>true</extensions>-->
-<!--                <configuration>-->
-<!--                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 

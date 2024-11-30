@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>datacap-parser-mysql</artifactId>
-    <description>DataCap - Parser for mysql</description>
+    <description>DataCap - Parser - Mysql</description>
 
     <dependencies>
         <dependency>

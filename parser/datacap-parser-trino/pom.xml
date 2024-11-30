@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>datacap-parser-trino</artifactId>
-    <description>DataCap - Parser for trino</description>
+    <description>DataCap - Parser - Trino</description>
 
     <dependencies>
         <dependency>

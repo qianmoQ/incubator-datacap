@@ -15,7 +15,7 @@
         <template #type="{row}">
           <ShadcnTooltip :content="row?.source?.type">
             <ShadcnAvatar size="small"
-                          :src="'/static/images/plugin/' + row?.source?.type + '.png'"
+                          :src="'/static/images/plugin/' + row?.source?.type.toLowerCase() + '.png'"
                           :alt="row?.source?.type" class="cursor-pointer"/>
           </ShadcnTooltip>
         </template>
