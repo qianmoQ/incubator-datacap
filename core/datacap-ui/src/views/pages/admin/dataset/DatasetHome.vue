@@ -10,7 +10,7 @@
       <ShadcnTable size="small" :columns="headers" :data="data">
         <template #source="{row}">
           <ShadcnTooltip :content="row?.source.type">
-            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row?.source.type.toLowerCase() + '.png'" :alt="row?.source.type"/>
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row?.source.type.toLowerCase() + '.svg'" :alt="row?.source.type"/>
           </ShadcnTooltip>
         </template>
 

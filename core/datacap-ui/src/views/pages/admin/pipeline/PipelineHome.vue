@@ -21,19 +21,19 @@
       <ShadcnTable size="small" :columns="headers" :data="data">
         <template #executor="{row}">
           <ShadcnTooltip :content="row.executor">
-            <ShadcnAvatar size="small" :src="`/static/images/executor/${row.executor.toLowerCase()}.png`"/>
+            <ShadcnAvatar size="small" :src="`/static/images/executor/${row.executor.toLowerCase()}.svg`"/>
           </ShadcnTooltip>
         </template>
 
         <template #from="{row}">
           <ShadcnTooltip :content="row.from.name">
-            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.from.type.toLowerCase() + '.png'"/>
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.from.type.toLowerCase() + '.svg'"/>
           </ShadcnTooltip>
         </template>
 
         <template #to="{row}">
           <ShadcnTooltip :content="row.to.name">
-            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.to.type.toLowerCase() + '.png'"/>
+            <ShadcnAvatar size="small" :src="'/static/images/plugin/' + row.to.type.toLowerCase() + '.svg'"/>
           </ShadcnTooltip>
         </template>
 

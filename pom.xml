@@ -40,6 +40,13 @@
         <module>plugin/datacap-plugin-dremio</module>
         <module>plugin/datacap-plugin-druid</module>
         <module>plugin/datacap-plugin-duckdb</module>
+        <module>plugin/datacap-plugin-pinot</module>
+        <!--        <module>plugin/datacap-plugin-cassandra</module>-->
+        <!--        <module>plugin/datacap-plugin-matrixone</module>-->
+        <!--        <module>plugin/datacap-plugin-scylladb</module>-->
+        <!--        <module>plugin/datacap-plugin-paradedb</module>-->
+        <!--        <module>plugin/datacap-plugin-timescale</module>-->
+        <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
         <!--        <module>plugin/datacap-jdbc-h2</module>-->
         <!--        <module>plugin/datacap-jdbc-hive</module>-->
@@ -65,13 +72,6 @@
         <!--        <module>plugin/datacap-jdbc-doris</module>-->
         <!--        <module>plugin/datacap-jdbc-starrocks</module>-->
         <!--        <module>plugin/datacap-jdbc-hologres</module>-->
-        <!--        <module>plugin/datacap-plugin-pinot</module>-->
-        <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
-        <!--        <module>plugin/datacap-plugin-cassandra</module>-->
-        <!--        <module>plugin/datacap-plugin-matrixone</module>-->
-        <!--        <module>plugin/datacap-plugin-scylladb</module>-->
-        <!--        <module>plugin/datacap-plugin-paradedb</module>-->
-        <!--        <module>plugin/datacap-plugin-timescale</module>-->
         <!--        <module>plugin/datacap-http-cratedb</module>-->
         <!--        <module>plugin/datacap-http-clickhouse</module>-->
         <!--        <module>plugin/datacap-http-ceresdb</module>-->

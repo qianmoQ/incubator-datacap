@@ -147,7 +147,7 @@ export default defineComponent({
       return plugins.map((item: string) => {
         return {
           name: item,
-          src: `/static/images/plugin/${ item.toLowerCase() }.png`
+          src: `/static/images/plugin/${ item.toLowerCase() }.svg`
         }
       })
     },

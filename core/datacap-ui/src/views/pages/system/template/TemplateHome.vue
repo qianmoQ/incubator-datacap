@@ -19,7 +19,7 @@
         <template #plugin="{ row }">
           <ShadcnAvatar v-for="item in row?.plugin.split(',')"
                         size="small"
-                        :src="'/static/images/plugin/' + item + '.png'"
+                        :src="'/static/images/plugin/' + item.toString().toLowerCase() + '.svg'"
                         :alt="item"/>
         </template>
 
