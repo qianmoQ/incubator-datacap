@@ -28,6 +28,7 @@
         <module>plugin/datacap-plugin-mysql</module>
         <module>plugin/datacap-plugin-clickhouse</module>
         <module>plugin/datacap-plugin-solr</module>
+        <module>plugin/datacap-plugin-cratedb</module>
         <!--        <module>plugin/datacap-native-alioss</module>-->
         <!--        <module>plugin/datacap-native-zookeeper</module>-->
         <!--        <module>plugin/datacap-native-redis</module>-->
@@ -39,7 +40,6 @@
         <!--        <module>plugin/datacap-http-ceresdb</module>-->
         <!--        <module>plugin/datacap-http-greptime</module>-->
         <!--        <module>plugin/datacap-http-questdb</module>-->
-        <!--        <module>plugin/datacap-jdbc-cratedb</module>-->
         <!--        <module>plugin/datacap-jdbc-db2</module>-->
         <!--        <module>plugin/datacap-jdbc-dm</module>-->
         <!--        <module>plugin/datacap-jdbc-dremio</module>-->

@@ -10,12 +10,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-jdbc-cratedb</artifactId>
-    <description>DataCap - CrateDB</description>
+    <artifactId>datacap-plugin-cratedb</artifactId>
+    <description>DataCap - Plugin - CrateDB</description>
 
     <properties>
         <cratedb.version>2.7.0</cratedb.version>
-        <plugin.name>jdbc-cratedb</plugin.name>
     </properties>
 
     <dependencies>
@@ -23,10 +22,6 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-spi</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
         <dependency>
             <groupId>io.crate</groupId>
@@ -54,6 +49,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
