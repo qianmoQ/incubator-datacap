@@ -1,5 +1,9 @@
 <template>
-  <ShadcnTab v-model="selectTab" @on-change="onChange">
+  <div v-if="!originalDatabase">
+    <ShadcnAlert type="warning" :title="$t('source.tip.notSelectedNode')"/>
+  </div>
+
+  <ShadcnTab v-else v-model="selectTab" @on-change="onChange">
     <ShadcnTabItem value="info">
       <template #label>
         <div class="flex items-center space-x-1">

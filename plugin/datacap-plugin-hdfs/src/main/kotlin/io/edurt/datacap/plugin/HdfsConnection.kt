@@ -1,4 +1,4 @@
-package io.edurt.datacap.natived.hdfs
+package io.edurt.datacap.plugin
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.spi.connection.Connection
@@ -12,24 +12,14 @@ import java.io.File
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP", "EI_EXPOSE_REP2"])
 class HdfsConnection : Connection
 {
-    private var configure: Configure? = null
-    private var response: Response? = null
-
     var hdfsConfigure: Configuration? = null
 
     constructor(configure: Configure, response: Response) : super(configure, response)
-
-    override fun formatJdbcUrl(): String
-    {
-        return TODO("Provide the return value")
-    }
 
     override fun openConnection(): java.sql.Connection?
     {
         try
         {
-            this.configure = getConfigure()
-            this.response = getResponse()
             this.hdfsConfigure = Configuration()
             this.hdfsConfigure !!.addResource(this.getPath("core-site.xml"))
             this.hdfsConfigure !!.addResource(this.getPath("hdfs-site.xml"))

@@ -66,8 +66,8 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
       view-shadcn-ui:
-        specifier: 2024.5.0-alpha.1732521882
-        version: 2024.5.0-alpha.1732521882(typescript@5.2.2)
+        specifier: 2024.5.0-alpha.1732962695
+        version: 2024.5.0-alpha.1732962695(typescript@5.2.2)
       vue:
         specifier: ^3.4.21
         version: 3.5.12(typescript@5.2.2)
@@ -1403,8 +1403,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  view-shadcn-ui@2024.5.0-alpha.1732521882:
-    resolution: {integrity: sha512-9dj2YpUdNtNxWCG24ElmLX/EE2B6Xl7m9p7l2dLanz/8ZoJEe5Zq5PwWONFhgeMdQczldJiLOgSYp0xrcEE7IQ==}
+  view-shadcn-ui@2024.5.0-alpha.1732962695:
+    resolution: {integrity: sha512-6N+mlelaAUEahuavMPN7MQxR31R9zWw+LcLgp4woB/0UmrB8Gshx0IedFwnI2h2gjE8/sE+HduD8JomV5BPmww==}
 
   vite@5.4.10:
     resolution: {integrity: sha512-1hvaPshuPUtxeQ0hsVH3Mud0ZanOLwVTneA1EgbAM5LhaZEqyPWGRQ7BtaMvUrTDeEaC8pxtj6a6jku3x4z6SQ==}
@@ -3061,7 +3061,7 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  view-shadcn-ui@2024.5.0-alpha.1732521882(typescript@5.2.2):
+  view-shadcn-ui@2024.5.0-alpha.1732962695(typescript@5.2.2):
     dependencies:
       clsx: 2.1.1
       highlight.js: 11.10.0

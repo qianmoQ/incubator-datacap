@@ -1,4 +1,4 @@
-package io.edurt.datacap.natived.hdfs
+package io.edurt.datacap.plugin
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.spi.adapter.NativeAdapter
@@ -89,7 +89,7 @@ class HdfsAdapter : NativeAdapter
             {
                 response.headers = headers
                 response.types = types
-                response.columns = handlerFormatter(configure.injector, configure.format, headers, columns)
+                response.columns = handlerFormatter(configure.pluginManager, configure.format, headers, columns)
             }
         }
         processorTime.end = Date().time

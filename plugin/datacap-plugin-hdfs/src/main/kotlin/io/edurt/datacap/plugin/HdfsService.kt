@@ -1,4 +1,4 @@
-package io.edurt.datacap.natived.hdfs
+package io.edurt.datacap.plugin
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.spi.PluginService
@@ -13,9 +13,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP"])
-class HdfsPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
+class HdfsService : PluginService
 {
-    private val log: Logger = getLogger(HdfsPlugin::class.java)
+    private val log: Logger = getLogger(HdfsService::class.java)
 
     private var configure: Configure? = null
     private var connection: HdfsConnection? = null
@@ -64,6 +64,12 @@ class HdfsPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
         }
         destroy()
         return response !!
+    }
+
+    override fun execute(configure: Configure?, content: String?): Response
+    {
+        connect(configure)
+        return execute(content)
     }
 
     override fun destroy()

@@ -10,7 +10,7 @@
         <ShadcnTab v-model="activeTab" :key="`tab-${configureTabs.length}`" @on-change="onChangeTab">
           <ShadcnTabItem value="source" :label="$t('source.common.source')" :key="'source-tab'">
             <ShadcnFormItem name="type" :label="$t('source.common.type')" :rules="[{ required: true, message: $t('function.tip.selectPluginHolder') }]">
-              <ShadcnToggleGroup v-model="formState.type" class="flex flex-wrap gap-2" name="plugin">
+              <ShadcnToggleGroup v-model="formState.type" class="flex flex-wrap gap-3" name="plugin">
                 <ShadcnToggle v-for="plugin in plugins" class="p-1"
                               :key="plugin.name"
                               :value="plugin.name">
@@ -41,11 +41,14 @@
 
               <ShadcnSwitch v-else-if="configure.type === 'Boolean'" v-model="configure.value" :disabled="configure.disabled"/>
 
-              <Upload v-else-if="configure.type === 'File'" multiple :format="['xml']" :on-success="handlerUploadSuccess" :on-remove="handlerUploadRemove"
-                      action="/api/v1/source/uploadFile"
-                      :headers="{'Authorization': auth?.type + ' ' + auth?.token, 'PluginType': (formState.type as string).split(' ')[0]}">
+              <ShadcnUpload v-else-if="configure.type === 'File'"
+                            action="http://localhost:9096/api/v1/source/uploadFile"
+                            multiple
+                            accept=".xml"
+                            :headers="{'Authorization': auth?.type + ' ' + auth?.token, 'PluginType': (formState.type as string).split(' ')[0]}"
+                            @on-success="handlerUploadSuccess">
                 <Button icon="ios-cloud-upload-outline">{{ $t('common.upload') }}</Button>
-              </Upload>
+              </ShadcnUpload>
 
               <div v-else>
                 <ShadcnSpace wrap>
