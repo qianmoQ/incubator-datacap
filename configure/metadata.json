@@ -171,6 +171,36 @@
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-dm-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-hdfs",
+      "label": "Apache HDFS",
+      "description": "Hadoop Distributed File System (HDFS) is a distributed file system based on the Hadoop project.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/hdfs.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-hdfs-bin.tar.gz"
+    },
+    {
+      "key": "datacap-plugin-alioss",
+      "label": "Ali OSS",
+      "description": "Ali OSS is a cloud storage service that provides a simple, secure and efficient way to store and manage data.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/alioss.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-alioss-bin.tar.gz"
+    },
+    {
       "key": "datacap-plugin-dremio",
       "label": "Dremio",
       "description": "Dremio is a free, open source, distributed data platform.",
