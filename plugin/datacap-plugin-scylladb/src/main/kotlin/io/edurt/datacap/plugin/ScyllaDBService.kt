@@ -1,4 +1,4 @@
-package io.edurt.datacap.plugin.scylladb
+package io.edurt.datacap.plugin
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.spi.PluginService
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ObjectUtils.isNotEmpty
 import org.slf4j.LoggerFactory.getLogger
 
 @SuppressFBWarnings(value = ["EI_EXPOSE_REP"])
-class ScyllaDBPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
+class ScyllaDBService : PluginService
 {
     private val log = getLogger(this.javaClass)
 
@@ -51,6 +51,12 @@ class ScyllaDBPlugin : _root_ide_package_.io.edurt.datacap.spi.PluginService
         }
         destroy()
         return response !!
+    }
+
+    override fun execute(configure: Configure?, content: String?): Response
+    {
+        connect(configure)
+        return execute(content)
     }
 
     override fun destroy()

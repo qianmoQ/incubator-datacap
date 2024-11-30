@@ -43,7 +43,8 @@
         <module>plugin/datacap-plugin-pinot</module>
         <module>plugin/datacap-plugin-cassandra</module>
         <module>plugin/datacap-plugin-matrixone</module>
-        <!--        <module>plugin/datacap-plugin-scylladb</module>-->
+        <module>plugin/datacap-plugin-influxdb</module>
+        <module>plugin/datacap-plugin-scylladb</module>
         <!--        <module>plugin/datacap-plugin-paradedb</module>-->
         <!--        <module>plugin/datacap-plugin-timescale</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
@@ -77,7 +78,6 @@
         <!--        <module>plugin/datacap-http-ceresdb</module>-->
         <!--        <module>plugin/datacap-http-greptime</module>-->
         <!--        <module>plugin/datacap-http-questdb</module>-->
-        <module>plugin/datacap-plugin-influxdb</module>
         <module>executor/datacap-executor-spi</module>
         <module>executor/datacap-executor-local</module>
         <module>executor/datacap-executor-seatunnel</module>
