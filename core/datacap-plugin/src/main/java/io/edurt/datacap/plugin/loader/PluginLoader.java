@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuppressFBWarnings(value = {"MS_OOI_PKGPROTECT"})
+@SuppressFBWarnings(value = {"MS_OOI_PKGPROTECT", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public interface PluginLoader
 {
     Logger log = org.slf4j.LoggerFactory.getLogger(PluginLoader.class);

@@ -22,18 +22,11 @@ public class ZookeeperConnection
     }
 
     @Override
-    protected String formatJdbcUrl()
-    {
-        return null;
-    }
-
-    @Override
     protected java.sql.Connection openConnection()
     {
         try {
             this.configure = getConfigure();
             this.response = getResponse();
-            log.info("Connection url {}", formatJdbcUrl());
             this.client = new ZkClient(this.configure.getHost(), 60000, 5000);
             response.setIsConnected(Boolean.TRUE);
         }

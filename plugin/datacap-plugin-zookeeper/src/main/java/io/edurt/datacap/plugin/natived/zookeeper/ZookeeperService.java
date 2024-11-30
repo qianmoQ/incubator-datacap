@@ -4,19 +4,16 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.PluginService;
 import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.adapter.Adapter;
-import io.edurt.datacap.spi.connection.JdbcConfigure;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
 @Slf4j
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP"})
-public class ZookeeperPlugin
+public class ZookeeperService
         implements PluginService
 {
-    private Configure configure;
     private ZookeeperConnection connection;
     private Response response;
 
@@ -49,9 +46,7 @@ public class ZookeeperPlugin
     {
         try {
             this.response = new Response();
-            this.configure = new JdbcConfigure();
-            BeanUtils.copyProperties(this.configure, configure);
-            this.connection = new ZookeeperConnection(this.configure, this.response);
+            this.connection = new ZookeeperConnection(configure, this.response);
         }
         catch (Exception ex) {
             this.response.setIsConnected(Boolean.FALSE);
@@ -70,6 +65,13 @@ public class ZookeeperPlugin
             log.info("Execute zookeeper plugin logic end");
         }
         return this.response;
+    }
+
+    @Override
+    public Response execute(Configure configure, String content)
+    {
+        this.connect(configure);
+        return execute(configure, content);
     }
 
     @Override
