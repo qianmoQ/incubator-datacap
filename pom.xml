@@ -35,12 +35,7 @@
         <module>plugin/datacap-plugin-redis</module>
         <module>plugin/datacap-plugin-h2</module>
         <module>plugin/datacap-plugin-hdfs</module>
-        <!--        <module>plugin/datacap-http-cratedb</module>-->
-        <!--        <module>plugin/datacap-http-clickhouse</module>-->
-        <!--        <module>plugin/datacap-http-ceresdb</module>-->
-        <!--        <module>plugin/datacap-http-greptime</module>-->
-        <!--        <module>plugin/datacap-http-questdb</module>-->
-        <!--        <module>plugin/datacap-jdbc-db2</module>-->
+        <module>plugin/datacap-plugin-db2</module>
         <!--        <module>plugin/datacap-jdbc-dm</module>-->
         <!--        <module>plugin/datacap-jdbc-dremio</module>-->
         <!--        <module>plugin/datacap-jdbc-druid</module>-->
@@ -77,6 +72,11 @@
         <!--        <module>plugin/datacap-plugin-scylladb</module>-->
         <!--        <module>plugin/datacap-plugin-paradedb</module>-->
         <!--        <module>plugin/datacap-plugin-timescale</module>-->
+        <!--        <module>plugin/datacap-http-cratedb</module>-->
+        <!--        <module>plugin/datacap-http-clickhouse</module>-->
+        <!--        <module>plugin/datacap-http-ceresdb</module>-->
+        <!--        <module>plugin/datacap-http-greptime</module>-->
+        <!--        <module>plugin/datacap-http-questdb</module>-->
         <module>plugin/datacap-plugin-influxdb</module>
         <module>executor/datacap-executor-spi</module>
         <module>executor/datacap-executor-local</module>

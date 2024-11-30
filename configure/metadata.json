@@ -141,6 +141,21 @@
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-h2-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-db2",
+      "label": "DB2",
+      "description": "IBM® Db2® is the cloud-native database built to power low-latency transactions, real-time analytics and AI applications at scale.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/db2.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-db2-bin.tar.gz"
+    },
+    {
       "key": "datacap-convert-csv",
       "label": "Csv Convert",
       "description": "A CSV file conversion plugin for DataCap.",

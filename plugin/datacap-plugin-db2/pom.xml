@@ -10,12 +10,11 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>datacap-jdbc-db2</artifactId>
-    <description>DataCap - DB2</description>
+    <artifactId>datacap-plugin-db2</artifactId>
+    <description>DataCap - Plugin - DB2</description>
 
     <properties>
         <db2.version>db2jcc4</db2.version>
-        <plugin.name>jdbc-db2</plugin.name>
     </properties>
 
     <dependencies>
@@ -23,10 +22,6 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-spi</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ibm.db2.jcc</groupId>
@@ -54,6 +49,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

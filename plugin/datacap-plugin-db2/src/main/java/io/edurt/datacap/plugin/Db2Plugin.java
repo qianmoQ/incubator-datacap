@@ -1,5 +1,5 @@
 package io.edurt.datacap.plugin;
 
-public class H2Plugin
+public class Db2Plugin
         extends Plugin
 {}
