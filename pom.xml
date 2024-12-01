@@ -45,7 +45,7 @@
         <module>plugin/datacap-plugin-matrixone</module>
         <module>plugin/datacap-plugin-influxdb</module>
         <module>plugin/datacap-plugin-scylladb</module>
-        <!--        <module>plugin/datacap-plugin-paradedb</module>-->
+        <module>plugin/datacap-plugin-paradedb</module>
         <!--        <module>plugin/datacap-plugin-timescale</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
