@@ -10,12 +10,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-jdbc-impala</artifactId>
-    <description>DataCap - Apache Impala</description>
+    <artifactId>datacap-plugin-impala</artifactId>
+    <description>DataCap - Plugin - Apache Impala</description>
 
     <properties>
         <impala.version>2.6.32.1041</impala.version>
-        <plugin.name>jdbc-impala</plugin.name>
     </properties>
 
     <dependencies>
@@ -23,10 +22,6 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-spi</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
         <dependency>
             <groupId>Impala</groupId>
@@ -54,6 +49,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

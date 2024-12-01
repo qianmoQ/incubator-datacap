@@ -49,7 +49,7 @@
         <module>plugin/datacap-plugin-hive-2x</module>
         <module>plugin/datacap-plugin-kyuubi</module>
         <module>plugin/datacap-plugin-ignite</module>
-        <!--        <module>plugin/datacap-jdbc-impala</module>-->
+        <module>plugin/datacap-plugin-impala</module>
         <!--        <module>plugin/datacap-jdbc-kylin</module>-->
         <!--        <module>plugin/datacap-plugin-timescale</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
