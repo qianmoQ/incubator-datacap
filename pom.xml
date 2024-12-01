@@ -53,7 +53,7 @@
         <module>plugin/datacap-plugin-kylin</module>
         <module>plugin/datacap-plugin-timescale</module>
         <module>plugin/datacap-plugin-iotdb</module>
-        <!--        <module>plugin/datacap-jdbc-monetdb</module>-->
+        <module>plugin/datacap-plugin-monetdb</module>
         <!--        <module>plugin/datacap-jdbc-mongo</module>-->
         <!--        <module>plugin/datacap-jdbc-ydb</module>-->
         <!--        <module>plugin/datacap-jdbc-neo4j</module>-->

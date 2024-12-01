@@ -10,12 +10,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-jdbc-monetdb</artifactId>
-    <description>DataCap - MonetDB</description>
+    <artifactId>datacap-plugin-monetdb</artifactId>
+    <description>DataCap - Plugin - MonetDB</description>
 
     <properties>
         <monetdb.version>11.19.15</monetdb.version>
-        <plugin.name>jdbc-monetdb</plugin.name>
     </properties>
 
     <dependencies>
@@ -24,11 +23,6 @@
             <artifactId>datacap-spi</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/monetdb/monetdb-jdbc -->
         <dependency>
             <groupId>monetdb</groupId>
             <artifactId>monetdb-jdbc</artifactId>
@@ -55,6 +49,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
