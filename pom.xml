@@ -60,8 +60,8 @@
         <module>plugin/datacap-plugin-oceanbase</module>
         <module>plugin/datacap-plugin-oracle</module>
         <module>plugin/datacap-plugin-phoenix</module>
-        <!--        <module>plugin/datacap-jdbc-postgresql</module>-->
-        <!--        <module>plugin/datacap-jdbc-presto</module>-->
+        <module>plugin/datacap-plugin-postgresql</module>
+        <module>plugin/datacap-plugin-presto</module>
         <!--        <module>plugin/datacap-jdbc-redis</module>-->
         <!--        <module>plugin/datacap-jdbc-snowflake</module>-->
         <!--        <module>plugin/datacap-jdbc-sqlserver</module>-->
