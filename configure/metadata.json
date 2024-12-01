@@ -321,6 +321,21 @@
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-paradedb-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-hive-2x",
+      "label": "Apache Hive 2.x",
+      "description": "The Apache Hive ™ is a distributed, fault-tolerant data warehouse system that enables analytics at a massive scale and facilitates reading, writing, and managing petabytes of data residing in distributed storage using SQL.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/hive2x.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "2.x"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-hive-2x-bin.tar.gz"
+    },
+    {
       "key": "datacap-convert-csv",
       "label": "Csv Convert",
       "description": "A CSV file conversion plugin for DataCap.",
