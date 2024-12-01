@@ -51,8 +51,7 @@
         <module>plugin/datacap-plugin-ignite</module>
         <module>plugin/datacap-plugin-impala</module>
         <module>plugin/datacap-plugin-kylin</module>
-        <!--        <module>plugin/datacap-plugin-timescale</module>-->
-        <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
+        <module>plugin/datacap-plugin-timescale</module>
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
         <!--        <module>plugin/datacap-jdbc-h2</module>-->
         <!--        <module>plugin/datacap-jdbc-iotdb</module>-->
@@ -78,6 +77,7 @@
         <!--        <module>plugin/datacap-http-ceresdb</module>-->
         <!--        <module>plugin/datacap-http-greptime</module>-->
         <!--        <module>plugin/datacap-http-questdb</module>-->
+        <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
         <module>executor/datacap-executor-spi</module>
         <module>executor/datacap-executor-local</module>
         <module>executor/datacap-executor-seatunnel</module>
