@@ -62,9 +62,8 @@
         <module>plugin/datacap-plugin-phoenix</module>
         <module>plugin/datacap-plugin-postgresql</module>
         <module>plugin/datacap-plugin-presto</module>
-        <!--        <module>plugin/datacap-jdbc-redis</module>-->
-        <!--        <module>plugin/datacap-jdbc-snowflake</module>-->
-        <!--        <module>plugin/datacap-jdbc-sqlserver</module>-->
+        <module>plugin/datacap-plugin-snowflake</module>
+        <module>plugin/datacap-plugin-sqlserver</module>
         <!--        <module>plugin/datacap-jdbc-tdengine</module>-->
         <!--        <module>plugin/datacap-jdbc-trino</module>-->
         <!--        <module>plugin/datacap-jdbc-doris</module>-->
@@ -76,6 +75,7 @@
         <!--        <module>plugin/datacap-http-greptime</module>-->
         <!--        <module>plugin/datacap-http-questdb</module>-->
         <!--        <module>plugin/datacap-jdbc-h2</module>-->
+        <!--        <module>plugin/datacap-jdbc-redis</module>-->
         <!--        <module>plugin/datacap-jdbc-mongo</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
