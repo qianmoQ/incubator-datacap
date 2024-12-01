@@ -69,10 +69,10 @@
         <module>plugin/datacap-plugin-doris</module>
         <module>plugin/datacap-plugin-starrocks</module>
         <module>plugin/datacap-plugin-hologres</module>
-<!--                <module>plugin/datacap-http-clickhouse</module>-->
+        <module>plugin/datacap-plugin-greptimedb</module>
+        <module>plugin/datacap-plugin-questdb</module>
+        <!--                <module>plugin/datacap-http-clickhouse</module>-->
         <!--        <module>plugin/datacap-http-ceresdb</module>-->
-        <!--        <module>plugin/datacap-http-greptime</module>-->
-        <!--        <module>plugin/datacap-http-questdb</module>-->
         <!--        <module>plugin/datacap-jdbc-h2</module>-->
         <!--        <module>plugin/datacap-jdbc-redis</module>-->
         <!--        <module>plugin/datacap-jdbc-mongo</module>-->
