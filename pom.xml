@@ -25,6 +25,7 @@
         <module>driver/datacap-driver-mongo</module>
         <module>shaded/datacap-shaded-ydb</module>
         <module>shaded/datacap-shaded-pinot</module>
+        <module>shaded/datacap-shaded-neo4j</module>
         <module>plugin/datacap-plugin-mysql</module>
         <module>plugin/datacap-plugin-clickhouse</module>
         <module>plugin/datacap-plugin-solr</module>
@@ -54,9 +55,8 @@
         <module>plugin/datacap-plugin-timescale</module>
         <module>plugin/datacap-plugin-iotdb</module>
         <module>plugin/datacap-plugin-monetdb</module>
-        <!--        <module>plugin/datacap-jdbc-mongo</module>-->
-        <!--        <module>plugin/datacap-jdbc-ydb</module>-->
-        <!--        <module>plugin/datacap-jdbc-neo4j</module>-->
+        <module>plugin/datacap-plugin-ydb</module>
+        <module>plugin/datacap-plugin-neo4j</module>
         <!--        <module>plugin/datacap-jdbc-oceanbase</module>-->
         <!--        <module>plugin/datacap-jdbc-oracle</module>-->
         <!--        <module>plugin/datacap-jdbc-phoenix</module>-->
@@ -76,6 +76,7 @@
         <!--        <module>plugin/datacap-http-greptime</module>-->
         <!--        <module>plugin/datacap-http-questdb</module>-->
         <!--        <module>plugin/datacap-jdbc-h2</module>-->
+        <!--        <module>plugin/datacap-jdbc-mongo</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
         <module>executor/datacap-executor-spi</module>
