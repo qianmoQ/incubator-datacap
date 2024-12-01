@@ -13,10 +13,6 @@
     <artifactId>datacap-plugin-h2</artifactId>
     <description>DataCap - Plugin - H2</description>
 
-    <properties>
-        <h2.version>2.1.214</h2.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.edurt.datacap</groupId>

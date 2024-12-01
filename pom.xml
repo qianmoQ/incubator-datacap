@@ -28,13 +28,16 @@
         <module>shaded/datacap-shaded-neo4j</module>
         <module>plugin/datacap-plugin-mysql</module>
         <module>plugin/datacap-plugin-clickhouse</module>
+        <module>plugin/datacap-plugin-clickhouse-http</module>
         <module>plugin/datacap-plugin-solr</module>
         <module>plugin/datacap-plugin-cratedb</module>
         <module>plugin/datacap-plugin-alioss</module>
         <module>plugin/datacap-plugin-zookeeper</module>
         <module>plugin/datacap-plugin-kafka</module>
         <module>plugin/datacap-plugin-redis</module>
+        <module>plugin/datacap-plugin-redis-jdbc</module>
         <module>plugin/datacap-plugin-h2</module>
+        <module>plugin/datacap-plugin-h2-tcp</module>
         <module>plugin/datacap-plugin-hdfs</module>
         <module>plugin/datacap-plugin-db2</module>
         <module>plugin/datacap-plugin-dm</module>
@@ -71,10 +74,7 @@
         <module>plugin/datacap-plugin-hologres</module>
         <module>plugin/datacap-plugin-greptimedb</module>
         <module>plugin/datacap-plugin-questdb</module>
-        <module>plugin/datacap-plugin-h2-tcp</module>
-        <module>plugin/datacap-plugin-clickhouse-http</module>
-        <!--        <module>plugin/datacap-http-ceresdb</module>-->
-        <!--        <module>plugin/datacap-jdbc-redis</module>-->
+        <module>plugin/datacap-plugin-ceresdb</module>
         <!--        <module>plugin/datacap-jdbc-mongo</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
@@ -197,6 +197,7 @@
         <openai.version>2024.01.3</openai.version>
         <testcontainers.version>1.20.1</testcontainers.version>
         <quartz.version>2.3.2</quartz.version>
+        <h2.version>2.1.214</h2.version>
         <assembly-plugin.version>3.6.0</assembly-plugin.version>
         <dep.reflections.version>0.10.2</dep.reflections.version>
         <!-- datacap plugin dependency -->

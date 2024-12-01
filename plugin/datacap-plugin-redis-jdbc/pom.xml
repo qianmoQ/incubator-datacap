@@ -10,8 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-plugin-h2-tcp</artifactId>
-    <description>DataCap - Plugin - H2 - TCP</description>
+    <artifactId>datacap-plugin-redis-jdbc</artifactId>
+    <description>DataCap - Plugin - Redis - JDBC</description>
 
     <dependencies>
         <dependency>
@@ -20,9 +20,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
+            <groupId>io.edurt.datacap</groupId>
+            <artifactId>datacap-driver-redis</artifactId>
         </dependency>
     </dependencies>
 
