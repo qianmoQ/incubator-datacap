@@ -47,6 +47,7 @@
         <module>plugin/datacap-plugin-scylladb</module>
         <module>plugin/datacap-plugin-paradedb</module>
         <module>plugin/datacap-plugin-hive-2x</module>
+        <module>plugin/datacap-plugin-kyuubi</module>
         <!--        <module>plugin/datacap-plugin-timescale</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
@@ -55,7 +56,6 @@
         <!--        <module>plugin/datacap-jdbc-impala</module>-->
         <!--        <module>plugin/datacap-jdbc-iotdb</module>-->
         <!--        <module>plugin/datacap-jdbc-kylin</module>-->
-        <!--        <module>plugin/datacap-jdbc-kyuubi</module>-->
         <!--        <module>plugin/datacap-jdbc-monetdb</module>-->
         <!--        <module>plugin/datacap-jdbc-mongo</module>-->
         <!--        <module>plugin/datacap-jdbc-ydb</module>-->

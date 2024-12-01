@@ -10,12 +10,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-jdbc-kyuubi</artifactId>
-    <description>DataCap - Apache Kyuubi</description>
+    <artifactId>datacap-plugin-kyuubi</artifactId>
+    <description>DataCap - Plugin - Apache Kyuubi</description>
 
     <properties>
         <kyuubi-jdbc.version>1.9.2</kyuubi-jdbc.version>
-        <plugin.name>jdbc-kyuubi</plugin.name>
     </properties>
 
     <dependencies>
@@ -28,10 +27,6 @@
             <groupId>org.apache.kyuubi</groupId>
             <artifactId>kyuubi-hive-jdbc-shaded</artifactId>
             <version>${kyuubi-jdbc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
     </dependencies>
 
@@ -54,6 +49,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

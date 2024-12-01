@@ -336,6 +336,21 @@
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-hive-2x-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-kyuubi",
+      "label": "Apache Kyuubi",
+      "description": "Apache Kyuubi, a distributed and multi-tenant gateway to provide serverless SQL on lakehouses.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/kyuubi.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-kyuubi-bin.tar.gz"
+    },
+    {
       "key": "datacap-convert-csv",
       "label": "Csv Convert",
       "description": "A CSV file conversion plugin for DataCap.",

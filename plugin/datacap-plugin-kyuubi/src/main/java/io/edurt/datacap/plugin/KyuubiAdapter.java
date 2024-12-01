@@ -1,11 +1,11 @@
-package io.edurt.datacap.plugin.jdbc.kyuubi;
+package io.edurt.datacap.plugin;
 
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.adapter.JdbcAdapter;
 import io.edurt.datacap.spi.column.JdbcColumn;
-import io.edurt.datacap.spi.connection.JdbcConfigure;
 import io.edurt.datacap.spi.connection.JdbcConnection;
+import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import io.edurt.datacap.spi.model.Time;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class KyuubiAdapter
         processorTime.setStart(new Date().getTime());
         Response response = this.connection.getResponse();
         Connection connection = (Connection) this.connection.getConnection();
-        JdbcConfigure configure = (JdbcConfigure) this.connection.getConfigure();
+        Configure configure = this.connection.getConfigure();
         if (response.getIsConnected()) {
             try (PreparedStatement statement = connection.prepareStatement(content)) {
                 List<String> headers = new ArrayList<>();
@@ -101,7 +101,7 @@ public class KyuubiAdapter
                 finally {
                     response.setHeaders(headers);
                     response.setTypes(types);
-                    response.setColumns(handlerFormatter(configure.getInjector(), configure.getFormat(), headers, columns));
+                    response.setColumns(handlerFormatter(configure.getPluginManager(), configure.getFormat(), headers, columns));
                     response.setIsSuccessful(Boolean.TRUE);
                 }
             }
