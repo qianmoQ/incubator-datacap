@@ -50,7 +50,7 @@
         <module>plugin/datacap-plugin-kyuubi</module>
         <module>plugin/datacap-plugin-ignite</module>
         <module>plugin/datacap-plugin-impala</module>
-        <!--        <module>plugin/datacap-jdbc-kylin</module>-->
+        <module>plugin/datacap-plugin-kylin</module>
         <!--        <module>plugin/datacap-plugin-timescale</module>-->
         <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
         <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->

@@ -381,6 +381,21 @@
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-impala-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-kylin",
+      "label": "Apache Kylin",
+      "description": "Apache Kylin is a leading open source OLAP engine for Big Data capable for sub-second query latency on trillions of records. Since being created and open sourced by eBay in 2014, and graduated to Top Level Project of Apache Software Foundation in 2015. Kylin has quickly been adopted by thousands of organizations world widely as their critical analytics application for Big Data.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/kylin.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-kylin-bin.tar.gz"
+    },
+    {
       "key": "datacap-convert-csv",
       "label": "Csv Convert",
       "description": "A CSV file conversion plugin for DataCap.",
