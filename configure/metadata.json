@@ -81,6 +81,21 @@
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-cratedb-bin.tar.gz"
     },
     {
+      "key": "datacap-plugin-cratedb-http",
+      "label": "CrateDB HTTP",
+      "description": "Use HTTP to access the remote CrateDB database",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/cratedbhttp.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-cratedbhttp-bin.tar.gz"
+    },
+    {
       "key": "datacap-plugin-zookeeper",
       "label": "Apache Zookeeper",
       "description": "Zookeeper is a distributed, distributed configuration service. It is a distributed database with a focus on performance, scalability, and ease of use.",
@@ -739,6 +754,51 @@
         "ALL"
       ],
       "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-redis-jdbc-bin.tar.gz"
+    },
+    {
+      "key": "datacap-plugin-elasticsearch-8x",
+      "label": "Elasticsearch 8.x",
+      "description": "Use Elasticsearch 8.x",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/elasticsearch8x.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "8.x"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-elasticsearch-8x-bin.tar.gz"
+    },
+    {
+      "key": "datacap-plugin-mongo-atlas",
+      "label": "MongoDB Atlas",
+      "description": "The MongoDB Atlas SQL JDBC Driver provides SQL connectivity to MongoDB Atlas for client applications developed in Java.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/mongoatlas.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-mongo-atlas-bin.tar.gz"
+    },
+    {
+      "key": "datacap-plugin-mongo-community",
+      "label": "MongoDB Community",
+      "description": "The MongoDB Community SQL JDBC Driver provides SQL connectivity to MongoDB Community for client applications developed in Java.",
+      "i18nFormat": true,
+      "type": "Connector",
+      "version": "2024.4.0-SNAPSHOT",
+      "author": "datacap-community",
+      "logo": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/mongocommunity.svg",
+      "released": "2024-11-21 23:11:15",
+      "supportVersion": [
+        "ALL"
+      ],
+      "url": "https://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/plugins/2024.4.0-SNAPSHOT/plugin/datacap-plugin-mongo-community-bin.tar.gz"
     },
     {
       "key": "datacap-convert-csv",

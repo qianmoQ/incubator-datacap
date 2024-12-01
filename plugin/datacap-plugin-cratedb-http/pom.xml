@@ -2,37 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.edurt.datacap</groupId>
         <artifactId>datacap</artifactId>
+        <groupId>io.edurt.datacap</groupId>
         <version>2024.4.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>datacap-plugin-mongo-community</artifactId>
-    <description>DataCap - Plugin - MongoDB</description>
+    <artifactId>datacap-plugin-cratedb-http</artifactId>
+    <description>DataCap - Plugin - CrateDB</description>
+
+    <properties>
+        <cratedb.version>2.6.0</cratedb.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-spi</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.edurt.datacap</groupId>
-            <artifactId>datacap-driver-mongo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.13</version>
         </dependency>
     </dependencies>
 
@@ -59,10 +48,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -82,5 +67,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -31,6 +31,7 @@
         <module>plugin/datacap-plugin-clickhouse-http</module>
         <module>plugin/datacap-plugin-solr</module>
         <module>plugin/datacap-plugin-cratedb</module>
+        <module>plugin/datacap-plugin-cratedb-http</module>
         <module>plugin/datacap-plugin-alioss</module>
         <module>plugin/datacap-plugin-zookeeper</module>
         <module>plugin/datacap-plugin-kafka</module>
@@ -75,9 +76,9 @@
         <module>plugin/datacap-plugin-greptimedb</module>
         <module>plugin/datacap-plugin-questdb</module>
         <module>plugin/datacap-plugin-ceresdb</module>
-        <!--        <module>plugin/datacap-jdbc-mongo</module>-->
-        <!--        <module>plugin/datacap-jdbc-elasticsearch</module>-->
-        <!--        <module>plugin/datacap-plugin-mongo-community</module>-->
+        <module>plugin/datacap-plugin-elasticsearch-8x</module>
+        <module>plugin/datacap-plugin-mongo-atlas</module>
+        <module>plugin/datacap-plugin-mongo-community</module>
         <module>executor/datacap-executor-spi</module>
         <module>executor/datacap-executor-local</module>
         <module>executor/datacap-executor-seatunnel</module>
