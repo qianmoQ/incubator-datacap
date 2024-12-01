@@ -10,12 +10,11 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>datacap-jdbc-iotdb</artifactId>
-    <description>DataCap - IoTDB</description>
+    <artifactId>datacap-plugin-iotdb</artifactId>
+    <description>DataCap - Plugin - IoTDB</description>
 
     <properties>
         <iotdb.version>1.3.2</iotdb.version>
-        <plugin.name>jdbc-iotdb</plugin.name>
     </properties>
 
     <dependencies>
@@ -23,10 +22,6 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-spi</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.iotdb</groupId>
@@ -60,6 +55,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
