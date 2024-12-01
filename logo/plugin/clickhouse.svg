@@ -5,7 +5,7 @@
 
     <!-- 外圈装饰 -->
     <!-- Outer decoration -->
-    <circle cx="100" cy="100" r="95" fill="none" stroke="#E1E8ED" stroke-width="2"/>
+    <circle cx="100" cy="100" r="100" fill="none" stroke="#E1E8ED" stroke-width="2"/>
 
     <!-- 黄色柱状图组 -->
     <!-- Yellow columns -->

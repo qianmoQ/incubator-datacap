@@ -67,9 +67,8 @@
         <module>plugin/datacap-plugin-tdengine</module>
         <module>plugin/datacap-plugin-trino</module>
         <module>plugin/datacap-plugin-doris</module>
-        <!--        <module>plugin/datacap-jdbc-starrocks</module>-->
-        <!--        <module>plugin/datacap-jdbc-hologres</module>-->
-        <!--        <module>plugin/datacap-http-cratedb</module>-->
+        <module>plugin/datacap-plugin-starrocks</module>
+        <module>plugin/datacap-plugin-hologres</module>
 <!--                <module>plugin/datacap-http-clickhouse</module>-->
         <!--        <module>plugin/datacap-http-ceresdb</module>-->
         <!--        <module>plugin/datacap-http-greptime</module>-->

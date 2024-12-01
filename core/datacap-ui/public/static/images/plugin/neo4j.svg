@@ -8,7 +8,7 @@
     <!-- 背景 -->
     <circle cx="100" cy="100" r="100" fill="#FFFFFF" />
 
-    <circle cx="100" cy="100" r="95" fill="none" stroke="#E1E8ED" stroke-width="2" />
+    <circle cx="100" cy="100" r="100" fill="none" stroke="#E1E8ED" stroke-width="2" />
 
     <g transform="translate(30, 80) scale(0.2)">
         <g>
