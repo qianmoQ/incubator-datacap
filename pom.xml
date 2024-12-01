@@ -64,13 +64,13 @@
         <module>plugin/datacap-plugin-presto</module>
         <module>plugin/datacap-plugin-snowflake</module>
         <module>plugin/datacap-plugin-sqlserver</module>
-        <!--        <module>plugin/datacap-jdbc-tdengine</module>-->
-        <!--        <module>plugin/datacap-jdbc-trino</module>-->
-        <!--        <module>plugin/datacap-jdbc-doris</module>-->
+        <module>plugin/datacap-plugin-tdengine</module>
+        <module>plugin/datacap-plugin-trino</module>
+        <module>plugin/datacap-plugin-doris</module>
         <!--        <module>plugin/datacap-jdbc-starrocks</module>-->
         <!--        <module>plugin/datacap-jdbc-hologres</module>-->
         <!--        <module>plugin/datacap-http-cratedb</module>-->
-        <!--        <module>plugin/datacap-http-clickhouse</module>-->
+<!--                <module>plugin/datacap-http-clickhouse</module>-->
         <!--        <module>plugin/datacap-http-ceresdb</module>-->
         <!--        <module>plugin/datacap-http-greptime</module>-->
         <!--        <module>plugin/datacap-http-questdb</module>-->
