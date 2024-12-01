@@ -2,7 +2,6 @@ package io.edurt.datacap.plugin.natived.redis;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.PluginService;
-import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.adapter.Adapter;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
@@ -21,24 +20,6 @@ public class RedisService
     public String validator()
     {
         return "PING Redis";
-    }
-
-    @Override
-    public String name()
-    {
-        return "Redis";
-    }
-
-    @Override
-    public String description()
-    {
-        return "Integrate Redis data sources";
-    }
-
-    @Override
-    public PluginType type()
-    {
-        return PluginType.NATIVE;
     }
 
     @Override

@@ -2,7 +2,6 @@ package io.edurt.datacap.plugin
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.spi.PluginService
-import io.edurt.datacap.spi.PluginType
 import io.edurt.datacap.spi.adapter.Adapter
 import io.edurt.datacap.spi.model.Configure
 import io.edurt.datacap.spi.model.Response
@@ -21,19 +20,9 @@ class HdfsService : PluginService
     private var connection: HdfsConnection? = null
     private var response: Response? = null
 
-    override fun type(): PluginType
-    {
-        return PluginType.NATIVE
-    }
-
     override fun validator(): String
     {
         return "SHOW DATABASES"
-    }
-
-    override fun description(): String
-    {
-        return String.format("Integrate %s data sources", this.name())
     }
 
     override fun connect(configure: Configure?)

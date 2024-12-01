@@ -2,7 +2,6 @@ package io.edurt.datacap.plugin;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.PluginService;
-import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.connection.HttpConfigure;
 import io.edurt.datacap.spi.connection.HttpConnection;
 import io.edurt.datacap.spi.model.Configure;
@@ -19,24 +18,6 @@ public class QuestDBService
     private HttpConfigure configure;
     private HttpConnection connection;
     private Response response;
-
-    @Override
-    public String name()
-    {
-        return "QuestDB";
-    }
-
-    @Override
-    public String description()
-    {
-        return "Integrate QuestDB data sources";
-    }
-
-    @Override
-    public PluginType type()
-    {
-        return PluginType.HTTP;
-    }
 
     @Override
     public void connect(Configure configure)

@@ -2,7 +2,6 @@ package io.edurt.datacap.plugin;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.PluginService;
-import io.edurt.datacap.spi.PluginType;
 import io.edurt.datacap.spi.adapter.Adapter;
 import io.edurt.datacap.spi.connection.HttpConfigure;
 import io.edurt.datacap.spi.connection.HttpConnection;
@@ -20,24 +19,6 @@ public class ClickHouseHTTPService
     private HttpConfigure httpConfigure;
     private HttpConnection connection;
     private Response response;
-
-    @Override
-    public String name()
-    {
-        return "ClickHouse";
-    }
-
-    @Override
-    public String description()
-    {
-        return "Integrate ClickHouse data sources";
-    }
-
-    @Override
-    public PluginType type()
-    {
-        return PluginType.HTTP;
-    }
 
     @Override
     public void connect(Configure configure)
