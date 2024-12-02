@@ -1,20 +1,18 @@
 package io.edurt.datacap.plugin.utils;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.edurt.datacap.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
@@ -244,33 +242,87 @@ public class VersionUtils
     private static boolean containsPluginClass(JarFile jarFile)
     {
         try {
-            // 使用临时类加载器来加载和检查类
-            // Use a temporary class loader to load and check the class
-            try (URLClassLoader classLoader = new URLClassLoader(
-                    new URL[] {new File(jarFile.getName()).toURI().toURL()}, Plugin.class.getClassLoader())) {
-                return jarFile.stream()
-                        .filter(entry -> entry.getName().endsWith(".class"))
-                        .anyMatch(entry -> {
-                            String className = entry.getName()
-                                    .replace('/', '.')
-                                    .replace('\\', '.')
-                                    .replace(".class", "");
-                            try {
-                                Class<?> clazz = classLoader.loadClass(className);
-                                return Plugin.class.isAssignableFrom(clazz) &&
-                                        !Modifier.isAbstract(clazz.getModifiers()) &&
-                                        !clazz.equals(Plugin.class);
-                            }
-                            catch (ClassNotFoundException | NoClassDefFoundError e) {
-                                // 忽略加载失败的类
-                                // Ignore classes that fail to load
-                                return false;
-                            }
-                        });
+            log.debug("Checking JAR: {}", jarFile.getName());
+
+            // 读取所有类文件记录
+            // Read all class files
+            List<JarEntry> classEntries = jarFile.stream()
+                    .filter(entry -> !entry.isDirectory() && entry.getName().endsWith(".class"))
+                    .collect(Collectors.toList());
+
+            for (JarEntry entry : classEntries) {
+                try (DataInputStream dis = new DataInputStream(jarFile.getInputStream(entry))) {
+                    // 检查class文件魔数
+                    // Check class file magic number
+                    if (dis.readInt() != 0xCAFEBABE) {
+                        continue;
+                    }
+
+                    // 跳过版本信息
+                    // Skip version information
+                    dis.skipBytes(4);
+
+                    // 读取常量池大小
+                    // Read constant pool size
+                    int constantPoolCount = dis.readUnsignedShort();
+                    // 跳过常量池
+                    // Skip constant pool
+                    for (int i = 1; i < constantPoolCount; i++) {
+                        int tag = dis.readUnsignedByte();
+                        switch (tag) {
+                            case 7: // Class
+                            case 8: // String
+                                dis.skipBytes(2);
+                                break;
+                            case 9: // Fieldref
+                            case 10: // Methodref
+                            case 11: // InterfaceMethodref
+                            case 12: // NameAndType
+                                dis.skipBytes(4);
+                                break;
+                            case 1: // Utf8
+                                int length = dis.readUnsignedShort();
+                                byte[] bytes = new byte[length];
+                                dis.readFully(bytes);
+                                String value = new String(bytes, StandardCharsets.UTF_8);
+                                if ("io/edurt/datacap/plugin/Plugin".equals(value)) {
+                                    log.debug("Found Plugin reference in {}", entry.getName());
+                                    return true;
+                                }
+                                break;
+                            case 3: // Integer
+                            case 4: // Float
+                                dis.skipBytes(4);
+                                break;
+                            case 5: // Long
+                            case 6: // Double
+                                dis.skipBytes(8);
+                                i++; // Long 和 Double 占用两个常量池项 / Long and Double take up two constant pool items
+                                break;
+                            case 15: // MethodHandle
+                                dis.skipBytes(3);
+                                break;
+                            case 16: // MethodType
+                                dis.skipBytes(2);
+                                break;
+                            case 17: // Dynamic
+                            case 18: // InvokeDynamic
+                                dis.skipBytes(4);
+                                break;
+                            default:
+                                log.debug("Unknown constant pool tag {} in {}", tag, entry.getName());
+                                break;
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    log.debug("Failed to process class {}: {}", entry.getName(), e.getMessage());
+                }
             }
+            return false;
         }
-        catch (IOException e) {
-            log.debug("Failed to check for Plugin class in JAR: {}", jarFile.getName(), e);
+        catch (Exception e) {
+            log.error("Failed to check JAR {}: {}", jarFile.getName(), e.getMessage());
             return false;
         }
     }
