@@ -35,7 +35,6 @@
                     <descriptors>
                         <descriptor>../../configure/assembly/plugin.xml</descriptor>
                     </descriptors>
-                    <outputDirectory>../../dist/plugins</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -50,6 +49,9 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

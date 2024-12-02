@@ -22,7 +22,7 @@ import java.util.stream.Stream;
  * Version utility for plugin system
  */
 @Slf4j
-@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
+@SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "SR_NOT_CHECKED"})
 public class VersionUtils
 {
     private VersionUtils() {}

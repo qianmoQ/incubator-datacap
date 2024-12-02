@@ -34,7 +34,6 @@
                     <descriptors>
                         <descriptor>../../configure/assembly/plugin.xml</descriptor>
                     </descriptors>
-                    <outputDirectory>../../dist/plugins</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
