@@ -69,11 +69,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>findbugs</artifactId>
-            <version>${findbugs.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
@@ -124,7 +119,6 @@
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-notify-spi</artifactId>
         </dependency>
-        <!-- Parser -->
         <dependency>
             <groupId>io.edurt.datacap</groupId>
             <artifactId>datacap-parser-spi</artifactId>
@@ -186,7 +180,6 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${assembly-plugin.version}</version>
                 <configuration>
-                    <finalName>datacap-${project.version}</finalName>
                     <descriptors>
                         <descriptor>../../configure/assembly/server.xml</descriptor>
                     </descriptors>
@@ -204,6 +197,26 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../../dist</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>${project.artifactId}*.tar.gz</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
