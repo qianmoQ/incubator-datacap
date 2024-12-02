@@ -25,4 +25,3 @@ This is a brand new version that uses a new plugin management system, new APIs, 
 ---
 
 - Added Open API documentation
-- 

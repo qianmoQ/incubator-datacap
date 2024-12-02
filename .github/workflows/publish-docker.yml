@@ -36,6 +36,7 @@ jobs:
           chmod 755 ./mvnw
           ./mvnw clean install package -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -DskipTests=true -q
 
+
       - name: Cache binary
         id: cache-binary
         uses: actions/cache@v3
@@ -44,7 +45,7 @@ jobs:
         with:
           path: |
             ./Dockerfile
-            ./dist/datacap-server-${{ needs.before-compile.outputs.APP_VERSION }}-bin.tar.gz
+            ./dist/datacap-server-${{ steps.apply_version.outputs.APP_VERSION }}-bin.tar.gz
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
 
