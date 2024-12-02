@@ -2,7 +2,7 @@
 
 HOME=$(pwd)
 VERSION=2024.4.0-SNAPSHOT
-CDN_CENTER="https://cdn.north.devlive.org/applications/datacap/plugins/${VERSION}"
+CDN_CENTER="https://repo1.maven.org/maven2/io/edurt/datacap"
 
 install_package() {
     DOWNLOAD_URL=$1
@@ -31,14 +31,13 @@ install_package() {
 
 process_section() {
     SECTION=$1
-    TYPE=$2
 
     if [ ! -d "${HOME}/plugins" ]; then
         mkdir "${HOME}/plugins"
         echo "Create plugins directory"
     fi
 
-    echo "Installing $TYPE components, version: ${VERSION}"
+    echo "Installing components from section: ${SECTION}, version: ${VERSION}"
     IN_SECTION=0
 
     while IFS= read -r line; do
@@ -50,8 +49,9 @@ process_section() {
         fi
 
         if [ $IN_SECTION -eq 1 ] && [ ! -z "$line" ] && [[ ! "$line" =~ ^--.*$ ]]; then
-            DOWNLOAD_URL="${CDN_CENTER}/${TYPE}/${line}-bin.tar.gz"
-            echo "Installing ${TYPE} from: $DOWNLOAD_URL"
+            COMPONENT_NAME="$line"
+            DOWNLOAD_URL="${CDN_CENTER}/${COMPONENT_NAME}/${VERSION}/${COMPONENT_NAME}-bin.tar.gz"
+            echo "Installing from: $DOWNLOAD_URL"
             install_package "$DOWNLOAD_URL" "${HOME}/plugins"
         fi
     done < "${HOME}/configure/plugin.conf"
@@ -61,12 +61,12 @@ echo "========== Starting installation =========="
 echo "Version: ${VERSION}"
 echo "CDN Center: ${CDN_CENTER}"
 
-process_section "Plugin" "plugin"
-process_section "Scheduler" "scheduler"
-process_section "Parser" "parser"
-process_section "Notify" "notify"
-process_section "Fs" "fs"
-process_section "Convert" "convert"
-process_section "Executor" "executor"
+process_section "Plugin"
+process_section "Scheduler"
+process_section "Parser"
+process_section "Notify"
+process_section "Fs"
+process_section "Convert"
+process_section "Executor"
 
 echo "========== Installation complete =========="
