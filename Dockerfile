@@ -1,15 +1,16 @@
 FROM eclipse-temurin:11-jdk-focal
-MAINTAINER qianmoQ "shicheng@devlive.org"
 
-LABEL org.opencontainers.image.description DESCRIPTION
+LABEL maintainer="community@devlive.org" \
+      description="DataCap Server Image"
 
 # Add datacap
 RUN mkdir -p /opt/app
-ADD dist/datacap-release.tar.gz /opt/app/
+ADD --chown=root:root dist/datacap-server-*.tar.gz /opt/app/
+RUN cd /opt/app && \
+    mv datacap-server-* datacap
+
 WORKDIR /opt/app/datacap
 
-# expose our default runtime port
 EXPOSE 9096
 
-# run it
 ENTRYPOINT ["sh", "./bin/debug.sh"]

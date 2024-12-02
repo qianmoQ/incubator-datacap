@@ -283,7 +283,7 @@ datacap.experimental.avatarPath={username}/avatar/
 
     如果您需要定制化 JVM 配置，只需修改 `configure/jvm.conf` 配置文件即可
 
-### 插件管理器配置
+#### 插件管理器配置
 
 ```properties
 plugin.manager.extend.packages=com.fasterxml.jackson

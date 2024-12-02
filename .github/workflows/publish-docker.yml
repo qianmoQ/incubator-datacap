@@ -8,7 +8,7 @@ env:
   APP_NAME: datacap
   GITHUB_REGISTRY: ghcr.io
   APP_GITHUB_GROUP: devlive-community
-  APP_DOCKER_GROUP: qianmoq
+  APP_DOCKER_GROUP: devliveorg
 
 jobs:
   before-compile:
@@ -44,7 +44,7 @@ jobs:
         with:
           path: |
             ./Dockerfile
-            ./dist/datacap-release.tar.gz
+            ./dist/datacap-server-${{ needs.before-compile.outputs.APP_VERSION }}-bin.tar.gz
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
 
@@ -61,7 +61,7 @@ jobs:
         with:
           path: |
             ./Dockerfile
-            ./dist/datacap-release.tar.gz
+            ./dist/datacap-server-${{ needs.before-compile.outputs.APP_VERSION }}-bin.tar.gz
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
 
@@ -100,7 +100,7 @@ jobs:
         with:
           path: |
             ./Dockerfile
-            ./dist/datacap-release.tar.gz
+            ./dist/datacap-server-${{ needs.before-compile.outputs.APP_VERSION }}-bin.tar.gz
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
 

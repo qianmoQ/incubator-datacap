@@ -14,7 +14,7 @@ DataCap 项目提供 Docker Compose 方式部署，通过下载 [docker-compose.
 version: '3.8'
 
 services:
-  mysql:
+  app-mysql:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: 12345678
@@ -24,13 +24,14 @@ services:
     volumes:
       - ./configure/schema/datacap.sql:/docker-entrypoint-initdb.d/schema.sql
 
-  datacap:
+  app-datacap:
     image: qianmoq/datacap:latest
     restart: always
     ports:
       - "9099:9099"
     depends_on:
-      - mysql
+      - app-mysql
+      - app-clickhouse
     volumes:
       - ./configure/docker/application.properties:/opt/app/datacap/configure/application.properties
 ```
@@ -45,7 +46,7 @@ services:
 version: '3.8'
 
 services:
-  mysql:
+  app-mysql:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: 12345678
@@ -55,7 +56,7 @@ services:
     volumes:
       - ./configure/schema/datacap.sql:/docker-entrypoint-initdb.d/schema.sql
 
-  clickhouse:
+  app-clickhouse:
     image: clickhouse/clickhouse-server:latest
     restart: always
     ports:
@@ -63,13 +64,14 @@ services:
     environment:
       - CLICKHOUSE_DB=datacap
 
-  datacap:
+  app-datacap:
     image: qianmoq/datacap:latest
     restart: always
     ports:
       - "9099:9099"
     depends_on:
-      - mysql
+      - app-mysql
+      - app-clickhouse
     volumes:
       - ./configure/docker/application.properties:/opt/app/datacap/configure/application.properties
 ```
