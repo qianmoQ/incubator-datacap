@@ -13,12 +13,12 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/mysql.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "8.0",
         "5.7"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-mysql/2024.4.0/datacap-plugin-mysql-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-mysql/2024.4.1-SNAPSHOT/datacap-plugin-mysql-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-clickhouse",
@@ -29,11 +29,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/clickhouse.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-clickhouse/2024.4.0/datacap-plugin-clickhouse-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-clickhouse/2024.4.1-SNAPSHOT/datacap-plugin-clickhouse-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-influxdb",
@@ -44,11 +44,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/influxdb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-influxdb/2024.4.0/datacap-plugin-influxdb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-influxdb/2024.4.1-SNAPSHOT/datacap-plugin-influxdb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-solr",
@@ -59,11 +59,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/solr.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-solr/2024.4.0/datacap-plugin-solr-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-solr/2024.4.1-SNAPSHOT/datacap-plugin-solr-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-cratedb",
@@ -74,11 +74,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/cratedb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-cratedb/2024.4.0/datacap-plugin-cratedb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-cratedb/2024.4.1-SNAPSHOT/datacap-plugin-cratedb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-cratedb-http",
@@ -89,11 +89,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/cratedbhttp.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-cratedb-http/2024.4.0/datacap-plugin-cratedbhttp-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-cratedb-http/2024.4.1-SNAPSHOT/datacap-plugin-cratedb-http-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-zookeeper",
@@ -104,11 +104,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/zookeeper.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-zookeeper/2024.4.0/datacap-plugin-zookeeper-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-zookeeper/2024.4.1-SNAPSHOT/datacap-plugin-zookeeper-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-kafka",
@@ -119,11 +119,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/kafka.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-kafka/2024.4.0/datacap-plugin-kafka-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-kafka/2024.4.1-SNAPSHOT/datacap-plugin-kafka-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-redis",
@@ -134,11 +134,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/redis.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-redis/2024.4.0/datacap-plugin-redis-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-redis/2024.4.1-SNAPSHOT/datacap-plugin-redis-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-h2",
@@ -149,11 +149,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/h2.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-h2/2024.4.0/datacap-plugin-h2-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-h2/2024.4.1-SNAPSHOT/datacap-plugin-h2-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-db2",
@@ -164,11 +164,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/db2.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-db2/2024.4.0/datacap-plugin-db2-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-db2/2024.4.1-SNAPSHOT/datacap-plugin-db2-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-dm",
@@ -179,11 +179,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/dm.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-dm/2024.4.0/datacap-plugin-dm-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-dm/2024.4.1-SNAPSHOT/datacap-plugin-dm-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-hdfs",
@@ -194,11 +194,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/hdfs.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-hdfs/2024.4.0/datacap-plugin-hdfs-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-hdfs/2024.4.1-SNAPSHOT/datacap-plugin-hdfs-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-alioss",
@@ -209,11 +209,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/alioss.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-alioss/2024.4.0/datacap-plugin-alioss-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-alioss/2024.4.1-SNAPSHOT/datacap-plugin-alioss-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-dremio",
@@ -224,11 +224,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/dremio.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-dremio/2024.4.0/datacap-plugin-dremio-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-dremio/2024.4.1-SNAPSHOT/datacap-plugin-dremio-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-druid",
@@ -239,11 +239,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/druid.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-druid/2024.4.0/datacap-plugin-druid-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-druid/2024.4.1-SNAPSHOT/datacap-plugin-druid-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-duckdb",
@@ -254,11 +254,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/duckdb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-duckdb/2024.4.0/datacap-plugin-duckdb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-duckdb/2024.4.1-SNAPSHOT/datacap-plugin-duckdb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-pinot",
@@ -269,11 +269,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/pinot.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-pinot/2024.4.0/datacap-plugin-pinot-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-pinot/2024.4.1-SNAPSHOT/datacap-plugin-pinot-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-cassandra",
@@ -284,11 +284,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/cassandra.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-cassandra/2024.4.0/datacap-plugin-cassandra-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-cassandra/2024.4.1-SNAPSHOT/datacap-plugin-cassandra-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-matrixone",
@@ -299,11 +299,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/matrixone.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-matrixone/2024.4.0/datacap-plugin-matrixone-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-matrixone/2024.4.1-SNAPSHOT/datacap-plugin-matrixone-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-scylladb",
@@ -314,11 +314,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/scylladb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-scylladb/2024.4.0/datacap-plugin-scylladb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-scylladb/2024.4.1-SNAPSHOT/datacap-plugin-scylladb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-paradedb",
@@ -329,11 +329,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/paradedb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-paradedb/2024.4.0/datacap-plugin-paradedb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-paradedb/2024.4.1-SNAPSHOT/datacap-plugin-paradedb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-hive-2x",
@@ -344,11 +344,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/hive2x.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "2.x"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-hive-2x/2024.4.0/datacap-plugin-hive-2x-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-hive-2x/2024.4.1-SNAPSHOT/datacap-plugin-hive-2x-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-kyuubi",
@@ -359,11 +359,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/kyuubi.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-kyuubi/2024.4.0/datacap-plugin-kyuubi-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-kyuubi/2024.4.1-SNAPSHOT/datacap-plugin-kyuubi-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-ignite",
@@ -374,11 +374,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/ignite.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-ignite/2024.4.0/datacap-plugin-ignite-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-ignite/2024.4.1-SNAPSHOT/datacap-plugin-ignite-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-impala",
@@ -389,11 +389,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/impala.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-impala/2024.4.0/datacap-plugin-impala-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-impala/2024.4.1-SNAPSHOT/datacap-plugin-impala-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-kylin",
@@ -404,11 +404,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/kylin.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-kylin/2024.4.0/datacap-plugin-kylin-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-kylin/2024.4.1-SNAPSHOT/datacap-plugin-kylin-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-timescale",
@@ -419,11 +419,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/timescale.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-timescale/2024.4.0/datacap-plugin-timescale-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-timescale/2024.4.1-SNAPSHOT/datacap-plugin-timescale-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-iotdb",
@@ -434,11 +434,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/iotdb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-iotdb/2024.4.0/datacap-plugin-iotdb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-iotdb/2024.4.1-SNAPSHOT/datacap-plugin-iotdb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-monetdb",
@@ -449,11 +449,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/monetdb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-monetdb/2024.4.0/datacap-plugin-monetdb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-monetdb/2024.4.1-SNAPSHOT/datacap-plugin-monetdb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-ydb",
@@ -464,11 +464,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/ydb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-ydb/2024.4.0/datacap-plugin-ydb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-ydb/2024.4.1-SNAPSHOT/datacap-plugin-ydb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-neo4j",
@@ -479,11 +479,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/neo4j.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-neo4j/2024.4.0/datacap-plugin-neo4j-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-neo4j/2024.4.1-SNAPSHOT/datacap-plugin-neo4j-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-oceanbase",
@@ -494,11 +494,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/oceanbase.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-oceanbase/2024.4.0/datacap-plugin-oceanbase-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-oceanbase/2024.4.1-SNAPSHOT/datacap-plugin-oceanbase-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-oracle",
@@ -509,11 +509,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/oracle.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-oracle/2024.4.0/datacap-plugin-oracle-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-oracle/2024.4.1-SNAPSHOT/datacap-plugin-oracle-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-phoenix",
@@ -524,11 +524,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/phoenix.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-phoenix/2024.4.0/datacap-plugin-phoenix-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-phoenix/2024.4.1-SNAPSHOT/datacap-plugin-phoenix-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-postgresql",
@@ -539,11 +539,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/postgresql.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-postgresql/2024.4.0/datacap-plugin-postgresql-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-postgresql/2024.4.1-SNAPSHOT/datacap-plugin-postgresql-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-presto",
@@ -554,11 +554,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/presto.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-presto/2024.4.0/datacap-plugin-presto-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-presto/2024.4.1-SNAPSHOT/datacap-plugin-presto-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-snowflake",
@@ -569,11 +569,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/snowflake.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-snowflake/2024.4.0/datacap-plugin-snowflake-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-snowflake/2024.4.1-SNAPSHOT/datacap-plugin-snowflake-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-sqlserver",
@@ -584,11 +584,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/sqlserver.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-sqlserver/2024.4.0/datacap-plugin-sqlserver-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-sqlserver/2024.4.1-SNAPSHOT/datacap-plugin-sqlserver-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-tdengine",
@@ -599,11 +599,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/tdengine.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-tdengine/2024.4.0/datacap-plugin-tdengine-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-tdengine/2024.4.1-SNAPSHOT/datacap-plugin-tdengine-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-trino",
@@ -614,11 +614,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/trino.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-trino/2024.4.0/datacap-plugin-trino-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-trino/2024.4.1-SNAPSHOT/datacap-plugin-trino-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-doris",
@@ -629,11 +629,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/doris.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-doris/2024.4.0/datacap-plugin-doris-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-doris/2024.4.1-SNAPSHOT/datacap-plugin-doris-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-starrocks",
@@ -644,11 +644,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/starrocks.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-starrocks/2024.4.0/datacap-plugin-starrocks-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-starrocks/2024.4.1-SNAPSHOT/datacap-plugin-starrocks-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-hologres",
@@ -659,11 +659,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/hologres.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-hologres/2024.4.0/datacap-plugin-hologres-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-hologres/2024.4.1-SNAPSHOT/datacap-plugin-hologres-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-greptimedb",
@@ -674,11 +674,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/greptimedb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-greptimedb/2024.4.0/datacap-plugin-greptimedb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-greptimedb/2024.4.1-SNAPSHOT/datacap-plugin-greptimedb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-questdb",
@@ -689,11 +689,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/questdb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-questdb/2024.4.0/datacap-plugin-questdb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-questdb/2024.4.1-SNAPSHOT/datacap-plugin-questdb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-h2-tcp",
@@ -704,11 +704,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/h2tcp.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-h2-tcp/2024.4.0/datacap-plugin-h2-tcp-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-h2-tcp/2024.4.1-SNAPSHOT/datacap-plugin-h2-tcp-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-clickhouse-http",
@@ -719,11 +719,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/clickhousehttp.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-clickhouse-http/2024.4.0/datacap-plugin-clickhouse-http-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-clickhouse-http/2024.4.1-SNAPSHOT/datacap-plugin-clickhouse-http-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-ceresdb",
@@ -734,11 +734,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/ceresdb.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-ceresdb/2024.4.0/datacap-plugin-ceresdb-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-ceresdb/2024.4.1-SNAPSHOT/datacap-plugin-ceresdb-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-redis-jdbc",
@@ -749,11 +749,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/redisjdbc.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-redis-jdbc/2024.4.0/datacap-plugin-redis-jdbc-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-redis-jdbc/2024.4.1-SNAPSHOT/datacap-plugin-redis-jdbc-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-elasticsearch-8x",
@@ -764,11 +764,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/elasticsearch8x.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "8.x"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-elasticsearch-8x/2024.4.0/datacap-plugin-elasticsearch-8x-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-elasticsearch-8x/2024.4.1-SNAPSHOT/datacap-plugin-elasticsearch-8x-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-mongo-atlas",
@@ -779,11 +779,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/mongoatlas.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-mongo-atlas/2024.4.0/datacap-plugin-mongo-atlas-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-mongo-atlas/2024.4.1-SNAPSHOT/datacap-plugin-mongo-atlas-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-plugin-mongo-community",
@@ -794,11 +794,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/plugin/mongocommunity.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-mongo-community/2024.4.0/datacap-plugin-mongo-community-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-plugin-mongo-community/2024.4.1-SNAPSHOT/datacap-plugin-mongo-community-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-convert-csv",
@@ -809,11 +809,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/csv.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-csv/2024.4.0/convert/datacap-convert-csv-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-csv/2024.4.1-SNAPSHOT/datacap-convert-csv-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-convert-txt",
@@ -824,11 +824,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/txt.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-txt/2024.4.0/convert/datacap-convert-txt-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-txt/2024.4.1-SNAPSHOT/datacap-convert-txt-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-convert-json",
@@ -839,11 +839,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/json.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-json/2024.4.0/convert/datacap-convert-json-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-json/2024.4.1-SNAPSHOT/datacap-convert-json-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-convert-xml",
@@ -854,11 +854,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/xml.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-xml/2024.4.0/convert/datacap-convert-xml-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-xml/2024.4.1-SNAPSHOT/datacap-convert-xml-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-convert-none",
@@ -869,11 +869,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/convert/none.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-none/2024.4.0/convert/datacap-convert-none-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-convert-none/2024.4.1-SNAPSHOT/datacap-convert-none-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-executor-local",
@@ -884,11 +884,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/executor/local.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-executor-local/2024.4.0/executor/datacap-executor-local-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-executor-local/2024.4.1-SNAPSHOT/datacap-executor-local-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-executor-seatunnel",
@@ -899,11 +899,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/executor/seatunnel.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-executor-seatunnel/2024.4.0/executor/datacap-executor-seatunnel-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-executor-seatunnel/2024.4.1-SNAPSHOT/datacap-executor-seatunnel-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-scheduler-local",
@@ -914,11 +914,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/scheduler/local.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-scheduler-local/2024.4.0/scheduler/datacap-scheduler-local-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-scheduler-local/2024.4.1-SNAPSHOT/datacap-scheduler-local-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-fs-local",
@@ -929,11 +929,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/local.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-local/2024.4.0/fs/datacap-fs-local-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-local/2024.4.1-SNAPSHOT/datacap-fs-local-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-fs-qiniu",
@@ -944,11 +944,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/qiniu.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-qiniu/2024.4.0/fs/datacap-fs-qiniu-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-qiniu/2024.4.1-SNAPSHOT/datacap-fs-qiniu-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-fs-alioss",
@@ -959,11 +959,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/alioss.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-alioss/2024.4.0/fs/datacap-fs-alioss-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-alioss/2024.4.1-SNAPSHOT/datacap-fs-alioss-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-fs-tencent-cos",
@@ -974,11 +974,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/tencent-cos.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-tencent-cos/2024.4.0/fs/datacap-fs-tencent-cos-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-tencent-cos/2024.4.1-SNAPSHOT/datacap-fs-tencent-cos-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-fs-amazon-s3",
@@ -989,11 +989,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/amazon-s3.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-amazon-s3/2024.4.0/fs/datacap-fs-amazon-s3-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-amazon-s3/2024.4.1-SNAPSHOT/datacap-fs-amazon-s3-2024.4.1-SNAPSHOT-bin.tar.gz"
     },
     {
       "key": "datacap-fs-minio",
@@ -1004,11 +1004,11 @@
       "version": "2024.4.1-SNAPSHOT",
       "author": "datacap-community",
       "logo": "http://devlive-cdn.oss-cn-beijing.aliyuncs.com/applications/datacap/resources/logo/fs/minio.svg",
-      "released": "2024-12-02 18:29:41",
+      "released": "2024-12-02 18:54:48",
       "supportVersion": [
         "ALL"
       ],
-      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-minio/2024.4.0/fs/datacap-fs-minio-bin.tar.gz"
+      "url": "https://repo1.maven.org/maven2/io/edurt/datacap/datacap-fs-minio/2024.4.1-SNAPSHOT/datacap-fs-minio-2024.4.1-SNAPSHOT-bin.tar.gz"
     }
   ]
 }
