@@ -1,7 +1,7 @@
 #!/bin/sh
 
 HOME=$(pwd)
-VERSION=2024.4.0-SNAPSHOT
+VERSION=2024.4.0
 CDN_CENTER="https://repo1.maven.org/maven2/io/edurt/datacap"
 
 install_package() {
