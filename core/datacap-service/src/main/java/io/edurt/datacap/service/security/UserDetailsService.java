@@ -48,6 +48,7 @@ public class UserDetailsService
 
     public static UserDetailsService build(UserEntity user)
     {
+        // TODO: Add no code alert
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getCode()))
                 .collect(Collectors.toList());

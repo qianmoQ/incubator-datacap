@@ -62,6 +62,10 @@ depcheck-output.json
 parser/datacap-parser-mysql/src/main/java
 parser/datacap-parser-trino/src/main/java/*.tokens
 parser/datacap-parser-trino/src/main/java/io/edurt/datacap/parser/antlr
+core/datacap-parser/src/main/java/*.tokens
+core/datacap-parser/src/main/java/io/edurt/datacap/sql/parser/*.java
+core/datacap-parser/src/main/java/io/edurt/datacap/sql/parser/*.interp
+!core/datacap-parser/src/main/java/io/edurt/datacap/sql/node
 
 # Skip convert #
 convert/datacap-convert-txt/*.txt

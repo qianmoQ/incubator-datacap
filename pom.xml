@@ -23,6 +23,7 @@
         <module>lib/datacap-schedule</module>
         <module>driver/datacap-driver-redis</module>
         <module>driver/datacap-driver-mongo</module>
+        <module>driver/datacap-driver-mongodb</module>
         <module>shaded/datacap-shaded-ydb</module>
         <module>shaded/datacap-shaded-pinot</module>
         <module>shaded/datacap-shaded-neo4j</module>
@@ -109,6 +110,8 @@
         <module>test/datacap-test-executor</module>
         <module>test/datacap-test-scheduler</module>
         <module>test/datacap-test-fs</module>
+        <module>test/datacap-test-driver</module>
+        <module>test/datacap-test-parser</module>
     </modules>
 
     <name>datacap</name>
@@ -199,6 +202,7 @@
         <testcontainers.version>1.20.1</testcontainers.version>
         <quartz.version>2.3.2</quartz.version>
         <h2.version>2.1.214</h2.version>
+        <mongodb-driver.version>4.11.1</mongodb-driver.version>
         <assembly-plugin.version>3.6.0</assembly-plugin.version>
         <dep.reflections.version>0.10.2</dep.reflections.version>
         <!-- datacap plugin dependency -->
@@ -408,6 +412,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${datacap.commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongodb-driver.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
