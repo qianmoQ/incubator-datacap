@@ -2,11 +2,13 @@ package io.edurt.datacap.sql.node;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class Expression
 {
     private ExpressionType type;

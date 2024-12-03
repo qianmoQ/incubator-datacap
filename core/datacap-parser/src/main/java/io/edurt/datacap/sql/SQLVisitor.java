@@ -8,6 +8,7 @@ import io.edurt.datacap.sql.node.element.SelectElement;
 import io.edurt.datacap.sql.node.element.TableElement;
 import io.edurt.datacap.sql.parser.SqlBaseBaseVisitor;
 import io.edurt.datacap.sql.parser.SqlBaseParser;
+import io.edurt.datacap.sql.processor.ExpressionProcessor;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 
@@ -17,7 +18,6 @@ import java.util.List;
 public class SQLVisitor
         extends SqlBaseBaseVisitor<SQLStatement>
 {
-
     @Override
     public SQLStatement visitSingleStatement(SqlBaseParser.SingleStatementContext ctx)
     {
@@ -322,35 +322,8 @@ public class SQLVisitor
 
     private Expression processExpression(SqlBaseParser.ExpressionContext ctx)
     {
-        Expression expr = new Expression();
-
-        if (ctx.primary() != null) {
-            if (ctx.primary().literal() != null) {
-                expr.setType(Expression.ExpressionType.LITERAL);
-                expr.setValue(ctx.primary().literal().getText());
-            }
-            else if (ctx.primary().columnReference() != null) {
-                expr.setType(Expression.ExpressionType.COLUMN_REFERENCE);
-                expr.setValue(ctx.primary().columnReference().getText());
-            }
-            else if (ctx.primary().functionCall() != null) {
-                expr.setType(Expression.ExpressionType.FUNCTION_CALL);
-                expr.setValue(ctx.primary().functionCall().getText());
-            }
-        }
-        else {
-            expr.setType(Expression.ExpressionType.BINARY_OP);
-            List<Expression> children = new ArrayList<>();
-
-            if (ctx.expression().size() > 1) {
-                for (SqlBaseParser.ExpressionContext childCtx : ctx.expression()) {
-                    children.add(processExpression(childCtx));
-                }
-            }
-            expr.setChildren(children);
-        }
-
-        return expr;
+        ExpressionProcessor processor = new ExpressionProcessor();
+        return processor.visit(ctx);
     }
 
     private List<Expression> visitGroupByElements(SqlBaseParser.GroupByClauseContext ctx)

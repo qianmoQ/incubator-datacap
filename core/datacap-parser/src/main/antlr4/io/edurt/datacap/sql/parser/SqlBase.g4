@@ -384,7 +384,7 @@ joinTypeClause
     | LEFT OUTER? JOIN
     | RIGHT OUTER? JOIN
     | FULL OUTER? JOIN
-    | JOIN  // 这代表默认的 INNER JOIN
+    | JOIN
     ;
 
 joinCondition
@@ -394,30 +394,44 @@ joinCondition
 
 // Expressions
 expression
-    : primary
-    | expression IS NOT? NULL
-    | expression IS NOT? (TRUE | FALSE)
-    | NOT expression
-    | expression AND expression
-    | expression OR expression
-    | expression comparisonOperator expression
-    | expression NOT? BETWEEN expression AND expression
-    | expression NOT? IN ('(' expression (',' expression)* ')' | selectStatement)
-    | expression NOT? LIKE expression
-    | '(' expression ')'
-    | expression '+' expression
-    | expression '-' expression
-    | expression '*' expression
-    | expression '/' expression
-    | expression '%' expression
-    | '+' expression
-    | '-' expression
-    ;
+     : '(' expression ')'                                    #ParenExpression
+     | primary                                              #PrimaryExpression
+     | expression comparisonOperator expression             #ComparisonExpression
+     | expression AND expression                            #AndExpression
+     | expression OR expression                             #OrExpression
+     | expression NOT? BETWEEN expression AND expression    #BetweenExpression
+     | expression NOT? IN ('(' expression (',' expression)* ')')  #InExpression
+     | expression IS NOT? NULL                              #IsNullExpression
+     | expression IS NOT? (TRUE | FALSE)                    #IsBooleanExpression
+     | NOT expression                                       #NotExpression
+     | expression '+' expression                            #AddExpression
+     | expression '-' expression                            #SubtractExpression
+     | expression '*' expression                            #MultiplyExpression
+     | expression '/' expression                            #DivideExpression
+     ;
 
-primary
-    : literal
-    | columnReference
-    | functionCall
+ primary
+     : literal               #LiteralPrimary
+     | columnReference      #ColumnReferencePrimary
+     | functionCall        #FunctionCallPrimary
+     ;
+
+ literal
+     : STRING
+     | INTEGER_VALUE
+     | DECIMAL_VALUE
+     | TRUE
+     | FALSE
+     | NULL
+     ;
+
+ comparisonOperator
+     : '=' | '>' | '<' | '>=' | '<=' | '<>' | '!=' | '<=>'
+     ;
+
+expressionList
+    : '(' expression (',' expression)* ')'
+    | selectStatement
     ;
 
 columnReference
@@ -430,22 +444,8 @@ functionCall
     | EXTRACT '(' identifier FROM expression ')'
     ;
 
-comparisonOperator
-    : '=' | '>' | '<' | '>=' | '<=' | '<>' | '!=' | '<=>'
-    ;
-
 // Common elements
 value: expression;
-
-literal
-    : STRING
-    | INTEGER_VALUE
-    | DECIMAL_VALUE
-    | TRUE
-    | FALSE
-    | NULL
-    | CURRENT_TIMESTAMP
-    ;
 
 defaultValue
     : literal

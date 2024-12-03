@@ -1,19 +1,23 @@
 package io.edurt.datacap.driver;
 
+import io.edurt.datacap.sql.SQLParser;
+import io.edurt.datacap.sql.node.Expression;
+import io.edurt.datacap.sql.node.clause.LimitClause;
+import io.edurt.datacap.sql.node.element.OrderByElement;
+import io.edurt.datacap.sql.node.element.SelectElement;
+import io.edurt.datacap.sql.node.element.TableElement;
+import io.edurt.datacap.sql.statement.SQLStatement;
+import io.edurt.datacap.sql.statement.SelectStatement;
 import lombok.Getter;
 import org.bson.Document;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
 public class MongoQueryParser
 {
-    // Getters for parsed components
-    // 获取解析后的组件
     private String collection;
     private Document query;
     private Document update;
@@ -21,16 +25,6 @@ public class MongoQueryParser
     private Document sort;
     private int limit = -1;
     private int skip = -1;
-
-    // SQL keywords pattern
-    // SQL关键字匹配模式
-    private static final Pattern SELECT_PATTERN =
-            Pattern.compile("SELECT\\s+(.+?)\\s+FROM\\s+(\\w+)\\s*(?:WHERE\\s+(.+?))?\\s*(?:ORDER\\s+BY\\s+(.+?))?\\s*(?:LIMIT\\s+(\\d+))?\\s*(?:OFFSET\\s+(\\d+))?\\s*$",
-                    Pattern.CASE_INSENSITIVE);
-
-    private static final Pattern UPDATE_PATTERN =
-            Pattern.compile("UPDATE\\s+(\\w+)\\s+SET\\s+(.+?)(?:\\s+WHERE\\s+(.+))?",
-                    Pattern.CASE_INSENSITIVE);
 
     // Constructor that parses SQL query
     // 构造函数，解析SQL查询
@@ -43,13 +37,10 @@ public class MongoQueryParser
     // 解析SQL语句
     private void parseSql(String sql)
     {
-        sql = sql.trim();
+        SQLStatement statement = SQLParser.parse(sql.trim());
 
-        if (sql.toUpperCase().startsWith("SELECT")) {
-            parseSelectStatement(sql);
-        }
-        else if (sql.toUpperCase().startsWith("UPDATE")) {
-            parseUpdateStatement(sql);
+        if (statement instanceof SelectStatement) {
+            parseSelectStatement((SelectStatement) statement);
         }
         else {
             throw new IllegalArgumentException("Unsupported SQL operation: " + sql);
@@ -58,149 +49,165 @@ public class MongoQueryParser
 
     // Parse SELECT statement
     // 解析SELECT语句
-    private void parseSelectStatement(String sql)
+    private void parseSelectStatement(SelectStatement select)
     {
-        Matcher matcher = SELECT_PATTERN.matcher(sql);
-        if (!matcher.find()) {
-            throw new IllegalArgumentException("Invalid SELECT statement: " + sql);
-        }
-
         // Parse fields
         // 解析字段
-        String fieldsList = matcher.group(1);
-        this.fields = new ArrayList<>();
-        if (!fieldsList.equals("*")) {
-            Arrays.stream(fieldsList.split(","))
-                    .map(String::trim)
-                    .forEach(fields::add);
-        }
+        parseSelectElements(select.getSelectElements());
 
-        // Get collection name
-        // 获取集合名称
-        this.collection = matcher.group(2);
+        // Get collection name from FROM clause
+        // 从FROM子句获取集合名称
+        parseFromClause(select.getFromSources());
 
         // Parse WHERE clause
         // 解析WHERE子句
-        String whereClause = matcher.group(3);
-        this.query = whereClause != null ? parseWhereClause(whereClause) : new Document();
+        if (select.getWhereClause() != null) {
+            Object queryResult = parseExpression(select.getWhereClause());
+            if (queryResult instanceof Document) {
+                this.query = (Document) queryResult;
+            }
+            else {
+                this.query = new Document("$eq", queryResult);
+            }
+        }
+        else {
+            this.query = new Document();
+        }
 
         // Parse ORDER BY
         // 解析ORDER BY
-        String orderBy = matcher.group(4);
-        if (orderBy != null) {
-            this.sort = parseOrderBy(orderBy);
+        if (select.getOrderByElements() != null && !select.getOrderByElements().isEmpty()) {
+            this.sort = parseOrderByElements(select.getOrderByElements());
         }
 
         // Parse LIMIT and OFFSET
         // 解析LIMIT和OFFSET
-        String limitStr = matcher.group(5);
-        if (limitStr != null) {
-            this.limit = Integer.parseInt(limitStr);
-        }
-
-        String offsetStr = matcher.group(6);
-        if (offsetStr != null) {
-            this.skip = Integer.parseInt(offsetStr);
+        LimitClause limitClause = select.getLimitClause();
+        if (limitClause != null) {
+            this.limit = (int) limitClause.getLimit();
+            this.skip = (int) limitClause.getOffset();
         }
     }
 
-    // Parse UPDATE statement
-    // 解析UPDATE语句
-    private void parseUpdateStatement(String sql)
+    // Parse SELECT elements to field list
+    // 解析SELECT元素到字段列表
+    private void parseSelectElements(List<SelectElement> elements)
     {
-        Matcher matcher = UPDATE_PATTERN.matcher(sql);
-        if (!matcher.find()) {
-            throw new IllegalArgumentException("Invalid UPDATE statement: " + sql);
+        this.fields = new ArrayList<>();
+        if (elements != null) {
+            for (SelectElement element : elements) {
+                if (element.getColumn() != null) {
+                    fields.add(element.getColumn());
+                }
+                else if (element.getExpression() != null) {
+                    fields.add(parseExpression(element.getExpression()).toString());
+                }
+            }
         }
-
-        // Get collection name
-        // 获取集合名称
-        this.collection = matcher.group(1);
-
-        // Parse SET clause
-        // 解析SET子句
-        String setClause = matcher.group(2);
-        this.update = parseSetClause(setClause);
-
-        // Parse WHERE clause
-        // 解析WHERE子句
-        String whereClause = matcher.group(3);
-        this.query = whereClause != null ? parseWhereClause(whereClause) : new Document();
     }
 
-    // Parse WHERE clause to MongoDB query
-    // 解析WHERE子句转换为MongoDB查询
-    private Document parseWhereClause(String whereClause)
+    // Parse FROM clause to get collection name
+    // 解析FROM子句获取集合名称
+    private void parseFromClause(List<TableElement> fromSources)
     {
-        Document query = new Document();
-        String[] conditions = whereClause.split("AND");
+        if (fromSources != null && !fromSources.isEmpty()) {
+            TableElement mainTable = fromSources.get(0);
+            this.collection = mainTable.getTableName();
 
-        for (String condition : conditions) {
-            condition = condition.trim();
-
-            // Handle different operators
-            // 处理不同的操作符
-            if (condition.contains("=")) {
-                String[] parts = condition.split("=");
-                query.put(parts[0].trim(), parseValue(parts[1].trim()));
-            }
-            else if (condition.contains(">")) {
-                String[] parts = condition.split(">");
-                query.put(parts[0].trim(), new Document("$gt", parseValue(parts[1].trim())));
-            }
-            else if (condition.contains("<")) {
-                String[] parts = condition.split("<");
-                query.put(parts[0].trim(), new Document("$lt", parseValue(parts[1].trim())));
-            }
-            else if (condition.toLowerCase().contains("like")) {
-                String[] parts = condition.split("LIKE", 2);
-                String pattern = parts[1].trim().replaceAll("%", ".*").replaceAll("'", "");
-                query.put(parts[0].trim(), Pattern.compile(pattern, Pattern.CASE_INSENSITIVE));
+            // MongoDB doesn't support JOINs
+            // MongoDB不支持JOIN操作
+            if (mainTable.getJoins() != null && !mainTable.getJoins().isEmpty()) {
+                throw new IllegalArgumentException("MongoDB does not support JOIN operations");
             }
         }
-
-        return query;
     }
 
-    // Parse SET clause for UPDATE statement
-    // 解析UPDATE语句的SET子句
-    private Document parseSetClause(String setClause)
+    private Object parseExpression(Expression expr)
     {
-        Document updateDoc = new Document();
-        Document setDoc = new Document();
-
-        String[] setPairs = setClause.split(",");
-        for (String setPair : setPairs) {
-            String[] parts = setPair.trim().split("=");
-            String field = parts[0].trim();
-            Object value = parseValue(parts[1].trim());
-            setDoc.put(field, value);
+        if (expr == null) {
+            return null;
         }
 
-        updateDoc.put("$set", setDoc);
-        return updateDoc;
+        switch (expr.getType()) {
+            case LITERAL:
+                return parseValue(expr.getValue().toString());
+
+            case COLUMN_REFERENCE:
+                return expr.getValue().toString();
+
+            case BINARY_OP:
+                String operator = expr.getValue().toString();
+                List<Expression> children = expr.getChildren();
+
+                // Handle logical operators (AND, OR)
+                if ("AND".equalsIgnoreCase(operator) || "OR".equalsIgnoreCase(operator)) {
+                    List<Document> conditions = new ArrayList<>();
+                    for (Expression child : children) {
+                        Object result = parseExpression(child);
+                        if (result instanceof Document) {
+                            conditions.add((Document) result);
+                        }
+                    }
+                    return new Document(operator.equalsIgnoreCase("AND") ? "$and" : "$or", conditions);
+                }
+
+                // Handle comparison operators
+                if (children != null && children.size() == 2) {
+                    Expression left = children.get(0);
+                    Expression right = children.get(1);
+
+                    String field = parseExpression(left).toString();
+                    Object value = parseExpression(right);
+
+                    Document condition = new Document();
+                    switch (operator) {
+                        case "=":
+                            condition.put(field, value);
+                            break;
+                        case ">":
+                            condition.put(field, new Document("$gt", value));
+                            break;
+                        case "<":
+                            condition.put(field, new Document("$lt", value));
+                            break;
+                        case ">=":
+                            condition.put(field, new Document("$gte", value));
+                            break;
+                        case "<=":
+                            condition.put(field, new Document("$lte", value));
+                            break;
+                        case "!=":
+                            condition.put(field, new Document("$ne", value));
+                            break;
+                        case "LIKE":
+                            String pattern = value.toString().replace("%", ".*");
+                            condition.put(field, Pattern.compile(pattern, Pattern.CASE_INSENSITIVE));
+                            break;
+                        case "IN":
+                            condition.put(field, new Document("$in", value));
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported operator: " + operator);
+                    }
+                    return condition;
+                }
+
+                throw new IllegalArgumentException("Invalid binary expression structure");
+
+            default:
+                throw new IllegalArgumentException("Unsupported expression type: " + expr.getType());
+        }
     }
 
-    // Parse ORDER BY clause
-    // 解析ORDER BY子句
-    private Document parseOrderBy(String orderByClause)
+    // Parse ORDER BY elements to MongoDB sort document
+    // 解析ORDER BY元素到MongoDB排序文档
+    private Document parseOrderByElements(List<OrderByElement> elements)
     {
         Document orderBy = new Document();
-        String[] parts = orderByClause.split(",");
-
-        for (String part : parts) {
-            part = part.trim();
-            if (part.toUpperCase().endsWith("DESC")) {
-                String field = part.substring(0, part.length() - 4).trim();
-                orderBy.put(field, -1);
-            }
-            else {
-                String field = part.toUpperCase().endsWith("ASC") ?
-                        part.substring(0, part.length() - 3).trim() : part;
-                orderBy.put(field.trim(), 1);
-            }
+        for (OrderByElement element : elements) {
+            String field = element.getExpression().getValue().toString();
+            orderBy.put(field, element.isAscending() ? 1 : -1);
         }
-
         return orderBy;
     }
 
