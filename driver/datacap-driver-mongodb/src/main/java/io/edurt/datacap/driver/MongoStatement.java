@@ -2,6 +2,9 @@ package io.edurt.datacap.driver;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import io.edurt.datacap.driver.parser.MongoParser;
+import io.edurt.datacap.driver.parser.MongoShowParser;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 
@@ -10,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class MongoStatement
@@ -32,22 +37,137 @@ public class MongoStatement
             throws SQLException
     {
         checkClosed();
+
         try {
             // Parse SQL to MongoDB query
             // 将SQL解析为MongoDB查询
-            MongoQueryParser parser = new MongoQueryParser(sql);
+            MongoParser parser = MongoParser.createParser(sql);
+            if (parser instanceof MongoShowParser) {
+                return executeShowStatement((MongoShowParser) parser);
+            }
+
             String collectionName = parser.getCollection();
             Document query = parser.getQuery();
             log.debug("Executing query: {}", query);
 
-            MongoCollection<Document> collection = connection.getDatabase().getCollection(collectionName);
-            FindIterable<Document> result = collection.find(query);
+            String[] dbAndTb = parser.getCollection().split("\\.");
+            MongoDatabase db = connection.getDatabase();
+            if (dbAndTb.length > 1) {
+                db = connection.getClient().getDatabase(dbAndTb[0]);
+                collectionName = dbAndTb[1];
+            }
 
+            MongoCollection<Document> collection = db.getCollection(collectionName);
+            FindIterable<Document> result = collection.find(query);
             return new MongoResultSet(result);
         }
         catch (Exception e) {
             throw new SQLException("Failed to execute query", e);
         }
+    }
+
+    private ResultSet executeShowStatement(MongoShowParser parser)
+            throws SQLException
+    {
+        try {
+            switch (parser.getShowType()) {
+                case DATABASES:
+                    return handleShowDatabases(parser);
+                case TABLES:
+                    return handleShowTables(parser);
+                case COLUMNS:
+                    return handleShowColumns(parser);
+                default:
+                    throw new SQLException("Unsupported SHOW command type");
+            }
+        }
+        catch (Exception e) {
+            throw new SQLException("Failed to execute SHOW command", e);
+        }
+    }
+
+    private ResultSet handleShowDatabases(MongoShowParser parser)
+    {
+        List<Document> docs = connection.getClient().listDatabaseNames()
+                .map(name -> new Document("name", name))
+                .into(new ArrayList<>());
+        return new MongoResultSet(new InMemoryFindIterable(docs));
+    }
+
+    private ResultSet handleShowTables(MongoShowParser parser)
+    {
+        MongoDatabase db = parser.getDatabase() != null ?
+                connection.getClient().getDatabase(parser.getDatabase()) :
+                connection.getDatabase();
+
+        List<Document> docs = db.listCollectionNames()
+                .map(name -> new Document("name", name))
+                .into(new ArrayList<>());
+        return new MongoResultSet(new InMemoryFindIterable(docs));
+    }
+
+    private ResultSet handleShowColumns(MongoShowParser parser)
+    {
+        String[] dbAndTb = parser.getCollection().split("\\.");
+        String database = parser.getDatabase();
+        String table = parser.getCollection();
+        if (database == null && dbAndTb.length == 2) {
+            database = dbAndTb[0];
+            table = dbAndTb[1];
+        }
+
+        MongoDatabase db = connection.getClient().getDatabase(database);
+
+        Document sample = db.getCollection(table)
+                .find()
+                .limit(1)
+                .first();
+
+        List<Document> docs = new ArrayList<>();
+        if (sample != null) {
+            sample.keySet().forEach(field ->
+                    docs.add(new Document("name", field))
+            );
+        }
+
+        return new MongoResultSet(new InMemoryFindIterable(docs));
+    }
+
+    private boolean matchesPattern(String value, String pattern)
+    {
+        if (pattern == null) {
+            return true;
+        }
+        return value.matches(pattern.replace("%", ".*"));
+    }
+
+    private String getMongoFieldType(Object value)
+    {
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof String) {
+            return "string";
+        }
+        if (value instanceof Integer) {
+            return "int";
+        }
+        if (value instanceof Long) {
+            return "long";
+        }
+        if (value instanceof Double) {
+            return "double";
+        }
+        if (value instanceof Boolean) {
+            return "boolean";
+        }
+        if (value instanceof Document) {
+            return "document";
+        }
+        if (value instanceof List) {
+            return "array";
+        }
+        return value.getClass().getSimpleName();
     }
 
     // Execute update statement
@@ -58,7 +178,7 @@ public class MongoStatement
     {
         checkClosed();
         try {
-            MongoQueryParser parser = new MongoQueryParser(sql);
+            MongoParser parser = MongoParser.createParser(sql);
             String collectionName = parser.getCollection();
             Document update = parser.getUpdate();
 

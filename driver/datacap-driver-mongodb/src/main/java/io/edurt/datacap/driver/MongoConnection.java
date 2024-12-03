@@ -43,7 +43,7 @@ public class MongoConnection
             throws SQLException
     {
         try {
-            String databaseName = info.getProperty("authDatabase", "admin");
+            String databaseName = info.getProperty("database", "admin");
 
             // 如果URL中包含认证信息，直接使用URL创建客户端
             // If the URL contains authentication information, create a client directly using the URL
@@ -84,7 +84,8 @@ public class MongoConnection
                 else {
                     // 无认证信息，直接连接
                     // No authentication information, connect directly
-                    this.mongoClient = MongoClients.create(url);
+                    // Remove jdbc:
+                    this.mongoClient = MongoClients.create(url.substring(5));
                 }
             }
 
@@ -144,7 +145,6 @@ public class MongoConnection
     // 关闭连接
     @Override
     public void close()
-            throws SQLException
     {
         if (!isClosed) {
             mongoClient.close();
@@ -470,5 +470,10 @@ public class MongoConnection
             throws SQLException
     {
         return false;
+    }
+
+    public MongoClient getClient()
+    {
+        return mongoClient;
     }
 }

@@ -42,10 +42,15 @@ public class MongoResultSet
     {
         this.cursor = result.iterator();
         this.columnNames = new ArrayList<>();
+        this.current = null;
+
+        // 预处理第一个文档以获取列名
+        // Preprocess the first document to get the column names
         if (cursor.hasNext()) {
-            Document first = cursor.next();
-            columnNames.addAll(first.keySet());
-            this.current = first;
+            Document first = result.limit(1).first();
+            if (first != null) {
+                columnNames.addAll(first.keySet());
+            }
         }
     }
 
@@ -60,6 +65,7 @@ public class MongoResultSet
             current = cursor.next();
             return true;
         }
+        current = null;
         return false;
     }
 
@@ -70,6 +76,9 @@ public class MongoResultSet
             throws SQLException
     {
         checkClosed();
+        if (current == null) {
+            throw new SQLException("No current row");
+        }
         Object value = current.get(columnLabel);
         return value == null ? null : value.toString();
     }

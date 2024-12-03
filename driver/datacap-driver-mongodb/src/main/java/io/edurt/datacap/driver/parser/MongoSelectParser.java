@@ -1,12 +1,10 @@
-package io.edurt.datacap.driver;
+package io.edurt.datacap.driver.parser;
 
-import io.edurt.datacap.sql.SQLParser;
 import io.edurt.datacap.sql.node.Expression;
 import io.edurt.datacap.sql.node.clause.LimitClause;
 import io.edurt.datacap.sql.node.element.OrderByElement;
 import io.edurt.datacap.sql.node.element.SelectElement;
 import io.edurt.datacap.sql.node.element.TableElement;
-import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 import lombok.Getter;
 import org.bson.Document;
@@ -16,40 +14,17 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Getter
-public class MongoQueryParser
+public class MongoSelectParser
+        extends MongoParser
 {
-    private String collection;
-    private Document query;
-    private Document update;
-    private List<String> fields;
-    private Document sort;
-    private int limit = -1;
-    private int skip = -1;
-
-    // Constructor that parses SQL query
-    // 构造函数，解析SQL查询
-    public MongoQueryParser(String sql)
+    public MongoSelectParser(SelectStatement statement)
     {
-        parseSql(sql);
-    }
-
-    // Parse SQL statement
-    // 解析SQL语句
-    private void parseSql(String sql)
-    {
-        SQLStatement statement = SQLParser.parse(sql.trim());
-
-        if (statement instanceof SelectStatement) {
-            parseSelectStatement((SelectStatement) statement);
-        }
-        else {
-            throw new IllegalArgumentException("Unsupported SQL operation: " + sql);
-        }
+        parseSelectStatement(statement);
     }
 
     // Parse SELECT statement
     // 解析SELECT语句
-    private void parseSelectStatement(SelectStatement select)
+    public void parseSelectStatement(SelectStatement select)
     {
         // Parse fields
         // 解析字段
