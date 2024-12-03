@@ -16,6 +16,6 @@ public abstract class SQLStatement
 
     public enum StatementType
     {
-        SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, USE
+        SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, USE, SHOW
     }
 }

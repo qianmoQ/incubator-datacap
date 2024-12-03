@@ -9,6 +9,7 @@ import io.edurt.datacap.sql.node.element.TableElement;
 import io.edurt.datacap.sql.parser.SqlBaseBaseVisitor;
 import io.edurt.datacap.sql.parser.SqlBaseParser;
 import io.edurt.datacap.sql.processor.ExpressionProcessor;
+import io.edurt.datacap.sql.processor.ShowProcessor;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 
@@ -50,6 +51,9 @@ public class SQLVisitor
         }
         else if (ctx.useStatement() != null) {
             return visitUseStatement(ctx.useStatement());
+        }
+        else if (ctx.showStatement() != null) {
+            return visitShowStatement(ctx.showStatement());
         }
         return null;
     }
@@ -171,6 +175,13 @@ public class SQLVisitor
     {
         // TODO: Implement use statement parsing
         return null;
+    }
+
+    @Override
+    public SQLStatement visitShowStatement(SqlBaseParser.ShowStatementContext ctx)
+    {
+        ShowProcessor processor = new ShowProcessor();
+        return processor.process(ctx);
     }
 
     @Override

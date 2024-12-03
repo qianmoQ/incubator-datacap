@@ -53,6 +53,12 @@ EXISTS: [Ee][Xx][Ii][Ss][Tt][Ss];
 REPLACE: [Rr][Ee][Pp][Ll][Aa][Cc][Ee];
 TEMP: [Tt][Ee][Mm][Pp];
 TEMPORARY: [Tt][Ee][Mm][Pp][Oo][Rr][Aa][Rr][Yy];
+SHOW: [Ss][Hh][Oo][Ww];
+DATABASES: [Dd][Aa][Tt][Aa][Bb][Aa][Ss][Ee][Ss];
+TABLES: [Tt][Aa][Bb][Ll][Ee][Ss];
+COLUMNS: [Cc][Oo][Ll][Uu][Mm][Nn][Ss];
+CREATE_TIME: [Cc][Rr][Ee][Aa][Tt][Ee]'_'[Tt][Ii][Mm][Ee];
+UPDATE_TIME: [Uu][Pp][Dd][Aa][Tt][Ee]'_'[Tt][Ii][Mm][Ee];
 
 // Operators
 AND: [Aa][Nn][Dd];
@@ -99,6 +105,7 @@ statement
     | alterStatement
     | dropStatement
     | useStatement
+    | showStatement
     ;
 
 // USE statement
@@ -347,6 +354,30 @@ dropDatabaseStatement
     : DROP DATABASE (IF EXISTS)? databaseName
     ;
 
+// SHOW statement
+showStatement
+    : showDatabasesStatement
+    | showTablesStatement
+    | showColumnsStatement
+    ;
+
+showDatabasesStatement
+    : SHOW DATABASES (LIKE STRING)?
+    ;
+
+showTablesStatement
+    : SHOW TABLES
+      (FROM | IN)? databaseName?
+      (LIKE STRING | WHERE expression)?
+    ;
+
+showColumnsStatement
+    : SHOW COLUMNS
+      (FROM | IN) tableName
+      ((FROM | IN) databaseName)?
+      (LIKE STRING | WHERE expression)?
+    ;
+
 // FROM clause and JOINs
 fromClause
     : FROM tableSource (',' tableSource)*
@@ -401,6 +432,7 @@ expression
      | expression OR expression                             #OrExpression
      | expression NOT? BETWEEN expression AND expression    #BetweenExpression
      | expression NOT? IN ('(' expression (',' expression)* ')')  #InExpression
+     | expression NOT? LIKE expression                      #LikeExpression      // 添加这一行
      | expression IS NOT? NULL                              #IsNullExpression
      | expression IS NOT? (TRUE | FALSE)                    #IsBooleanExpression
      | NOT expression                                       #NotExpression
@@ -536,6 +568,8 @@ nonReservedWord
     | BOOLEAN | BOOL | BLOB | TEXT | JSON | XML
     | CHARSET | COLLATE | AUTO_INCREMENT | COMMENT
     | ADD | MODIFY | ENGINE
+    | DATABASES | TABLES | COLUMNS
+    | CREATE_TIME | UPDATE_TIME
     ;
 
 // Lexer rules
