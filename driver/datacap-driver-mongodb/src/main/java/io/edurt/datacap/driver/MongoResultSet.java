@@ -32,9 +32,10 @@ public class MongoResultSet
         implements ResultSet
 {
     private final MongoCursor<Document> cursor;
+    private final List<String> columnNames;
     private Document current;
     private boolean isClosed = false;
-    private final List<String> columnNames;
+    private ResultSetMetaData metadata;
 
     // Constructor
     // 构造函数
@@ -43,6 +44,7 @@ public class MongoResultSet
         this.cursor = result.iterator();
         this.columnNames = new ArrayList<>();
         this.current = null;
+        this.metadata = null;
 
         // 预处理第一个文档以获取列名
         // Preprocess the first document to get the column names
@@ -50,6 +52,7 @@ public class MongoResultSet
             Document first = result.first();
             if (first != null) {
                 columnNames.addAll(first.keySet());
+                this.metadata = new MongoResultSetMetaData(columnNames, first);
             }
         }
     }
@@ -224,7 +227,9 @@ public class MongoResultSet
     public ResultSetMetaData getMetaData()
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        return metadata;
     }
 
     @Override
