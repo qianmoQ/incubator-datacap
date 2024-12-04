@@ -10,13 +10,18 @@ import lombok.Getter;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Getter
 public class MongoSelectParser
         extends MongoParser
 {
+    private final Map<String, String> fieldAliasMap = new HashMap<>();
+    private final Map<String, String> aliasToFieldMap = new HashMap<>();
+
     public MongoSelectParser(SelectStatement statement)
     {
         parseSelectStatement(statement);
@@ -26,42 +31,73 @@ public class MongoSelectParser
     // 解析SELECT语句
     public void parseSelectStatement(SelectStatement select)
     {
-        // Parse fields
-        // 解析字段
-        parseSelectElements(select.getSelectElements());
-
-        // Get collection name from FROM clause
-        // 从FROM子句获取集合名称
+        // Get collection name first
         parseFromClause(select.getFromSources());
 
-        // Parse WHERE clause
-        // 解析WHERE子句
+        // Parse select elements to set fields
+        parseSelectElements(select.getSelectElements());
+
+        // Initialize an aggregation pipeline
+        List<Document> pipeline = new ArrayList<>();
+
+        // Add $match stage for WHERE conditions
         if (select.getWhereClause() != null) {
             Object queryResult = parseExpression(select.getWhereClause());
-            if (queryResult instanceof Document) {
-                this.query = (Document) queryResult;
-            }
-            else {
-                this.query = new Document("$eq", queryResult);
-            }
-        }
-        else {
-            this.query = new Document();
+            Document matchStage = new Document("$match",
+                    queryResult instanceof Document ? queryResult : new Document("$eq", queryResult));
+            pipeline.add(matchStage);
         }
 
-        // Parse ORDER BY
-        // 解析ORDER BY
+        // Add $project stage for field selection
+        // Add $group stage if GROUP BY exists
+        if (select.getGroupByElements() != null && !select.getGroupByElements().isEmpty()) {
+            Document groupStage = parseGroupByClause(select.getGroupByElements(), select.getSelectElements());
+            pipeline.add(new Document("$group", groupStage));
+        }
+        // If no GROUP BY, add normal $project stage
+        else if (fields != null && !fields.isEmpty() &&
+                !(fields.size() == 1 && fields.get(0).equals("*"))) {
+            Document projectStage = new Document();
+            projectStage.put("_id", 0);
+
+            // Create field mappings in $project stage
+            for (SelectElement element : select.getSelectElements()) {
+                String originalField = element.getColumn() != null ?
+                        element.getColumn() :
+                        element.getExpression().getValue().toString();
+
+                String alias = element.getAlias();
+                if (alias != null) {
+                    projectStage.put(alias, "$" + originalField);
+                }
+                else {
+                    projectStage.put(originalField, 1);
+                }
+            }
+            pipeline.add(new Document("$project", projectStage));
+        }
+
+        // Add $sort stage if ORDER BY exists
         if (select.getOrderByElements() != null && !select.getOrderByElements().isEmpty()) {
-            this.sort = parseOrderByElements(select.getOrderByElements());
+            Document sortStage = new Document("$sort", parseOrderByElements(select.getOrderByElements()));
+            pipeline.add(sortStage);
         }
 
-        // Parse LIMIT and OFFSET
-        // 解析LIMIT和OFFSET
+        // Add $skip and $limit stages if present
         LimitClause limitClause = select.getLimitClause();
         if (limitClause != null) {
-            this.limit = (int) limitClause.getLimit();
-            this.skip = (int) limitClause.getOffset();
+            if (limitClause.getOffset() > 0) {
+                pipeline.add(new Document("$skip", (int) limitClause.getOffset()));
+            }
+            if (limitClause.getLimit() >= 0) {
+                pipeline.add(new Document("$limit", (int) limitClause.getLimit()));
+            }
         }
+
+        // Set the final query
+        this.query = new Document("aggregate", this.collection)
+                .append("pipeline", pipeline)
+                .append("cursor", new Document());
     }
 
     // Parse SELECT elements to field list
@@ -71,11 +107,26 @@ public class MongoSelectParser
         this.fields = new ArrayList<>();
         if (elements != null) {
             for (SelectElement element : elements) {
+                String field;
+                // Get field name (from column name or expression)
                 if (element.getColumn() != null) {
-                    fields.add(element.getColumn());
+                    field = element.getColumn();
                 }
                 else if (element.getExpression() != null) {
-                    fields.add(parseExpression(element.getExpression()).toString());
+                    field = parseExpression(element.getExpression()).toString();
+                }
+                else {
+                    continue;
+                }
+
+                // Handle alias mapping
+                if (element.getAlias() != null) {
+                    fieldAliasMap.put(field, element.getAlias());
+                    aliasToFieldMap.put(element.getAlias(), field);
+                    fields.add(element.getAlias());
+                }
+                else {
+                    fields.add(field);
                 }
             }
         }
@@ -213,5 +264,83 @@ public class MongoSelectParser
             // 如果不是数字则返回字符串
             return value;
         }
+    }
+
+    private Document parseGroupByClause(List<Expression> groupByColumns, List<SelectElement> selectElements)
+    {
+        Document groupStage = new Document();
+
+        // Handle _id field for grouping
+        if (groupByColumns.size() == 1 && groupByColumns.get(0).getValue().equals("_id")) {
+            groupStage.put("_id", "$" + groupByColumns.get(0).getValue());
+        }
+        else {
+            // Multiple group by columns
+            Document idDoc = new Document();
+            for (Expression expr : groupByColumns) {
+                String field = expr.getValue().toString();
+                idDoc.put(field, "$" + field);
+            }
+            groupStage.put("_id", idDoc);
+        }
+
+        // Handle aggregation functions in SELECT clause
+        for (SelectElement element : selectElements) {
+            if (element.getExpression() != null) {
+                Expression expr = element.getExpression();
+                if (expr.getType() == Expression.ExpressionType.FUNCTION) {
+                    String functionName = expr.getValue().toString().toUpperCase();
+                    String field = expr.getChildren().get(0).getValue().toString();
+                    String alias = element.getAlias() != null ? element.getAlias() : functionName + "_" + field;
+
+                    switch (functionName) {
+                        case "COUNT":
+                            if (field.equals("*")) {
+                                groupStage.put(alias, new Document("$sum", 1));
+                            }
+                            else {
+                                groupStage.put(alias, new Document("$sum", 1));
+                            }
+                            break;
+                        case "SUM":
+                            groupStage.put(alias, new Document("$sum", "$" + field));
+                            break;
+                        case "AVG":
+                            groupStage.put(alias, new Document("$avg", "$" + field));
+                            break;
+                        case "MIN":
+                            groupStage.put(alias, new Document("$min", "$" + field));
+                            break;
+                        case "MAX":
+                            groupStage.put(alias, new Document("$max", "$" + field));
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported aggregation function: " + functionName);
+                    }
+                }
+                else {
+                    // Handle non-aggregated fields that are part of GROUP BY
+                    String field = expr.getValue().toString();
+                    if (isFieldInGroupBy(field, groupByColumns)) {
+                        groupStage.put(field, new Document("$first", "$" + field));
+                    }
+                }
+            }
+            else if (element.getColumn() != null) {
+                // Handle simple columns that are part of GROUP BY
+                String field = element.getColumn();
+                if (isFieldInGroupBy(field, groupByColumns)) {
+                    groupStage.put(field, new Document("$first", "$" + field));
+                }
+            }
+        }
+
+        return groupStage;
+    }
+
+    private boolean isFieldInGroupBy(String field, List<Expression> groupByColumns)
+    {
+        return groupByColumns.stream()
+                .anyMatch(expr -> expr.getValue().toString().equals(field));
     }
 }

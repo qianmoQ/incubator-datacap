@@ -13,16 +13,12 @@ import java.util.List;
 @Getter
 public class MongoParser
 {
-    protected Document query;
-    protected Document update;
-    protected Document sort;
     protected Document filter;
     protected List<String> fields;
-    protected String collection;
     protected String command;
+    protected Document query;
+    protected String collection;
     protected ShowStatement.ShowType showType;
-    protected int limit = -1;
-    protected int skip = -1;
 
     @Setter
     protected String database;

@@ -3,6 +3,7 @@ package io.edurt.datacap.test.mongo;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
 
+@Slf4j
 public class MongoJdbcDriverTest
 {
     private Statement statement;
@@ -67,8 +69,8 @@ public class MongoJdbcDriverTest
 
             String jdbcUrl = String.format("jdbc:mongodb://%s:%d",
                     container.getHost(),
-                    container.getFirstMappedPort());
-
+                    container.getFirstMappedPort()
+            );
             connection = DriverManager.getConnection(jdbcUrl, props);
             statement = connection.createStatement();
         }
@@ -98,15 +100,48 @@ public class MongoJdbcDriverTest
     public void testSelect()
             throws SQLException
     {
+        log.info("Test simple select");
         try (ResultSet rs = statement.executeQuery("SELECT * FROM test.sample")) {
             assertTrue(rs.next());
         }
 
+        log.info("Test specific select column");
+        try (ResultSet rs = statement.executeQuery("SELECT name FROM test.sample")) {
+            assertTrue(rs.next());
+        }
+
+        log.info("Test simple where clause");
         try (ResultSet rs = statement.executeQuery("SELECT * FROM test.sample WHERE value = 2")) {
             assertTrue(rs.next());
         }
 
-        try (ResultSet rs = statement.executeQuery("SELECT name FROM test.sample WHERE value = 2")) {
+        log.info("Test multiple where clause by and");
+        try (ResultSet rs = statement.executeQuery("SELECT * FROM test.sample WHERE name = 'test1' AND value = 1")) {
+            assertTrue(rs.next());
+        }
+
+        log.info("Test multiple where clause by or");
+        try (ResultSet rs = statement.executeQuery("SELECT * FROM test.sample WHERE name = 'test1' OR name = 'test2'")) {
+            assertTrue(rs.next());
+        }
+
+        log.info("Test order by");
+        try (ResultSet rs = statement.executeQuery("SELECT * FROM test.sample ORDER BY name DESC, value DESC")) {
+            assertTrue(rs.next());
+        }
+
+        log.info("Test limit");
+        try (ResultSet rs = statement.executeQuery("SELECT * FROM test.sample LIMIT 1")) {
+            assertTrue(rs.next());
+        }
+
+        log.info("Test group by");
+        try (ResultSet rs = statement.executeQuery("SELECT name FROM test.sample GROUP BY name")) {
+            assertTrue(rs.next());
+        }
+
+        log.info("Test alias");
+        try (ResultSet rs = statement.executeQuery("SELECT name as n, value as v FROM test.sample")) {
             assertTrue(rs.next());
         }
     }

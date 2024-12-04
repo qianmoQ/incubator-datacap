@@ -1,6 +1,6 @@
 package io.edurt.datacap.driver;
 
-import com.mongodb.client.FindIterable;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
@@ -38,7 +38,7 @@ public class MongoResultSet
 
     // Constructor
     // 构造函数
-    public MongoResultSet(FindIterable<Document> result)
+    public MongoResultSet(AggregateIterable<Document> result)
     {
         this.cursor = result.iterator();
         this.columnNames = new ArrayList<>();
@@ -47,7 +47,7 @@ public class MongoResultSet
         // 预处理第一个文档以获取列名
         // Preprocess the first document to get the column names
         if (cursor.hasNext()) {
-            Document first = result.limit(1).first();
+            Document first = result.first();
             if (first != null) {
                 columnNames.addAll(first.keySet());
             }
@@ -61,6 +61,7 @@ public class MongoResultSet
             throws SQLException
     {
         checkClosed();
+
         if (cursor.hasNext()) {
             current = cursor.next();
             return true;
@@ -76,6 +77,7 @@ public class MongoResultSet
             throws SQLException
     {
         checkClosed();
+
         if (current == null) {
             throw new SQLException("No current row");
         }

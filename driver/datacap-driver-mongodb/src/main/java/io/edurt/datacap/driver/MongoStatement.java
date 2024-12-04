@@ -1,6 +1,6 @@
 package io.edurt.datacap.driver;
 
-import com.mongodb.client.FindIterable;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import io.edurt.datacap.driver.parser.MongoParser;
@@ -40,7 +40,6 @@ public class MongoStatement
 
         try {
             // Parse SQL to MongoDB query
-            // 将SQL解析为MongoDB查询
             MongoParser parser = MongoParser.createParser(sql);
             if (parser instanceof MongoShowParser) {
                 return executeShowStatement((MongoShowParser) parser);
@@ -58,7 +57,12 @@ public class MongoStatement
             }
 
             MongoCollection<Document> collection = db.getCollection(collectionName);
-            FindIterable<Document> result = collection.find(query);
+
+            // Execute aggregate command
+            @SuppressWarnings("unchecked")
+            List<Document> pipeline = (List<Document>) query.get("pipeline");
+            AggregateIterable<Document> result = collection.aggregate(pipeline);
+
             return new MongoResultSet(result);
         }
         catch (Exception e) {
@@ -91,7 +95,7 @@ public class MongoStatement
         List<Document> docs = connection.getClient().listDatabaseNames()
                 .map(name -> new Document("name", name))
                 .into(new ArrayList<>());
-        return new MongoResultSet(new InMemoryFindIterable(docs));
+        return new MongoResultSet(new InMemoryAggregateIterable(docs));
     }
 
     private ResultSet handleShowTables(MongoShowParser parser)
@@ -103,7 +107,7 @@ public class MongoStatement
         List<Document> docs = db.listCollectionNames()
                 .map(name -> new Document("name", name))
                 .into(new ArrayList<>());
-        return new MongoResultSet(new InMemoryFindIterable(docs));
+        return new MongoResultSet(new InMemoryAggregateIterable(docs));
     }
 
     private ResultSet handleShowColumns(MongoShowParser parser)
@@ -129,8 +133,7 @@ public class MongoStatement
                     docs.add(new Document("name", field))
             );
         }
-
-        return new MongoResultSet(new InMemoryFindIterable(docs));
+        return new MongoResultSet(new InMemoryAggregateIterable(docs));
     }
 
     private boolean matchesPattern(String value, String pattern)
@@ -176,18 +179,7 @@ public class MongoStatement
     public int executeUpdate(String sql)
             throws SQLException
     {
-        checkClosed();
-        try {
-            MongoParser parser = MongoParser.createParser(sql);
-            String collectionName = parser.getCollection();
-            Document update = parser.getUpdate();
-
-            MongoCollection<Document> collection = connection.getDatabase().getCollection(collectionName);
-            return (int) collection.updateMany(parser.getQuery(), update).getModifiedCount();
-        }
-        catch (Exception e) {
-            throw new SQLException("Failed to execute update", e);
-        }
+        throw new UnsupportedOperationException("Update operation not supported");
     }
 
     // Check if statement is closed

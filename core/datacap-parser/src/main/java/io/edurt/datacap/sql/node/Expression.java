@@ -17,6 +17,6 @@ public class Expression
 
     public enum ExpressionType
     {
-        LITERAL, COLUMN_REFERENCE, FUNCTION_CALL, BINARY_OP, UNARY_OP
+        LITERAL, COLUMN_REFERENCE, FUNCTION_CALL, BINARY_OP, UNARY_OP, FUNCTION
     }
 }

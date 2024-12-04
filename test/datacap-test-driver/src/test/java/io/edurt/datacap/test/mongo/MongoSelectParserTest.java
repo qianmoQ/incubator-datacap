@@ -21,8 +21,6 @@ public class MongoSelectParserTest
     public void testSelect()
     {
         assertEquals("users", parser.getCollection());
-        assertEquals("{\"$and\": [{\"age\": {\"$gt\": 18}}, {\"city\": \"Beijing\"}]}", parser.getQuery().toJson());
-        assertEquals("{\"age\": -1}", parser.getSort().toJson());
-        assertEquals(10, parser.getLimit());
+        assertEquals("{\"aggregate\": \"users\", \"pipeline\": [{\"$match\": {\"$and\": [{\"age\": {\"$gt\": 18}}, {\"city\": \"Beijing\"}]}}, {\"$project\": {\"_id\": 0, \"name\": 1, \"age\": 1}}, {\"$sort\": {\"age\": -1}}, {\"$limit\": 10}], \"cursor\": {}}", parser.getQuery().toJson());
     }
 }

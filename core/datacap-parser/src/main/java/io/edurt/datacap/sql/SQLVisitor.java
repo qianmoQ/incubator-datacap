@@ -217,15 +217,33 @@ public class SQLVisitor
             SelectElement element = new SelectElement();
 
             if (elementCtx.columnName() != null) {
+                // 直接指定的列名
+                // Directly specified column names
                 element.setColumn(elementCtx.columnName().getText());
             }
+            // 处理表达式
+            // Handle expression
+            if (elementCtx.expression() != null) {
+                Expression expr = processExpression(elementCtx.expression());
+                element.setExpression(expr);
 
+                // 处理函数调用的情况
+                // Handle function call
+                if (expr.getType() == Expression.ExpressionType.FUNCTION) {
+                    // 尝试从函数的参数中获取列名
+                    // Try to get column name from function parameters
+                    if (expr.getChildren() != null && !expr.getChildren().isEmpty()) {
+                        Expression columnExpr = expr.getChildren().get(0);
+                        if (columnExpr.getType() == Expression.ExpressionType.COLUMN_REFERENCE) {
+                            element.setColumn(columnExpr.getValue().toString());
+                        }
+                    }
+                }
+            }
+            // 处理别名
+            // Handle alias
             if (elementCtx.alias() != null) {
                 element.setAlias(elementCtx.alias().getText());
-            }
-
-            if (elementCtx.expression() != null) {
-                element.setExpression(processExpression(elementCtx.expression()));
             }
 
             elements.add(element);

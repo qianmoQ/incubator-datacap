@@ -18,11 +18,7 @@ public class ExpressionProcessor
         expr.setValue("AND");
 
         List<Expression> children = new ArrayList<>();
-        // 左表达式
-        // Left expression
         children.add(visit(ctx.expression(0)));
-        // 右表达式
-        // Right expression
         children.add(visit(ctx.expression(1)));
         expr.setChildren(children);
 
@@ -37,11 +33,7 @@ public class ExpressionProcessor
         expr.setValue("OR");
 
         List<Expression> children = new ArrayList<>();
-        // 左表达式
-        // Left expression
         children.add(visit(ctx.expression(0)));
-        // 右表达式
-        // Right expression
         children.add(visit(ctx.expression(1)));
         expr.setChildren(children);
 
@@ -56,11 +48,7 @@ public class ExpressionProcessor
         expr.setValue(ctx.comparisonOperator().getText());
 
         List<Expression> children = new ArrayList<>();
-        // 左表达式
-        // Left expression
         children.add(visit(ctx.expression(0)));
-        // 右表达式
-        // Right expression
         children.add(visit(ctx.expression(1)));
         expr.setChildren(children);
 
@@ -89,5 +77,32 @@ public class ExpressionProcessor
     public Expression visitParenExpression(SqlBaseParser.ParenExpressionContext ctx)
     {
         return visit(ctx.expression());
+    }
+
+    @Override
+    public Expression visitFunctionCallPrimary(SqlBaseParser.FunctionCallPrimaryContext ctx)
+    {
+        Expression expr = new Expression();
+        expr.setType(Expression.ExpressionType.FUNCTION);
+        expr.setValue(ctx.functionCall().functionName().getText());
+
+        // 直接获取函数参数的文本表示，而不是创建子表达式
+        // Directly get the text representation of function parameters, instead of creating child expressions
+        if (ctx.functionCall().expression() != null && !ctx.functionCall().expression().isEmpty()) {
+            SqlBaseParser.ExpressionContext firstArg = ctx.functionCall().expression(0);
+            String columnRef = firstArg.getText();
+
+            // 创建一个单独的 COLUMN_REFERENCE 表达式
+            // Create a separate COLUMN_REFERENCE expression
+            Expression columnExpr = new Expression();
+            columnExpr.setType(Expression.ExpressionType.COLUMN_REFERENCE);
+            columnExpr.setValue(columnRef);
+
+            List<Expression> args = new ArrayList<>();
+            args.add(columnExpr);
+            expr.setChildren(args);
+        }
+
+        return expr;
     }
 }
