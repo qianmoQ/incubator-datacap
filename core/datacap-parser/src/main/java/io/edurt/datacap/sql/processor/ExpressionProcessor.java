@@ -83,6 +83,15 @@ public class ExpressionProcessor
     public Expression visitFunctionCallPrimary(SqlBaseParser.FunctionCallPrimaryContext ctx)
     {
         Expression expr = new Expression();
+
+        // 检查是否是 VERSION 函数
+        // Check if it is a VERSION function
+        if (ctx.functionCall().VERSION() != null) {
+            expr.setType(Expression.ExpressionType.FUNCTION);
+            expr.setValue("VERSION");
+            return expr;
+        }
+
         expr.setType(Expression.ExpressionType.FUNCTION);
         expr.setValue(ctx.functionCall().functionName().getText());
 

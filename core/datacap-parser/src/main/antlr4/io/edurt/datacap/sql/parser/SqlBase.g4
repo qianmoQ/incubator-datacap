@@ -83,6 +83,7 @@ COMMENT: [Cc][Oo][Mm][Mm][Ee][Nn][Tt];
 ADD: [Aa][Dd][Dd];
 MODIFY: [Mm][Oo][Dd][Ii][Ff][Yy];
 ENGINE: [Ee][Nn][Gg][Ii][Nn][Ee];
+VERSION: [Vv][Ee][Rr][Ss][Ii][Oo][Nn];
 
 tableOptions
     : tableOption+
@@ -474,6 +475,7 @@ functionCall
     : functionName '(' (DISTINCT? expression (',' expression)*)? ')'
     | CAST '(' expression AS dataType ')'
     | EXTRACT '(' identifier FROM expression ')'
+    | VERSION '(' ')'
     ;
 
 // Common elements
@@ -570,6 +572,7 @@ nonReservedWord
     | ADD | MODIFY | ENGINE
     | DATABASES | TABLES | COLUMNS
     | CREATE_TIME | UPDATE_TIME
+    | VERSION
     ;
 
 // Lexer rules

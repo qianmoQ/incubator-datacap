@@ -1,8 +1,11 @@
 package com.dbschema;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@SuppressFBWarnings(value = {"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 public class MongoJdbcDriver
         extends io.edurt.datacap.driver.MongoJdbcDriver
 {

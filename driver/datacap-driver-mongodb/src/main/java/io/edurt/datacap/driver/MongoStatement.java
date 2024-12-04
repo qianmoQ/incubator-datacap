@@ -48,8 +48,17 @@ public class MongoStatement
                 return executeShowStatement((MongoShowParser) parser);
             }
 
-            String collectionName = parser.getCollection();
             Document query = parser.getQuery();
+            if (query.containsKey("buildInfo")) {
+                Document buildInfo = connection.getDatabase()
+                        .runCommand(new Document("buildInfo", 1));
+
+                Document versionDoc = new Document();
+                versionDoc.put("version", buildInfo.getString("version"));
+                return new MongoResultSet(new InMemoryAggregateIterable(List.of(versionDoc)));
+            }
+
+            String collectionName = parser.getCollection();
             log.debug("Executing query: {}", query);
 
             String[] dbAndTb = parser.getCollection().split("\\.");

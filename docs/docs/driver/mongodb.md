@@ -94,3 +94,9 @@ DataCap MongoDB Driver 支持以下聚合函数:
 - `AVG(columnName)`
 - `MIN(columnName)`
 - `MAX(columnName)`
+
+## 系统函数
+
+DataCap MongoDB Driver 支持以下系统函数:
+
+- `SELECT VERSION()`

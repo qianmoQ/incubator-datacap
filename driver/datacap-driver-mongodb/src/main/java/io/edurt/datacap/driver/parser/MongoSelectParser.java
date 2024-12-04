@@ -33,6 +33,17 @@ public class MongoSelectParser
     // 解析SELECT语句
     public void parseSelectStatement(SelectStatement select)
     {
+        List<SelectElement> elements = select.getSelectElements();
+        if (elements != null && elements.size() == 1) {
+            SelectElement element = elements.get(0);
+            if (element.getExpression() != null &&
+                    element.getExpression().getType() == Expression.ExpressionType.FUNCTION &&
+                    "VERSION".equalsIgnoreCase(element.getExpression().getValue().toString())) {
+                this.query = new Document("buildInfo", 1);
+                return;
+            }
+        }
+
         // Get collection name first
         parseFromClause(select.getFromSources());
 
@@ -115,7 +126,14 @@ public class MongoSelectParser
                     field = element.getColumn();
                 }
                 else if (element.getExpression() != null) {
-                    field = parseExpression(element.getExpression()).toString();
+                    Expression expr = element.getExpression();
+                    if (expr.getType() == Expression.ExpressionType.FUNCTION &&
+                            "VERSION".equalsIgnoreCase(expr.getValue().toString())) {
+                        field = "version";
+                    }
+                    else {
+                        field = parseExpression(expr).toString();
+                    }
                 }
                 else {
                     continue;
@@ -221,6 +239,13 @@ public class MongoSelectParser
                 }
 
                 throw new IllegalArgumentException("Invalid binary expression structure");
+
+            case FUNCTION:
+                if ("VERSION".equalsIgnoreCase(expr.getValue().toString())) {
+                    return new Document("$buildInfo", 1);
+                }
+
+                throw new IllegalArgumentException("Unsupported function: " + expr.getValue());
 
             default:
                 throw new IllegalArgumentException("Unsupported expression type: " + expr.getType());
