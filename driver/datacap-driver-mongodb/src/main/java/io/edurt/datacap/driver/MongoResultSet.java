@@ -53,6 +53,7 @@ public class MongoResultSet
             if (first != null) {
                 columnNames.addAll(first.keySet());
                 this.metadata = new MongoResultSetMetaData(columnNames, first);
+                this.current = first;
             }
         }
     }
@@ -92,14 +93,23 @@ public class MongoResultSet
     public boolean getBoolean(String columnLabel)
             throws SQLException
     {
-        return false;
+        checkClosed();
+
+        return current.getBoolean(columnLabel);
     }
 
     @Override
     public byte getByte(String columnLabel)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        Object value = current.get(columnLabel);
+        if (value == null) {
+            throw new SQLException("Null value");
+        }
+
+        return String.valueOf(value).getBytes()[0];
     }
 
     @Override
@@ -117,48 +127,72 @@ public class MongoResultSet
     {
         checkClosed();
 
-        Object value = current.get(columnLabel);
-        if (value == null) {
-            throw new SQLException("Null value");
-        }
-        if (value instanceof Number) {
-            return ((Number) value).intValue();
-        }
-        throw new SQLException("Invalid type for integer column");
+        return current.getInteger(columnLabel);
     }
 
     @Override
     public long getLong(String columnLabel)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        return current.getLong(columnLabel);
     }
 
     @Override
     public float getFloat(String columnLabel)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        Object value = current.get(columnLabel);
+        if (value == null) {
+            throw new SQLException("Null value");
+        }
+        if (value instanceof Number) {
+            return ((Number) value).floatValue();
+        }
+        throw new SQLException("Invalid type for float column");
     }
 
     @Override
     public double getDouble(String columnLabel)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        return current.getDouble(columnLabel);
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        Object value = current.get(columnLabel);
+        if (value == null) {
+            throw new SQLException("Null value");
+        }
+        if (value instanceof Number) {
+            return new BigDecimal(value.toString());
+        }
+        throw new SQLException("Invalid type for BigDecimal column");
     }
 
     @Override
     public byte[] getBytes(String columnLabel)
             throws SQLException
     {
+        checkClosed();
+
+        Object value = current.get(columnLabel);
+        if (value == null) {
+            throw new SQLException("Null value");
+        }
+        if (value instanceof byte[]) {
+            return (byte[]) value;
+        }
         return new byte[0];
     }
 
@@ -166,14 +200,32 @@ public class MongoResultSet
     public Date getDate(String columnLabel)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        Object value = current.get(columnLabel);
+        if (value == null) {
+            throw new SQLException("Null value");
+        }
+        if (value instanceof Date) {
+            return Date.valueOf(String.valueOf(value));
+        }
+        throw new SQLException("Invalid type for date column");
     }
 
     @Override
     public Time getTime(String columnLabel)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        Object value = current.get(columnLabel);
+        if (value == null) {
+            throw new SQLException("Null value");
+        }
+        if (value instanceof Time) {
+            return Time.valueOf(String.valueOf(value));
+        }
+        throw new SQLException("Invalid type for time column");
     }
 
     @Override
@@ -236,14 +288,18 @@ public class MongoResultSet
     public Object getObject(int columnIndex)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        return current.get(columnIndex);
     }
 
     @Override
     public Object getObject(String columnLabel)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        return current.get(columnLabel);
     }
 
     @Override
@@ -719,7 +775,9 @@ public class MongoResultSet
     public Array getArray(String columnLabel)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        return (Array) current.getList(columnLabel, List.class);
     }
 
     @Override
@@ -1129,14 +1187,24 @@ public class MongoResultSet
     public String getString(int columnIndex)
             throws SQLException
     {
-        return "";
+        checkClosed();
+
+        String columnName = getColumnName(columnIndex);
+        Object value = current.get(columnName);
+        if (value == null) {
+            return null;
+        }
+
+        return value.toString();
     }
 
     @Override
     public boolean getBoolean(int columnIndex)
             throws SQLException
     {
-        return false;
+        checkClosed();
+
+        return current.getBoolean(getColumnName(columnIndex));
     }
 
     @Override
@@ -1157,28 +1225,44 @@ public class MongoResultSet
     public int getInt(int columnIndex)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        return current.getInteger(getColumnName(columnIndex));
     }
 
     @Override
     public long getLong(int columnIndex)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        return current.getLong(getColumnName(columnIndex));
     }
 
     @Override
     public float getFloat(int columnIndex)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        Object value = current.get(getColumnName(columnIndex));
+        if (value == null) {
+            return 0;
+        }
+        if (value instanceof Number) {
+            return Float.parseFloat(value.toString());
+        }
+
+        throw new SQLException("Invalid type for float column");
     }
 
     @Override
     public double getDouble(int columnIndex)
             throws SQLException
     {
-        return 0;
+        checkClosed();
+
+        return current.getDouble(getColumnName(columnIndex));
     }
 
     @Override
@@ -1199,7 +1283,9 @@ public class MongoResultSet
     public Date getDate(int columnIndex)
             throws SQLException
     {
-        return null;
+        checkClosed();
+
+        return Date.valueOf(current.get(getColumnName(columnIndex)).toString());
     }
 
     @Override
@@ -1249,5 +1335,13 @@ public class MongoResultSet
             throws SQLException
     {
         return false;
+    }
+
+    private String getColumnName(int columnIndex)
+    {
+        if (columnIndex < 1 || columnIndex > columnNames.size()) {
+            throw new IllegalArgumentException("Invalid column index: " + columnIndex);
+        }
+        return columnNames.get(columnIndex - 1);
     }
 }
