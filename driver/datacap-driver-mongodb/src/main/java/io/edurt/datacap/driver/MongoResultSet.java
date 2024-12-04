@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -109,7 +110,7 @@ public class MongoResultSet
             throw new SQLException("Null value");
         }
 
-        return String.valueOf(value).getBytes()[0];
+        return String.valueOf(value).getBytes(Charset.defaultCharset())[0];
     }
 
     @Override
