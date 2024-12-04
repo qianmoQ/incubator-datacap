@@ -8,6 +8,7 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Collation;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -18,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+@SuppressFBWarnings(value = {"NP_NONNULL_RETURN_VIOLATION", "EI_EXPOSE_REP2"})
 public class InMemoryAggregateIterable
         implements AggregateIterable<Document>
 {

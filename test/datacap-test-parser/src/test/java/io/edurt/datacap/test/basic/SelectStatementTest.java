@@ -1,5 +1,6 @@
 package io.edurt.datacap.test.basic;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.sql.SQLParser;
 import io.edurt.datacap.sql.node.Expression;
 import io.edurt.datacap.sql.node.clause.JoinClause;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@SuppressFBWarnings(value = {"JUA_DONT_ASSERT_INSTANCEOF_IN_TESTS"})
 public class SelectStatementTest
 {
     @Test

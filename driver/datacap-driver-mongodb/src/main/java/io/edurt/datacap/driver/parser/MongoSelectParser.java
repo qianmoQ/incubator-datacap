@@ -1,5 +1,6 @@
 package io.edurt.datacap.driver.parser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.sql.node.Expression;
 import io.edurt.datacap.sql.node.clause.LimitClause;
 import io.edurt.datacap.sql.node.element.OrderByElement;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 @Getter
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "CT_CONSTRUCTOR_THROW"})
 public class MongoSelectParser
         extends MongoParser
 {

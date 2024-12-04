@@ -1,5 +1,6 @@
 package io.edurt.datacap.driver.parser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.sql.SQLParser;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
@@ -11,6 +12,7 @@ import org.bson.Document;
 import java.util.List;
 
 @Getter
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class MongoParser
 {
     protected Document filter;

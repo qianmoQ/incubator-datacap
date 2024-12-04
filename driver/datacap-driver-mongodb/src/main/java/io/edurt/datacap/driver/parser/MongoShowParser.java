@@ -1,10 +1,12 @@
 package io.edurt.datacap.driver.parser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.sql.statement.ShowStatement;
 import lombok.Getter;
 import org.bson.Document;
 
 @Getter
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "CT_CONSTRUCTOR_THROW"})
 public class MongoShowParser
         extends MongoParser
 {

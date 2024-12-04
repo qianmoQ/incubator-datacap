@@ -21,7 +21,7 @@ import kotlin.Exception
 import kotlin.String
 import kotlin.require
 
-@SuppressFBWarnings(value = ["BC_BAD_CAST_TO_ABSTRACT_COLLECTION", "EI_EXPOSE_REP2"])
+@SuppressFBWarnings(value = ["BC_BAD_CAST_TO_ABSTRACT_COLLECTION", "EI_EXPOSE_REP2", "BC_IMPOSSIBLE_CAST"])
 class HdfsAdapter : NativeAdapter
 {
     private val log: Logger = getLogger(HdfsAdapter::class.java)

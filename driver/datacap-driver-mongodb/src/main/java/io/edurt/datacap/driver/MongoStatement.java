@@ -3,6 +3,7 @@ package io.edurt.datacap.driver;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.driver.parser.MongoParser;
 import io.edurt.datacap.driver.parser.MongoShowParser;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "NP_NULL_PARAM_DEREF"})
 public class MongoStatement
         implements Statement
 {

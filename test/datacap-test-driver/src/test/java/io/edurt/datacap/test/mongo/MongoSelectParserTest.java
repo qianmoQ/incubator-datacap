@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MongoSelectParserTest
 {
-    private final String sql = "SELECT name, age FROM users WHERE age > 18 AND city = 'Beijing' ORDER BY age DESC LIMIT 10";
+    private final static String sql = "SELECT name, age FROM users WHERE age > 18 AND city = 'Beijing' ORDER BY age DESC LIMIT 10";
     private MongoParser parser;
 
     @Before
