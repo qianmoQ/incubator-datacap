@@ -123,6 +123,7 @@ jobs:
             -Dcos.access="$COS_ACCESS" -Dcos.secret="$COS_SECRET" -Dcos.bucket="$COS_BUCKET" -Dcos.endpoint="$COS_ENDPOINT" \
             -Ds3.access="$S3_ACCESS" -Ds3.secret="$S3_SECRET" -Ds3.bucket="$S3_BUCKET" -Ds3.endpoint="$S3_ENDPOINT"
 
+
   before_checker_package:
     runs-on: ubuntu-latest
     needs:

@@ -6,9 +6,9 @@ import io.edurt.datacap.spi.model.Configure
 import io.edurt.datacap.spi.model.Response
 import io.edurt.datacap.spi.model.Time
 import io.edurt.datacap.spi.parser.SqlParser
-import io.edurt.datacap.sql.SqlBase
-import io.edurt.datacap.sql.SqlBaseToken
-import org.apache.commons.lang3.ObjectUtils
+import io.edurt.datacap.sql.statement.SQLStatement
+import io.edurt.datacap.sql.statement.SelectStatement
+import io.edurt.datacap.sql.statement.ShowStatement
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
@@ -20,7 +20,6 @@ import kotlin.Any
 import kotlin.Exception
 import kotlin.String
 import kotlin.require
-import kotlin.requireNotNull
 
 @SuppressFBWarnings(value = ["BC_BAD_CAST_TO_ABSTRACT_COLLECTION", "EI_EXPOSE_REP2"])
 class HdfsAdapter : NativeAdapter
@@ -47,37 +46,19 @@ class HdfsAdapter : NativeAdapter
             val columns: MutableList<Any> = ArrayList()
             try
             {
-                val sqlBase = parser.statement
-                if (sqlBase.isSuccessful)
+                val configuration = this.hdfsConnection?.hdfsConfigure
+                val statement: SelectStatement = this.parser.statement as SelectStatement
+                if (statement.selectElements.isNotEmpty())
                 {
-                    val configuration = this.hdfsConnection?.hdfsConfigure
-                    val sqlBase = this.parser.statement
-                    if (sqlBase.isSuccessful)
-                    {
-                        if (ObjectUtils.isNotEmpty(parser.statement.columns))
-                        {
-                            headers.addAll(parser.statement.columns)
-                        }
-                        else
-                        {
-                            headers.add("*")
-                        }
-                        types.add("String")
-                        this.adapter(configuration, sqlBase)
-                            .forEach { column -> columns.add(Collections.singletonList(column)) }
-                        response.isSuccessful = Boolean.TRUE
-                    }
-                    else
-                    {
-                        response.isSuccessful = false
-                        response.message = sqlBase.message
-                    }
+                    headers.addAll(statement.selectElements.map { it.column })
                 }
                 else
                 {
-                    response.isSuccessful = Boolean.FALSE
-                    response.message = sqlBase.message
+                    headers.add("*")
                 }
+                types.add("String")
+                this.adapter(configuration, parser.statement).forEach { column -> columns.add(Collections.singletonList(column)) }
+                response.isSuccessful = Boolean.TRUE
             }
             catch (ex: Exception)
             {
@@ -97,19 +78,19 @@ class HdfsAdapter : NativeAdapter
         return response
     }
 
-    private fun adapter(configuration: Configuration?, info: SqlBase): List<String>
+    private fun adapter(configuration: Configuration?, statement: SQLStatement): List<String>
     {
-        requireNotNull(info.token) { "Token must not be null" }
-        require(info.token.equals(SqlBaseToken.SHOW.name, ignoreCase = true)) { "Token not supported" }
+        require(statement is SelectStatement) { "Not supported select statement" }
 
         val fileSystem = FileSystem.get(configuration)
+        val showStatement = statement as ShowStatement
 
-        if (info.childToken.equals("DATABASES", ignoreCase = true))
+        if (showStatement.showType == ShowStatement.ShowType.DATABASES)
         {
-            info.table = "/"
+            showStatement.tableName = "/"
         }
 
-        return fileSystem.listStatus(Path("/" + info.table))
+        return fileSystem.listStatus(Path("/" + showStatement.tableName))
             .map { it.path.name }
             .toList()
     }

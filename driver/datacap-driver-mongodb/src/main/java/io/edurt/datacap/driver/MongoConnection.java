@@ -247,16 +247,12 @@ public class MongoConnection
     @Override
     public void setTypeMap(Map<String, Class<?>> map)
             throws SQLException
-    {
-
-    }
+    {}
 
     @Override
     public void setHoldability(int holdability)
             throws SQLException
-    {
-
-    }
+    {}
 
     @Override
     public int getHoldability()
@@ -439,6 +435,7 @@ public class MongoConnection
     {
         // MongoDB doesn't support transactions in the same way as relational databases
         // MongoDB 不支持与关系数据库相同的事务
+        throw new UnsupportedOperationException("MongoDB doesn't support transactions in the same way as relational databases");
     }
 
     @Override
