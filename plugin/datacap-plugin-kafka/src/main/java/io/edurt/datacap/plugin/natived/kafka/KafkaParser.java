@@ -1,7 +1,9 @@
 package io.edurt.datacap.plugin.natived.kafka;
 
 import io.edurt.datacap.spi.parser.SqlParser;
-import io.edurt.datacap.sql.SqlBase;
+import io.edurt.datacap.sql.statement.SQLStatement;
+import io.edurt.datacap.sql.statement.SelectStatement;
+import io.edurt.datacap.sql.statement.ShowStatement;
 
 public class KafkaParser
         extends SqlParser
@@ -14,13 +16,18 @@ public class KafkaParser
     @Override
     public String getExecuteContext()
     {
-        SqlBase sqlBase = this.getSqlBase();
-        if (sqlBase.getToken().equalsIgnoreCase("SHOW")) {
-            return sqlBase.getTable();
+        SQLStatement statement = this.getStatement();
+
+        if (statement instanceof SelectStatement) {
+            SelectStatement selectStatement = (SelectStatement) statement;
+            return selectStatement.getFromSources().get(0).getTableName();
         }
-        else if (sqlBase.getToken().equalsIgnoreCase("SELECT")) {
-            return sqlBase.getTable();
+        else if (statement instanceof ShowStatement) {
+            ShowStatement showStatement = (ShowStatement) statement;
+            return showStatement.getTableName();
         }
-        return null;
+        else {
+            throw new RuntimeException("Unsupported statement: " + statement);
+        }
     }
 }

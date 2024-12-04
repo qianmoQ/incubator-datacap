@@ -1,24 +1,22 @@
 package io.edurt.datacap.spi.parser;
 
-import io.edurt.datacap.sql.SqlBase;
-import io.edurt.datacap.sql.SqlBaseFormatter;
+import io.edurt.datacap.sql.SQLParser;
+import io.edurt.datacap.sql.statement.SQLStatement;
 
 public class SqlParser
         implements Parser
 {
     private final String content;
-    private SqlBaseFormatter formatter;
 
     public SqlParser(String content)
     {
         this.content = content;
-        this.formatter = new SqlBaseFormatter(this.content);
     }
 
     @Override
-    public SqlBase getSqlBase()
+    public SQLStatement getStatement()
     {
-        return this.formatter.getParseResult();
+        return SQLParser.parse(content.trim());
     }
 
     @Override

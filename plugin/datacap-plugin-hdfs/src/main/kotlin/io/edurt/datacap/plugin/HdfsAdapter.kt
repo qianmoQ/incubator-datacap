@@ -47,16 +47,16 @@ class HdfsAdapter : NativeAdapter
             val columns: MutableList<Any> = ArrayList()
             try
             {
-                val sqlBase = parser.sqlBase
+                val sqlBase = parser.statement
                 if (sqlBase.isSuccessful)
                 {
                     val configuration = this.hdfsConnection?.hdfsConfigure
-                    val sqlBase = this.parser.sqlBase
+                    val sqlBase = this.parser.statement
                     if (sqlBase.isSuccessful)
                     {
-                        if (ObjectUtils.isNotEmpty(parser.sqlBase.columns))
+                        if (ObjectUtils.isNotEmpty(parser.statement.columns))
                         {
-                            headers.addAll(parser.sqlBase.columns)
+                            headers.addAll(parser.statement.columns)
                         }
                         else
                         {

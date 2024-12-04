@@ -6,10 +6,11 @@ import io.edurt.datacap.spi.adapter.NativeAdapter;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import io.edurt.datacap.spi.model.Time;
-import io.edurt.datacap.sql.SqlBase;
-import io.edurt.datacap.sql.SqlBaseToken;
+import io.edurt.datacap.sql.node.element.SelectElement;
+import io.edurt.datacap.sql.statement.SQLStatement;
+import io.edurt.datacap.sql.statement.SelectStatement;
+import io.edurt.datacap.sql.statement.ShowStatement;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "REC_CATCH_EXCEPTION"},
@@ -49,24 +51,20 @@ public class KafkaAdapter
             List<String> types = new ArrayList<>();
             List<Object> columns = new ArrayList<>();
             try {
-                SqlBase sqlBase = this.parser.getSqlBase();
-                if (sqlBase.isSuccessful()) {
-                    AdminClient client = this.kafkaConnection.getClient();
-                    if (ObjectUtils.isNotEmpty(this.parser.getSqlBase().getColumns())) {
-                        headers.addAll(this.parser.getSqlBase().getColumns());
-                    }
-                    else {
-                        headers.add("*");
-                    }
-                    types.add("String");
-                    this.adapter(client, sqlBase)
-                            .forEach(column -> columns.add(Collections.singletonList(column)));
-                    response.setIsSuccessful(Boolean.TRUE);
+                SelectStatement statement = (SelectStatement) this.parser.getStatement();
+                AdminClient client = this.kafkaConnection.getClient();
+                if (!statement.getSelectElements().isEmpty()) {
+                    headers.addAll(statement.getSelectElements()
+                            .stream()
+                            .map(SelectElement::getColumn)
+                            .collect(Collectors.toList()));
                 }
                 else {
-                    response.setIsSuccessful(Boolean.FALSE);
-                    response.setMessage(sqlBase.getMessage());
+                    headers.add("*");
                 }
+                types.add("String");
+                this.adapter(client, parser.getStatement()).forEach(column -> columns.add(Collections.singletonList(column)));
+                response.setIsSuccessful(Boolean.TRUE);
             }
             catch (Exception ex) {
                 log.error("Execute content failed content {} exception ", content, ex);
@@ -84,16 +82,16 @@ public class KafkaAdapter
         return response;
     }
 
-    private List<String> adapter(AdminClient client, SqlBase info)
+    private List<String> adapter(AdminClient client, SQLStatement statement)
     {
         List<String> array = new ArrayList<>();
-        if (info.getToken().equalsIgnoreCase(SqlBaseToken.SHOW.name())) {
-            if (info.getChildToken().equalsIgnoreCase(SqlBaseToken.TOPICS.name())
-                    || info.getChildToken().equalsIgnoreCase("DATABASES")) {
+        if (statement instanceof ShowStatement) {
+            ShowStatement info = (ShowStatement) statement;
+
+            if (info.getShowType() == ShowStatement.ShowType.DATABASES) {
                 this.adapterShowTopics(client, array);
             }
-            else if (info.getChildToken().equalsIgnoreCase(SqlBaseToken.CONSUMERS.name())
-                    || info.getChildToken().equalsIgnoreCase("TABLES")) {
+            else if (info.getShowType() == ShowStatement.ShowType.TABLES) {
                 this.adapterShowConsumers(client, info, array);
             }
         }
@@ -113,10 +111,10 @@ public class KafkaAdapter
         }
     }
 
-    private void adapterShowConsumers(AdminClient client, SqlBase info, List<String> array)
+    private void adapterShowConsumers(AdminClient client, ShowStatement info, List<String> array)
     {
         try {
-            if (StringUtils.isNotEmpty(info.getTable())) {
+            if (StringUtils.isNotEmpty(info.getTableName())) {
                 client.listConsumerGroups()
                         .all()
                         .get()
@@ -127,7 +125,7 @@ public class KafkaAdapter
                                 ConsumerGroupDescription consumerGroupDescription = describeConsumerGroupsResult.all().get().get(v.groupId());
                                 if (consumerGroupDescription.members().stream().anyMatch(member ->
                                         member.assignment().topicPartitions().stream().anyMatch(tp ->
-                                                tp.topic().equals(info.getTable().replace("`", ""))))) {
+                                                tp.topic().equals(info.getTableName().replace("`", ""))))) {
                                     array.add(v.groupId());
                                 }
                             }

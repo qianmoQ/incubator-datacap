@@ -1,20 +1,20 @@
 package io.edurt.datacap.plugin.natived.zookeeper;
 
-import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.spi.adapter.NativeAdapter;
 import io.edurt.datacap.spi.model.Configure;
 import io.edurt.datacap.spi.model.Response;
 import io.edurt.datacap.spi.model.Time;
-import io.edurt.datacap.sql.SqlBase;
+import io.edurt.datacap.sql.node.element.SelectElement;
+import io.edurt.datacap.sql.statement.SelectStatement;
 import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.ZkClient;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "REC_CATCH_EXCEPTION"},
@@ -44,23 +44,21 @@ public class ZookeeperAdapter
             List<String> types = new ArrayList<>();
             List<Object> columns = new ArrayList<>();
             try {
-                SqlBase sqlBase = this.parser.getSqlBase();
-                if (sqlBase.isSuccessful()) {
-                    ZkClient client = this.zookeeperConnection.getClient();
-                    if (ObjectUtils.isNotEmpty(this.parser.getSqlBase().getColumns())) {
-                        headers.addAll(this.parser.getSqlBase().getColumns());
-                    }
-                    else {
-                        headers.add("*");
-                    }
-                    types.add("String");
-                    client.getChildren(this.parser.getExecuteContext())
-                            .forEach(column -> columns.add(Collections.singletonList(column)));
-                    response.setIsSuccessful(Boolean.TRUE);
+                SelectStatement statement = (SelectStatement) this.parser.getStatement();
+                ZkClient client = this.zookeeperConnection.getClient();
+                if (!statement.getSelectElements().isEmpty()) {
+                    headers.addAll(statement.getSelectElements()
+                            .stream()
+                            .map(SelectElement::getColumn)
+                            .collect(Collectors.toList()));
                 }
                 else {
-                    Preconditions.checkArgument(true, sqlBase.getMessage());
+                    headers.add("*");
                 }
+                types.add("String");
+                client.getChildren(this.parser.getExecuteContext())
+                        .forEach(column -> columns.add(Collections.singletonList(column)));
+                response.setIsSuccessful(Boolean.TRUE);
             }
             catch (Exception ex) {
                 log.error("Execute content failed content {} exception ", content, ex);

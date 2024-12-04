@@ -1,10 +1,10 @@
 package io.edurt.datacap.spi.parser;
 
-import io.edurt.datacap.sql.SqlBase;
+import io.edurt.datacap.sql.statement.SQLStatement;
 
 public interface Parser
 {
-    SqlBase getSqlBase();
+    SQLStatement getStatement();
 
     String getExecuteContext();
 }

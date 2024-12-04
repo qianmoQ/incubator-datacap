@@ -1,7 +1,9 @@
 package io.edurt.datacap.plugin.natived.zookeeper;
 
 import io.edurt.datacap.spi.parser.SqlParser;
-import io.edurt.datacap.sql.SqlBase;
+import io.edurt.datacap.sql.statement.SQLStatement;
+import io.edurt.datacap.sql.statement.SelectStatement;
+import io.edurt.datacap.sql.statement.ShowStatement;
 import org.apache.commons.lang3.StringUtils;
 
 public class ZookeeperParser
@@ -15,16 +17,23 @@ public class ZookeeperParser
     @Override
     public String getExecuteContext()
     {
-        SqlBase sqlBase = this.getSqlBase();
-        if (sqlBase.getToken().equalsIgnoreCase("SHOW")) {
-            if (StringUtils.isEmpty(sqlBase.getTable())) {
+        SQLStatement statement = this.getStatement();
+
+        if (statement instanceof SelectStatement) {
+            SelectStatement selectStatement = (SelectStatement) statement;
+            String tableName = selectStatement.getFromSources().get(0).getTableName();
+
+            if (StringUtils.isEmpty(tableName)) {
                 return ZookeeperPathConvert.start;
             }
-            return ZookeeperPathConvert.toPath(sqlBase.getTable());
+            return ZookeeperPathConvert.toPath(tableName);
         }
-        else if (sqlBase.getToken().equalsIgnoreCase("SELECT")) {
-            return ZookeeperPathConvert.toPath(sqlBase.getTable());
+        else if (statement instanceof ShowStatement) {
+            ShowStatement showStatement = (ShowStatement) statement;
+            return ZookeeperPathConvert.toPath(showStatement.getTableName());
         }
-        return null;
+        else {
+            throw new RuntimeException("Unsupported statement: " + statement);
+        }
     }
 }
