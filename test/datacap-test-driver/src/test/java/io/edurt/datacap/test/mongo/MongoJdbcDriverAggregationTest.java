@@ -41,4 +41,24 @@ public class MongoJdbcDriverAggregationTest
             assertTrue(rs.next());
         }
     }
+
+    @Test
+    public void testGroupByWithLimit()
+            throws SQLException
+    {
+        log.info("Test group by with limit");
+        try (ResultSet rs = statement.executeQuery("SELECT name FROM test.sample GROUP BY name LIMIT 1")) {
+            assertTrue(rs.next());
+        }
+    }
+
+    @Test
+    public void testAggregationFunction()
+            throws SQLException
+    {
+        log.info("Test aggregation function");
+        try (ResultSet rs = statement.executeQuery("SELECT name, SUM(value) FROM test.sample GROUP BY name")) {
+            assertTrue(rs.next());
+        }
+    }
 }

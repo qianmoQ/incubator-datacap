@@ -295,12 +295,7 @@ public class MongoSelectParser
 
                     switch (functionName) {
                         case "COUNT":
-                            if (field.equals("*")) {
-                                groupStage.put(alias, new Document("$sum", 1));
-                            }
-                            else {
-                                groupStage.put(alias, new Document("$sum", 1));
-                            }
+                            groupStage.put(alias, new Document("$sum", 1));
                             break;
                         case "SUM":
                             groupStage.put(alias, new Document("$sum", "$" + field));

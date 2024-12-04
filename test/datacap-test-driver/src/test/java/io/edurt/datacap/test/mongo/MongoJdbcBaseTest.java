@@ -67,6 +67,9 @@ public abstract class MongoJdbcBaseTest
         database.getCollection("sample").insertMany(
                 List.of(
                         new Document("name", "test1").append("value", 1),
+                        new Document("name", "test2").append("value", 2),
+                        new Document("name", "test3").append("value", 3),
+                        new Document("name", "test1").append("value", 4),
                         new Document("name", "test2").append("value", 2)
                 )
         );
