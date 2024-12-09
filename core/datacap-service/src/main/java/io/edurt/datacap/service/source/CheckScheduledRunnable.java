@@ -12,6 +12,7 @@ import io.edurt.datacap.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -161,7 +162,12 @@ public class CheckScheduledRunnable
                         return ((ArrayList<?>) version).get(0).toString();
                     }
                     else if (version instanceof JsonNode) {
-                        return ((JsonNode) version).get("version").asText();
+                        String columnName = response.getHeaders().get(0);
+                        return ((JsonNode) version).get(columnName).asText();
+                    }
+                    else if (version instanceof Map) {
+                        String columnName = response.getHeaders().get(0);
+                        return ((Map<?, ?>) version).get(columnName).toString();
                     }
                     return version.toString();
                 })

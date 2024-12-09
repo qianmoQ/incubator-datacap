@@ -358,9 +358,7 @@ export default defineComponent({
                        this.testInfo.connected = true
                        this.testInfo.successful = true
                        this.testInfo.message = null
-                       this.formState.version = response.data?.columns[0]?.version
-                           ? response.data?.columns[0]?.version
-                           : response.data?.columns[0]?.result
+                       this.formState.version = this.extractVersion(response.data)
                      }
                      else {
                        this.testInfo.message = response.message
@@ -427,6 +425,11 @@ export default defineComponent({
                               .filter(group => group && typeof group === 'string')
 
       this.configureTabs = [...new Set(validGroups)]
+    },
+    extractVersion(json: string)
+    {
+      const columnName = json['headers'][0]
+      return json['columns'][0][columnName]
     }
   }
 })
