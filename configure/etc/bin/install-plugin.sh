@@ -50,7 +50,7 @@ process_section() {
 
         if [ $IN_SECTION -eq 1 ] && [ ! -z "$line" ] && [[ ! "$line" =~ ^--.*$ ]]; then
             COMPONENT_NAME="$line"
-            DOWNLOAD_URL="${CDN_CENTER}/${COMPONENT_NAME}/${VERSION}/${COMPONENT_NAME}-bin.tar.gz"
+            DOWNLOAD_URL="${CDN_CENTER}/${COMPONENT_NAME}/${VERSION}/${COMPONENT_NAME}-${VERSION}-bin.tar.gz"
             echo "Installing from: $DOWNLOAD_URL"
             install_package "$DOWNLOAD_URL" "${HOME}/plugins"
         fi

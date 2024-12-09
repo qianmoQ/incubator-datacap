@@ -39,6 +39,7 @@ job_runner_apply() {
 
     echo "Apply new version for plugin ..."
     perl -pi -e 's/VERSION=.*/VERSION='"$VERSION"'/g' configure/etc/bin/install-plugin.sh
+    perl -pi -e 's/VERSION=.*/VERSION='"$VERSION"'/g' configure/etc/bin/install-plugin.bat
 
     echo "Apply new version for metadata ..."
     # Update version and URL in metadata.json using perl
