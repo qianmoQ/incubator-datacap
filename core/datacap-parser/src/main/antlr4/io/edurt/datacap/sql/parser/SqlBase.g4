@@ -433,7 +433,7 @@ expression
      | expression OR expression                             #OrExpression
      | expression NOT? BETWEEN expression AND expression    #BetweenExpression
      | expression NOT? IN ('(' expression (',' expression)* ')')  #InExpression
-     | expression NOT? LIKE expression                      #LikeExpression      // 添加这一行
+     | expression NOT? LIKE expression                      #LikeExpression
      | expression IS NOT? NULL                              #IsNullExpression
      | expression IS NOT? (TRUE | FALSE)                    #IsBooleanExpression
      | NOT expression                                       #NotExpression
