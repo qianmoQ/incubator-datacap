@@ -15,6 +15,13 @@ public class DmService
         implements PluginService
 {
     @Override
+    public String validator()
+    {
+        return "SELECT DB_VERSION AS version\n" +
+                "FROM V$INSTANCE";
+    }
+
+    @Override
     public String driver()
     {
         return "dm.jdbc.driver.DmDriver";

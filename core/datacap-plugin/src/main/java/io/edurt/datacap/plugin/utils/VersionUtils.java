@@ -248,6 +248,7 @@ public class VersionUtils
             // Read all class files
             List<JarEntry> classEntries = jarFile.stream()
                     .filter(entry -> !entry.isDirectory() && entry.getName().endsWith(".class"))
+                    .filter(entry -> !entry.getName().endsWith("module-info.class"))
                     .collect(Collectors.toList());
 
             for (JarEntry entry : classEntries) {
