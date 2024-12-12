@@ -18,8 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - before_checker_loading
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'core/datacap-ui/') ||
-      github.event_name == 'pull_request' && contains(join(github.event.pull_request.changed_files.*.filename, ' '), 'core/datacap-ui/') }}
+    if: |
+      ${{ github.event_name == 'pull_request' && (
+          contains(github.event.pull_request.changed_files.*.filename, 'core/datacap-ui') ||
+          contains(toJSON(github.event.pull_request.changed_files), 'core/datacap-ui')
+      ) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,8 +34,6 @@ jobs:
 
   before_checker_style:
     runs-on: ubuntu-latest
-    needs:
-      - before_checker_ui
     if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.modified, ' '), '.java') || contains(join(github.event.commits.*.modified, ' '), '.kt') ||
       github.event_name == 'pull_request' && contains(join(github.event.pull_request.changed_files.*.filename, ' '), '.java') || contains(join(github.event.pull_request.changed_files.*.filename, ' '), '.kt') }}
     steps:
@@ -48,8 +49,6 @@ jobs:
 
   before_checker_bugs:
     runs-on: ubuntu-latest
-    needs:
-      - before_checker_ui
     if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.modified, ' '), '.java') || contains(join(github.event.commits.*.modified, ' '), '.kt') ||
       github.event_name == 'pull_request' && contains(join(github.event.pull_request.changed_files.*.filename, ' '), '.java') || contains(join(github.event.pull_request.changed_files.*.filename, ' '), '.kt') }}
     steps:
