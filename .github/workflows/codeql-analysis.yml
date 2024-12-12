@@ -12,6 +12,9 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.modified, ' '), '.java') ||
+      github.event_name == 'pull_request' && contains(join(github.event.pull_request.changed_files.*.filename, ' '), '.java') ||
+      github.event_name == 'schedule' }}
     permissions:
       actions: read
       contents: read

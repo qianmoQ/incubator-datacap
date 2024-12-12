@@ -1,34 +1,57 @@
 <template>
-  <ShadcnCard class="w-full h-screen">
-    <template #title>
-      <div class="ml-2">{{ $t('pipeline.common.create') }}</div>
-    </template>
+  <div class="w-full h-screen min-h-screen" style="height: 100%;">
+    <ShadcnCard>
+      <template #title>
+        <div class="ml-2">{{ $t('pipeline.common.create') }}</div>
+      </template>
 
-    <div class="relative">
-      <ShadcnSpin v-model="loading"/>
+      <template #extra>
+        <ShadcnTooltip :content="$t('common.executor')" @click="visibleExecutor = true">
+          <ShadcnButton circle size="small">
+            <ShadcnIcon icon="Cog" size="15"/>
+          </ShadcnButton>
+        </ShadcnTooltip>
+      </template>
 
-      <FlowEditor v-if="contextData && !loading" :data="contextData" @onCommit="onSubmit"/>
-    </div>
-  </ShadcnCard>
+      <div class="relative">
+        <ShadcnSpin v-model="loading"/>
+
+        <ShadcnWorkflowEditor v-if="configuration && !loading"
+                              v-model="workflowState"
+                              :categories="configuration.categories"
+                              :nodes="configuration.nodes"
+                              :connections="[]"
+                              :configureWidth="380"/>
+      </div>
+    </ShadcnCard>
+  </div>
+
+  <ShadcnModal v-model="visibleExecutor">
+    <template #title>{{ $t('common.executor') }}</template>
+    <div class="flex items-center justify-center h-32">Content</div>
+  </ShadcnModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import FlowEditor from '@/views/components/editor/flow/FlowEditor.vue'
-import SourceService from '@/services/source'
+import ConfigurationService from '@/services/configure'
 import PipelineService from '@/services/pipeline'
-import { Configuration } from '@/views/components/editor/flow/Configuration.ts'
 import router from '@/router'
-import { FilterModel } from '@/model/filter.ts'
+
+export interface Configuration
+{
+  categories: any[]
+  nodes: any[]
+}
 
 export default defineComponent({
   name: 'PipelineInfo',
-  components: { FlowEditor },
   data()
   {
     return {
       loading: false,
-      contextData: [] as Configuration[]
+      visibleExecutor: false,
+      configuration: null as Configuration | null
     }
   },
   created()
@@ -39,25 +62,13 @@ export default defineComponent({
     handleInitialize()
     {
       this.loading = true
-      this.contextData = []
-      const filter = new FilterModel()
-      SourceService.getAll(filter)
-                   .then((response) => {
-                     if (response.status && response.data) {
-                       response.data.content.filter((item: any) => item.pipelines)
-                               .flatMap((item: any) => item.pipelines.map((pipeline: any) => ({
-                                 code: item.code,
-                                 name: item.name,
-                                 type: item.type,
-                                 nodeType: pipeline.type === 'INPUT' ? 'input' : 'output',
-                                 configure: pipeline.fields,
-                                 protocol: item.protocol
-                               })))
-                               .forEach((configuration: Configuration) => this.contextData.push(configuration))
-                       console.log(response.data)
-                     }
-                   })
-                   .finally(() => this.loading = false)
+      ConfigurationService.getExecutor()
+                          .then((response) => {
+                            if (response.status && response.data) {
+                              this.configuration = response.data
+                            }
+                          })
+                          .finally(() => this.loading = false)
     },
     onSubmit(value: any)
     {

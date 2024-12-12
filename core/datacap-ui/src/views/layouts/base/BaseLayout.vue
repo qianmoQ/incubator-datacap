@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount } from 'vue'
+import { setLocale } from 'view-shadcn-ui'
 import { provideI18nHandler } from '@/i18n/I18n'
 
 const {
@@ -38,6 +39,7 @@ const handleRetry = async () => {
   try {
     const locale = localStorage.getItem('locale') || 'zh_cn'
     await loadLocale(locale)
+    await setLocale(locale)
   }
   catch (error) {
     console.error('Failed to load locale:', error)

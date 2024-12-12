@@ -31,6 +31,14 @@ git clone https://github.com/devlive-community/datacap.git
 
     在本文中我们使用的是 `IDEA` 编辑器环境，用户可以根据自己喜好更换相应编辑器。
 
+### 编译项目
+
+进入项目根目录执行以下代码
+
+```bash
+./mvnw -T 1C clean install package -Dspotbugs.skip -Dgpg.skip -Dcheckstyle.skip -DskipTests=true
+```
+
 ### 加载源码到 IDEA
 
 ---

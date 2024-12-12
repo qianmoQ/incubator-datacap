@@ -1,0 +1,6 @@
+- label: Input
+  value: source
+- label: Transform
+  value: transform
+- label: Output
+  value: sink
