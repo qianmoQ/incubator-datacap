@@ -134,6 +134,7 @@ plugins:
             ApiPlugin: 插件 API
             ApiDashboard: 仪表盘 API
             ApiMenu: 菜单 API
+            ApiPipeline: 流水线 API
             NavDriver: 驱动
         - locale: en
           name: English
@@ -159,6 +160,7 @@ plugins:
             ApiPlugin: Plugin API
             ApiDashboard: Dashboard API
             ApiMenu: Menu API
+            ApiPipeline: Pipeline API
             NavDriver: Driver
   - search
   - git-revision-date-localized:
@@ -311,6 +313,8 @@ nav:
         - api/menu/list.md
         - api/menu/save.md
         - api/menu/edit.md
+      - ApiPipeline：
+        - api/pipeline/list.md
   - NavDriver:
       - driver/mongodb.md
   - useCases.md

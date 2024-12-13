@@ -54,39 +54,83 @@ hide:
     <p/><p/><p/><p/>
 </div>
 
-## Overview
+## Features
 
-<div style="max-width: 60%; text-align: center;margin: 0 auto;">
-<p style="text-align: center;">
-Datacap is a fast, lightweight, and intuitive system. It can be used to manage multiple data sources, perform various operations on the data under the source, make data charts, monitor data sources, and other functions. It can also be used as a database management system to add, delete, modify and query the data under the source.
-</p>
-</div>
+<br />
 
-<div style="max-width: 800px; margin: 0 auto" class="grid cards" markdown>
+<div style="margin: 0 auto" class="grid cards" markdown>
 
-- __Powerful but easy to use__ 
+- __Unified Query Language__
 
     ---
+    
+    DataCap unifies the query language for all data sources into SQL, whether it's a relational database, NoSQL, file system, or other middleware.
 
-    DataCap uses a simple SQL IDE to quickly and easily integrate and explore your data.
-
-- __Integrate with modern databases__
-
-    ---
-
-    DataCap can connect to any SQL-based | via various protocols such as JDBC, Native, Http, etc NoSQL data sources.
-
-- __Highly customizable__
+- __Extensive data source support__
 
     ---
+    
+    DataCap supports more than 40+ data sources, including mainstream databases and middleware such as ClickHouse, MySQL, PostgreSQL, MongoDB, Redis, Elasticsearch, and Kafka.
 
-    DataCap can quickly customize your data sources by implementing the plug-in SPI provided. It is also possible to customize your data conversion integration tool by implementing an actuator SPI.
+- __Flexible Connectivity__
+    
+    ---
+    
+    The DataCap system supports connecting to different data sources through multiple protocols such as JDBC, Native, HTTP, etc., providing greater flexibility and compatibility.
+
+- __Plug-in Architecture Design__
+
+    ---
+    
+    DataCap is designed as a plug-in system that supports online installation, uninstallation, updates, and hot deployment, facilitating system expansion and maintenance.
+
+- __Full SQL parsing capabilities__
+
+    ---
+    
+    DataCap has a built-in full SQL parser to ensure accurate parsing and execution of SQL queries.
+
+- __Data Visualization Capabilities__
+
+    ---
+    
+    DataCap provides data visualization capabilities, which can convert data into charts, graphs, and reports to visualize data and help users understand and analyze data more intuitively.
+
+- __Data Source Monitoring__
+
+    ---
+    
+    DataCap provides the data source monitoring function, which can monitor the status, performance, and health metrics of data sources in real time, help users understand the running status of data sources, and ensure the reliability of data sources.
+
+- __Data Transformation & Integration__
+
+    ---
+    
+    DataCap supports data transformation and integration, converts data from different data sources into a unified format, and integrates data to achieve unified management and analysis of data, facilitating data migration and integration.
+
+- __Open Source Transparent__
+    
+    ---
+    
+    DataCap is open-source, allowing users to freely view, modify, and use the source code, ensuring transparency and customizability of the system.
+
+- __Multi-user support__
+
+    ---
+    
+    DataCap has a built-in multi-user management system that supports the configuration and management of different user permissions.
+
+- __Full web UI__
+
+    ---
+    
+    DataCap has a built-in full web UI that provides a user-friendly interface for data query, management, and visualization for full control of data management.
 
 - __Join (DingTalk | WeChat)__
 
     ---
 
-    <img src="/assets/dingtalk.png" alt="DingTalk" style="height: 160px;" /><img src="/assets/wechat.png" alt="Wechat" style="height: 160px;" />
+    <img src="/assets/dingtalk.png" alt="钉钉" style="height: 160px;" /><img src="/assets/wechat.png" alt="微信" style="height: 160px;" />
 
 </div>
 

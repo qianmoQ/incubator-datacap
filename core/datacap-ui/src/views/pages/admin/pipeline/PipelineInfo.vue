@@ -6,11 +6,26 @@
       </template>
 
       <template #extra>
-        <ShadcnTooltip :content="$t('common.executor')" @click="visibleExecutor = true">
-          <ShadcnButton circle size="small">
-            <ShadcnIcon icon="Cog" size="15"/>
-          </ShadcnButton>
-        </ShadcnTooltip>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <ShadcnText type="small">{{ $t('common.executor') }}</ShadcnText>
+
+            <ShadcnSelect v-model="formState.executor">
+              <template #options>
+                <ShadcnSelectOption v-for="executor in installedExecutors"
+                                    :key="executor.name"
+                                    :label="executor.name"
+                                    :value="executor.name"/>
+              </template>
+            </ShadcnSelect>
+          </div>
+
+          <ShadcnTooltip :content="$t('common.executor')" @click="visible = true">
+            <ShadcnButton circle size="small">
+              <ShadcnIcon icon="Cog" size="15"/>
+            </ShadcnButton>
+          </ShadcnTooltip>
+        </div>
       </template>
 
       <div class="relative">
@@ -26,7 +41,7 @@
     </ShadcnCard>
   </div>
 
-  <ShadcnModal v-model="visibleExecutor">
+  <ShadcnModal v-model="visible">
     <template #title>{{ $t('common.executor') }}</template>
     <div class="flex items-center justify-center h-32">Content</div>
   </ShadcnModal>
@@ -36,7 +51,9 @@
 import { defineComponent } from 'vue'
 import ConfigurationService from '@/services/configure'
 import PipelineService from '@/services/pipeline'
+import PluginService from '@/services/plugin'
 import router from '@/router'
+import HttpUtils from '@/utils/http.ts'
 
 export interface Configuration
 {
@@ -50,8 +67,13 @@ export default defineComponent({
   {
     return {
       loading: false,
-      visibleExecutor: false,
-      configuration: null as Configuration | null
+      visible: false,
+      configuration: null as Configuration | null,
+      workflowState: null as any | null,
+      installedExecutors: [] as any[],
+      formState: {
+        executor: 'LocalExecutor'
+      }
     }
   },
   created()
@@ -62,13 +84,16 @@ export default defineComponent({
     handleInitialize()
     {
       this.loading = true
-      ConfigurationService.getExecutor()
-                          .then((response) => {
-                            if (response.status && response.data) {
-                              this.configuration = response.data
-                            }
-                          })
-                          .finally(() => this.loading = false)
+      HttpUtils.all([ConfigurationService.getExecutor(), PluginService.getPlugins()])
+               .then(HttpUtils.spread((executor, plugin) => {
+                 if (executor.status && executor.data) {
+                   this.configuration = executor.data
+                 }
+                 if (plugin.status && plugin.data) {
+                   this.installedExecutors = plugin.data.filter((v: { type: string }) => v.type === 'EXECUTOR')
+                 }
+               }))
+               .finally(() => this.loading = false)
     },
     onSubmit(value: any)
     {

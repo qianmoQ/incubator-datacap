@@ -57,8 +57,6 @@ export class HttpUtils
                 query: {
                     redirect: currentPath
                 },
-                // 替换当前的历史记录，这样用户点击后退时不会陷入循环
-                // Replace the current history record, so that the user can not enter a loop
                 replace: true
             })
         }
@@ -77,13 +75,11 @@ export class HttpUtils
             status: false
         }
 
-        // 检查当前路由，避免重复重定向
         // Current route path, avoid repeated redirection
         const currentPath = router.currentRoute.value.path
         const isAlreadyOnErrorPage = currentPath.startsWith('/common/not_network')
 
         if (error.code === 'ERR_NETWORK' && !isAlreadyOnErrorPage) {
-            // 记录用户原始请求的页面路径
             // Record the original page path of the user
             const originalPath = router.currentRoute.value.fullPath
             router.push({
@@ -91,8 +87,6 @@ export class HttpUtils
                 query: {
                     redirect: originalPath
                 },
-                // 替换当前的历史记录，这样用户点击后退时不会陷入循环
-                // Replace the current history record, so that the user can not enter a loop
                 replace: true
             })
         }
@@ -186,4 +180,29 @@ export class HttpUtils
     {
         return axios
     }
+
+    /**
+     * Execute multiple requests concurrently
+     * @param promises Array of HttpUtils request promises
+     * @returns Promise that resolves with an array of ResponseModel
+     */
+    all(promises: Promise<ResponseModel>[]): Promise<ResponseModel[]>
+    {
+        return Promise.all(promises)
+    }
+
+    /**
+     * Spread helper function to handle multiple responses
+     * @param callback Function to handle spread response arguments
+     * @returns Function that accepts response array and applies the callback
+     */
+    spread<T>(callback: (...args: ResponseModel[]) => T): (array: ResponseModel[]) => T
+    {
+        return function wrap(arr) {
+            return callback.apply(null, arr)
+        }
+    }
 }
+
+// Export a default instance
+export default new HttpUtils()

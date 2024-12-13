@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, onBeforeUnmount, onMounted } from 'vue'
+import { setLocale } from 'view-shadcn-ui'
 import { TokenUtils } from '@/utils/token'
 import { ObjectUtils } from '@/utils/object'
 import { HttpUtils } from '@/utils/http'
@@ -40,6 +41,7 @@ onBeforeMount(async () => {
   try {
     const locale = localStorage.getItem('locale') || 'zh-CN'
     await loadLocale(locale)
+    await setLocale(locale)
   }
   catch (error) {
     console.error('Failed to load locale:', error)
