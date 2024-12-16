@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, onBeforeUnmount, onMounted } from 'vue'
+// @ts-ignore
 import { setLocale } from 'view-shadcn-ui'
 import { TokenUtils } from '@/utils/token'
 import { ObjectUtils } from '@/utils/object'

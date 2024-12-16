@@ -20,11 +20,9 @@
             </ShadcnSelect>
           </div>
 
-          <ShadcnTooltip :content="$t('common.executor')" @click="visible = true">
-            <ShadcnButton circle size="small">
-              <ShadcnIcon icon="Cog" size="15"/>
-            </ShadcnButton>
-          </ShadcnTooltip>
+          <ShadcnButton :disabled="!(workflowState?.validation?.length === 0)" @click="visible = true">
+            {{ $t('common.publish') }}
+          </ShadcnButton>
         </div>
       </template>
 

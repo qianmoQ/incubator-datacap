@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount } from 'vue'
+// @ts-ignore
 import { setLocale } from 'view-shadcn-ui'
 import { provideI18nHandler } from '@/i18n/I18n'
 
