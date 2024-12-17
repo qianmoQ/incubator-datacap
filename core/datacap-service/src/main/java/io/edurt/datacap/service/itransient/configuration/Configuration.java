@@ -20,4 +20,5 @@ public class Configuration
 {
     private List<CategoryConfiguration> categories = new ArrayList<>();
     private List<NodeConfiguration> nodes = new ArrayList<>();
+    private List<ConnectionConfiguration> connections;
 }

@@ -313,7 +313,8 @@ nav:
         - api/menu/list.md
         - api/menu/save.md
         - api/menu/edit.md
-      - ApiPipeline：
+      - ApiPipeline:
+        - api/pipeline/submit.md
         - api/pipeline/list.md
   - NavDriver:
       - driver/mongodb.md

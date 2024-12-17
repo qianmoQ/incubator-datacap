@@ -1,5 +1,6 @@
 id: clickhouse-source
 label: Clickhouse
+key: Clickhouse
 description: Clickhouse source connector
 category: source
 configure:

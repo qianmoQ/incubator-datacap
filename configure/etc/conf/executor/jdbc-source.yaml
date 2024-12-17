@@ -1,5 +1,6 @@
 id: jdbc-source
 label: Jdbc
+key: Jdbc
 description: JDBC source connector
 category: source
 configure:

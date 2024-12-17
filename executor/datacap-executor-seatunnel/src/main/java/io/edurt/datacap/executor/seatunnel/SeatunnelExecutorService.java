@@ -98,11 +98,16 @@ public class SeatunnelExecutorService
         if (ObjectUtils.isNotEmpty(configure)) {
             String protocol = configure.getType();
 
-            try {
-                ConnectorType.valueOf(protocol);
-            }
-            catch (IllegalArgumentException e) {
+            if (protocol == null || protocol.trim().isEmpty()) {
                 protocol = "Jdbc";
+            }
+            else {
+                try {
+                    ConnectorType.valueOf(protocol);
+                }
+                catch (IllegalArgumentException e) {
+                    protocol = configure.getType();
+                }
             }
 
             Connector factory = ConnectorFactory.createFormatter(ConnectorType.valueOf(protocol), configure);
@@ -110,17 +115,44 @@ public class SeatunnelExecutorService
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeObjectFieldStart(entry.getKey());
                 if (entry.getValue() instanceof Properties) {
-                    for (Map.Entry<Object, Object> property : ((Properties) entry.getValue()).entrySet()) {
-                        String[] split = property.getValue().toString().split("\n");
-                        if (split.length > 1 && !String.valueOf(property.getKey()).equalsIgnoreCase("sql")) {
-                            jsonGenerator.writeArrayFieldStart(property.getKey().toString());
-                            for (String line : split) {
-                                jsonGenerator.writeString(line);
+                    Properties props = (Properties) entry.getValue();
+                    for (Map.Entry<Object, Object> property : props.entrySet()) {
+                        String key = property.getKey().toString();
+                        Object value = property.getValue();
+
+                        if (value == null) {
+                            jsonGenerator.writeNullField(key);
+                        }
+                        else if (value instanceof Boolean) {
+                            jsonGenerator.writeBooleanField(key, (Boolean) value);
+                        }
+                        else if (value instanceof Number) {
+                            if (value instanceof Integer) {
+                                jsonGenerator.writeNumberField(key, (Integer) value);
                             }
-                            jsonGenerator.writeEndArray();
+                            else if (value instanceof Long) {
+                                jsonGenerator.writeNumberField(key, (Long) value);
+                            }
+                            else if (value instanceof Double) {
+                                jsonGenerator.writeNumberField(key, (Double) value);
+                            }
+                            else {
+                                jsonGenerator.writeStringField(key, value.toString());
+                            }
                         }
                         else {
-                            jsonGenerator.writeStringField(property.getKey().toString(), (String) property.getValue());
+                            String strValue = value.toString();
+                            String[] split = strValue.split("\n");
+                            if (split.length > 1 && !key.equalsIgnoreCase("sql")) {
+                                jsonGenerator.writeArrayFieldStart(key);
+                                for (String line : split) {
+                                    jsonGenerator.writeString(line);
+                                }
+                                jsonGenerator.writeEndArray();
+                            }
+                            else {
+                                jsonGenerator.writeStringField(key, strValue);
+                            }
                         }
                     }
                 }

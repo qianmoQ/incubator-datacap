@@ -48,4 +48,6 @@ TRUNCATE TABLE `datacap_source`;
 
 TRUNCATE TABLE `datacap_snippet`;
 
+TRUNCATE TABLE `datacap_workflow`;
+
 mysqldump -u root -p datacap > $(pwd)/configure/schema/datacap.sql

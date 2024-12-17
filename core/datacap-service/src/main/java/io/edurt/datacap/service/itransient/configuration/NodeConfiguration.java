@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @ToString
@@ -16,10 +17,13 @@ import java.util.List;
 public class NodeConfiguration
 {
     private String id;
+    private String key;
+    private String tid;
     private String label;
     private String category;
     private PositionConfiguration position;
     private List<NodeItemConfiguration> configure;
     private String description;
     private List<PortConfiguration> ports;
+    private Map<String, Object> data;
 }

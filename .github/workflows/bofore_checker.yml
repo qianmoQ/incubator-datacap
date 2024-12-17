@@ -52,14 +52,15 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" ]]; then
             MODIFIED_FILES="${{ toJSON(github.event.commits.*.modified) }}"
             if [[ $MODIFIED_FILES == *".java"* ]] || [[ $MODIFIED_FILES == *".kt"* ]]; then
-              echo "::set-output name=run_check::true"
+              echo "run_check=true" >> $GITHUB_OUTPUT
             fi
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             CHANGED_FILES="${{ toJSON(github.event.pull_request.changed_files.*.filename) }}"
             if [[ $CHANGED_FILES == *".java"* ]] || [[ $CHANGED_FILES == *".kt"* ]]; then
-              echo "::set-output name=run_check::true"
+              echo "run_check=true" >> $GITHUB_OUTPUT
             fi
           fi
+        shell: bash
       - name: Maven Checker Style
         if: steps.check_files.outputs.run_check == 'true'
         uses: actions/setup-java@v3
@@ -91,14 +92,15 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" ]]; then
             MODIFIED_FILES="${{ toJSON(github.event.commits.*.modified) }}"
             if [[ $MODIFIED_FILES == *".java"* ]] || [[ $MODIFIED_FILES == *".kt"* ]]; then
-              echo "::set-output name=run_check::true"
+              echo "run_check=true" >> $GITHUB_OUTPUT
             fi
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             CHANGED_FILES="${{ toJSON(github.event.pull_request.changed_files.*.filename) }}"
             if [[ $CHANGED_FILES == *".java"* ]] || [[ $CHANGED_FILES == *".kt"* ]]; then
-              echo "::set-output name=run_check::true"
+              echo "run_check=true" >> $GITHUB_OUTPUT
             fi
           fi
+        shell: bash
       - name: Maven Checker Bugs
         if: steps.check_files.outputs.run_check == 'true'
         uses: actions/setup-java@v3

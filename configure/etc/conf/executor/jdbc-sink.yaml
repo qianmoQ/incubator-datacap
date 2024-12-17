@@ -1,5 +1,6 @@
 id: jdbc-sink
 label: Jdbc
+key: Jdbc
 description: JDBC sink connector
 category: sink
 configure:
