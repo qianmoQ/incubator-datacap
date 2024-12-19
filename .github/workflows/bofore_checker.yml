@@ -39,38 +39,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Debug file changes
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Modified files (push):"
-          echo "${{ toJSON(github.event.commits.*.modified) }}"
-          echo "Changed files (pull_request):"
-          echo "${{ toJSON(github.event.pull_request.changed_files.*.filename) }}"
       - name: Check if Java or Kotlin files changed
         id: check_files
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            MODIFIED_FILES="${{ toJSON(github.event.commits.*.modified) }}"
-            if [[ $MODIFIED_FILES == *".java"* ]] || [[ $MODIFIED_FILES == *".kt"* ]]; then
-              echo "run_check=true" >> $GITHUB_OUTPUT
-            fi
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            CHANGED_FILES="${{ toJSON(github.event.pull_request.changed_files.*.filename) }}"
-            if [[ $CHANGED_FILES == *".java"* ]] || [[ $CHANGED_FILES == *".kt"* ]]; then
-              echo "run_check=true" >> $GITHUB_OUTPUT
-            fi
-          fi
-        shell: bash
       - name: Maven Checker Style
-        if: steps.check_files.outputs.run_check == 'true'
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
-      - if: steps.check_files.outputs.run_check == 'true'
-        run: chmod 755 ./mvnw
-      - if: steps.check_files.outputs.run_check == 'true'
-        run: ./mvnw clean install checkstyle:checkstyle -Dspotbugs.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true
+        run: |
+          chmod 755 ./mvnw
+          ./mvnw clean install checkstyle:checkstyle -Dspotbugs.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true
 
   before_checker_bugs:
     runs-on: ubuntu-latest
@@ -79,47 +57,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Debug file changes
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-          echo "Modified files (push):"
-          echo "${{ toJSON(github.event.commits) }}" | jq -r '.[].modified[]'
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          echo "Changed files (pull_request):"
-          echo "${{ toJSON(github.event.pull_request.changed_files) }}" | jq -r '.[].filename'
-          fi
-      - name: Check if Java or Kotlin files changed
-        id: check_files
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            MODIFIED_FILES="${{ toJSON(github.event.commits.*.modified) }}"
-            if [[ $MODIFIED_FILES == *".java"* ]] || [[ $MODIFIED_FILES == *".kt"* ]]; then
-              echo "run_check=true" >> $GITHUB_OUTPUT
-            fi
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            CHANGED_FILES="${{ toJSON(github.event.pull_request.changed_files.*.filename) }}"
-            if [[ $CHANGED_FILES == *".java"* ]] || [[ $CHANGED_FILES == *".kt"* ]]; then
-              echo "run_check=true" >> $GITHUB_OUTPUT
-            fi
-          fi
-        shell: bash
       - name: Maven Checker Bugs
-        if: steps.check_files.outputs.run_check == 'true'
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
       - name: Grant execute permission for mvnw
-        if: steps.check_files.outputs.run_check == 'true'
         run: chmod +x mvnw
       - name: Run SpotBugs skip server
-        if: steps.check_files.outputs.run_check == 'true'
         env:
           MAVEN_OPTS: -Xmx1024m
         run: ./mvnw clean install spotbugs:spotbugs -pl '!core/datacap-server' -Dcheckstyle.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true
       - name: Run SpotBugs for server
-        if: steps.check_files.outputs.run_check == 'true'
         run: ./mvnw clean install spotbugs:spotbugs -Dcheckstyle.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true -f core/datacap-server/pom.xml
 
   before_checker_test:
