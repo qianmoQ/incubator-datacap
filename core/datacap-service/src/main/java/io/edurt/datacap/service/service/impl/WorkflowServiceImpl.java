@@ -2,6 +2,7 @@ package io.edurt.datacap.service.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.common.response.CommonResponse;
 import io.edurt.datacap.common.utils.NullAwareBeanUtils;
 import io.edurt.datacap.executor.ExecutorService;
@@ -45,6 +46,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Service
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class WorkflowServiceImpl
         implements WorkflowService
 {
