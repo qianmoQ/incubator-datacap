@@ -285,12 +285,12 @@ public class WorkflowServiceImpl
 
                     CommonResponse<WorkflowEntity> startResponse = saveOrUpdate(repository, entity);
                     if (startResponse.getStatus()) {
-                        return CommonResponse.<String>success(code);
+                        return CommonResponse.success(code);
                     }
                     else {
                         return CommonResponse.<String>failure(startResponse.getMessage().toString());
                     }
                 })
-                .orElse(CommonResponse.<String>failure(String.format("Workflow [ %s ] not found", code)));
+                .orElse(CommonResponse.failure(String.format("Workflow [ %s ] not found", code)));
     }
 }

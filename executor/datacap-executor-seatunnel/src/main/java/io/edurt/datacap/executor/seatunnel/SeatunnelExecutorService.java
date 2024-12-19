@@ -110,7 +110,7 @@ public class SeatunnelExecutorService
                 }
             }
 
-            Connector factory = ConnectorFactory.createFormatter(ConnectorType.valueOf(protocol), configure);
+            Connector factory = ConnectorFactory.createFormatter(protocol, configure);
             for (Map.Entry<String, Object> entry : factory.formatToMap().entrySet()) {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeObjectFieldStart(entry.getKey());

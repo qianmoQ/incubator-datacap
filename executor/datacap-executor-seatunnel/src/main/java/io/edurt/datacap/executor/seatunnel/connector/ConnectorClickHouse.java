@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectorClickHouse
         extends Connector
 {
-    public ConnectorClickHouse(ConnectorType type, ExecutorConfigure configure)
+    public ConnectorClickHouse(String type, ExecutorConfigure configure)
     {
         super(type, configure, configure.getSupportOptions());
     }

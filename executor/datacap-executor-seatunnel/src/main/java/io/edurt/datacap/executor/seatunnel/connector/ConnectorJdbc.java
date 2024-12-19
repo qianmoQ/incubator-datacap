@@ -10,7 +10,7 @@ import java.util.Properties;
 public class ConnectorJdbc
         extends Connector
 {
-    public ConnectorJdbc(ConnectorType type, ExecutorConfigure configure)
+    public ConnectorJdbc(String type, ExecutorConfigure configure)
     {
         super(type, configure, configure.getSupportOptions());
     }

@@ -13,11 +13,11 @@ import java.util.Set;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public abstract class Connector
 {
-    protected final ConnectorType type;
+    protected final String type;
     protected final ExecutorConfigure configure;
     private final Set<String> supportOptions;
 
-    public Connector(ConnectorType type, ExecutorConfigure configure, Set<String> supportOptions)
+    public Connector(String type, ExecutorConfigure configure, Set<String> supportOptions)
     {
         this.type = type;
         this.configure = configure;
@@ -40,7 +40,7 @@ public abstract class Connector
     public Map<String, Object> formatToMap()
     {
         Map<String, Object> node = Maps.newConcurrentMap();
-        node.put(this.type.name(), formatToProperties(configure.getConfigure()));
+        node.put(this.type, formatToProperties(configure.getConfigure()));
         return node;
     }
 

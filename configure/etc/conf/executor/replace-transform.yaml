@@ -1,6 +1,7 @@
 id: replace-transform
 label: Replace
 tid: replace-transform
+key: Replace
 description: Replace transform
 category: transform
 configure:

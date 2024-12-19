@@ -14,7 +14,7 @@ public class ConnectorConsole
 {
     private static final Set<String> supportOptions = new HashSet<>();
 
-    public ConnectorConsole(ConnectorType type, ExecutorConfigure configure)
+    public ConnectorConsole(String type, ExecutorConfigure configure)
     {
         super(type, configure, supportOptions);
     }
