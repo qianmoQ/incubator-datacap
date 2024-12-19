@@ -18,11 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - before_checker_loading
-    if: |
-      ${{ github.event_name == 'pull_request' && (
-          contains(github.event.pull_request.changed_files.*.filename, 'core/datacap-ui') ||
-          contains(toJSON(github.event.pull_request.changed_files), 'core/datacap-ui')
-      ) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,25 +30,22 @@ jobs:
   before_checker_style:
     runs-on: ubuntu-latest
     needs:
-      - before_checker_loading
+      - before_checker_ui
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Check if Java or Kotlin files changed
-        id: check_files
       - name: Maven Checker Style
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
-        run: |
-          chmod 755 ./mvnw
-          ./mvnw clean install checkstyle:checkstyle -Dspotbugs.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true
+      - run: chmod 755 ./mvnw
+      - run: ./mvnw clean install checkstyle:checkstyle -Dspotbugs.skip -Dgpg.skip -Dskip.pnpm -DskipTests=true
 
   before_checker_bugs:
     runs-on: ubuntu-latest
     needs:
-      - before_checker_loading
+      - before_checker_ui
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -74,24 +66,27 @@ jobs:
   before_checker_test:
     runs-on: ubuntu-latest
     needs:
-      - before_checker_ui
       - before_checker_style
       - before_checker_bugs
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Maven Checker Style
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
+
       - name: Add hosts
         run: |
           echo "156.238.128.11 cdn.north.devlive.org" | sudo tee -a /etc/hosts
           echo "156.238.128.17 cdn.north.devlive.org" | sudo tee -a /etc/hosts
           echo "156.238.128.19 cdn.north.devlive.org" | sudo tee -a /etc/hosts
           echo "156.238.128.23 cdn.north.devlive.org" | sudo tee -a /etc/hosts
+
       - run: chmod 755 ./mvnw
+
       - name: Debug Environment Variables
         env:
           QINIU_ACCESS: ${{ secrets.QINIU_ACCESS }}
@@ -101,6 +96,7 @@ jobs:
         run: |
           echo "QINIU_ENDPOINT is set: ${{ secrets.QINIU_ENDPOINT != '' }}"
           echo "QINIU_ENDPOINT length: ${#QINIU_ENDPOINT}"
+
       - name: Run Tests
         if: ${{ env.QINIU_ENDPOINT != '' }}
         env:
