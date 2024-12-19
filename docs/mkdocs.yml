@@ -129,12 +129,14 @@ plugins:
             NavReleaseNote: 更新日志
             NavDataset: 数据集
             NavDeploy: 安装部署
+            NavWorkflow: 工作流
             ApiHome: 开放 API
             ApiUser: 用户 API
             ApiPlugin: 插件 API
             ApiDashboard: 仪表盘 API
             ApiMenu: 菜单 API
             ApiPipeline: 流水线 API
+            ApiWorkflow: 工作流 API
             NavDriver: 驱动
         - locale: en
           name: English
@@ -155,12 +157,14 @@ plugins:
             NavReleaseNote: Release Note
             NavDataset: Dataset
             NavDeploy: Install Deploy
+            NavWorkflow: Workflow
             ApiHome: Open API
             ApiUser: User API
             ApiPlugin: Plugin API
             ApiDashboard: Dashboard API
             ApiMenu: Menu API
             ApiPipeline: Pipeline API
+            ApiWorkflow: Workflow API
             NavDriver: Driver
   - search
   - git-revision-date-localized:
@@ -189,6 +193,14 @@ nav:
       - reference/getStarted/dataset/sync/home.md
       - reference/getStarted/dataset/history/home.md
       - reference/getStarted/dataset/clear/home.md
+    - NavWorkflow:
+      - reference/getStarted/workflow/create/home.md
+      - reference/getStarted/workflow/error/home.md
+      - reference/getStarted/workflow/stop/home.md
+      - reference/getStarted/workflow/restart/home.md
+      - reference/getStarted/workflow/logger/home.md
+      - reference/getStarted/workflow/delete/home.md
+      - reference/getStarted/workflow/dag/home.md
     - NavClient:
       - reference/clients/cli.md
     - NavManager:
@@ -313,9 +325,14 @@ nav:
         - api/menu/list.md
         - api/menu/save.md
         - api/menu/edit.md
-      - ApiPipeline:
-        - api/pipeline/submit.md
-        - api/pipeline/list.md
+      - ApiWorkflow:
+        - api/workflow/list.md
+        - api/workflow/save.md
+        - api/workflow/edit.md
+        - api/workflow/get.md
+        - api/workflow/delete.md
+        - api/workflow/log.md
+        - api/workflow/restart.md
   - NavDriver:
       - driver/mongodb.md
   - useCases.md

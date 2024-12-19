@@ -71,7 +71,7 @@ public class WorkflowServiceImpl
         repository.findByCode(configure.getCode())
                 .ifPresent(value -> NullAwareBeanUtils.copyNullProperties(value, configure));
 
-        if (configure.getState().equals(RunState.RUNNING)) {
+        if (configure.getState() != null && configure.getState().equals(RunState.RUNNING)) {
             return CommonResponse.failure("Workflow is already running");
         }
 
