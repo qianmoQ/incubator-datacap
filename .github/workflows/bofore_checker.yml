@@ -82,10 +82,13 @@ jobs:
       - name: Debug file changes
         run: |
           echo "Event name: ${{ github.event_name }}"
+          if [[ "${{ github.event_name }}" == "push" ]]; then
           echo "Modified files (push):"
-          echo "${{ toJSON(github.event.commits.*.modified) }}"
+          echo "${{ toJSON(github.event.commits) }}" | jq -r '.[].modified[]'
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
           echo "Changed files (pull_request):"
-          echo "${{ toJSON(github.event.pull_request.changed_files.*.filename) }}"
+          echo "${{ toJSON(github.event.pull_request.changed_files) }}" | jq -r '.[].filename'
+          fi
       - name: Check if Java or Kotlin files changed
         id: check_files
         run: |
