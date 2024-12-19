@@ -6,7 +6,11 @@
                @on-close="onCancel">
     <ShadcnSpin v-model="loading" fixed/>
 
-    <ShadcnLogger v-if="!loading" height="380" :items="logs" toolbar/>
+    <ShadcnLogger v-if="!loading"
+                  height="380"
+                  toolbar
+                  :items="logs"
+                  :custom-patterns="customPatterns"/>
 
     <template #footer>
       <ShadcnButton type="default" @click="onCancel">
@@ -48,7 +52,13 @@ export default defineComponent({
     return {
       title: null as string | null,
       loading: false,
-      logs: Array<string>()
+      logs: Array<string>(),
+      customPatterns: {
+        timestamp: [/^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2},\d{3})/],
+        level: [/\b(INFO|ERROR|WARN|DEBUG)\b/],
+        thread: [/\[(pool-\d+-thread-\d+)\]/],
+        file: [/\[([^[\]]+\.java:\d+)\]/]
+      }
     }
   },
   created()
