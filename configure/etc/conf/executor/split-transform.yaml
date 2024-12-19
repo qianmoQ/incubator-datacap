@@ -1,5 +1,6 @@
 id: split-transform
 label: Split
+tid: split-transform
 description: Split transform
 category: transform
 configure:

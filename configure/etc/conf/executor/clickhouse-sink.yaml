@@ -1,6 +1,7 @@
 id: clickhouse-sink
 label: Clickhouse
 key: Clickhouse
+tid: clickhouse-sink
 description: Clickhouse sink connector
 category: sink
 configure:

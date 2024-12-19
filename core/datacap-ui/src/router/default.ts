@@ -349,6 +349,14 @@ const createAdminRouter = (router: any) => {
                 component: () => import('@/views/pages/admin/chat/ChatHome.vue')
             },
             {
+                path: 'workflow',
+                meta: {
+                    title: 'common.workflow',
+                    isRoot: false
+                },
+                component: () => import('@/views/pages/admin/wofkflow/WorkflowHome.vue')
+            },
+            {
                 path: 'workflow/info/:code?',
                 meta: {
                     title: 'common.workflow',

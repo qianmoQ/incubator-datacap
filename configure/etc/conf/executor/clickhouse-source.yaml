@@ -1,6 +1,7 @@
 id: clickhouse-source
 label: Clickhouse
 key: Clickhouse
+tid: clickhouse-source
 description: Clickhouse source connector
 category: source
 configure:

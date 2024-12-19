@@ -1,5 +1,6 @@
 id: sql-transform
 label: Sql
+tid: sql-transform
 description: SQL transform
 category: transform
 configure:

@@ -1,7 +1,9 @@
 package io.edurt.datacap.service.service.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.edurt.datacap.common.response.CommonResponse;
+import io.edurt.datacap.common.utils.NullAwareBeanUtils;
 import io.edurt.datacap.executor.ExecutorService;
 import io.edurt.datacap.executor.common.RunEngine;
 import io.edurt.datacap.executor.common.RunMode;
@@ -17,20 +19,25 @@ import io.edurt.datacap.service.entity.WorkflowEntity;
 import io.edurt.datacap.service.initializer.InitializerConfigure;
 import io.edurt.datacap.service.itransient.configuration.NodeConfiguration;
 import io.edurt.datacap.service.repository.BaseRepository;
+import io.edurt.datacap.service.repository.WorkflowRepository;
 import io.edurt.datacap.service.security.UserDetailsService;
 import io.edurt.datacap.service.service.WorkflowService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 
@@ -45,12 +52,14 @@ public class WorkflowServiceImpl
     private final InitializerConfigure initializer;
     private final PluginManager pluginManager;
     private final Environment environment;
+    private final WorkflowRepository repository;
 
-    public WorkflowServiceImpl(InitializerConfigure initializer, PluginManager pluginManager, Environment environment)
+    public WorkflowServiceImpl(InitializerConfigure initializer, PluginManager pluginManager, Environment environment, WorkflowRepository repository)
     {
         this.initializer = initializer;
         this.pluginManager = pluginManager;
         this.environment = environment;
+        this.repository = repository;
     }
 
     @Override
@@ -58,6 +67,8 @@ public class WorkflowServiceImpl
     {
         log.info("Starting workflow save/update process for executor: {}, code: {}",
                 configure.getExecutor(), configure.getCode());
+        repository.findByCode(configure.getCode())
+                .ifPresent(value -> NullAwareBeanUtils.copyNullProperties(value, configure));
 
         UserEntity user = UserDetailsService.getUser();
         String date = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS");
@@ -194,5 +205,70 @@ public class WorkflowServiceImpl
 
         log.info("Workflow process initiated successfully for: {}", configure.getCode());
         return CommonResponse.success(configure);
+    }
+
+    @Override
+    public CommonResponse<Boolean> stop(String code)
+    {
+        return (CommonResponse) repository.findByCode(code)
+                .map(entity -> {
+                    if (entity.getState().equals(RunState.STOPPED)
+                            || entity.getState().equals(RunState.FAILURE)
+                            || entity.getState().equals(RunState.SUCCESS)
+                            || entity.getState().equals(RunState.TIMEOUT)) {
+                        return CommonResponse.failure(String.format("Workflow [ %s ] is already stopped", entity.getName()));
+                    }
+
+                    java.util.concurrent.ExecutorService service = initializer.getTaskExecutors()
+                            .get(entity.getName());
+                    if (service != null) {
+                        service.shutdownNow();
+                    }
+                    entity.setState(RunState.STOPPED);
+                    entity.setMessage(null);
+                    this.repository.save(entity);
+                    return CommonResponse.success(true);
+                })
+                .orElseGet(() -> CommonResponse.failure(String.format("Workflow [ %s ] not found", code)));
+    }
+
+    @Override
+    public CommonResponse<List<String>> log(String code)
+    {
+        return repository.findByCode(code)
+                .map(entity -> {
+                    if (entity.getState().equals(RunState.QUEUE)
+                            || entity.getState().equals(RunState.CREATED)) {
+                        return CommonResponse.<List<String>>failure(String.format("Workflow [ %s ] is not running", entity.getName()));
+                    }
+
+                    List<String> lines = Lists.newArrayList();
+                    try (FileInputStream stream = new FileInputStream(String.format("%s/%s.log", entity.getWork(), entity.getCode()))) {
+                        lines.addAll(IOUtils.readLines(stream, "UTF-8"));
+                        return CommonResponse.success(lines);
+                    }
+                    catch (IOException e) {
+                        log.error("Failed to read pipeline [ {} ] log ", entity.getName(), e);
+                        return CommonResponse.<List<String>>failure("Failed to read log file");
+                    }
+                })
+                .orElse(CommonResponse.failure(String.format("Workflow [ %s ] not found", code)));
+    }
+
+    @Override
+    public CommonResponse<String> deleteByCode(BaseRepository<WorkflowEntity, Long> repository, String code)
+    {
+        return repository.findByCode(code)
+                .map(entity -> {
+                    repository.delete(entity);
+                    try {
+                        FileUtils.deleteDirectory(new File(entity.getWork()));
+                    }
+                    catch (IOException e) {
+                        log.warn("Failed to delete work directory", e);
+                    }
+                    return CommonResponse.success(code);
+                })
+                .orElseGet(() -> CommonResponse.failure(String.format("Resource [ %s ] not found", code)));
     }
 }
