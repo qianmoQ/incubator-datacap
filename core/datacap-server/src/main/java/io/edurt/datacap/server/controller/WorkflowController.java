@@ -36,4 +36,10 @@ public class WorkflowController
     {
         return service.stop(code);
     }
+
+    @PutMapping(value = "restart/{code}")
+    public CommonResponse<String> restart(@PathVariable String code)
+    {
+        return service.restart(code);
+    }
 }

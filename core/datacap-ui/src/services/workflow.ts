@@ -21,6 +21,11 @@ class WorkflowService
     {
         return new HttpUtils().put(`${ DEFAULT_PATH }/stop/${ code }`)
     }
+
+    restart(code: string): Promise<ResponseModel>
+    {
+        return new HttpUtils().put(`${ DEFAULT_PATH }/restart/${ code }`)
+    }
 }
 
 export default new WorkflowService()

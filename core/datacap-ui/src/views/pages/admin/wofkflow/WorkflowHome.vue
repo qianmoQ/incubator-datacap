@@ -63,16 +63,29 @@
               </template>
 
               <ShadcnDropdownItem :disabled="row.state === 'RUNNING'">
-                <RouterLink :to="`/admin/workflow/info/${row.code}`" target="_blank" class="flex items-center">
+                <template v-if="row.state !== 'RUNNING'">
+                  <RouterLink :to="`/admin/workflow/info/${row.code}`" target="_blank" class="flex items-center">
+                    <ShadcnIcon icon="Info" size="15"/>
+                    <span class="ml-2">{{ $t('workflow.text.modify') }}</span>
+                  </RouterLink>
+                </template>
+                <div v-else class="flex items-center">
                   <ShadcnIcon icon="Info" size="15"/>
                   <span class="ml-2">{{ $t('workflow.text.modify') }}</span>
-                </RouterLink>
+                </div>
               </ShadcnDropdownItem>
 
               <ShadcnDropdownItem :disabled="row.state !== 'RUNNING'" @on-click="visibleStop(true, row)">
                 <div class="flex items-center space-x-2">
                   <ShadcnIcon icon="CircleStop" size="15"/>
                   <span>{{ $t('workflow.text.stop') }}</span>
+                </div>
+              </ShadcnDropdownItem>
+
+              <ShadcnDropdownItem :disabled="row.state === 'RUNNING'" @on-click="visibleRestart(true, row)">
+                <div class="flex items-center space-x-2">
+                  <ShadcnIcon icon="CirclePlay" size="15"/>
+                  <span>{{ $t('workflow.text.restart') }}</span>
                 </div>
               </ShadcnDropdownItem>
 
@@ -140,6 +153,11 @@
                   :is-visible="dataLoggerVisible"
                   :info="dataInfo"
                   @close="visibleLogger(false, null)"/>
+
+  <WorkflowRestart v-if="dataRestartVisible && dataInfo"
+                   :is-visible="dataRestartVisible"
+                   :info="dataInfo"
+                   @close="visibleRestart(false, null)"/>
 </template>
 
 <script lang="ts">
@@ -154,10 +172,11 @@ import WorkflowFlow from '@/views/pages/admin/wofkflow/WorkflowFlow.vue'
 import WorkflowDelete from '@/views/pages/admin/wofkflow/WorkflowDelete.vue'
 import WorkflowStop from '@/views/pages/admin/wofkflow/WorkflowStop.vue'
 import WorkflowLogger from '@/views/pages/admin/wofkflow/WorkflowLogger.vue'
+import WorkflowRestart from '@/views/pages/admin/wofkflow/WorkflowRestart.vue'
 
 export default defineComponent({
   name: 'PipelineHome',
-  components: { WorkflowLogger, WorkflowStop, WorkflowDelete, WorkflowFlow, MarkdownPreview },
+  components: { WorkflowRestart, WorkflowLogger, WorkflowStop, WorkflowDelete, WorkflowFlow, MarkdownPreview },
   setup()
   {
     const filter: FilterModel = new FilterModel()
@@ -189,7 +208,8 @@ export default defineComponent({
       dataLoggerVisible: false,
       dataDeleteVisible: false,
       dataStopVisible: false,
-      dataFlowVisible: false
+      dataFlowVisible: false,
+      dataRestartVisible: false
     }
   },
   created()
@@ -264,6 +284,14 @@ export default defineComponent({
     {
       this.dataFlowVisible = opened
       this.dataInfo = value
+    },
+    visibleRestart(opened: boolean, value: null | WorkflowModel)
+    {
+      this.dataRestartVisible = opened
+      this.dataInfo = value
+      if (!opened) {
+        this.handleInitialize()
+      }
     }
   }
 })

@@ -11,4 +11,6 @@ public interface WorkflowService
     CommonResponse<Boolean> stop(String code);
 
     CommonResponse<List<String>> log(String code);
+
+    CommonResponse<String> restart(String code);
 }

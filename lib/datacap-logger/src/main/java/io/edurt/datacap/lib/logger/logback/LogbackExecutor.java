@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,9 +77,9 @@ public class LogbackExecutor
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
         ENCODER_CONTAINER.put(this.name, encoder);
         encoder.setContext(context);
-        String pattern = "%date %-5level [%thread] [%file:%line] %msg%n";
+        String pattern = "%date %level [%thread] [%file:%line] %msg%n";
         encoder.setPattern(pattern);
-        encoder.setCharset(Charset.forName("utf-8"));
+        encoder.setCharset(StandardCharsets.UTF_8);
         encoder.start();
         return encoder;
     }

@@ -27,7 +27,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -70,12 +69,15 @@ public class WorkflowServiceImpl
         repository.findByCode(configure.getCode())
                 .ifPresent(value -> NullAwareBeanUtils.copyNullProperties(value, configure));
 
+        if (configure.getState().equals(RunState.RUNNING)) {
+            return CommonResponse.failure("Workflow is already running");
+        }
+
         UserEntity user = UserDetailsService.getUser();
-        String date = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS");
         String workHome = FolderUtils.getWorkHome(
                 initializer.getDataHome(),
                 user.getUsername(),
-                String.join(File.separator, "workflow", configure.getExecutor().toLowerCase(), date)
+                String.join(File.separator, "workflow", configure.getExecutor().toLowerCase(), configure.getCode())
         );
         log.debug("Created work directory: {}", workHome);
 
@@ -270,5 +272,25 @@ public class WorkflowServiceImpl
                     return CommonResponse.success(code);
                 })
                 .orElseGet(() -> CommonResponse.failure(String.format("Resource [ %s ] not found", code)));
+    }
+
+    @Override
+    public CommonResponse<String> restart(String code)
+    {
+        return repository.findByCode(code)
+                .map(entity -> {
+                    if (entity.getState().equals(RunState.RUNNING)) {
+                        return CommonResponse.<String>failure(String.format("Workflow [ %s ] is already running", entity.getName()));
+                    }
+
+                    CommonResponse<WorkflowEntity> startResponse = saveOrUpdate(repository, entity);
+                    if (startResponse.getStatus()) {
+                        return CommonResponse.<String>success(code);
+                    }
+                    else {
+                        return CommonResponse.<String>failure(startResponse.getMessage().toString());
+                    }
+                })
+                .orElse(CommonResponse.<String>failure(String.format("Workflow [ %s ] not found", code)));
     }
 }
