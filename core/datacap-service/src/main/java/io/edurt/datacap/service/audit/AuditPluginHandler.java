@@ -113,7 +113,7 @@ public class AuditPluginHandler
                 String workHome = FolderUtils.getWorkHome(initializer.getDataHome(), user.getCode(), String.join(File.separator, "adhoc", uniqueId));
                 log.info("Writer file to folder [ {} ] on [ {} ]", workHome, pluginAudit.getId());
                 try {
-                    ConvertFilter.filter(pluginManager, "JsonConvert")
+                    ConvertFilter.filter(pluginManager, pluginAudit.getFormat())
                             .ifPresent(it -> {
                                 try {
                                     FileUtils.forceMkdir(new File(workHome));
@@ -139,7 +139,7 @@ public class AuditPluginHandler
                                             // If it is OSS third-party storage, rebuild the default directory
                                             if (!initializer.getFsConfigure().getType().equals("LocalFs")) {
                                                 fsRequest.setEndpoint(initializer.getFsConfigure().getEndpoint());
-                                                fsRequest.setFileName(String.join(File.separator, user.getUsername(), DateUtils.formatYMD(), String.join(File.separator, "adhoc", uniqueId), "result.csv"));
+                                                fsRequest.setFileName(String.join(File.separator, user.getCode(), DateUtils.formatYMD(), String.join(File.separator, "adhoc", uniqueId), "result"));
                                             }
 
                                             pluginManager.getPlugin(initializer.getFsConfigure().getType())

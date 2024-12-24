@@ -99,31 +99,42 @@ public class PluginAuditServiceImpl
                             .secret(initializer.getFsConfigure().getSecret())
                             .endpoint(value.getHome())
                             .bucket(initializer.getFsConfigure().getBucket())
-                            .fileName("result.csv")
+                            .fileName("result")
                             .build();
                     // If it is OSS third-party storage, rebuild the default directory
-                    if (!initializer.getFsConfigure().getType().equals("Local")) {
+                    if (!initializer.getFsConfigure().getType().equals("LocalFs")) {
                         fsRequest.setEndpoint(initializer.getFsConfigure().getEndpoint());
-                        fsRequest.setFileName(String.join(File.separator, value.getUser().getUsername(), DateUtils.formatYMD(), String.join(File.separator, "adhoc", code), "result.csv"));
+                        fsRequest.setFileName(String.join(File.separator, value.getUser().getCode(), DateUtils.formatYMD(), String.join(File.separator, "adhoc", code), "result"));
                     }
                     pluginManager.getPlugin(initializer.getFsConfigure().getType())
                             .ifPresent(plugin -> {
                                 FsService fsService = plugin.getService(FsService.class);
                                 FsResponse fsResponse = fsService.reader(fsRequest);
 
-                                pluginManager.getPlugin("JsonConvert")
+                                if (!fsResponse.isSuccessful()) {
+                                    response.setIsSuccessful(false);
+                                    response.setMessage(fsResponse.getMessage());
+                                    return;
+                                }
+
+                                pluginManager.getPlugin(value.getFormat())
                                         .ifPresent(it -> {
                                             ConvertRequest request = new ConvertRequest();
                                             request.setStream(fsResponse.getContext());
                                             ConvertService convertService = it.getService(ConvertService.class);
 
                                             ConvertResponse _response = convertService.formatStream(request);
-                                            if (_response.getSuccessful()) {
+                                            if (Boolean.TRUE.equals(_response.getSuccessful())) {
                                                 response.setHeaders(_response.getHeaders()
                                                         .stream()
                                                         .map(String::valueOf)
                                                         .collect(Collectors.toList()));
                                                 response.setColumns(_response.getColumns());
+                                                response.setIsSuccessful(true);
+                                            }
+                                            else {
+                                                response.setIsSuccessful(false);
+                                                response.setMessage(_response.getMessage());
                                             }
                                         });
                             });

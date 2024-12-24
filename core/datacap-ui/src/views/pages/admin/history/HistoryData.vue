@@ -1,9 +1,10 @@
 <template>
   <ShadcnModal v-model="visible" :title="title">
     <template #content>
-      <div class="relative h-24">
+      <div class="relative max-h-[80%]"
+           :class="configuration ? '' : 'h-24'">
         <ShadcnSpin v-if="loading" fixed/>
-        <VisualTable :configuration="configuration as any" :submitted="false"/>
+        <VisualTable v-else-if="configuration" :configuration="configuration as any" :submitted="false"/>
       </div>
     </template>
 
@@ -65,8 +66,14 @@ export default defineComponent({
         this.loading = true
         AuditService.getData(this.info.code as string)
                     .then(response => {
-                      if (response.status) {
+                      if (response.status && response.data?.isSuccessful) {
                         this.configuration = ConfigurationRequest.of(response)
+                      }
+                      else {
+                        this.$Message.error({
+                          content: response.data.message,
+                          showIcon: true
+                        })
                       }
                     })
                     .finally(() => this.loading = false)
