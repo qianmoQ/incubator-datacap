@@ -14,6 +14,7 @@ export function useHeaders()
         { key: 'elapsed', label: t('common.elapsed') },
         { key: 'mode', label: t('common.from'), slot: 'mode' },
         { key: 'count', label: t('common.count') },
+        { key: 'format', label: t('common.format'), slot: 'format' },
         { key: 'state', label: t('common.state'), slot: 'state' },
         { key: 'action', label: t('common.action'), slot: 'action' }
     ])

@@ -33,6 +33,14 @@
           <ShadcnTag :type="row.state === 'SUCCESS' ? 'success' : 'error'">{{ row.state }}</ShadcnTag>
         </template>
 
+        <template #format="{row}">
+          <ShadcnTooltip :content="row?.format">
+            <ShadcnAvatar size="small"
+                          :src="'/static/images/convert/' + row?.format.replace('Convert', '').toLowerCase() + '.svg'"
+                          :alt="row?.source?.type" class="cursor-pointer"/>
+          </ShadcnTooltip>
+        </template>
+
         <template #action="{row}">
           <ShadcnSpace>
             <ShadcnTooltip :content="$t('common.error')">
