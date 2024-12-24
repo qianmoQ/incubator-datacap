@@ -152,6 +152,7 @@ public class WorkflowServiceImpl
                                 );
                                 log.info("Created executor request for workflow: {}", configure.getCode());
 
+                                Timestamp start = new Timestamp(System.currentTimeMillis());
                                 executorService.submit(() -> {
                                     try {
                                         log.info("Starting async execution for workflow: {}", configure.getCode());
@@ -169,10 +170,7 @@ public class WorkflowServiceImpl
                                                     finalConfigure.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                                                     finalConfigure.setState(response.getState());
                                                     finalConfigure.setMessage(response.getMessage());
-                                                    finalConfigure.setElapsed(
-                                                            finalConfigure.getUpdateTime().getTime() -
-                                                                    finalConfigure.getCreateTime().getTime()
-                                                    );
+                                                    finalConfigure.setElapsed(finalConfigure.getUpdateTime().getTime() - start.getTime());
 
                                                     WorkflowEntity updated = repository.save(finalConfigure);
                                                     log.info("Workflow updated with final state: {}, elapsed time: {} ms",

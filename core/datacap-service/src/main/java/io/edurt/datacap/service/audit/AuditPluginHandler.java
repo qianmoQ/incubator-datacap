@@ -110,7 +110,7 @@ public class AuditPluginHandler
             ExecutorService service = Executors.newSingleThreadExecutor();
             service.submit(() -> {
                 String uniqueId = !pluginAudit.getCode().isEmpty() ? pluginAudit.getCode() : pluginAudit.getId().toString();
-                String workHome = FolderUtils.getWorkHome(initializer.getDataHome(), user.getUsername(), String.join(File.separator, "adhoc", uniqueId));
+                String workHome = FolderUtils.getWorkHome(initializer.getDataHome(), user.getCode(), String.join(File.separator, "adhoc", uniqueId));
                 log.info("Writer file to folder [ {} ] on [ {} ]", workHome, pluginAudit.getId());
                 try {
                     ConvertFilter.filter(pluginManager, "JsonConvert")
@@ -134,7 +134,7 @@ public class AuditPluginHandler
                                                     .endpoint(workHome)
                                                     .bucket(initializer.getFsConfigure().getBucket())
                                                     .stream(inputStream)
-                                                    .fileName("result.csv")
+                                                    .fileName("result")
                                                     .build();
                                             // If it is OSS third-party storage, rebuild the default directory
                                             if (!initializer.getFsConfigure().getType().equals("LocalFs")) {
@@ -151,6 +151,9 @@ public class AuditPluginHandler
                                             log.info("Writer file to folder [ {} ] on [ {} ] completed", workHome, pluginAudit.getId());
                                             pluginAudit.setHome(workHome);
                                         }
+                                    }
+                                    else {
+                                        log.warn("Writer file to folder [ {} ] on [ {} ] failed {}", workHome, pluginAudit.getId(), response.getMessage());
                                     }
                                 }
                                 catch (IOException e) {

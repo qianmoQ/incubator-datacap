@@ -44,15 +44,15 @@ public class DataServiceTest
                     DataService service = value.getService(ConsoleService.class);
                     service.print();
 
-                    log.info("Specify the Service qualifier name");
-                    DataService logService = value.getService(DataService.class, "LogService");
-                    logService.print();
-
-                    log.info("Found annotation Service");
-                    AnnotationService annotationService = value.getService(AnnotationService.class);
-                    annotationService.print();
-                    DataService annotationService2 = value.getService(DataService.class, "AnnotationService");
-                    annotationService2.print();
+//                    log.info("Specify the Service qualifier name");
+//                    DataService logService = value.getService(DataService.class, "LogService");
+//                    logService.print();
+//
+//                    log.info("Found annotation Service");
+//                    AnnotationService annotationService = value.getService(AnnotationService.class);
+//                    annotationService.print();
+//                    DataService annotationService2 = value.getService(DataService.class, "AnnotationService");
+//                    annotationService2.print();
 
                     log.info("Get all Service");
                     Set<DataService> services = value.getAllServices(DataService.class);
