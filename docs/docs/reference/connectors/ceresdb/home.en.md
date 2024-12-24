@@ -3,7 +3,7 @@ title: CeresDB
 status: new
 ---
 
-<img src="/assets/plugin/ceresdb.png" class="connector-logo" />
+<img src="/assets/plugin/ceresdb.svg" class="connector-content-logo" />
 
 #### What is CeresDB ?
 

@@ -2,7 +2,7 @@
 title: Apache Hadoop HDFS
 ---
 
-<img src="/assets/plugin/hdfs.png" class="connector-logo" style="width: 100px;" />
+<img src="/assets/plugin/hdfs.svg" class="connector-content-logo" />
 
 #### What is HDFS ?
 

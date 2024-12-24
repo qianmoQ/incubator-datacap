@@ -2,7 +2,7 @@
 title: Snowflake
 ---
 
-<img src="/assets/plugin/snowflake.png" class="connector-logo" />
+<img src="/assets/plugin/snowflake.svg" class="connector-content-logo" />
 
 #### What is Snowflake ?
 

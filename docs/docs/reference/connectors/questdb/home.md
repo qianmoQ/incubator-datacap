@@ -3,7 +3,7 @@ title: QuestDB
 status: new
 ---
 
-<img src="/assets/plugin/questdb.png" class="connector-logo" />
+<img src="/assets/plugin/questdb.svg" class="connector-content-logo" />
 
 #### 什么是 QuestDB ?
 

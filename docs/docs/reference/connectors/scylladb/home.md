@@ -2,7 +2,7 @@
 title: ScyllaDB
 ---
 
-<img src="/assets/plugin/scylladb.png" class="connector-logo" style="width: 200px; margin-top: 35px;" />
+<img src="/assets/plugin/scylladb.svg" class="connector-content-logo" />
 
 #### 介绍
 

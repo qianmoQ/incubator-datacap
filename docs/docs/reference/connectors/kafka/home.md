@@ -2,7 +2,7 @@
 title: Apache Kafka
 ---
 
-<img src="/assets/plugin/kafka.png" class="connector-logo" />
+<img src="/assets/plugin/kafka.svg" class="connector-content-logo" />
 
 #### What is Apache Kafka ?
 

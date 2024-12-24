@@ -2,7 +2,7 @@
 title: Timescale
 ---
 
-<img src="/assets/plugin/timescale.png" class="connector-logo" style="width: 200px; margin-top: 35px;" />
+<img src="/assets/plugin/timescale.svg" class="connector-content-logo" />
 
 #### Introduce
 

@@ -3,7 +3,7 @@ title: Hologres
 status: new
 ---
 
-<img src="/assets/plugin/hologres.png" class="connector-logo" />
+<img src="/assets/plugin/hologres.svg" class="connector-content-logo" />
 
 #### What is Hologres ?
 

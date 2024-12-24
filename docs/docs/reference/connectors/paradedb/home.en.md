@@ -2,7 +2,7 @@
 title: ParadeDB
 ---
 
-<img src="/assets/plugin/paradedb.png" class="connector-logo" style="width: 200px; margin-top: 35px;" />
+<img src="/assets/plugin/paradedb.svg" class="connector-content-logo" />
 
 #### Introduce
 

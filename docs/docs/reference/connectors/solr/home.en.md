@@ -2,7 +2,7 @@
 title: Apache Solr
 ---
 
-<img src="/assets/plugin/solr.png" class="connector-logo" style="width: 100px;" />
+<img src="/assets/plugin/solr.svg" class="connector-content-logo" />
 
 Apache Solr is a fast open source search platform built on Apache Lucene™, providing scalable indexing and searching, as well as faceting, hit highlighting, and advanced analytics/tokenization capabilities. Solr is managed by the Apache Software Foundation.
 

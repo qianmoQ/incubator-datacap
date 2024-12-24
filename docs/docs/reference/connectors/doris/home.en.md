@@ -3,7 +3,7 @@ title: Apache Doris
 status: new
 ---
 
-<img src="/assets/plugin/doris.png" class="connector-logo" />
+<img src="/assets/plugin/doris.svg" class="connector-content-logo" />
 
 #### What is Doris ?
 

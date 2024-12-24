@@ -2,7 +2,7 @@
 title: Yandex Database
 ---
 
-<img src="/assets/plugin/ydb.png" class="connector-logo" />
+<img src="/assets/plugin/ydb.svg" class="connector-content-logo" />
 
 #### What is YDB ?
 

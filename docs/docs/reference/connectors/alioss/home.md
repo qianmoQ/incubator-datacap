@@ -2,7 +2,7 @@
 title: AliYun OSS
 ---
 
-<img src="/assets/plugin/alioss.png" class="connector-logo" style="width: 50px;" />
+<img src="/assets/plugin/alioss.svg" class="connector-content-logo" />
 
 #### What is Aliyun OSS ?
 

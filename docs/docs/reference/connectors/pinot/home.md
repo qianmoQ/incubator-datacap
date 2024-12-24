@@ -3,7 +3,7 @@ title: Apache Pinot
 status: 1.10.0
 ---
 
-<img src="/assets/plugin/pinot.png" class="connector-logo" style="width: 100px;" />
+<img src="/assets/plugin/pinot.svg" class="connector-content-logo" />
 
 #### 什么是 Pinot ?
 

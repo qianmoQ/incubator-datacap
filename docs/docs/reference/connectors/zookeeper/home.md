@@ -2,7 +2,7 @@
 title: Apache Zookeeper
 ---
 
-<img src="/assets/plugin/zookeeper.png" class="connector-logo" />
+<img src="/assets/plugin/zookeeper.svg" class="connector-content-logo" />
 
 #### What is Zookeeper ?
 

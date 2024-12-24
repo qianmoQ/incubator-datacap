@@ -2,7 +2,7 @@
 title: MySQL
 ---
 
-<img src="/assets/plugin/mysql.png" class="connector-logo" />
+<img src="/assets/plugin/mysql.svg" class="connector-content-logo" />
 
 #### What is MySQL ?
 

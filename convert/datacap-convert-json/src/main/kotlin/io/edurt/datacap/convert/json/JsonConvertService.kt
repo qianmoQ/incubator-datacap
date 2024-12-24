@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.edurt.datacap.common.utils.DateUtils
 import io.edurt.datacap.convert.ConvertService
 import io.edurt.datacap.convert.FileConvert.formatFile
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Objects.requireNonNull
 
+@SuppressFBWarnings(value = ["REC_CATCH_EXCEPTION"])
 class JsonConvertService : ConvertService
 {
     private val log = getLogger(this::class.java)

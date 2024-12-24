@@ -3,7 +3,7 @@ title: StarRocks
 status: new
 ---
 
-<img src="/assets/plugin/starrocks.png" class="connector-logo" />
+<img src="/assets/plugin/starrocks.svg" class="connector-content-logo" />
 
 #### 什么是 StarRocks ?
 

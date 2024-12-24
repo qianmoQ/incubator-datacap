@@ -2,7 +2,7 @@
 title: DuckDB
 ---
 
-<img src="/assets/plugin/duckdb.png" class="connector-logo" />
+<img src="/assets/plugin/duckdb.svg" class="connector-content-logo" />
 
 #### What is DuckDB ?
 

@@ -2,7 +2,7 @@
 title: InfluxDB
 ---
 
-<img src="/assets/plugin/influxdb.png" class="connector-logo" style="width: 150px; margin-top: 15px;" />
+<img src="/assets/plugin/influxdb.svg" class="connector-content-logo" />
 
 InfluxDB is an open source sequential database developed by InfluxData. It is written in Go and focuses on high-performance query and storage of time series data. InfluxDB is widely used to store monitoring data of systems.
 

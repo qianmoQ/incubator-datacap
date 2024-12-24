@@ -2,7 +2,7 @@
 title: MatrixOne
 ---
 
-<img src="/assets/plugin/matrixone.png" class="connector-logo" style="width: 200px; margin-top: 35px;" />
+<img src="/assets/plugin/matrixone.svg" class="connector-content-logo" />
 
 #### Introduce
 

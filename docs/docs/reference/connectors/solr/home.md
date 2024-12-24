@@ -2,7 +2,7 @@
 title: Apache Solr
 ---
 
-<img src="/assets/plugin/solr.png" class="connector-logo" style="width: 100px;" />
+<img src="/assets/plugin/solr.svg" class="connector-content-logo" />
 
 Apache Solr 是基于 Apache Lucene™ 构建的快速开源搜索平台，提供可扩展的索引和搜索，以及分面、命中突出显示和高级分析/标记化功能。Solr 由 Apache 软件基金会管理。
 

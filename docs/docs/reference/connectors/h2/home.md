@@ -2,7 +2,7 @@
 title: H2 Database
 ---
 
-<img src="/assets/plugin/h2.png" class="connector-logo" />
+<img src="/assets/plugin/h2.svg" class="connector-content-logo" />
 
 #### What is h2 ?
 

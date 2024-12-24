@@ -2,7 +2,7 @@
 title: Redis
 ---
 
-<img src="/assets/plugin/redis.png" class="connector-logo" />
+<img src="/assets/plugin/redis.svg" class="connector-content-logo" />
 
 #### What is Redis ?
 

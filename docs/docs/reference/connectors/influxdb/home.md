@@ -2,7 +2,7 @@
 title: InfluxDB
 ---
 
-<img src="/assets/plugin/influxdb.png" class="connector-logo" style="width: 150px; margin-top: 15px;" />
+<img src="/assets/plugin/influxdb.svg" class="connector-content-logo" />
 
 InfluxDB 是一个由 InfluxData 开发的开源时序型数据库。它由 Go 写成，着力于高性能地查询与存储时序型数据。InfluxDB 被广泛应用于存储系统的监控数据。
 

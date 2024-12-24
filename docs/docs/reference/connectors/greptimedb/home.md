@@ -3,7 +3,7 @@ title: GreptimeDB
 status: new
 ---
 
-<img src="/assets/plugin/greptimedb.png" class="connector-logo" />
+<img src="/assets/plugin/greptimedb.svg" class="connector-content-logo" />
 
 #### 什么是 GreptimeDB ?
 

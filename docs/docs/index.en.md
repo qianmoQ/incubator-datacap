@@ -136,151 +136,151 @@ hide:
 
 ## Supported connectors
 
-<div class="grid cards" markdown>
+<div class="grid cards custom" markdown>
 
 - <a href="https://clickhouse.com" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/clickhouse.png" alt="ClickHouse" />
-  </a>
-- <a href="https://www.mysql.com" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/mysql.png" alt="MySQL" />
-  </a>
-- <a href="https://prestodb.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/presto.png" alt="Presto" height="50"/>
+      <img src="/assets/plugin/clickhouse.svg" alt="ClickHouse" height="60" />
   </a>
 - <a href="https://redis.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/redis.png" alt="Redis" height="50"/>
+      <img src="/assets/plugin/redis.svg" alt="Redis" height="60" />
   </a>
 - <a href="https://www.postgresql.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/postgresql.png" alt="PostgreSQL" height="50"/>
+      <img src="/assets/plugin/postgresql.svg" alt="PostgreSQL" height="60" />
   </a>
-- <a href="https://trino.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/trino.png" alt="Trino" height="50"/>
+- <a href="https://prestodb.io/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/presto.svg" alt="Presto" height="60" />
   </a>
-- <a href="https://www.elastic.co/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/elasticsearch.png" alt="ElasticSearch" height="50" />
-  </a>
-- <a href="https://druid.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/druid.png" alt="Druid" height="50" />
-  </a>
-- <a href="https://kyuubi.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/kyuubi.png" alt="Kyuubi" height="50"/>
+- <a href="https://www.mysql.com" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/mysql.svg" alt="MySQL" height="60" />
   </a>
 - <a href="https://hive.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/hive.png" alt="Hive" height="50" />
+      <img src="/assets/plugin/hive2x.svg" alt="Hive" height="60" />
+  </a>
+- <a href="https://kyuubi.apache.org/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/kyuubi.svg" alt="Kyuubi" height="60" />
+  </a>
+- <a href="https://druid.apache.org/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/druid.svg" alt="Druid" height="60" />
+  </a>
+- <a href="https://www.elastic.co/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/elasticsearch8x.svg" alt="ElasticSearch" height="60" />
+  </a>
+- <a href="https://trino.io/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/trino.svg" alt="Trino" height="60" />
   </a>
 - <a href="https://kylin.apache.org" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/kylin.png" alt="Kylin" height="50" />
+      <img src="/assets/plugin/kylin.svg" alt="Kylin" height="60" />
   </a>
 - <a href="https://ignite.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/ignite.png" alt="Ignite" height="50" />
+      <img src="/assets/plugin/ignite.svg" alt="Ignite" height="60" />
   </a>
 - <a href="https://www.ibm.com/db2/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/ibmdb2.png" alt="IBM DB2" height="50" />
+      <img src="/assets/plugin/db2.svg" alt="IBM DB2" height="60" />
   </a>
 - <a href="https://www.mongodb.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/mongodb.png" alt="MongoDB" height="50" />
+      <img src="/assets/plugin/mongocommunity.svg" alt="MongoDB" height="60" />
   </a>
 - <a href="https://www.dremio.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/dremio.png" alt="Dremio" height="50" />
+      <img src="/assets/plugin/dremio.svg" alt="Dremio" height="60" />
   </a>
 - <a href="https://www.monetdb.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/monetdb.png" alt="MonetDB" height="50" />
+      <img src="/assets/plugin/monetdb.svg" alt="MonetDB" height="60" />
   </a>
 - <a href="https://phoenix.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/phoenix.png" alt="Phoenix" height="50" />
+      <img src="/assets/plugin/phoenix.svg" alt="Phoenix" height="60" />
   </a>
-- <a href="https://www.h2database.com/html/main.html" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/h2.png" alt="H2" height="50" />
+- <a href="https://www.h2database.com/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/h2.svg" alt="H2" height="60" />
   </a>
 - <a href="https://www.microsoft.com/sql-server" target="_blank" class="connector-logo-index">
       <img src="/assets/plugin/sqlserver.svg" alt="SqlServer" height="60" />
   </a>
 - <a href="https://www.oracle.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/oracle.png" alt="Oracle" height="50" />
+      <img src="/assets/plugin/oracle.svg" alt="Oracle" height="60" />
   </a>
 - <a href="https://crate.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/cratedb.png" alt="CrateDB" height="50" />
+      <img src="/assets/plugin/cratedb.svg" alt="CrateDB" height="60" />
   </a>
-- <a href="https://www.dameng.com/DM8.html" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/dameng.png" alt="DaMeng" height="50" />
+- <a href="https://www.dameng.com/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/dm.svg" alt="DaMeng" height="60" />
   </a>
 - <a href="https://tdengine.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/tdengine.png" alt="TDengine" height="50" />
+      <img src="/assets/plugin/tdengine.svg" alt="TDengine" height="60" />
   </a>
 - <a href="https://impala.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/impala.png" alt="Impala" height="50" />
+      <img src="/assets/plugin/impala.svg" alt="Impala" height="60" />
   </a>
 - <a href="https://www.oceanbase.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/oceanbase.png" alt="OceanBase" height="50" />
+      <img src="/assets/plugin/oceanbase.svg" alt="OceanBase" height="60" />
   </a>
 - <a href="https://neo4j.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/neo4j.png" alt="Neo4j" height="50" />
+      <img src="/assets/plugin/neo4j.svg" alt="Neo4j" height="60" />
   </a>
 - <a href="https://iotdb.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/iotdb.png" alt="IoTDB" height="50" />
+      <img src="/assets/plugin/iotdb.svg" alt="IoTDB" height="60" />
   </a>
 - <a href="https://www.snowflake.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/snowflake.png" alt="Snowflake" height="70" />
+      <img src="/assets/plugin/snowflake.svg" alt="Snowflake" height="60" />
   </a>
 - <a href="https://ydb.tech/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/ydb.png" alt="YDB" height="50" />
+      <img src="/assets/plugin/ydb.svg" alt="YDB" height="60" />
   </a>
 - <a href="https://zookeeper.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/zookeeper.png" alt="Zookeeper" height="50" />
+      <img src="/assets/plugin/zookeeper.svg" alt="Zookeeper" height="60" />
   </a>
 - <a href="https://duckdb.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/duckdb.png" alt="DuckDB" height="50" />
+      <img src="/assets/plugin/duckdb.svg" alt="DuckDB" height="60" />
   </a>
-- <a href="https://www.alibabacloud.com/zh/product/object-storage-service" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/alioss.png" alt="Aliyun OSS" height="50" />
+- <a href="https://www.alibabacloud.com/product/oss" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/alioss.svg" alt="Aliyun OSS" height="60" />
   </a>
 - <a href="https://kafka.apache.org" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/kafka.png" alt="Apache Kafka" height="50" />
+      <img src="/assets/plugin/kafka.svg" alt="Apache Kafka" height="60" />
   </a>
-- <a href="https://docs.ceresdb.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/ceresdb.png" alt="CeresDB" height="50" />
+- <a href="https://ceresdb.io/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/ceresdb.svg" alt="CeresDB" height="60" />
   </a>
-- <a href="https://docs.greptime.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/greptimedb.png" alt="GreptimeDB" height="70" />
+- <a href="https://greptime.com/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/greptimedb.svg" alt="GreptimeDB" height="60" />
   </a>
 - <a href="https://questdb.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/questdb.png" alt="QuestDB" height="50" />
+      <img src="/assets/plugin/questdb.svg" alt="QuestDB" height="60" />
   </a>
 - <a href="https://doris.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/doris.png" alt="Apache Doris" height="50" />
+      <img src="/assets/plugin/doris.svg" alt="Apache Doris" height="60" />
   </a>
 - <a href="https://www.starrocks.io/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/starrocks.png" alt="StarRocks" height="50" />
+      <img src="/assets/plugin/starrocks.svg" alt="StarRocks" height="60" />
   </a>
 - <a href="https://www.alibabacloud.com/product/hologres" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/hologres.png" alt="Hologres" height=60" />
+      <img src="/assets/plugin/hologres.svg" alt="Hologres" height="60" />
   </a>
 - <a href="https://hadoop.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/hdfs.png" alt="Apache Hdfs" height=60" />
+      <img src="/assets/plugin/hdfs.svg" alt="Apache Hdfs" height="60" />
   </a>
-- <a href="https://docs.pinot.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/pinot.png" alt="Apache Pinot" height=60" />
+- <a href="https://pinot.apache.org/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/pinot.svg" alt="Apache Pinot" height="60" />
   </a>
 - <a href="https://cassandra.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/cassandra.png" alt="Apache Cassandra" height=60" />
+      <img src="/assets/plugin/cassandra.svg" alt="Apache Cassandra" height="60" />
   </a>
 - <a href="https://matrixorigin.cn/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/matrixone.png" alt="MatrixOne" height=60" />
+      <img src="/assets/plugin/matrixone.svg" alt="MatrixOne" height="60" />
   </a>
 - <a href="https://www.scylladb.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/scylladb.png" alt="ScyllaDB" height=60" />
+      <img src="/assets/plugin/scylladb.svg" alt="ScyllaDB" height="60" />
   </a>
-- <a href="https://www.scylladb.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/paradedb.png" alt="ParadeDB" height=60" />
+- <a href="https://www.paradedb.com/" target="_blank" class="connector-logo-index">
+      <img src="/assets/plugin/paradedb.svg" alt="ParadeDB" height="60" />
   </a>
 - <a href="https://www.timescale.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/timescale.png" alt="Timescale" height=60" />
+      <img src="/assets/plugin/timescale.svg" alt="Timescale" height="60" />
   </a>
 - <a href="https://solr.apache.org/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/solr.png" alt="Solr" height=60" />
+      <img src="/assets/plugin/solr.svg" alt="Apache Solr" height="60" />
   </a>
 - <a href="https://www.influxdata.com/" target="_blank" class="connector-logo-index">
-      <img src="/assets/plugin/influxdb.png" alt="InfluxDB" height=80" />
+      <img src="/assets/plugin/influxdb.svg" alt="InfluxDB" height="60" />
   </a>
 
 </div>

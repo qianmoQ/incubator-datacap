@@ -3,7 +3,7 @@ title: Apache Cassandra
 status: 1.11.0
 ---
 
-<img src="/assets/plugin/cassandra.png" class="connector-logo" style="width: 100px;" />
+<img src="/assets/plugin/cassandra.svg" class="connector-content-logo" />
 
 #### What is Cassandra ?
 

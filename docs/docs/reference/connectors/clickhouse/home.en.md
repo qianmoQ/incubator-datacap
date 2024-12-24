@@ -2,7 +2,7 @@
 title: ClickHouse
 ---
 
-<img src="/assets/plugin/clickhouse.png" class="connector-logo" />
+<img src="/assets/plugin/clickhouse.svg" class="connector-content-logo" />
 
 #### What is ClickHouse ?
 
