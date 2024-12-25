@@ -1,11 +1,15 @@
 package io.edurt.datacap.condor.metadata;
 
 import lombok.Getter;
+import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
+@ToString
 public class TableDefinition
+        implements Serializable
 {
     private String tableName;
     private List<ColumnDefinition> columns;

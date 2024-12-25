@@ -38,15 +38,19 @@ public class DatabaseManager
 
     private void loadExistingDatabases()
     {
-        log.info("Loading existing databases...");
-        File rootDir = new File(ROOT_DIR);
-        File[] dbDirs = rootDir.listFiles(File::isDirectory);
-        if (dbDirs != null) {
-            for (File dbDir : dbDirs) {
-                log.info("Loading database: {}", dbDir.getName());
-                String dbName = dbDir.getName();
-                databases.put(dbName, new DatabaseDefinition(dbName));
-            }
+        log.info("Loading existing databases from {}", ROOT_DIR);
+        Path rootDir = Path.of(ROOT_DIR);
+        try (Stream<Path> stream = Files.walk(rootDir)) {
+            stream.filter(path -> Files.isDirectory(path)
+                            && Files.exists(path.resolve("metadata/db.properties")))
+                    .forEach(path -> {
+                        String dbName = path.getFileName().toString();
+                        log.debug("Found database: {}", dbName);
+                        databases.put(dbName, new DatabaseDefinition(dbName, path));
+                    });
+        }
+        catch (IOException e) {
+            log.error("Failed to load existing databases", e);
         }
     }
 
@@ -88,7 +92,7 @@ public class DatabaseManager
 
             // 创建数据库对象并添加到管理器
             // Create database object and add to manager
-            DatabaseDefinition database = new DatabaseDefinition(databaseName);
+            DatabaseDefinition database = new DatabaseDefinition(databaseName, dbPath);
             databases.put(databaseName, database);
             log.info("Database '{}' created successfully", databaseName);
 

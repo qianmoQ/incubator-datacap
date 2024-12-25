@@ -1,27 +1,21 @@
 package io.edurt.datacap.condor.metadata;
 
-import io.edurt.datacap.condor.StorageEngine;
+import io.edurt.datacap.condor.manager.TableManager;
+import lombok.Getter;
 
+import java.nio.file.Path;
+
+@Getter
 public class DatabaseDefinition
 {
-    private static final String ROOT_DIR = "data";
-
     private String name;
-    private StorageEngine storageEngine;
+    private Path path;
+    private TableManager tableManager;
 
-    public DatabaseDefinition(String name)
+    public DatabaseDefinition(String name, Path path)
     {
         this.name = name;
-        this.storageEngine = new StorageEngine();
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public StorageEngine getStorageEngine()
-    {
-        return storageEngine;
+        this.path = path;
+        this.tableManager = new TableManager(path);
     }
 }

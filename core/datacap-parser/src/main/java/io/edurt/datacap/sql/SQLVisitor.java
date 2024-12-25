@@ -1,20 +1,30 @@
 package io.edurt.datacap.sql;
 
+import io.edurt.datacap.sql.node.ColumnConstraint;
+import io.edurt.datacap.sql.node.ConstraintType;
+import io.edurt.datacap.sql.node.DataType;
 import io.edurt.datacap.sql.node.Expression;
+import io.edurt.datacap.sql.node.TableConstraint;
+import io.edurt.datacap.sql.node.clause.ForeignKeyClause;
 import io.edurt.datacap.sql.node.clause.JoinClause;
 import io.edurt.datacap.sql.node.clause.LimitClause;
+import io.edurt.datacap.sql.node.element.ColumnElement;
 import io.edurt.datacap.sql.node.element.OrderByElement;
 import io.edurt.datacap.sql.node.element.SelectElement;
 import io.edurt.datacap.sql.node.element.TableElement;
+import io.edurt.datacap.sql.node.option.ReferenceOption;
+import io.edurt.datacap.sql.node.option.TableOption;
 import io.edurt.datacap.sql.parser.SqlBaseBaseVisitor;
 import io.edurt.datacap.sql.parser.SqlBaseParser;
 import io.edurt.datacap.sql.processor.ExpressionProcessor;
 import io.edurt.datacap.sql.processor.ShowProcessor;
 import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
+import io.edurt.datacap.sql.statement.CreateTableStatement;
 import io.edurt.datacap.sql.statement.DropDatabaseStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 import io.edurt.datacap.sql.statement.UseDatabaseStatement;
+import org.antlr.v4.runtime.RuleContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,7 +187,276 @@ public class SQLVisitor
     @Override
     public SQLStatement visitCreateTableStatement(SqlBaseParser.CreateTableStatementContext ctx)
     {
-        return super.visitCreateTableStatement(ctx);
+        // Parse basic table information
+        String tableName = ctx.tableName().getText();
+        boolean isTemporary = ctx.TEMP() != null || ctx.TEMPORARY() != null;
+        boolean ifNotExists = ctx.IF() != null && ctx.NOT() != null && ctx.EXISTS() != null;
+
+        // Parse table elements
+        List<TableElement> elements = new ArrayList<>();
+        for (SqlBaseParser.TableElementContext elementCtx : ctx.tableElement()) {
+            if (elementCtx.columnDefinition() != null) {
+                elements.add(processColumnDefinition(elementCtx.columnDefinition()));
+            }
+            else if (elementCtx.tableConstraint() != null) {
+                elements.add(processTableConstraint(elementCtx.tableConstraint()));
+            }
+        }
+
+        // Parse table options
+        List<TableOption> options = new ArrayList<>();
+        if (ctx.tableOptions() != null) {
+            for (SqlBaseParser.TableOptionContext optionCtx : ctx.tableOptions().tableOption()) {
+                if (optionCtx.getChildCount() >= 3 && optionCtx.getChild(1).getText().equals("=")) {
+                    String name = null;
+                    String value = null;
+
+                    if (optionCtx.ENGINE() != null && optionCtx.STRING() != null) {
+                        name = "ENGINE";
+                        value = unquoteString(optionCtx.STRING().getText());
+                    }
+                    else if (optionCtx.CHARSET() != null && optionCtx.STRING() != null) {
+                        name = "CHARSET";
+                        value = unquoteString(optionCtx.STRING().getText());
+                    }
+                    else if (optionCtx.COLLATE() != null && optionCtx.STRING() != null) {
+                        name = "COLLATE";
+                        value = unquoteString(optionCtx.STRING().getText());
+                    }
+                    else if (optionCtx.AUTO_INCREMENT() != null && optionCtx.INTEGER_VALUE() != null) {
+                        name = "AUTO_INCREMENT";
+                        value = optionCtx.INTEGER_VALUE().getText();
+                    }
+                    else if (optionCtx.COMMENT() != null && optionCtx.STRING() != null) {
+                        name = "COMMENT";
+                        value = unquoteString(optionCtx.STRING().getText());
+                    }
+
+                    if (name != null && value != null) {
+                        options.add(new TableOption(name, value));
+                    }
+                }
+            }
+        }
+
+        return new CreateTableStatement(
+                tableName,
+                isTemporary,
+                ifNotExists,
+                elements,
+                options
+        );
+    }
+
+    private ColumnElement processColumnDefinition(SqlBaseParser.ColumnDefinitionContext ctx)
+    {
+        // Parse column name
+        String columnName = ctx.columnName().getText();
+
+        // Parse data type
+        DataType dataType = processDataType(ctx.dataType());
+
+        // Parse column constraints
+        List<ColumnConstraint> constraints = new ArrayList<>();
+        for (SqlBaseParser.ColumnConstraintContext constraintCtx : ctx.columnConstraint()) {
+            String constraintName = constraintCtx.constraintName() != null ?
+                    constraintCtx.constraintName().getText() : null;
+
+            ConstraintType type;
+            Object value = null;
+            ForeignKeyClause foreignKey = null;
+            Expression checkExpression = null;
+
+            if (constraintCtx.NULL() != null) {
+                type = constraintCtx.NOT() != null ? ConstraintType.NOT_NULL : ConstraintType.NULL;
+            }
+            else if (constraintCtx.PRIMARY() != null) {
+                type = ConstraintType.PRIMARY_KEY;
+            }
+            else if (constraintCtx.UNIQUE() != null) {
+                type = ConstraintType.UNIQUE;
+            }
+            else if (constraintCtx.DEFAULT() != null) {
+                type = ConstraintType.DEFAULT;
+                value = processDefaultValue(constraintCtx.defaultValue());
+            }
+            else if (constraintCtx.foreignKeyClause() != null) {
+                type = ConstraintType.FOREIGN_KEY;
+                foreignKey = processForeignKeyClause(constraintCtx.foreignKeyClause());
+            }
+            else if (constraintCtx.checkConstraint() != null) {
+                type = ConstraintType.CHECK;
+                checkExpression = processExpression(constraintCtx.checkConstraint().expression());
+            }
+            else {
+                continue;  // Unknown constraint type
+            }
+
+            constraints.add(new ColumnConstraint(constraintName, type, value, foreignKey, checkExpression));
+        }
+
+        return new ColumnElement(columnName, dataType, constraints.toArray(new ColumnConstraint[0]));
+    }
+
+    private TableConstraint processTableConstraint(SqlBaseParser.TableConstraintContext ctx)
+    {
+        String constraintName = ctx.constraintName() != null ? ctx.constraintName().getText() : null;
+        ConstraintType type;
+        String[] columns = null;
+        ForeignKeyClause foreignKey = null;
+        Expression checkExpression = null;
+
+        if (ctx.primaryKeyConstraint() != null) {
+            type = ConstraintType.PRIMARY_KEY;
+            columns = ctx.primaryKeyConstraint().columnName().stream()
+                    .map(RuleContext::getText)
+                    .toArray(String[]::new);
+        }
+        else if (ctx.uniqueConstraint() != null) {
+            type = ConstraintType.UNIQUE;
+            columns = ctx.uniqueConstraint().columnName().stream()
+                    .map(RuleContext::getText)
+                    .toArray(String[]::new);
+        }
+        else if (ctx.foreignKeyConstraint() != null) {
+            type = ConstraintType.FOREIGN_KEY;
+            columns = ctx.foreignKeyConstraint().columnName().stream()
+                    .map(RuleContext::getText)
+                    .toArray(String[]::new);
+            foreignKey = processForeignKeyClause(ctx.foreignKeyConstraint().foreignKeyClause());
+        }
+        else if (ctx.checkConstraint() != null) {
+            type = ConstraintType.CHECK;
+            checkExpression = processExpression(ctx.checkConstraint().expression());
+        }
+        else {
+            throw new IllegalStateException("Unknown constraint type");
+        }
+
+        return new TableConstraint(constraintName, type, columns, foreignKey, checkExpression);
+    }
+
+    private ForeignKeyClause processForeignKeyClause(SqlBaseParser.ForeignKeyClauseContext ctx)
+    {
+        String referencedTable = ctx.tableName().getText();
+
+        String[] referencedColumns = null;
+        if (ctx.columnName() != null && !ctx.columnName().isEmpty()) {
+            referencedColumns = ctx.columnName().stream()
+                    .map(RuleContext::getText)
+                    .toArray(String[]::new);
+        }
+
+        ReferenceOption onDelete = null;
+        ReferenceOption onUpdate = null;
+
+        if (ctx.DELETE() != null) {
+            onDelete = getReferenceOption(ctx.referenceOption(0));
+        }
+        if (ctx.UPDATE() != null) {
+            onUpdate = getReferenceOption(ctx.referenceOption(1));
+        }
+
+        return new ForeignKeyClause(referencedTable, referencedColumns, onDelete, onUpdate);
+    }
+
+    private DataType processDataType(SqlBaseParser.DataTypeContext ctx)
+    {
+        String baseType = normalizeDataType(ctx.baseDataType().getText());
+
+        Integer[] parameters = null;
+        if (ctx.INTEGER_VALUE() != null && !ctx.INTEGER_VALUE().isEmpty()) {
+            parameters = ctx.INTEGER_VALUE().stream()
+                    .map(node -> Integer.parseInt(node.getText()))
+                    .toArray(Integer[]::new);
+        }
+
+        return new DataType(baseType, parameters);
+    }
+
+    private String normalizeDataType(String baseType)
+    {
+        // Normalize case and handle type aliases
+        switch (baseType.toUpperCase()) {
+            case "INT":
+            case "INTEGER":
+                return "INTEGER";
+            case "BOOL":
+            case "BOOLEAN":
+                return "BOOLEAN";
+            case "DEC":
+            case "DECIMAL":
+            case "NUMERIC":
+                return "DECIMAL";
+            case "CHAR":
+            case "CHARACTER":
+                return "CHARACTER";
+            default:
+                return baseType.toUpperCase();
+        }
+    }
+
+    private ReferenceOption getReferenceOption(SqlBaseParser.ReferenceOptionContext ctx)
+    {
+        if (ctx.RESTRICT() != null) {
+            return ReferenceOption.RESTRICT;
+        }
+        if (ctx.CASCADE() != null) {
+            return ReferenceOption.CASCADE;
+        }
+        if (ctx.NULL() != null) {
+            return ReferenceOption.SET_NULL;
+        }
+        if (ctx.NO() != null) {
+            return ReferenceOption.NO_ACTION;
+        }
+        if (ctx.DEFAULT() != null) {
+            return ReferenceOption.SET_DEFAULT;
+        }
+        return ReferenceOption.NO_ACTION; // Default behavior
+    }
+
+    private Object processDefaultValue(SqlBaseParser.DefaultValueContext ctx)
+    {
+        if (ctx.literal() != null) {
+            return processLiteral(ctx.literal());
+        }
+        else if (ctx.expression() != null) {
+            return processExpression(ctx.expression());
+        }
+        return null;
+    }
+
+    private Object processLiteral(SqlBaseParser.LiteralContext ctx)
+    {
+        if (ctx.STRING() != null) {
+            return unquoteString(ctx.STRING().getText());
+        }
+        else if (ctx.INTEGER_VALUE() != null) {
+            return Long.parseLong(ctx.INTEGER_VALUE().getText());
+        }
+        else if (ctx.DECIMAL_VALUE() != null) {
+            return Double.parseDouble(ctx.DECIMAL_VALUE().getText());
+        }
+        else if (ctx.TRUE() != null) {
+            return true;
+        }
+        else if (ctx.FALSE() != null) {
+            return false;
+        }
+        else if (ctx.NULL() != null) {
+            return null;
+        }
+        return null;
+    }
+
+    private String unquoteString(String str)
+    {
+        if (str == null || str.length() < 2) {
+            return str;
+        }
+        // Remove surrounding quotes (either single or double quotes)
+        return str.substring(1, str.length() - 1);
     }
 
     @Override

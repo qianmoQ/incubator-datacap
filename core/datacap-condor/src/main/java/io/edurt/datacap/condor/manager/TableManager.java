@@ -10,7 +10,6 @@ import io.edurt.datacap.condor.metadata.TableDefinition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,17 +23,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Stream;
 
 @Slf4j
 public class TableManager
 {
-    private final String dataDir;
+    private final Path dataDir;
     private final Map<String, TableDefinition> tableMetadataCache;
     private final Map<String, ReadWriteLock> tableLocks;
 
-    public TableManager(String databasePath)
+    public TableManager(Path databasePath)
     {
-        this.dataDir = databasePath + "/tables/";
+        this.dataDir = databasePath.resolve("tables");
         this.tableMetadataCache = new HashMap<>();
         this.tableLocks = new HashMap<>();
         initializeDirectory();
@@ -42,50 +42,52 @@ public class TableManager
 
     private void initializeDirectory()
     {
-        File directory = new File(dataDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
         loadExistingTables();
     }
 
     private void loadExistingTables()
     {
-        File dir = new File(dataDir);
-        File[] metaFiles = dir.listFiles((d, name) -> name.endsWith(".meta"));
-        if (metaFiles != null) {
-            for (File metaFile : metaFiles) {
-                String tableName = metaFile.getName().replace(".meta", "");
-                try {
-                    TableDefinition metadata = loadTableMetadata(tableName);
-                    tableMetadataCache.put(tableName, metadata);
-                    tableLocks.put(tableName, new ReentrantReadWriteLock());
-                }
-                catch (IOException e) {
-                    log.error("Failed to load table metadata: {}", metaFile.getName());
-                }
-            }
+        if (!Files.exists(dataDir)) {
+            return;
+        }
+
+        log.info("Loading existing tables from {}", dataDir);
+        try (Stream<Path> stream = Files.walk(dataDir, 1)) {
+            stream.filter(Files::isDirectory)
+                    .filter(path -> !path.equals(dataDir))
+                    .forEach(tableDir -> {
+                        String tableName = tableDir.getFileName().toString();
+                        try {
+                            TableDefinition metadata = loadTableMetadata(tableName);
+                            tableMetadataCache.put(tableName, metadata);
+                            tableLocks.put(tableName, new ReentrantReadWriteLock());
+                        }
+                        catch (IOException e) {
+                            log.error("Failed to load table metadata: {}", tableName);
+                        }
+                    });
+        }
+        catch (IOException e) {
+            log.error("Failed to load existing tables", e);
         }
     }
 
-    public void createTable(String tableName, List<ColumnDefinition> columns)
+    public void createTable(TableDefinition metadata)
             throws TableException
     {
-        validateTableName(tableName);
+        validateTableName(metadata.getTableName());
 
-        if (tableExists(tableName)) {
-            throw new TableException("Table '" + tableName + "' already exists");
+        if (tableExists(metadata.getTableName())) {
+            throw new TableException("Table '" + metadata.getTableName() + "' already exists");
         }
-
-        TableDefinition metadata = new TableDefinition(tableName, columns);
 
         try {
             saveTableMetadata(metadata);
 
-            createTableDataFile(tableName);
+            createTableDataFile(metadata.getTableName());
 
-            tableMetadataCache.put(tableName, metadata);
-            tableLocks.put(tableName, new ReentrantReadWriteLock());
+            tableMetadataCache.put(metadata.getTableName(), metadata);
+            tableLocks.put(metadata.getTableName(), new ReentrantReadWriteLock());
         }
         catch (IOException e) {
             throw new TableException("Failed to create table: " + e.getMessage());
@@ -354,27 +356,44 @@ public class TableManager
     private void saveTableMetadata(TableDefinition metadata)
             throws IOException
     {
-        Path metaPath = Paths.get(dataDir + metadata.getTableName() + ".meta");
+        Path metaPath = dataDir.resolve(metadata.getTableName())
+                .resolve("metadata")
+                .resolve("table.meta");
+        if (!Files.exists(metaPath)) {
+            Files.createDirectories(metaPath.getParent());
+        }
+
         try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(metaPath))) {
             oos.writeObject(metadata);
+        }
+        catch (IOException e) {
+            log.error("Failed to save table metadata", e);
+            throw new IOException("Failed to save table metadata", e);
         }
     }
 
     private void createTableDataFile(String tableName)
             throws IOException
     {
-        Path dataPath = Paths.get(dataDir + tableName + ".data");
-        Files.createFile(dataPath);
+        Path metaPath = dataDir.resolve(tableName)
+                .resolve("metadata")
+                .resolve("table.data");
+        if (!Files.exists(metaPath)) {
+            Files.createDirectories(metaPath.getParent());
+        }
     }
 
     private TableDefinition loadTableMetadata(String tableName)
             throws IOException
     {
-        Path metaPath = Paths.get(dataDir + tableName + ".meta");
+        Path metaPath = dataDir.resolve(tableName)
+                .resolve("metadata")
+                .resolve("table.meta");
         try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(metaPath))) {
             return (TableDefinition) ois.readObject();
         }
-        catch (ClassNotFoundException e) {
+        catch (IOException | ClassNotFoundException e) {
+            log.error("Failed to load table metadata", e);
             throw new IOException("Failed to load table metadata", e);
         }
     }

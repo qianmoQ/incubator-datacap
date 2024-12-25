@@ -1,5 +1,8 @@
 package io.edurt.datacap.condor;
 
+import lombok.ToString;
+
+@ToString
 public class SQLResult
 {
     private final boolean success;
