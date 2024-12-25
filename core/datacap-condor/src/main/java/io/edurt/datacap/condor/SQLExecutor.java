@@ -15,6 +15,7 @@ import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
 import io.edurt.datacap.sql.statement.CreateTableStatement;
 import io.edurt.datacap.sql.statement.DropDatabaseStatement;
 import io.edurt.datacap.sql.statement.DropTableStatement;
+import io.edurt.datacap.sql.statement.InsertStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.UseDatabaseStatement;
 
@@ -64,6 +65,12 @@ public class SQLExecutor
                 ensureCurrentTableManager();
                 DropTableStatement dropTableStatement = (DropTableStatement) statement;
                 return executeDropTable(dropTableStatement);
+            }
+
+            if (statement instanceof InsertStatement) {
+                ensureCurrentTableManager();
+                InsertStatement insertStatement = (InsertStatement) statement;
+                return executeInsert(insertStatement);
             }
 
             return new SQLResult(false, String.format("Unsupported SQL statement: %s", statement));
@@ -152,6 +159,26 @@ public class SQLExecutor
         }
         catch (Exception e) {
             return new SQLResult(false, "Failed to drop table: " + e.getMessage());
+        }
+    }
+
+    private SQLResult executeInsert(InsertStatement statement)
+    {
+        try {
+            // TODO: Support check is multiple insert for InsertStatement
+            System.out.println(statement);
+            if (statement.getSimpleValues().size() == 1) {
+                tableManager.insert(
+                        statement.getTableName(),
+                        statement.getColumns(),
+                        statement.getSimpleValues().get(0)
+                );
+            }
+
+            return new SQLResult(true, String.format("Inserted %d rows", statement.getSimpleValues().size()));
+        }
+        catch (Exception e) {
+            return new SQLResult(false, "Failed to insert rows: " + e.getMessage());
         }
     }
 

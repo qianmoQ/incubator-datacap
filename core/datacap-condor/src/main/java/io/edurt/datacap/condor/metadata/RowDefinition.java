@@ -2,10 +2,12 @@ package io.edurt.datacap.condor.metadata;
 
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RowDefinition
+        implements Serializable
 {
     @Setter
     private Map<String, Object> values;

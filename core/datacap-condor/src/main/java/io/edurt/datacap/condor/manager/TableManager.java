@@ -228,11 +228,14 @@ public class TableManager
     private void appendRowToFile(String tableName, RowDefinition row)
             throws TableException
     {
-        Path dataPath = Paths.get(dataDir + tableName + ".data");
+        Path dataPath = dataDir.resolve(tableName)
+                .resolve("data")
+                .resolve("table.data");
         try (ObjectOutputStream oos = new AppendableObjectOutputStream(Files.newOutputStream(dataPath, StandardOpenOption.APPEND))) {
             oos.writeObject(row);
         }
         catch (IOException e) {
+            log.error("Failed to append row to file", e);
             throw new TableException("Failed to append row to file: " + e.getMessage());
         }
     }
@@ -381,6 +384,7 @@ public class TableManager
                 .resolve("table.data");
         if (!Files.exists(metaPath)) {
             Files.createDirectories(metaPath.getParent());
+            Files.createFile(metaPath);
         }
     }
 

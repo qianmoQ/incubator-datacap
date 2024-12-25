@@ -69,7 +69,25 @@ public class ExpressionProcessor
     {
         Expression expr = new Expression();
         expr.setType(Expression.ExpressionType.LITERAL);
-        expr.setValue(ctx.literal().getText());
+
+        if (ctx.literal().INTEGER_VALUE() != null) {
+            expr.setValue(Integer.valueOf(ctx.literal().INTEGER_VALUE().getText()));
+        }
+        else if (ctx.literal().DECIMAL_VALUE() != null) {
+            expr.setValue(Double.valueOf(ctx.literal().DECIMAL_VALUE().getText()));
+        }
+        else if (ctx.literal().STRING() != null) {
+            expr.setValue(ctx.literal().getText());
+        }
+        else if (ctx.literal().TRUE() != null) {
+            expr.setValue(true);
+        }
+        else if (ctx.literal().FALSE() != null) {
+            expr.setValue(false);
+        }
+        else if (ctx.literal().NULL() != null) {
+            expr.setValue(null);
+        }
         return expr;
     }
 

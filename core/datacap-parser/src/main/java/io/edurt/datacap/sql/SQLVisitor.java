@@ -1,5 +1,6 @@
 package io.edurt.datacap.sql;
 
+import com.google.common.collect.Lists;
 import io.edurt.datacap.sql.node.ColumnConstraint;
 import io.edurt.datacap.sql.node.ConstraintType;
 import io.edurt.datacap.sql.node.DataType;
@@ -22,6 +23,7 @@ import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
 import io.edurt.datacap.sql.statement.CreateTableStatement;
 import io.edurt.datacap.sql.statement.DropDatabaseStatement;
 import io.edurt.datacap.sql.statement.DropTableStatement;
+import io.edurt.datacap.sql.statement.InsertStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 import io.edurt.datacap.sql.statement.UseDatabaseStatement;
@@ -154,8 +156,44 @@ public class SQLVisitor
     @Override
     public SQLStatement visitInsertStatement(SqlBaseParser.InsertStatementContext ctx)
     {
-        // TODO: Implement insert statement parsing
-        return null;
+        String tableName = ctx.tableName().getText();
+        boolean orReplace = ctx.REPLACE() != null;
+
+        // Parse column names if present
+        List<String> columns = Lists.newArrayList();
+        if (ctx.columnName() != null && !ctx.columnName().isEmpty()) {
+            columns = ctx.columnName()
+                    .stream()
+                    .map(RuleContext::getText)
+                    .collect(Collectors.toList());
+        }
+
+        // Handle VALUES case
+        List<List<Expression>> values = Lists.newArrayList();
+        List<List<Object>> simpleValues = Lists.newArrayList();
+        SelectStatement select = null;
+
+        if (ctx.insertValuesConstructor() != null && !ctx.insertValuesConstructor().isEmpty()) {
+            for (SqlBaseParser.InsertValuesConstructorContext valueCtx : ctx.insertValuesConstructor()) {
+                List<Expression> row = valueCtx.value()
+                        .stream()
+                        .map(SqlBaseParser.ValueContext::expression)
+                        .map(this::processExpression)
+                        .collect(Collectors.toList());
+                simpleValues.add(
+                        row.stream()
+                                .map(Expression::getValue)
+                                .collect(Collectors.toList())
+                );
+                values.add(row);
+            }
+        }
+        // Handle SELECT case
+        else if (ctx.selectStatement() != null) {
+            select = (SelectStatement) visitSelectStatement(ctx.selectStatement());
+        }
+
+        return new InsertStatement(tableName, orReplace, columns, values, simpleValues, select);
     }
 
     @Override
