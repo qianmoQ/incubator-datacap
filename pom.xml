@@ -113,6 +113,7 @@
         <module>test/datacap-test-fs</module>
         <module>test/datacap-test-driver</module>
         <module>test/datacap-test-parser</module>
+        <module>test/datacap-test-condor</module>
     </modules>
 
     <name>datacap</name>

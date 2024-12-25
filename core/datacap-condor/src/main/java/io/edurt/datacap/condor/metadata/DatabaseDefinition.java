@@ -12,7 +12,7 @@ public class DatabaseDefinition
     public DatabaseDefinition(String name)
     {
         this.name = name;
-        this.storageEngine = new StorageEngine(ROOT_DIR + name + "/tables/");
+        this.storageEngine = new StorageEngine();
     }
 
     public String getName()

@@ -161,7 +161,9 @@ public class SQLVisitor
     @Override
     public SQLStatement visitCreateStatement(SqlBaseParser.CreateStatementContext ctx)
     {
-        // TODO: Implement create statement parsing
+        if (ctx.createDatabaseStatement() != null) {
+            return visitCreateDatabaseStatement(ctx.createDatabaseStatement());
+        }
         return null;
     }
 
