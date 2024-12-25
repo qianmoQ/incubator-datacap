@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 @Slf4j
 public class DatabaseManager
@@ -125,27 +126,33 @@ public class DatabaseManager
             throws DatabaseException
     {
         if (!databases.containsKey(databaseName)) {
+            log.info("Database '{}' does not exist", databaseName);
             throw new DatabaseException("Database '" + databaseName + "' does not exist");
         }
 
         try {
             // 删除数据库目录及其所有内容
+            // Delete database directory and its contents
             Path dbPath = Paths.get(ROOT_DIR, databaseName);
-            Files.walk(dbPath)
-                    .sorted((p1, p2) -> -p1.compareTo(p2)) // 反向排序，确保先删除文件再删除目录
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            try (Stream<Path> stream = Files.walk(dbPath)) {
+                stream.sorted((p1, p2) -> -p1.compareTo(p2))
+                        .forEach(path -> {
+                            try {
+                                log.debug("Deleting file: {} on database: {}", path, databaseName);
+                                Files.delete(path);
+                            }
+                            catch (IOException e) {
+                                log.error("Failed to delete file: {} on database: {}", path, databaseName, e);
+                            }
+                        });
+            }
 
             // 从管理器中移除数据库
+            // Remove database from manager
             databases.remove(databaseName);
 
             // 如果删除的是当前数据库，重置当前数据库
+            // Reset current database if deleted database is the current database
             if (databaseName.equals(currentDatabase)) {
                 currentDatabase = null;
             }

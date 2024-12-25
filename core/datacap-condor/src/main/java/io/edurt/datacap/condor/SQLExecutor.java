@@ -3,7 +3,9 @@ package io.edurt.datacap.condor;
 import io.edurt.datacap.condor.manager.DatabaseManager;
 import io.edurt.datacap.sql.SQLParser;
 import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
+import io.edurt.datacap.sql.statement.DropDatabaseStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
+import io.edurt.datacap.sql.statement.UseDatabaseStatement;
 
 public class SQLExecutor
 {
@@ -22,6 +24,16 @@ public class SQLExecutor
             if (statement instanceof CreateDatabaseStatement) {
                 CreateDatabaseStatement createDatabaseStatement = (CreateDatabaseStatement) statement;
                 return executeCreateDatabase(createDatabaseStatement);
+            }
+
+            if (statement instanceof DropDatabaseStatement) {
+                DropDatabaseStatement dropDatabaseStatement = (DropDatabaseStatement) statement;
+                return executeDropDatabase(dropDatabaseStatement);
+            }
+
+            if (statement instanceof UseDatabaseStatement) {
+                UseDatabaseStatement useDatabaseStatement = (UseDatabaseStatement) statement;
+                return executeUseDatabase(useDatabaseStatement);
             }
 
             return new SQLResult(false, String.format("Unsupported SQL statement: %s", statement));
@@ -49,6 +61,33 @@ public class SQLExecutor
         }
         catch (DatabaseException e) {
             return new SQLResult(false, "Failed to create database: " + e.getMessage());
+        }
+    }
+
+    private SQLResult executeDropDatabase(DropDatabaseStatement statement)
+    {
+        try {
+            if (statement.isIfNotExists() && !databaseManager.databaseExists(statement.getDatabaseName())) {
+                return new SQLResult(true, "Database does not exist");
+            }
+
+            databaseManager.dropDatabase(statement.getDatabaseName());
+            return new SQLResult(true, "Database dropped successfully");
+        }
+        catch (DatabaseException e) {
+            return new SQLResult(false, "Failed to drop database: " + e.getMessage());
+        }
+    }
+
+    private SQLResult executeUseDatabase(UseDatabaseStatement statement)
+    {
+        try {
+            String databaseName = statement.getDatabaseName();
+            databaseManager.useDatabase(databaseName);
+            return new SQLResult(true, "Database changed");
+        }
+        catch (DatabaseException e) {
+            return new SQLResult(false, "Failed to use database: " + e.getMessage());
         }
     }
 }

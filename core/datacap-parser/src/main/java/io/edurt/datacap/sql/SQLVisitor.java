@@ -11,8 +11,10 @@ import io.edurt.datacap.sql.parser.SqlBaseParser;
 import io.edurt.datacap.sql.processor.ExpressionProcessor;
 import io.edurt.datacap.sql.processor.ShowProcessor;
 import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
+import io.edurt.datacap.sql.statement.DropDatabaseStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
+import io.edurt.datacap.sql.statement.UseDatabaseStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,15 +179,23 @@ public class SQLVisitor
     @Override
     public SQLStatement visitDropStatement(SqlBaseParser.DropStatementContext ctx)
     {
-        // TODO: Implement drop statement parsing
+        if (ctx.dropDatabaseStatement() != null) {
+            return visitDropDatabaseStatement(ctx.dropDatabaseStatement());
+        }
         return null;
+    }
+
+    @Override
+    public SQLStatement visitDropDatabaseStatement(SqlBaseParser.DropDatabaseStatementContext ctx)
+    {
+        boolean ifNotExists = ctx.EXISTS() != null;
+        return new DropDatabaseStatement(ctx.databaseName().getText(), ifNotExists);
     }
 
     @Override
     public SQLStatement visitUseStatement(SqlBaseParser.UseStatementContext ctx)
     {
-        // TODO: Implement use statement parsing
-        return null;
+        return new UseDatabaseStatement(ctx.databaseName().getText());
     }
 
     @Override
