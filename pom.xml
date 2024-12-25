@@ -17,6 +17,7 @@
         <module>core/datacap-captcha</module>
         <module>core/datacap-sql</module>
         <module>core/datacap-plugin</module>
+        <module>core/datacap-condor</module>
         <module>lib/datacap-http</module>
         <module>lib/datacap-logger</module>
         <module>lib/datacap-shell</module>

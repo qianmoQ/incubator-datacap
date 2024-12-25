@@ -10,6 +10,7 @@ import io.edurt.datacap.sql.parser.SqlBaseBaseVisitor;
 import io.edurt.datacap.sql.parser.SqlBaseParser;
 import io.edurt.datacap.sql.processor.ExpressionProcessor;
 import io.edurt.datacap.sql.processor.ShowProcessor;
+import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 
@@ -56,6 +57,14 @@ public class SQLVisitor
             return visitShowStatement(ctx.showStatement());
         }
         return null;
+    }
+
+    @Override
+    public SQLStatement visitCreateDatabaseStatement(SqlBaseParser.CreateDatabaseStatementContext ctx)
+    {
+        String databaseName = ctx.databaseName().getText();
+        boolean ifNotExists = ctx.EXISTS() != null;
+        return new CreateDatabaseStatement(databaseName, ifNotExists);
     }
 
     @Override
