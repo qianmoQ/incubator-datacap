@@ -4,12 +4,14 @@ import io.edurt.datacap.condor.manager.DatabaseManager;
 import io.edurt.datacap.condor.manager.TableManager;
 import io.edurt.datacap.condor.metadata.ColumnDefinition;
 import io.edurt.datacap.condor.metadata.DatabaseDefinition;
+import io.edurt.datacap.condor.metadata.RowDefinition;
 import io.edurt.datacap.condor.metadata.TableDefinition;
 import io.edurt.datacap.sql.SQLParser;
 import io.edurt.datacap.sql.node.ColumnConstraint;
 import io.edurt.datacap.sql.node.ConstraintType;
 import io.edurt.datacap.sql.node.TableConstraint;
 import io.edurt.datacap.sql.node.element.ColumnElement;
+import io.edurt.datacap.sql.node.element.SelectElement;
 import io.edurt.datacap.sql.node.element.TableElement;
 import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
 import io.edurt.datacap.sql.statement.CreateTableStatement;
@@ -17,6 +19,7 @@ import io.edurt.datacap.sql.statement.DropDatabaseStatement;
 import io.edurt.datacap.sql.statement.DropTableStatement;
 import io.edurt.datacap.sql.statement.InsertStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
+import io.edurt.datacap.sql.statement.SelectStatement;
 import io.edurt.datacap.sql.statement.UseDatabaseStatement;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SQLExecutor
 {
@@ -71,6 +75,12 @@ public class SQLExecutor
                 ensureCurrentTableManager();
                 InsertStatement insertStatement = (InsertStatement) statement;
                 return executeInsert(insertStatement);
+            }
+
+            if (statement instanceof SelectStatement) {
+                ensureCurrentTableManager();
+                SelectStatement selectStatement = (SelectStatement) statement;
+                return executeSelect(selectStatement);
             }
 
             return new SQLResult(false, String.format("Unsupported SQL statement: %s", statement));
@@ -166,7 +176,6 @@ public class SQLExecutor
     {
         try {
             // TODO: Support check is multiple insert for InsertStatement
-            System.out.println(statement);
             if (statement.getSimpleValues().size() == 1) {
                 tableManager.insert(
                         statement.getTableName(),
@@ -174,11 +183,39 @@ public class SQLExecutor
                         statement.getSimpleValues().get(0)
                 );
             }
+            else {
+                tableManager.batchInsert(
+                        statement.getTableName(),
+                        statement.getColumns(),
+                        statement.getSimpleValues()
+                );
+            }
 
             return new SQLResult(true, String.format("Inserted %d rows", statement.getSimpleValues().size()));
         }
         catch (Exception e) {
             return new SQLResult(false, "Failed to insert rows: " + e.getMessage());
+        }
+    }
+
+    private SQLResult executeSelect(SelectStatement statement)
+    {
+        try {
+            List<RowDefinition> rows = tableManager.select(
+                    statement.getFromSources().get(0).getTableName(),
+                    statement.getSelectElements().stream()
+                            .map(SelectElement::getColumn)
+                            .collect(Collectors.toList()),
+                    null
+            );
+            return new SQLResult(
+                    true,
+                    String.format("Selected %d rows", rows.size()),
+                    rows
+            );
+        }
+        catch (Exception e) {
+            return new SQLResult(false, "Failed to select rows: " + e.getMessage());
         }
     }
 

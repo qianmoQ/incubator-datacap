@@ -8,11 +8,13 @@ import io.edurt.datacap.sql.node.element.SelectElement;
 import io.edurt.datacap.sql.node.element.TableElement;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class SelectStatement
         extends SQLStatement

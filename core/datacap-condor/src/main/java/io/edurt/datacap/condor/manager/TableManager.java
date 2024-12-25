@@ -135,6 +135,44 @@ public class TableManager
         }
     }
 
+    public void batchInsert(String tableName, List<String> columnNames, List<List<Object>> valuesList)
+            throws TableException
+    {
+        TableDefinition metadata = getTableMetadata(tableName);
+        ReadWriteLock lock = tableLocks.get(tableName);
+
+        lock.writeLock().lock();
+        try {
+            // Validate all rows first
+            for (List<Object> values : valuesList) {
+                validateInsertData(metadata, columnNames, values);
+            }
+
+            // Create all rows
+            List<RowDefinition> rows = new ArrayList<>();
+            for (List<Object> values : valuesList) {
+                rows.add(createRow(metadata, columnNames, values));
+            }
+
+            // Batch write to file
+            Path dataPath = dataDir.resolve(tableName)
+                    .resolve("data")
+                    .resolve("table.data");
+            try (ObjectOutputStream oos = new AppendableObjectOutputStream(
+                    Files.newOutputStream(dataPath, StandardOpenOption.APPEND))) {
+                for (RowDefinition row : rows) {
+                    oos.writeObject(row);
+                }
+            }
+            catch (IOException e) {
+                throw new TableException("Failed to batch insert rows: " + e.getMessage());
+            }
+        }
+        finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     public int update(String tableName, Map<String, Object> setValues, Condition whereCondition)
             throws TableException
     {
@@ -201,6 +239,14 @@ public class TableManager
         TableDefinition metadata = getTableMetadata(tableName);
         ReadWriteLock lock = tableLocks.get(tableName);
 
+        if (columnNames != null && !columnNames.isEmpty()) {
+            for (String columnName : columnNames) {
+                if (metadata.getColumn(columnName) == null) {
+                    throw new TableException("Column '" + columnName + "' does not exist");
+                }
+            }
+        }
+
         lock.readLock().lock();
         try {
             List<RowDefinition> rows = readAllRows(tableName);
@@ -259,7 +305,9 @@ public class TableManager
             throws TableException
     {
         List<RowDefinition> rows = new ArrayList<>();
-        Path dataPath = Paths.get(dataDir + tableName + ".data");
+        Path dataPath = dataDir.resolve(tableName)
+                .resolve("data")
+                .resolve("table.data");
 
         if (!Files.exists(dataPath)) {
             return rows;
@@ -277,6 +325,7 @@ public class TableManager
             }
         }
         catch (IOException | ClassNotFoundException e) {
+            log.error("Failed to read rows from file", e);
             throw new TableException("Failed to read rows from file: " + e.getMessage());
         }
 

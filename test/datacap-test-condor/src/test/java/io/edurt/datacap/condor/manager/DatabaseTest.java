@@ -44,7 +44,8 @@ public class DatabaseTest
         String sql = "CREATE TABLE IF NOT EXISTS test_table (id INT, name VARCHAR(255))";
 //        sql = "DROP TABLE IF EXISTS test_table";
         sql = "INSERT INTO test_table (id, name) VALUES (1, 'John')";
-//        sql = "INSERT INTO test_table (id, name) VALUES (1, 'John'), (2, 'Jane')";
+        sql = "INSERT INTO test_table (id, name) VALUES (1, 'John'), (2, 'Jane')";
+        sql = "SELECT id, name FROM test_table";
         log.info("{}", executor.execute(sql));
     }
 }
