@@ -15,4 +15,14 @@ public class TableDefinition
         this.tableName = tableName;
         this.columns = columns;
     }
+
+    public ColumnDefinition getColumn(String columnName)
+    {
+        for (ColumnDefinition column : columns) {
+            if (column.getName().equals(columnName)) {
+                return column;
+            }
+        }
+        return null;
+    }
 }

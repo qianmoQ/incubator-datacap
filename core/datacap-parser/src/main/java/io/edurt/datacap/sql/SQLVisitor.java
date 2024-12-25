@@ -166,7 +166,18 @@ public class SQLVisitor
         if (ctx.createDatabaseStatement() != null) {
             return visitCreateDatabaseStatement(ctx.createDatabaseStatement());
         }
+
+        if (ctx.createTableStatement() != null) {
+            return visitCreateTableStatement(ctx.createTableStatement());
+        }
+
         return null;
+    }
+
+    @Override
+    public SQLStatement visitCreateTableStatement(SqlBaseParser.CreateTableStatementContext ctx)
+    {
+        return super.visitCreateTableStatement(ctx);
     }
 
     @Override
