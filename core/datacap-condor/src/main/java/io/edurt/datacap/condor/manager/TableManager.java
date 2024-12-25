@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class TableManager
         try (Stream<Path> stream = Files.walk(dataDir, 1)) {
             stream.filter(Files::isDirectory)
                     .filter(path -> !path.equals(dataDir))
+                    .filter(path -> Files.exists(path.resolve("metadata/table.meta")))
                     .forEach(tableDir -> {
                         String tableName = tableDir.getFileName().toString();
                         try {
@@ -104,8 +106,7 @@ public class TableManager
         ReadWriteLock lock = tableLocks.get(tableName);
         lock.writeLock().lock();
         try {
-            Files.deleteIfExists(Paths.get(dataDir + tableName + ".meta"));
-            Files.deleteIfExists(Paths.get(dataDir + tableName + ".data"));
+            deleteFile(dataDir.resolve(tableName));
             tableMetadataCache.remove(tableName);
             tableLocks.remove(tableName);
         }
@@ -376,7 +377,7 @@ public class TableManager
             throws IOException
     {
         Path metaPath = dataDir.resolve(tableName)
-                .resolve("metadata")
+                .resolve("data")
                 .resolve("table.data");
         if (!Files.exists(metaPath)) {
             Files.createDirectories(metaPath.getParent());
@@ -411,5 +412,21 @@ public class TableManager
             throw new TableException("Table '" + tableName + "' does not exist");
         }
         return metadata;
+    }
+
+    private void deleteFile(Path tableDir)
+            throws IOException
+    {
+        try (Stream<Path> stream = Files.walk(tableDir)) {
+            stream.sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        }
+                        catch (IOException e) {
+                            log.error("Failed to delete: {}", path, e);
+                        }
+                    });
+        }
     }
 }

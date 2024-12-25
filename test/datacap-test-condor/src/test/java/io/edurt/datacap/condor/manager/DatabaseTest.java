@@ -42,6 +42,7 @@ public class DatabaseTest
         log.info("{}", executor.execute("USE test"));
 
         String sql = "CREATE TABLE IF NOT EXISTS test_table (id INT, name VARCHAR(255))";
+        sql = "DROP TABLE IF EXISTS test_table";
         log.info("{}", executor.execute(sql));
     }
 }

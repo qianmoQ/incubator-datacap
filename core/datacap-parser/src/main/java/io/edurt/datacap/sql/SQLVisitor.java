@@ -21,6 +21,7 @@ import io.edurt.datacap.sql.processor.ShowProcessor;
 import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
 import io.edurt.datacap.sql.statement.CreateTableStatement;
 import io.edurt.datacap.sql.statement.DropDatabaseStatement;
+import io.edurt.datacap.sql.statement.DropTableStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.SelectStatement;
 import io.edurt.datacap.sql.statement.UseDatabaseStatement;
@@ -28,6 +29,7 @@ import org.antlr.v4.runtime.RuleContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SQLVisitor
         extends SqlBaseBaseVisitor<SQLStatement>
@@ -472,6 +474,10 @@ public class SQLVisitor
         if (ctx.dropDatabaseStatement() != null) {
             return visitDropDatabaseStatement(ctx.dropDatabaseStatement());
         }
+
+        if (ctx.dropTableStatement() != null) {
+            return visitDropTableStatement(ctx.dropTableStatement());
+        }
         return null;
     }
 
@@ -480,6 +486,16 @@ public class SQLVisitor
     {
         boolean ifNotExists = ctx.EXISTS() != null;
         return new DropDatabaseStatement(ctx.databaseName().getText(), ifNotExists);
+    }
+
+    @Override
+    public SQLStatement visitDropTableStatement(SqlBaseParser.DropTableStatementContext ctx)
+    {
+        boolean ifNotExists = ctx.EXISTS() != null;
+        List<String> tableNames = ctx.tableName().stream()
+                .map(RuleContext::getText)
+                .collect(Collectors.toList());
+        return new DropTableStatement(tableNames, ifNotExists);
     }
 
     @Override

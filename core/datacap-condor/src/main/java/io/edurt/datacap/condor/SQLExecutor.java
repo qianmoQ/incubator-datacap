@@ -14,6 +14,7 @@ import io.edurt.datacap.sql.node.element.TableElement;
 import io.edurt.datacap.sql.statement.CreateDatabaseStatement;
 import io.edurt.datacap.sql.statement.CreateTableStatement;
 import io.edurt.datacap.sql.statement.DropDatabaseStatement;
+import io.edurt.datacap.sql.statement.DropTableStatement;
 import io.edurt.datacap.sql.statement.SQLStatement;
 import io.edurt.datacap.sql.statement.UseDatabaseStatement;
 
@@ -57,6 +58,12 @@ public class SQLExecutor
                 ensureCurrentTableManager();
                 CreateTableStatement createTableStatement = (CreateTableStatement) statement;
                 return executeCreateTable(createTableStatement);
+            }
+
+            if (statement instanceof DropTableStatement) {
+                ensureCurrentTableManager();
+                DropTableStatement dropTableStatement = (DropTableStatement) statement;
+                return executeDropTable(dropTableStatement);
             }
 
             return new SQLResult(false, String.format("Unsupported SQL statement: %s", statement));
@@ -137,7 +144,18 @@ public class SQLExecutor
         }
     }
 
-    public List<ColumnDefinition> convertToColumns(List<TableElement> elements)
+    private SQLResult executeDropTable(DropTableStatement statement)
+    {
+        try {
+            tableManager.dropTable(statement.getTableNames().get(0));
+            return new SQLResult(true, "Table dropped successfully");
+        }
+        catch (Exception e) {
+            return new SQLResult(false, "Failed to drop table: " + e.getMessage());
+        }
+    }
+
+    private List<ColumnDefinition> convertToColumns(List<TableElement> elements)
     {
         List<ColumnDefinition> columns = new ArrayList<>();
 
