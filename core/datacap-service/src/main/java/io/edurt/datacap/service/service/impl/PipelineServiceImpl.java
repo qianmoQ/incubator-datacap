@@ -162,7 +162,8 @@ public class PipelineServiceImpl
                                         RunMode.valueOf(environment.getProperty("datacap.executor.mode")),
                                         RunWay.valueOf(environment.getProperty("datacap.executor.way")),
                                         environment.getProperty("datacap.executor.startScript"),
-                                        RunEngine.valueOf(environment.getProperty("datacap.executor.engine")));
+                                        RunEngine.valueOf(environment.getProperty("datacap.executor.engine")),
+                                        null);
 
                                 final java.util.concurrent.ExecutorService executorService = Executors.newCachedThreadPool();
                                 executorService.submit(() -> {

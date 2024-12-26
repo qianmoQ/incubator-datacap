@@ -716,7 +716,8 @@ public class DataSetServiceImpl
                                                                         RunWay.valueOf(requireNonNull(environment.getProperty("datacap.executor.way"))),
                                                                         RunMode.valueOf(requireNonNull(environment.getProperty("datacap.executor.mode"))),
                                                                         environment.getProperty("datacap.executor.startScript"),
-                                                                        RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine")))
+                                                                        RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine"))),
+                                                                        null
                                                                 );
 
                                                                 history.setState(RunState.RUNNING);

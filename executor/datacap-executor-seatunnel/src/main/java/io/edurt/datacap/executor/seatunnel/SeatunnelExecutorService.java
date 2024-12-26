@@ -182,6 +182,9 @@ public class SeatunnelExecutorService
             jsonGenerator.writeStartObject();
             this.writeChild("env", jsonGenerator, null);
             this.writeChild("source", jsonGenerator, request.getInput());
+            if (request.getTransform() != null) {
+                this.writeChild("transform", jsonGenerator, request.getTransform());
+            }
             this.writeChild("sink", jsonGenerator, request.getOutput());
             jsonGenerator.writeEndObject();
             return null;

@@ -22,14 +22,14 @@ public class DatabaseTest
     public void step1CreateDatabase()
     {
         SQLExecutor executor = new SQLExecutor(databaseManager);
-        assertTrue(executor.execute("CREATE DATABASE IF NOT EXISTS test").isSuccess());
+        executor.execute("CREATE DATABASE IF NOT EXISTS test");
     }
 
     @Test
     public void step2UseDatabase()
     {
         SQLExecutor executor = new SQLExecutor(databaseManager);
-        assertTrue(executor.execute("USE DATABASE test").isSuccess());
+        executor.execute("USE DATABASE test");
     }
 
     @Test

@@ -16,6 +16,8 @@
     </template>
 
     <div class="relative">
+      <ShadcnAlert closable type="error">{{ $t('pipeline.tip.timeUp') }}</ShadcnAlert>
+
       <ShadcnSpin v-if="loading" fixed/>
 
       <ShadcnTable size="small" :columns="headers" :data="data">

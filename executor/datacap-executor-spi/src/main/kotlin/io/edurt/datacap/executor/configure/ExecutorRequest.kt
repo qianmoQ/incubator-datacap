@@ -19,7 +19,8 @@ data class ExecutorRequest(
     var runWay: RunWay = RunWay.LOCAL,
     var runMode: RunMode = RunMode.CLIENT,
     var startScript: String? = null,
-    var runEngine: RunEngine = RunEngine.SPARK
+    var runEngine: RunEngine = RunEngine.SPARK,
+    var transform: ExecutorConfigure? = null
 )
 {
     constructor(
@@ -27,6 +28,14 @@ data class ExecutorRequest(
         input: ExecutorConfigure,
         output: ExecutorConfigure
     ) : this("", "", input, output, null, workHome, null, 600, RunWay.LOCAL, RunMode.CLIENT)
+
+    constructor(
+        workHome: String?,
+        input: ExecutorConfigure,
+        output: ExecutorConfigure,
+        transform: ExecutorConfigure?,
+        runEngine: RunEngine = RunEngine.SPARK
+    ) : this("", "", input, output, null, workHome, null, 600, RunWay.LOCAL, RunMode.CLIENT, null, runEngine, transform)
 
     constructor(
         workHome: String? = null,
@@ -61,6 +70,7 @@ data class ExecutorRequest(
         runMode: RunMode = RunMode.CLIENT,
         runWay: RunWay = RunWay.LOCAL,
         startScript: String?,
-        runEngine: RunEngine = RunEngine.SPARK
-    ) : this(taskName, userName, input, output, executorHome, workHome, null, 600, runWay, runMode, startScript, runEngine)
+        runEngine: RunEngine = RunEngine.SPARK,
+        transform: ExecutorConfigure? = null
+    ) : this(taskName, userName, input, output, executorHome, workHome, null, 600, runWay, runMode, startScript, runEngine, transform)
 }

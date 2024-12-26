@@ -120,9 +120,23 @@ public class WorkflowServiceImpl
                                 checkArgument(outputNode.isPresent(), "Sink node must not be null");
                                 log.debug("Found sink node: {}", outputNode.get().getKey());
 
+                                Optional<NodeConfiguration> transformNode = configure.getConfigure()
+                                        .getNodes()
+                                        .stream()
+                                        .filter(v -> v.getCategory().equalsIgnoreCase("transform"))
+                                        .findFirst();
+                                checkArgument(transformNode.isPresent(), "Transform node must not be null");
+                                log.debug("Found transform node: {}", transformNode.get().getKey());
+
                                 ExecutorConfigure form = new ExecutorConfigure(
                                         inputNode.get().getKey(),
                                         MapUtils.toProperties(inputNode.get().getData()),
+                                        Sets.newHashSet()
+                                );
+
+                                ExecutorConfigure transform = new ExecutorConfigure(
+                                        transformNode.get().getKey(),
+                                        MapUtils.toProperties(transformNode.get().getData()),
                                         Sets.newHashSet()
                                 );
 
@@ -148,7 +162,8 @@ public class WorkflowServiceImpl
                                         RunMode.valueOf(requireNonNull(environment.getProperty("datacap.executor.mode"))),
                                         RunWay.valueOf(requireNonNull(environment.getProperty("datacap.executor.way"))),
                                         environment.getProperty("datacap.executor.startScript"),
-                                        RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine")))
+                                        RunEngine.valueOf(requireNonNull(environment.getProperty("datacap.executor.engine"))),
+                                        transform
                                 );
                                 log.info("Created executor request for workflow: {}", configure.getCode());
 
