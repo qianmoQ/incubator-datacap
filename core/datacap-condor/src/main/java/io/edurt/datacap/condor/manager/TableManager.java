@@ -1,8 +1,10 @@
 package io.edurt.datacap.condor.manager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.condor.DataType;
 import io.edurt.datacap.condor.TableException;
 import io.edurt.datacap.condor.condition.Condition;
+import io.edurt.datacap.condor.io.AppendableObjectInputStream;
 import io.edurt.datacap.condor.io.AppendableObjectOutputStream;
 import io.edurt.datacap.condor.metadata.ColumnDefinition;
 import io.edurt.datacap.condor.metadata.RowDefinition;
@@ -27,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Stream;
 
 @Slf4j
+@SuppressFBWarnings(value = {"DLS_DEAD_LOCAL_STORE", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class TableManager
 {
     private final Path dataDir;
@@ -305,15 +308,13 @@ public class TableManager
             throws TableException
     {
         List<RowDefinition> rows = new ArrayList<>();
-        Path dataPath = dataDir.resolve(tableName)
-                .resolve("data")
-                .resolve("table.data");
+        Path dataPath = dataDir.resolve(tableName).resolve("data").resolve("table.data");
 
         if (!Files.exists(dataPath)) {
             return rows;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(dataPath))) {
+        try (AppendableObjectInputStream ois = new AppendableObjectInputStream(Files.newInputStream(dataPath))) {
             while (true) {
                 try {
                     RowDefinition row = (RowDefinition) ois.readObject();
@@ -325,8 +326,8 @@ public class TableManager
             }
         }
         catch (IOException | ClassNotFoundException e) {
-            log.error("Failed to read rows from file", e);
-            throw new TableException("Failed to read rows from file: " + e.getMessage());
+            log.error("Failed to read rows", e);
+            throw new TableException("Failed to read rows: " + e.getMessage());
         }
 
         return rows;

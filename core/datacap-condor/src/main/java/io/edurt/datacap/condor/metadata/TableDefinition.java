@@ -1,5 +1,6 @@
 package io.edurt.datacap.condor.metadata;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Getter
 @ToString
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TableDefinition
         implements Serializable
 {

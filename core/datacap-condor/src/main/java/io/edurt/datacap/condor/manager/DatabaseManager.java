@@ -1,11 +1,13 @@
 package io.edurt.datacap.condor.manager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.edurt.datacap.condor.DatabaseException;
 import io.edurt.datacap.condor.metadata.DatabaseDefinition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +17,19 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 @Slf4j
+@SuppressFBWarnings(value = {"RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", "RV_NEGATING_RESULT_OF_COMPARETO"})
 public class DatabaseManager
 {
     private static final String ROOT_DIR = "data";
     private Map<String, DatabaseDefinition> databases;
     private String currentDatabase;
 
-    public DatabaseManager()
+    public static DatabaseManager createManager()
+    {
+        return new DatabaseManager();
+    }
+
+    private DatabaseManager()
     {
         this.databases = new HashMap<>();
         initializeRootDirectory();
@@ -88,7 +96,9 @@ public class DatabaseManager
             dbConfig.setProperty("created_time", String.valueOf(System.currentTimeMillis()));
             dbConfig.setProperty("version", "1.0");
             Path configPath = dbPath.resolve("metadata/db.properties");
-            dbConfig.store(Files.newOutputStream(configPath), "Database Configuration");
+            try (OutputStream os = Files.newOutputStream(configPath)) {
+                dbConfig.store(os, "Database Configuration");
+            }
 
             // 创建数据库对象并添加到管理器
             // Create database object and add to manager

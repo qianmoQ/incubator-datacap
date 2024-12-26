@@ -1,16 +1,16 @@
 package io.edurt.datacap.condor.metadata;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class RowDefinition
         implements Serializable
 {
-    private static final long serialVersionUID = 3124538617601738211L;
-
     @Setter
     private Map<String, Object> values;
 
