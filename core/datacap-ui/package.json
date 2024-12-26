@@ -26,7 +26,6 @@
     "clsx": "^2.1.0",
     "lodash": "^4.17.21",
     "md-editor-v3": "^4.12.1",
-    "nprogress": "^0.2.0",
     "uuid": "^9.0.1",
     "view-shadcn-ui": "2024.5.3-alpha.1734608572",
     "vue": "^3.4.21",
@@ -43,7 +42,6 @@
   "devDependencies": {
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.11.26",
-    "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^5.0.4",
     "tippy.js": "^6.3.7",
     "typescript": "^5.2.2",

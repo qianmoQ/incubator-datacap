@@ -2,16 +2,10 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { createAuthRoute } from '@/router/auth'
 import { createDefaultRouter } from '@/router/default'
 import { createHttpRoute } from '@/router/http'
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+// @ts-ignore
+import { LoadingBar } from 'view-shadcn-ui'
 
-NProgress.configure({
-    easing: 'ease',
-    speed: 600,
-    showSpinner: true,
-    trickleSpeed: 200,
-    minimum: 0.3
-})
+LoadingBar.enabledNetwork()
 
 const routes: Array<RouteRecordRaw> = []
 
@@ -25,7 +19,7 @@ createAuthRoute(router)
 createDefaultRouter(router)
 
 router.beforeEach((_to, _from, _next) => {
-    NProgress.start()
+    LoadingBar.start()
     if (_to.matched.length === 0) {
         _next('/common/404')
     }
@@ -34,6 +28,6 @@ router.beforeEach((_to, _from, _next) => {
     }
 })
 
-router.afterEach(() => NProgress.done())
+router.afterEach(() => LoadingBar.done())
 
 export default router

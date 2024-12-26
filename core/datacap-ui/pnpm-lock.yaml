@@ -59,9 +59,6 @@ importers:
       md-editor-v3:
         specifier: ^4.12.1
         version: 4.21.2(@codemirror/view@6.34.1)(@lezer/common@1.2.3)(vue@3.5.12(typescript@5.2.2))
-      nprogress:
-        specifier: ^0.2.0
-        version: 0.2.0
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -105,9 +102,6 @@ importers:
       '@types/node':
         specifier: ^20.11.26
         version: 20.17.3
-      '@types/nprogress':
-        specifier: ^0.2.3
-        version: 0.2.3
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
         version: 5.1.4(vite@5.4.10(@types/node@20.17.3))(vue@3.5.12(typescript@5.2.2))
@@ -728,9 +722,6 @@ packages:
   '@types/node@20.17.3':
     resolution: {integrity: sha512-tSQrmKKatLDGnG92h40GD7FzUt0MjahaHwOME4VAFeeA/Xopayq5qLyQRy7Jg/pjgKIFBXuKcGhJo+UdYG55jQ==}
 
-  '@types/nprogress@0.2.3':
-    resolution: {integrity: sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==}
-
   '@types/web-bluetooth@0.0.20':
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
 
@@ -1268,9 +1259,6 @@ packages:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-
-  nprogress@0.2.0:
-    resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
 
   p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
@@ -2309,8 +2297,6 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
-  '@types/nprogress@0.2.3': {}
-
   '@types/web-bluetooth@0.0.20': {}
 
   '@vavt/util@2.1.0': {}
@@ -3018,8 +3004,6 @@ snapshots:
   muggle-string@0.3.1: {}
 
   nanoid@3.3.7: {}
-
-  nprogress@0.2.0: {}
 
   p-limit@2.3.0:
     dependencies:

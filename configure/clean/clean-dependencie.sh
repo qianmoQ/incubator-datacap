@@ -1,6 +1,8 @@
 #!/bin/bash
+HOME=$(pwd)
 
 echo "Clean dependencies"
+cd "$HOME/core/datacap-ui"
 
 echo "Task: check dependencies"
 depcheck --json > depcheck-output.json
@@ -20,4 +22,6 @@ done
 echo "Task: install dependencies again"
 pnpm install --fix
 
+
 echo "Clean dependencies done"
+cd "$HOME"
