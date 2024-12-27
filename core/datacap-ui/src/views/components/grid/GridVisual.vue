@@ -3,7 +3,6 @@
                width="80%"
                :title="$t('dataset.common.visual')"
                @on-close="onCancel">
-
     <ShadcnAlert v-if="message" type="error" :title="message"/>
 
     <ShadcnForm v-model="formState" @on-submit="onSubmit">
@@ -90,7 +89,7 @@ export default defineComponent({
         query: this.configure?.query,
         description: '',
         source: {
-          id: this.configure?.sourceId
+          code: this.configure.code
         }
       }
     }

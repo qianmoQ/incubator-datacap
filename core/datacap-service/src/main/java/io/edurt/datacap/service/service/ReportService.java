@@ -10,6 +10,4 @@ public interface ReportService
         extends BaseService<ReportEntity>
 {
     CommonResponse<PageEntity<ReportEntity>> getAll(FilterBody filter);
-
-    CommonResponse<ReportEntity> saveOrUpdate(PagingAndSortingRepository<ReportEntity, Long> repository, ReportEntity configure);
 }

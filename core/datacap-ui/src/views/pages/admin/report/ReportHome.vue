@@ -38,12 +38,20 @@
               </template>
 
               <ShadcnDropdownItem :disabled="row.type === 'QUERY'">
-                <ShadcnLink :link="`/admin/dataset/adhoc/${row.dataset?.code}/${row.code}`" target="_blank">
+                <template v-if="row.type !== 'QUERY'">
+                  <ShadcnLink :link="`/admin/dataset/adhoc/${row.dataset?.code}/${row.code}`" target="_blank">
+                    <div class="flex items-center space-x-2">
+                      <ShadcnIcon icon="Pencil" size="15"/>
+                      <span>{{ $t('report.common.modify') }}</span>
+                    </div>
+                  </ShadcnLink>
+                </template>
+                <template v-else>
                   <div class="flex items-center space-x-2">
                     <ShadcnIcon icon="Pencil" size="15"/>
                     <span>{{ $t('report.common.modify') }}</span>
                   </div>
-                </ShadcnLink>
+                </template>
               </ShadcnDropdownItem>
 
               <ShadcnDropdownItem @on-click="visibleDelete(true, row)">
