@@ -1,34 +1,50 @@
 **DataCap Released!**
 
-| Release Version |     Published |
+| Release Version |  Published   |
 |:---------------:|:------------:|
-|   `2024.4.0`    | `2024-12-02` |
+|   `2024.4.1`    | `2024-12-31` |
 
-!!! note
+Dear DataCap users,
 
-    This is a brand new version that uses a new plugin management system, new APIs, and other new features. This update is a new version and is not compatible with the previous version. Make a backup of your data before upgrading to avoid data loss. The database is compatible, as long as the upgraded SQL is executed.<br />
-    It should also be noted that after upgrading the version, you need to modify the value of the 'code' field of the 'datacap_user' and 'datacap_role' tables, which is unique for each piece of data, otherwise it will cause you to be unable to log in. (If it is a clean installation, you can ignore this step)<br />
-    Execute the following SQL statement to upgrade the database: <br />
-    ```sql
-    INSERT INTO `datacap_menu` VALUES
-    (18,'全局 - 商店','STORE','','/store','',3,'VIEW',0,1,'common.store','Store',NULL,'2024-11-05 21:18:28',0,0,NULL);
-    INSERT INTO `datacap_role_menu_relation` VALUES ('1','18')
-    ```
+DataCap 2024.4.1 is now generally available. This update includes a number of important feature upgrades and performance improvements, and the main updates are as follows:
 
-#### Key features
+### Core function upgrades
 
----
+1. **Database Enhancements (Implementations)**
+    - Added database management feature: You can create, delete, and switch databases
+    - Improved table management features: You can create, delete, and insert data
 
-- Fixed the issue that the internationalization acquisition failed due to login
-- Split the plug-in system into a new module to support better plug-in management
-- Support online installation, uninstallation and other operations of plug-ins
-- Added a general test module
-- Added a brand new plugin store
-- Fixed the issue that an exception occurred when saving a dataset
-- Use the new 'JsonView' annotation for better data security and display
+2. **MongoDB driver upgrade**
+    - Optimize query performance: Replace find with aggregate
+    - Added metadata support
+    - Supports com.dbschema.MongoJdbcDriver adaptation
+    - Improve version control and index fetching functions
 
-#### documentation
+3. **Workflow Engine Optimization**
+    - Added workflow task submission feature
+    - Workflow restart operations are supported
+    - Optimized the SeatTunnel executor to support custom node types
 
----
+4. **SQL parser enhancements**
+    - Optimized the structure of G4 expressions
+    - Added support for SHOW statements
+    - Improve the formatting function of SELECT statements
+    - Support for CREATE DATABASE syntax
 
-- Added Open API documentation
+### Bug fixes
+- Fixed the issue of creating query history
+- Fixed the JSON conversion issue of the LocalDateTime type
+- The issue of historical data acquisition failure is fixed
+- Optimized the acquisition of the Dameng database plug-in version
+
+### Other optimizations
+- Improved Windows platform support
+- Optimized release scripts
+- Optimize your CI/CD process
+
+### How to get it
+- GitHub：https://github.com/devlive-community/datacap
+- Official website: https://datacap.devlive.org/
+- Docker: The latest image has been updated
+
+Thank you to the community for your continued support and feedback. If you have questions or suggestions, please feel free to contact us via GitHub Issues.

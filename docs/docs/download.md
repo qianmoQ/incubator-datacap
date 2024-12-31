@@ -27,7 +27,7 @@ hide:
 
     <br />
 
-    [datacap-server-2024.4.0-bin.tar.gz](https://repo1.maven.org/maven2/io/edurt/datacap/datacap-server/2024.4.0/datacap-server-2024.4.0-bin.tar.gz){ .md-button .md-button-primary }
+    [datacap-server-2024.4.1-bin.tar.gz](https://repo1.maven.org/maven2/io/edurt/datacap/datacap-server/2024.4.1/datacap-server-2024.4.1-bin.tar.gz){ .md-button .md-button-primary }
 
 - __命令行客户端__
 
@@ -37,7 +37,7 @@ hide:
      
      <br />
   
-     [datacap-client-cli-2024.4.0.jar](https://repo1.maven.org/maven2/io/edurt/datacap/datacap-client-cli/2024.4.0/datacap-client-cli-2024.4.0.jar){ .md-button .md-button-primary }
+     [datacap-client-cli-2024.4.1.jar](https://repo1.maven.org/maven2/io/edurt/datacap/datacap-client-cli/2024.4.1/datacap-client-cli-2024.4.1.jar){ .md-button .md-button-primary }
   
 - __更多__
 

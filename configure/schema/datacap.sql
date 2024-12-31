@@ -379,6 +379,7 @@ CREATE TABLE `datacap_function` (
 
 LOCK TABLES `datacap_function` WRITE;
 /*!40000 ALTER TABLE `datacap_function` DISABLE KEYS */;
+INSERT INTO `datacap_function` VALUES (1,'SHOW','SHOW','SHOW 修改','Redis,Zookeeper,Alioss,Kafka,H2,Hdfs,MySQL',NULL,'2024-11-07 21:33:27','2024-11-25 21:43:52','KEYWORD',1,'8daa7c0812b24c2fa295d0b19e0b46a9'),(2,'SELECT','SELECT','SELECT','H2,MySQL,Hdfs,ClickHouse,Presto,Redis',NULL,'2024-11-07 22:11:19','2024-11-07 22:11:19','KEYWORD',1,'1de4c62f66c84f79a1b1687ef727fabd');
 /*!40000 ALTER TABLE `datacap_function` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -408,7 +409,7 @@ CREATE TABLE `datacap_menu` (
   `is_new` tinyint(1) DEFAULT '0',
   `view` varchar(550) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -417,7 +418,7 @@ CREATE TABLE `datacap_menu` (
 
 LOCK TABLES `datacap_menu` WRITE;
 /*!40000 ALTER TABLE `datacap_menu` DISABLE KEYS */;
-INSERT INTO `datacap_menu` VALUES (1,'全局 - 首页','HOME','全局路由：所有用户都可以访问','/home',NULL,1,'VIEW',0,1,'common.home','Home','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(2,'全局 - 查询','QUERY','全局路由：所有用户都可以访问','/admin/query',NULL,3,'VIEW',0,1,'common.query','SquareChevronRight','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(3,'全局 - 管理主菜单','MANAGEMENT','全局：所有用户都可以访问\n位置：顶部管理主菜单','/admin',NULL,3,'VIEW',0,1,'common.admin','Hammer','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(4,'全局 - 管理 - 数据源','DATASOURCE','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/source','default',1,'VIEW',3,1,'common.source','List','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(5,'全局 - 管理 - 片段','SNIPPET','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/snippet',NULL,2,'VIEW',3,1,'common.snippet','SquareDashedBottomCode','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(6,'全局 - 管理 - 查询历史','HISTORY','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/history',NULL,3,'VIEW',3,1,'common.history','History','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(7,'全局 - 管理 - 流水线','PIPELINE','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/pipeline',NULL,4,'VIEW',3,1,'common.pipeline','RailSymbol','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(8,'管理员 - 系统主菜单','SYSTEM','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system',NULL,4,'VIEW',0,1,'common.system','ShieldPlus','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(9,'管理员 - 系统 - 函数','FUNCTION','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/function',NULL,6,'VIEW',3,1,'common.function','SquareFunction','2023-07-04 21:47:24','2024-11-25 21:37:49',0,0,NULL),(10,'管理员 - 系统 - 定时任务','SCHEDULE','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/schedule',NULL,2,'VIEW',8,1,'common.schedule','Timer','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(11,'管理员 - 系统 - 模版','TEMPLATE','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/template',NULL,3,'VIEW',8,1,'common.template','LayoutTemplate','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(12,'管理员 - 系统 - 权限','ROLE','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/role',NULL,4,'VIEW',8,1,'common.authority','Flag','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(13,'管理员 - 系统 - 菜单','MENU','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/menu',NULL,5,'VIEW',8,1,'common.menu','Menu','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(14,'管理员 - 系统 - 用户','USERS','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/user',NULL,6,'VIEW',8,1,'common.user','User','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,'@/views/pages/system/user/SystemUser.vue'),(15,'全局 - 管理 - 报表','REPORT','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/report',NULL,6,'VIEW',3,1,'common.report','SquareKanban','2023-12-18 13:37:35',NULL,0,0,NULL),(16,'全局 - 仪表盘','DASHBOARD','全局路由：所有用户都可以访问','/admin/dashboard',NULL,2,'VIEW',0,1,'common.dashboard','Gauge','2023-12-19 10:26:21',NULL,0,0,NULL),(17,'全局 - 数据集','DATASET','全局路由：所有用户都可以访问','/admin/dataset',NULL,3,'VIEW',0,1,'common.dataset','Contrast','2023-12-21 11:32:33','2024-04-05 12:14:02',0,1,NULL),(18,'全局 - 商店','STORE','','/store','',3,'VIEW',0,1,'common.store','Store',NULL,'2024-11-05 21:18:28',0,0,NULL),(20,'测试菜单','10ae626195704b96b353d00aeb6ab1e5','我被修改了，修改了数据','/test','',2,'VIEW',0,1,'common.home','',NULL,'2024-11-25 21:28:13',0,0,NULL);
+INSERT INTO `datacap_menu` VALUES (1,'全局 - 首页','HOME','全局路由：所有用户都可以访问','/home',NULL,1,'VIEW',0,1,'common.home','Home','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(2,'全局 - 查询','QUERY','全局路由：所有用户都可以访问','/admin/query',NULL,3,'VIEW',0,1,'common.query','SquareChevronRight','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(3,'全局 - 管理主菜单','MANAGEMENT','全局：所有用户都可以访问\n位置：顶部管理主菜单','/admin',NULL,3,'VIEW',0,1,'common.admin','Hammer','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(4,'全局 - 管理 - 数据源','DATASOURCE','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/source','default',1,'VIEW',3,1,'common.source','List','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(5,'全局 - 管理 - 片段','SNIPPET','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/snippet',NULL,2,'VIEW',3,1,'common.snippet','SquareDashedBottomCode','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(6,'全局 - 管理 - 查询历史','HISTORY','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/history',NULL,3,'VIEW',3,1,'common.history','History','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(7,'全局 - 管理 - 流水线','PIPELINE','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/pipeline',NULL,4,'VIEW',3,1,'common.pipeline','RailSymbol','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(8,'管理员 - 系统主菜单','SYSTEM','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system',NULL,4,'VIEW',0,1,'common.system','ShieldPlus','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(9,'管理员 - 系统 - 函数','FUNCTION','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/function',NULL,6,'VIEW',3,1,'common.function','SquareFunction','2023-07-04 21:47:24','2024-11-25 21:37:49',0,0,NULL),(10,'管理员 - 系统 - 定时任务','SCHEDULE','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/schedule',NULL,2,'VIEW',8,1,'common.schedule','Timer','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(11,'管理员 - 系统 - 模版','TEMPLATE','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/template',NULL,3,'VIEW',8,1,'common.template','LayoutTemplate','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(12,'管理员 - 系统 - 权限','ROLE','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/role',NULL,4,'VIEW',8,1,'common.authority','Flag','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(13,'管理员 - 系统 - 菜单','MENU','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/menu',NULL,5,'VIEW',8,1,'common.menu','Menu','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,NULL),(14,'管理员 - 系统 - 用户','USERS','管理员：管理员权限用户可以访问\n位置：顶部管理一级子菜单','/system/user',NULL,6,'VIEW',8,1,'common.user','User','2023-07-04 21:47:24','2023-07-04 21:47:24',0,0,'@/views/pages/system/user/SystemUser.vue'),(15,'全局 - 管理 - 报表','REPORT','全局：所有用户都可以访问\n位置：顶部管理一级子菜单','/admin/report',NULL,6,'VIEW',3,1,'common.report','SquareKanban','2023-12-18 13:37:35',NULL,0,0,NULL),(16,'全局 - 仪表盘','DASHBOARD','全局路由：所有用户都可以访问','/admin/dashboard',NULL,2,'VIEW',0,1,'common.dashboard','Gauge','2023-12-19 10:26:21',NULL,0,0,NULL),(17,'全局 - 数据集','DATASET','全局路由：所有用户都可以访问','/admin/dataset',NULL,3,'VIEW',0,1,'common.dataset','Contrast','2023-12-21 11:32:33','2024-04-05 12:14:02',0,1,NULL),(18,'全局 - 商店','STORE','','/store','',3,'VIEW',0,1,'common.store','Store',NULL,'2024-11-05 21:18:28',0,0,NULL),(20,'测试菜单','10ae626195704b96b353d00aeb6ab1e5','我被修改了，修改了数据','/test','',2,'VIEW',0,1,'common.home','',NULL,'2024-11-25 21:28:13',0,0,NULL),(21,'管理员 - 管理 - 工作流','b6669c359a7d41e581d906446366daf3','','/admin/workflow','default',1,'VIEW',3,1,'common.workflow','Workflow','2024-12-19 18:36:22','2024-12-19 18:36:22',0,1,NULL);
 /*!40000 ALTER TABLE `datacap_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -855,7 +856,7 @@ CREATE TABLE `datacap_role` (
 
 LOCK TABLES `datacap_role` WRITE;
 /*!40000 ALTER TABLE `datacap_role` DISABLE KEYS */;
-INSERT INTO `datacap_role` VALUES (1,'系统管理员','这是管理员路由，可以管理站点所有功能',NULL,1,'ADMIN','2024-11-25 21:32:36'),(2,'普通用户','我是一个普通用户的路由',NULL,1,'USER','2024-11-25 21:32:56'),(3,'Test001','这是一个测试路由，没有任何权限',NULL,1,'ROLE_TEST001',NULL);
+INSERT INTO `datacap_role` VALUES (1,'系统管理员','这是管理员路由，可以管理站点所有功能',NULL,1,'ADMIN','2024-12-19 18:36:34'),(2,'普通用户','我是一个普通用户的路由',NULL,1,'USER','2024-11-25 21:32:56'),(3,'Test001','这是一个测试路由，没有任何权限',NULL,1,'ROLE_TEST001',NULL),(4,'测试路由','用于测试功能，修改数据','2024-11-25 20:52:48.00000',1,'cc4','2024-11-26 13:50:55');
 /*!40000 ALTER TABLE `datacap_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -878,7 +879,7 @@ CREATE TABLE `datacap_role_menu_relation` (
 
 LOCK TABLES `datacap_role_menu_relation` WRITE;
 /*!40000 ALTER TABLE `datacap_role_menu_relation` DISABLE KEYS */;
-INSERT INTO `datacap_role_menu_relation` VALUES ('1','18'),('1','5'),('1','9'),('1','1'),('1','13'),('1','7'),('1','17'),('1','12'),('1','6'),('1','16'),('1','10'),('1','14'),('1','3'),('1','2'),('1','4'),('1','8'),('1','11'),('1','15'),('2','6'),('2','16'),('2','5'),('2','1'),('2','3'),('2','7'),('2','2'),('2','17'),('2','4'),('2','15'),('4','20');
+INSERT INTO `datacap_role_menu_relation` VALUES ('2','6'),('2','16'),('2','5'),('2','1'),('2','3'),('2','7'),('2','2'),('2','17'),('2','4'),('2','15'),('4','20'),('1','21'),('1','14'),('1','9'),('1','17'),('1','15'),('1','10'),('1','11'),('1','16'),('1','1'),('1','13'),('1','7'),('1','2'),('1','8'),('1','4'),('1','12'),('1','18'),('1','6'),('1','5'),('1','3');
 /*!40000 ALTER TABLE `datacap_role_menu_relation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1222,6 +1223,42 @@ LOCK TABLES `datacap_user_role_relation` WRITE;
 INSERT INTO `datacap_user_role_relation` VALUES (2,2),(1,1),(10003,2),(10004,2),(10002,3),(10005,2),(10006,2),(10007,2),(10008,2),(10009,2),(10010,2),(10011,2),(10012,2),(10013,2),(10014,2),(10015,2),(10016,4);
 /*!40000 ALTER TABLE `datacap_user_role_relation` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `datacap_workflow`
+--
+
+DROP TABLE IF EXISTS `datacap_workflow`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `datacap_workflow` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `active` bit(1) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `work` varchar(255) DEFAULT NULL,
+  `elapsed` bigint DEFAULT NULL,
+  `executor` varchar(255) DEFAULT NULL,
+  `configure` text,
+  `j_from_id` bigint DEFAULT NULL,
+  `j_to_id` bigint DEFAULT NULL,
+  `j_user_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `datacap_workflow`
+--
+
+LOCK TABLES `datacap_workflow` WRITE;
+/*!40000 ALTER TABLE `datacap_workflow` DISABLE KEYS */;
+/*!40000 ALTER TABLE `datacap_workflow` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1232,4 +1269,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-02 14:36:55
+-- Dump completed on 2024-12-31  9:51:25
